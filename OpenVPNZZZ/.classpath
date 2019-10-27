@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="src/" kind="src" path=""/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="src" path="/JAZKernel"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZLanguageMarkup"/>
+	<classpathentry exported="true" kind="lib" path="/ZKernelFileCollection/jdic.jar"/>
+	<classpathentry exported="true" kind="lib" path="/ZKernelFileCollection/jakarta-regexp-1.3.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZWin32"/>
+	<classpathentry exported="true" kind="lib" path="/ZKernelFileCollection/jdom.jar"/>
+	<classpathentry exported="true" kind="lib" path="/ZKernelFileCollection/jacob.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,44 @@
+package debug.openvpn.client;
+
+import use.openvpn.client.ClientMainZZZ;
+import basic.zBasic.ExceptionZZZ;
+import basic.zKernel.KernelZZZ;
+import custom.zKernel.LogZZZ;
+
+public class DebugClientMainZZZ {
+
+	/**Debug class for ConfigMainZZZ
+	 * @param args, 
+	 *
+	 * @return void
+	 *
+	 * javadoc created by: 0823, 10.07.2006 - 12:00:08
+	 */
+	public static void main(String[] args) {
+		main:{
+			KernelZZZ objKernel = null;		
+			try {
+				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNClient.ini", (String)null);
+				//objKernel.getLogObject().WriteLineDate("TEST");
+				
+				ClientMainZZZ objConfig = new ClientMainZZZ(objKernel, null);
+				objConfig.start();
+			
+
+			} catch (ExceptionZZZ ez) {
+				if(objKernel!=null){
+					LogZZZ objLog = objKernel.getLogObject();
+					if(objLog!=null){
+						objLog.WriteLineDate(ez.getDetailAllLast());
+					}else{
+						ez.printStackTrace();
+					}				
+				}else{
+					ez.printStackTrace();
+				}
+			}//END Catch
+			}//END main:
+			System.out.println("finished everything");
+	}
+
+}
