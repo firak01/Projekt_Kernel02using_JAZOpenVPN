@@ -23,6 +23,7 @@ import basic.zKernel.KernelZZZ;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
@@ -40,7 +41,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	private ClientMainZZZ objClientMain = null;
 	
 	
-	public ClientTrayUIZZZ(KernelZZZ objKernel, ClientMainZZZ objClientMain, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientTrayUIZZZ(IKernelZZZ objKernel, ClientMainZZZ objClientMain, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ClientTrayUINew_(objClientMain, saFlagControl);
 	}
@@ -188,11 +189,11 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public boolean switchStatus(int iStatus){
 		boolean bReturn = false;
 		main:{
-			//StatusString ändern
+			//StatusString ï¿½ndern
 			this.sStatusString = this.readStatusStringByStatus(iStatus);
 			
 			
-			//ImageIcon ändern
+			//ImageIcon ï¿½ndern
 			ImageIcon objIcon = this.readImageIconByStatus(iStatus);
 			if(objIcon==null)break main;
 			
@@ -232,7 +233,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public boolean unload() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{		
-			//TODO Natürlich müssen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
+			//TODO Natï¿½rlich mï¿½ssen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
 			
 			//###### Processe beenden
 			//+++ Vorbereitend den processnamen auslesen
@@ -261,7 +262,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				}
 				this.switchStatus(iSTATUS_CONNECTING);
 											
-				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+				//DIES ï¿½ber einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
 				Thread objThreadConfig = new Thread(this.objClientMain);
 				objThreadConfig.start();
 				
@@ -270,7 +271,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				objThreadMonitor.start();
 							   
 			}catch(ExceptionZZZ ez){
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurückgesetzt werden kann.
+				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurï¿½ckgesetzt werden kann.
 				this.switchStatus(iSTATUS_ERROR);
 			}		
 		}
@@ -428,7 +429,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					*/
 				}
 			}catch(ExceptionZZZ ez){
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurückgesetzt werden kann.
+				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurï¿½ckgesetzt werden kann.
 				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
 				this.switchStatus(iSTATUS_ERROR);
 			}

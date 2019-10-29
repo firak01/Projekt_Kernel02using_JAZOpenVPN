@@ -41,7 +41,7 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 				objFileExe = ConfigFileZZZ.findFileExe();
 			}else{
 				objFileExe = new File(sFile);
-			}//END if bUseSearch == ttrue;
+			}//END if bUseSearch == true;
 			
 			//++++++++++++  Das Verzeichnis �berr�fen			
 		

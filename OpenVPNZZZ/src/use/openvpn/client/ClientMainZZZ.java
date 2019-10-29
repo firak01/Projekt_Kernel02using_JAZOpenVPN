@@ -56,7 +56,7 @@ private boolean bFlagPortScanAllFinished = false;
 	
 
 	
-	public ClientMainZZZ(KernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientMainZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ClientMainNew_(saFlagControl);
 	}
