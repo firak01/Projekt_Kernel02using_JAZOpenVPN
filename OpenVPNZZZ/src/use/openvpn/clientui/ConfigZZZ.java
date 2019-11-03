@@ -16,7 +16,8 @@ public class ConfigZZZ  extends KernelConfigZZZ{
 	}
 
 	public String getConfigDirectoryNameDefault() {
-		return ".";
+		//20191031: Dieser Wert muss vom Programm verarbeitet/Übersetzt werden werden - wie ein ini-Datei Eintrag auch übersetzt würde.
+		return "<z:Null/>";//Merke . oder Leerstring = src Verzeichnis
 	}
 
 	public String getConfigFileNameDefault() {
