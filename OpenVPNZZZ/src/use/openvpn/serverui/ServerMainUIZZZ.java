@@ -1,6 +1,6 @@
 package use.openvpn.serverui;
 
-import use.openvpn.clientui.ConfigZZZ;
+import use.openvpn.clientui.ConfigOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
 import basic.zKernel.KernelZZZ;
@@ -26,7 +26,7 @@ public class ServerMainUIZZZ implements IConstantZZZ {
 				main:{						
 					try {
 //						Parameter aus args auslesen
-						ConfigZZZ objConfig = new ConfigZZZ(saArg);
+						ConfigOVPN objConfig = new ConfigOVPN(saArg);
 						//objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNServer.ini", (String)null);
 						objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man �ber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 						//objKernel.getLogObject().WriteLineDate("TEST");

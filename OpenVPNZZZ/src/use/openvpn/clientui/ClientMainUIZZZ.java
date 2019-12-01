@@ -29,7 +29,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 		main:{						
 			try {
 				//Parameter aus args auslesen
-				ConfigZZZ objConfig = new ConfigZZZ(saArg);
+				ConfigOVPN objConfig = new ConfigOVPN(saArg);
 //				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNClient.ini", (String)null);
 				objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man �ber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 				
