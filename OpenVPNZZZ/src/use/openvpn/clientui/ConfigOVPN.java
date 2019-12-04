@@ -17,6 +17,13 @@ public class ConfigOVPN  extends KernelConfigZZZ{
 	public ConfigOVPN(String[] saArg) throws ExceptionZZZ {
 		super(saArg); 
 	} 
+	public ConfigOVPN(String[] saArg, String[] saFlagControl) throws ExceptionZZZ {
+		super(saArg, saFlagControl); 
+	} 
+	public ConfigOVPN(String[] saArg, String sFlagControl) throws ExceptionZZZ {
+		super(saArg, sFlagControl); 
+	}
+	
 	
 	public String getApplicationKeyDefault() {
 		return "OVPN"; 
@@ -25,14 +32,17 @@ public class ConfigOVPN  extends KernelConfigZZZ{
 	public String getConfigDirectoryNameDefault() {
 		String sReturn=null;
 		main:{
+		//TODO 20191204: Diese ganze Methode muss in die abstrakte Klasse KernelConfigZZZ verschoben werden.	
+		boolean bUseFormula = this.getFlagZ("useFormula");
+			
 		//20191031: Dieser Wert muss vom Programm verarbeitet/Übersetzt werden werden - wie ein ini-Datei Eintrag auch übersetzt würde.
-		//return "<z:Null/>";//Merke . oder Leerstring = src Verzeichnis
+		//return "<z:Null/>";//Merke '.' oder Leerstring '' = src Verzeichnis
 		ReferenceZZZ<String> objsReturnValueExpressionSolved= new ReferenceZZZ<String>();
 		ReferenceZZZ<String> objsReturnValueConverted= new ReferenceZZZ<String>();
 		ReferenceZZZ<String> objsReturnValue= new ReferenceZZZ<String>();
 		try {
 			//TODO: Wenn das klappt eine statische Methode anbieten, bei der alle null-Parameter weggelassen werden können.
-			boolean bConverted = KernelConfigEntryUtilZZZ.getValueExpressionSolvedAndConverted((FileIniZZZ) null, "<z:Null/>", true, (HashMapCaseInsensitiveZZZ<String,String>) null, (String[]) null, objsReturnValueExpressionSolved, objsReturnValueConverted, objsReturnValue);
+			boolean bConverted = KernelConfigEntryUtilZZZ.getValueExpressionSolvedAndConverted((FileIniZZZ) null, "<z:Null/>", bUseFormula, (HashMapCaseInsensitiveZZZ<String,String>) null, (String[]) null, objsReturnValueExpressionSolved, objsReturnValueConverted, objsReturnValue);
 			sReturn = objsReturnValue.get();
 		}catch(ExceptionZZZ ez){
 			String sError = ez.getMessageLast();

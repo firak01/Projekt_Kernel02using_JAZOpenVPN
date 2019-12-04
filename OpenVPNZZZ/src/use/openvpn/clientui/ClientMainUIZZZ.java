@@ -2,10 +2,12 @@ package use.openvpn.clientui;
 
 import use.openvpn.client.ClientMainZZZ;
 import basic.zKernel.IKernelZZZ;
+import basic.zKernel.KernelConfigZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
+import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
 public class ClientMainUIZZZ implements IConstantZZZ {
@@ -20,7 +22,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 	 * lindhaueradmin; 08.07.2006 08:24:16
 	 */
 	public static void main(String[] args) {
-		ClientMainUIZZZ objClient = new ClientMainUIZZZ();
+		ClientMainUIZZZ objClient = new ClientMainUIZZZ();		
 		objClient.start(args);
 	}//END main()
 	
@@ -29,7 +31,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 		main:{						
 			try {
 				//Parameter aus args auslesen
-				ConfigOVPN objConfig = new ConfigOVPN(saArg);
+				ConfigOVPN objConfig = new ConfigOVPN(saArg, "useFormula");
 //				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNClient.ini", (String)null);
 				objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man �ber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 				
