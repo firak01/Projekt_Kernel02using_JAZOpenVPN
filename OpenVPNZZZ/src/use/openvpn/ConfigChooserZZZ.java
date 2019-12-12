@@ -26,7 +26,7 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 	public File findDirectoryRoot() throws ExceptionZZZ{
 		File objReturn = null;
 		main:{
-			//+++ Pr�fen, ob nicht ein anderes Verzeichnis konfiguriert ist
+			//+++ Prüfen, ob nicht ein anderes Verzeichnis konfiguriert ist
 			String sFile = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","RootDirectory").getValue();
 			boolean bUseSearch = false;
 			if(sFile==null){
