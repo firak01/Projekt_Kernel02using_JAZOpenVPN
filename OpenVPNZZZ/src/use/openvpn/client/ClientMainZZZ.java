@@ -141,7 +141,7 @@ private boolean bFlagPortScanAllFinished = false;
 					
 			//+++ A) Vorbereitung
 			///*TEST: Path Expanded Berechnung
-			//+++ 1. Die fr�her mal verwendeten Dateien entfernen
+			//+++ 1. Die früher mal verwendeten Dateien entfernen
 			this.logStatusString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);
 			if(objaFileConfigUsed==null){
