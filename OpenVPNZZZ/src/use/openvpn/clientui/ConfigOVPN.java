@@ -42,7 +42,7 @@ public class ConfigOVPN  extends KernelConfigZZZ{
 		ReferenceZZZ<String> objsReturnValue= new ReferenceZZZ<String>();
 		try {
 			//TODO: Wenn das klappt eine statische Methode anbieten, bei der alle null-Parameter weggelassen werden können.
-			boolean bConverted = KernelConfigEntryUtilZZZ.getValueExpressionSolvedAndConverted((FileIniZZZ) null, "<z:Null/>", bUseFormula, (HashMapCaseInsensitiveZZZ<String,String>) null, (String[]) null, objsReturnValueExpressionSolved, objsReturnValueConverted, objsReturnValue);
+			int iConvertionType = KernelConfigEntryUtilZZZ.getValueExpressionSolvedAndConverted((FileIniZZZ) null, "<z:Null/>", bUseFormula, (HashMapCaseInsensitiveZZZ<String,String>) null, (String[]) null, objsReturnValueExpressionSolved, objsReturnValueConverted, objsReturnValue);
 			sReturn = objsReturnValue.get();
 		}catch(ExceptionZZZ ez){
 			String sError = ez.getMessageLast();
