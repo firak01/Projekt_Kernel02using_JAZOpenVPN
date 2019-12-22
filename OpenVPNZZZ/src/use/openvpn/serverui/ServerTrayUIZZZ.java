@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -19,15 +18,13 @@ import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
 import use.openvpn.client.ClientConfigFileZZZ;
-import use.openvpn.client.ClientMainZZZ;
-import use.openvpn.clientui.ClientMonitorRunnerZZZ;
 import use.openvpn.server.ServerMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
-import basic.zKernel.KernelZZZ;
 
 public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListener {
 	public static final int iSTATUS_NEW = 0;                       //Wenn das SystemTry-icon neu ist 
@@ -36,17 +33,17 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public static final int iSTATUS_CONNECTED = 3;            //Falls sich ein Client per vpn mit dem Server verbunden hat und erreichbar ist
 	public static final int iSTATUS_INTERRUPTED = 4;          //Falls der Client wieder nicht erreichbar ist. Das soll aber keine Fehlermeldung in dem Sinne sein, sondern nur anzeigen, dass mal ein Client verbunden war.
 	                                                                                      //Dies wird auch angezeigt, wenn z.B. die Netzwerkverbindung unterbrochen worden ist.
-	public static final int iSTATUS_STOPPED = 5; 				 //Wenn kein OVPN-Prozess mehr läuft.
+	public static final int iSTATUS_STOPPED = 5; 				 //Wenn kein OVPN-Prozess mehr lï¿½uft.
 	public static final int iSTATUS_ERROR = 6;
 	//private String sStatusString = null;  soll nun aus dem objMonitor ausgelsen werden
 
 	private SystemTray objTray = null;                                    //Das gesamte SystemTray von Windows
 	private TrayIcon objTrayIcon = null;                                 //Das TrayIcon dieser Application
-	private ServerMonitorRunnerZZZ  objMonitor = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verfügung, bzw. ändert das TrayIcon selbst.
-	private ServerMainZZZ objServerBackend = null;                            //Ein Thread, der die OpenVPN.exe mit der gewünschten Konfiguration startet.
+	private ServerMonitorRunnerZZZ  objMonitor = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verfï¿½gung, bzw. ï¿½ndert das TrayIcon selbst.
+	private ServerMainZZZ objServerBackend = null;                            //Ein Thread, der die OpenVPN.exe mit der gewï¿½nschten Konfiguration startet.
 	
 	
-	public ServerTrayUIZZZ(KernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
+	public ServerTrayUIZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ServerTrayUINew_(saFlagControl);
 	}
@@ -192,7 +189,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public boolean switchStatus(int iStatus){
 		boolean bReturn = false;
 		main:{
-			//ImageIcon ändern
+			//ImageIcon ï¿½ndern
 			ImageIcon objIcon = this.getImageIconByStatus(iStatus);
 			if(objIcon==null)break main;
 			
@@ -232,7 +229,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public boolean unload() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{		
-			//TODO Natürlich müssen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
+			//TODO Natï¿½rlich mï¿½ssen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
 			
 			//###### Processe beenden
 			//+++ Vorbereitend den processnamen auslesen
@@ -264,7 +261,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
 				this.objServerBackend = new ServerMainZZZ(this.getKernelObject(), null);
 				
-				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+				//DIES ï¿½ber einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
 				Thread objThreadConfig = new Thread(this.objServerBackend);
 				objThreadConfig.start();
 					
@@ -275,7 +272,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				objThreadMonitor.start();
 							   
 			}catch(ExceptionZZZ ez){
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurückgesetzt werden kann.
+				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurï¿½ckgesetzt werden kann.
 				this.switchStatus(ServerTrayUIZZZ.iSTATUS_ERROR);
 				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
 			}		
@@ -307,7 +304,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			sReturn = sReturn + "STATUS: " + sStatusString + "\n\n";
 		}
 		
-		//Die Details der Connection werden in einer HashMap bereitgestellt. Diese HashMap wird durch den ServerMonitorRunner gefüllt.
+		//Die Details der Connection werden in einer HashMap bereitgestellt. Diese HashMap wird durch den ServerMonitorRunner gefï¿½llt.
 		HashMap hmStatusDetail = this.readStatusDetailHashMap();
 		if(hmStatusDetail != null){
 			if(hmStatusDetail.size()>=1){			
@@ -447,7 +444,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					*/
 				}
 			}catch(ExceptionZZZ ez){
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurückgesetzt werden kann.
+				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurï¿½ckgesetzt werden kann.
 				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
 				this.switchStatus(iSTATUS_ERROR);
 			}

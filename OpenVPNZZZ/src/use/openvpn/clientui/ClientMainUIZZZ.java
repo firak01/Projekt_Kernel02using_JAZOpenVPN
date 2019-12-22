@@ -2,13 +2,10 @@ package use.openvpn.clientui;
 
 import use.openvpn.client.ClientMainZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelConfigZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
-import basic.zBasic.util.datatype.string.StringArrayZZZ;
-import basic.zBasic.util.datatype.string.StringZZZ;
 
 public class ClientMainUIZZZ implements IConstantZZZ {
 	private IKernelZZZ objKernel=null;

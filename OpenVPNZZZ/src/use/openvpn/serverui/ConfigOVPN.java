@@ -3,12 +3,18 @@ package use.openvpn.serverui;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelConfigZZZ;
 
-public class ConfigZZZ  extends KernelConfigZZZ{
-	public ConfigZZZ() throws ExceptionZZZ{
+public class ConfigOVPN  extends KernelConfigZZZ{
+	public ConfigOVPN() throws ExceptionZZZ{
 		super();
 	}
-	public ConfigZZZ(String[] saArg) throws ExceptionZZZ {
+	public ConfigOVPN(String[] saArg) throws ExceptionZZZ {
 		super(saArg); 
+	} 
+	public ConfigOVPN(String[] saArg, String[] saFlagControl) throws ExceptionZZZ {
+		super(saArg, saFlagControl); 
+	} 
+	public ConfigOVPN(String[] saArg, String sFlagControl) throws ExceptionZZZ {
+		super(saArg, sFlagControl); 
 	} 
 	
 	public String getApplicationKeyDefault() {
@@ -28,6 +34,6 @@ public class ConfigZZZ  extends KernelConfigZZZ{
 	}
 
 	public String getSystemNumberDefault() {
-		return "01";
+		return "02";
 	}
 }
