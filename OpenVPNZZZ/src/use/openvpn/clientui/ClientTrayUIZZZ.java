@@ -3,7 +3,9 @@ package use.openvpn.clientui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -292,6 +294,14 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		if(this.sStatusString==null){
 			sReturn = sReturn + "assssffffggg\n\n"; //DAS SOLL NICHT VORKOMMEN
 		}else{
+			//20200114: Erweiterung - Angabe des Rechnernamens
+			try {
+				sReturn = sReturn + "Rechner: " + InetAddress.getLocalHost().getHostName() + "\n\n";
+			} catch (UnknownHostException e) {				
+				e.printStackTrace();
+				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
+			}
+			
 			sReturn = sReturn + "STATUS: " + this.sStatusString + "\n\n";
 		}
 		
