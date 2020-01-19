@@ -3,7 +3,9 @@ package use.openvpn.serverui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -299,8 +301,15 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			
 		String sStatusString = this.readStatusString();
 		if(StringZZZ.isEmpty(sStatusString)){
-			sReturn = sReturn + "No status available. Not yet started ? \n\n";
+			sReturn = sReturn + "No status available. Not yet started as server? \n\n";
 		}else{
+			//20200114: Erweiterung - Angabe des Rechnernamens
+			try {
+				sStatusString = sStatusString + "Rechner als Server: " + InetAddress.getLocalHost().getHostName() + "\n\n";
+			} catch (UnknownHostException e) {				
+				e.printStackTrace();
+				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
+			}						
 			sReturn = sReturn + "STATUS: " + sStatusString + "\n\n";
 		}
 		
