@@ -119,6 +119,11 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 					objReturn = load.exec("cmd /c " + sCommandConcrete);
 					//Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");
 					//DAS GEHT: Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");
+					
+					//Irgendwie funktionierte das beim 1. Mal im Debugger... Hier vielleicht auf das TAP Interface warten?
+					//Thread.sleetp(....) ?
+					
+					
 				}else{
 					//Das funktiniert das beim Server, indirekt �ber eine Batch starten
 						
@@ -133,7 +138,10 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 				
 				
 			} catch (IOException e) {
-				ExceptionZZZ ez = new ExceptionZZZ("IOException executing the commandline: '"+ sCommandConcrete +"'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+				String sError = "ReflectCodeZZZ.getPositionCurrent() + \": \" + IOException ('"+e.getMessage()+"') executing the commandline: '"+ sCommandConcrete +"'";
+				System.out.println(sError);
+				this.getLogObject().WriteLineDate(sError);
+				ExceptionZZZ ez = new ExceptionZZZ(sError, iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			} 
 		}
