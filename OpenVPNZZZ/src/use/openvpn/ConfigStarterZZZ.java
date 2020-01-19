@@ -115,7 +115,7 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 				Runtime load = Runtime.getRuntime();
 				if (this.getFlag("byBatch")==false){
 					// DAS FUNKTIONIERT BEIM CLIENT
-					this.getLogObject().WriteLineDate("Excecuting '"+sCommandConcrete+"'");				
+					this.getLogObject().WriteLineDate("Excecuting direkt '"+sCommandConcrete+"'");				
 					objReturn = load.exec("cmd /c " + sCommandConcrete);
 					//Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");
 					//DAS GEHT: Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");
@@ -132,7 +132,7 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 					//2. Batch File starten
 					ConfigChooserZZZ objPathConfig = new ConfigChooserZZZ(this.getKernelObject());				
 					String sCommandBatch = objPathConfig.getDirectoryConfig()+ File.separator+"starter_"+ this.getFileConfig().getName() + ".bat";
-					this.getLogObject().WriteLineDate("Excecuting '"+ sCommandBatch +"'");				
+					this.getLogObject().WriteLineDate("Excecuting by Batch '"+ sCommandBatch +"'");				
 					objReturn = load.exec("cmd /c " + sCommandBatch);
 				}//END if
 				
