@@ -121,8 +121,10 @@ main:{
 		sName = sName.trim();
 	}
 	
+	//TODO GOON: 20200121: Das gilt nicht mehr. Nun ist das Verzeichnis für die neue Datei ein anderes. 
+	//          Nämlich das Programmverzeichnis, der .exe.
 	// Die neuen Dateien befinden sich im gleichen Verzeichnis wie die Template-Dateien
-	File objFileDir = objFileTemplate.getParentFile();
+	File objFileDir = objFileTemplate.getParentFile();   11111111111111
 	String sPath = objFileDir.getPath();
 	
 	// Ggf. wurden die alten Dateien nicht gel�scht, dann das Feature der "Dateinummerierung" verwenden.

@@ -3,13 +3,14 @@ package use.openvpn.client;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 
 public class OVPNFileFilterConfigUsedZZZ implements FilenameFilter {
-	FileFilterSuffixZZZ objFilterSuffix;
+	FileFilterEndingZZZ objFilterEnding;
 	
 	public OVPNFileFilterConfigUsedZZZ(){
-		objFilterSuffix = new FileFilterSuffixZZZ("ovpn");
+		objFilterEnding = new FileFilterEndingZZZ("ovpn");
 	} 
 	public boolean accept(File objFileDir, String sName) {
 		boolean bReturn=false;
@@ -19,7 +20,7 @@ public class OVPNFileFilterConfigUsedZZZ implements FilenameFilter {
 			}
 			
 		//Falls die Endung nicht passt
-		if(this.objFilterSuffix.accept(objFileDir, sName)==false) break main;
+		if(this.objFilterEnding.accept(objFileDir, sName)==false) break main;
 		
 		//Template-Dteinamen fangen eben damit an.
 		//Grund der ganzen Aktion: Das Abspeichern mit Properties entfernt die kommentare

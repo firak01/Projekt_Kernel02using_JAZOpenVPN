@@ -121,11 +121,15 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 					//DAS GEHT: Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");
 					
 					//Irgendwie funktionierte das beim 1. Mal im Debugger... Hier vielleicht auf das TAP Interface warten?
-					//Thread.sleetp(....) ?
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					
 					
 				}else{
-					//Das funktiniert das beim Server, indirekt �ber eine Batch starten
+					//Das funktiniert das beim Server, indirekt über eine Batch starten
 						
 					//1. Batch File erstellen
 					

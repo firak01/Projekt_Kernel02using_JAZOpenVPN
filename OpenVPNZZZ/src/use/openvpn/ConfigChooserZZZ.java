@@ -10,6 +10,7 @@ import use.openvpn.client.OVPNFileFilterConfigTemplateZZZ;
 import use.openvpn.client.OVPNFileFilterConfigUsedZZZ;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
@@ -17,6 +18,7 @@ import basic.zKernel.KernelZZZ;
 
 public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 	private File objFileDirRoot = null;
+	private File objFileDirTemplate = null;
 	
 	public ConfigChooserZZZ(IKernelZZZ objKernel){
 		super(objKernel);
@@ -27,7 +29,7 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 		File objReturn = null;
 		main:{
 			//+++ Prüfen, ob nicht ein anderes Verzeichnis konfiguriert ist
-			String sFile = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","RootDirectory").getValue();
+			String sFile = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","LocalMachineDirectoryRoot").getValue();
 			boolean bUseSearch = false;
 			if(sFile==null){
 				bUseSearch = true;
@@ -124,9 +126,9 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 			File objDirectory=null;
 			check:{
 				if(objDirectoryin==null){
-					objDirectory = this.getDirectoryConfig();
+					objDirectory = this.getDirectoryTemplate();
 					if(objDirectory==null){				
-							ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to get the configuration directory.'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+							ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to get the template directory.'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 							throw ez;
 						}
 				}else{
@@ -206,7 +208,7 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 				throw ez;
 			}
 			sReturn = objDirRoot.getPath();
-			String sConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","ConfigDirectory").getValue();			
+			String sConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","LocalMachineDirectoryChildConfig").getValue();			
 			sReturn = sReturn + File.separator + sConfig;
 		}//End main
 		return sReturn;
@@ -236,6 +238,34 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 		return objReturn;		
 	}
 	
+	public String readDirectoryTemplatePath() throws ExceptionZZZ{
+		String sReturn = new String("");
+		main:{		
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","DirectoryTemplate").getValue();						
+		}//End main
+		return sReturn;
+	}
+	
+	public File findDirectoryTemplate() throws ExceptionZZZ{
+		File objReturn = null;
+		main:{			
+				String sDirTemplate = this.readDirectoryTemplatePath();
+				if(sDirTemplate==null){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive template directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+
+				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate);
+				if(objReturn.exists()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + objReturn.getAbsolutePath() + "', does not exist (for '" + sDirTemplate + "').", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}else if(objReturn.isDirectory()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The path '" + objReturn.getAbsolutePath() + "'(for '" + sDirTemplate + "'),  was expected to be a directory, not e.g. a file.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+		}//End main
+		return objReturn;		
+	}
 	
 	//####### Getter / Setterr
 	public File getDirectoryRoot() throws ExceptionZZZ{
@@ -248,4 +278,16 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 	public void setDirectoryRoot(File objDir){
 		this.objFileDirRoot = objDir;
 	}
+	
+	public File getDirectoryTemplate() throws ExceptionZZZ{
+		if(this.objFileDirTemplate==null){
+			this.objFileDirTemplate = this.findDirectoryTemplate();		
+		}
+		return this.objFileDirTemplate;		
+	}
+	public void setDirectoryTemplate(File objDir){
+		this.objFileDirTemplate = objDir;
+	}
+	
+	
 }

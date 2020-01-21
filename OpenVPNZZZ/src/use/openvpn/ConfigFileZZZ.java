@@ -153,6 +153,15 @@ public class ConfigFileZZZ extends KernelUseObjectZZZ{
 		return sReturn;
 	}
 	
+	public static boolean isTemplate(String sFilename) {
+		boolean bReturn = false;
+		main:{
+			//Template Dateinamen fangen mit dem vorangesetzten String an.
+			if(sFilename.toLowerCase().startsWith("template")) bReturn = true;
+		}
+		return bReturn;
+	}
+	
 	public String getVpnPortRemote(){
 		if(this.sRemotePort==null){
 			this.sRemotePort = this.readVpnPortRemote();
