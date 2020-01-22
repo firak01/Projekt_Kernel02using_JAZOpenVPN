@@ -171,7 +171,7 @@ private boolean bFlagPortScanAllFinished = false;
 			//+++ B) Die gefundenen Werte �berall eintragen: IN neue Dateien
 			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");
 		
-			ClientConfigUpdaterZZZ objUpdater = new ClientConfigUpdaterZZZ(objKernel, hmTask, null);
+			ClientConfigUpdaterZZZ objUpdater = new ClientConfigUpdaterZZZ(objKernel, objChooser, hmTask, null);
 			ArrayList listaFileUsed = new ArrayList(objaFileConfigTemplate.length);
 			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){		
 				

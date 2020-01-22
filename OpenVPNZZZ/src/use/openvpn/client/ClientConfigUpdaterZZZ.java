@@ -7,7 +7,7 @@ import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
-
+import use.openvpn.ConfigChooserZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -16,6 +16,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
 public class ClientConfigUpdaterZZZ extends KernelUseObjectZZZ {
+private ConfigChooserZZZ objConfigChooser = null;//Darin stehen die verwendeten Pfade zum Template Verzeichnis, Programverzeichnis, etc. 
 private File objFileTemplate=null;
 private File objFileUsed = null;
 private HashMap hmLine = null;
@@ -24,12 +25,12 @@ private HashMap hmLine = null;
 // Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
-	public ClientConfigUpdaterZZZ(IKernelZZZ objKernel, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientConfigUpdaterZZZ(IKernelZZZ objKernel, ConfigChooserZZZ objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigUpdaterNew_(hmLine, saFlagControl);
+		ConfigUpdaterNew_(objConfigChooser, hmLine, saFlagControl);
 	}
 	
-	private void ConfigUpdaterNew_(HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigUpdaterNew_(ConfigChooserZZZ objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 			//try{		
@@ -48,6 +49,11 @@ private FileTextParserZZZ objParser = null;
 					if(this.getFlag("init")) break main;
 				}
 				
+				if(objConfigChooser==null) {
+					ExceptionZZZ ez = new ExceptionZZZ("ConfigChooser-Object containing the paths of the new file.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}
+				this.setConfigChooserObject(objConfigChooser);
 				
 				if(hmLine==null){
 					ExceptionZZZ ez = new ExceptionZZZ("HashMap containing the updated lines.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
@@ -123,8 +129,11 @@ main:{
 	
 	//TODO GOON: 20200121: Das gilt nicht mehr. Nun ist das Verzeichnis für die neue Datei ein anderes. 
 	//          Nämlich das Programmverzeichnis, der .exe.
+	//Das bekommt man über das ConfigChooserZZZ-Objekt
+	//TODO GOON: Das Objekt übergeben....
 	// Die neuen Dateien befinden sich im gleichen Verzeichnis wie die Template-Dateien
-	File objFileDir = objFileTemplate.getParentFile();   11111111111111
+	//File objFileDir = objFileTemplate.getParentFile();   11111111111111
+	File objFileDir = this.getConfigChooserObject().getDirectoryRoot();			
 	String sPath = objFileDir.getPath();
 	
 	// Ggf. wurden die alten Dateien nicht gel�scht, dann das Feature der "Dateinummerierung" verwenden.
@@ -351,6 +360,12 @@ public static HashMap getConfigPattern(){
 	
 	
 	//############# Getter / Setter
+	public ConfigChooserZZZ getConfigChooserObject() {
+		return this.objConfigChooser;
+	}
+	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
+		this.objConfigChooser = objConfigChooser;
+	}
 	public File getFileTemplate(){
 		return this.objFileTemplate;
 	}
