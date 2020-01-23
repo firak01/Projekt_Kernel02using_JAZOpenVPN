@@ -133,7 +133,7 @@ main:{
 	//TODO GOON: Das Objekt übergeben....
 	// Die neuen Dateien befinden sich im gleichen Verzeichnis wie die Template-Dateien
 	//File objFileDir = objFileTemplate.getParentFile();   11111111111111
-	File objFileDir = this.getConfigChooserObject().getDirectoryRoot();			
+	File objFileDir = this.getConfigChooserObject().getDirectoryConfig();			
 	String sPath = objFileDir.getPath();
 	
 	// Ggf. wurden die alten Dateien nicht gel�scht, dann das Feature der "Dateinummerierung" verwenden.
@@ -150,6 +150,8 @@ main:{
 	/**This creates new configuration file and changes some entries:
 	 * - remote IP-Adress
 	 * - Proxy enabled/disabled
+	 * - cert
+	 * - key
 	 * 
 	* @return boolean
 	* @param objFileNewin
@@ -322,6 +324,10 @@ public static String getConfigRegExp(String sConfiguration) throws ExceptionZZZ{
 	hmConfig.put("http-proxy", "^http-proxy ");
 	hmConfig.put("http-proxy-timeout", "^http-proxy-timeout ");
 	
+		//20200123: Key und certifier Datei mit dem Namen der Hostmaschine
+	hmConfig.put("cert", "^cert ");
+	hmConfig.put("key", "^key ");
+	
 	//Hashmap auslesen
 	sReturn = (String)hmConfig.get(sConfiguration);
 	
@@ -341,6 +347,9 @@ public static String getConfigRegExp(String sConfiguration) throws ExceptionZZZ{
  * @return, 
  *
  * @return String[]
+ * 
+ * Die Ersetzung der Musterplatzhalter passiert in ClientMainZZZ.readTaskHashMap();
+ * Zudem muss ein RegEx Ausdruck bereitgestellt werden in ClientConfigUpdaterZZZ.getConfigRegExp();
  *
  * javadoc created by: 0823, 05.07.2006 - 08:34:38
  */
@@ -354,6 +363,10 @@ public static HashMap getConfigPattern(){
 		hmReturn.put("remote", "remote %ip%");
 		hmReturn.put("http-proxy", "http-proxy %proxy% %port%");
 		hmReturn.put("http-proxy-timeout", "http-proxy-timeout %timeout%");
+		
+		//20200123: Nun die verwendeten Key-Namen erstetzen
+		hmReturn.put("cert", "cert %filecertifier%");
+		hmReturn.put("key", "key %filekey%");
 	}//END main
 	return hmReturn;
 }

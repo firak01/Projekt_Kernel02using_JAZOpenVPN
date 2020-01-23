@@ -11,6 +11,7 @@ import use.openvpn.ProcessWatchRunnerZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
@@ -40,6 +41,7 @@ private String sPortVpnScanned = null;
 
 private String sIPVPN = null;
 private ClientConfigFileZZZ objFileConfigReached = null;
+private ConfigChooserZZZ objConfigChooser = null;
 
 /*STEHEN LASSEN: DIE PROBLEMATIK IST, DAS NICHT NACHVOLLZIEHBAR IST, �BER WELCHEN PORT DIE VPN-VERBINDUNG HERGESTELLT WURDE 
  * Zumindest nicht PER PING-BEFEHL !!!
@@ -100,6 +102,7 @@ private boolean bFlagPortScanAllFinished = false;
 			this.logStatusString("Searching for configuration template files 'Template*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			IKernelZZZ objKernel = this.getKernelObject();			
 			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel);
+			this.setConfigChooserObject(objChooser);
 			
 			//Die Template Dateien finden		
 			File[] objaFileConfigTemplate = objChooser.findFileConfigTemplate(null);
@@ -110,7 +113,7 @@ private boolean bFlagPortScanAllFinished = false;
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}else{
-				this.logStatusString(objaFileConfigTemplate.length + " configuration TEMPLATE file(s) were found in the directory: '" + objChooser.readDirectoryConfigPath() + "'");  //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+				this.logStatusString(objaFileConfigTemplate.length + " configuration TEMPLATE file(s) was (were) found in the directory: '" + objChooser.readDirectoryConfigPath() + "'");  //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			}
 			
 //			### 2. Voraussetzung: Web-Seite konfiguriert, auf der die dynamische IP vorhanden ist.
@@ -145,9 +148,9 @@ private boolean bFlagPortScanAllFinished = false;
 			this.logStatusString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);
 			if(objaFileConfigUsed==null){
-				this.logStatusString("No previously used file was found. Nothing removed.");
+				this.logStatusString("No previously used file was found (null case). Nothing removed.");
 			}else if(objaFileConfigUsed.length==0){
-				this.logStatusString("No previously used file was found. Nothing removed.");			
+				this.logStatusString("No previously used file was found (0 case). Nothing removed.");			
 			}else{
 				this.logStatusString("Trying to remove previously used file(s): " + objaFileConfigUsed.length);
 				for(int icount = 0; icount < objaFileConfigUsed.length; icount++){
@@ -197,7 +200,7 @@ private boolean bFlagPortScanAllFinished = false;
 			//+++ Die neuen OVPN-Verbindungsfiles zum Starten der VPN-Verbindung verwenden !!!
 			//Diese werden in unabh�ngigen Threads "gemonitored"
 			
-			/*TODO WARUM GEHT DAS NICHT. Kl�ren, ob Firewal oder Proxy-Einstellungen bei mir oder bei der itelligence das verhindern !!!
+			/*TODO WARUM GEHT DAS NICHT. Kl�ren, ob Firewall oder Proxy-Einstellungen bei mir oder bei der itelligence das verhindern !!!
 			//+++ Vorab: Checken, ob die Remote-Verbindungen erreichbar sind !!!
 			//       Die Konfigurationen, die nicht erreichbar sind, hier schon entfernen !!!
 			sStatus = "Checking if the remote connection connection is available.";
@@ -818,30 +821,79 @@ if(this.isPortScanEnabled()==true){
 		return sReturn;
 	}
 	
-	public HashMap readTaskHashMap(){
+	/** Ersetze die in .getConfigPattern() definierten 
+	 * @return
+	 * @throws ExceptionZZZ
+	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
+	 */
+	public HashMap readTaskHashMap() throws ExceptionZZZ{
 		HashMap objReturn=new HashMap();
 		main:{		
+			String stemp;
 			HashMap hmPattern = ClientConfigUpdaterZZZ.getConfigPattern();
 			if(this.getFlag("useProxy")==true){	
 				String sProxyLine = (String)hmPattern.get("http-proxy");
 				if(sProxyLine!=null){
-					String stemp = StringZZZ.replace(sProxyLine, "%proxy%", this.getProxyHost());
+					stemp = StringZZZ.replace(sProxyLine, "%proxy%", this.getProxyHost());
 					stemp = StringZZZ.replace(stemp, "%port%", this.getProxyPort());
 					objReturn.put("http-proxy", stemp);
 					}
 				
 				String sProxyTimeoutLine = (String) hmPattern.get("http-proxy-timeout");
 				if(sProxyTimeoutLine!=null){
-					String stemp = StringZZZ.replace(sProxyTimeoutLine, "%timeout%", "10");
+					stemp = StringZZZ.replace(sProxyTimeoutLine, "%timeout%", "10");
 					objReturn.put("http-proxy-timeout", stemp);
 				}	
 			}//END "useProxy"
 					
 			String sRemoteLine = (String)hmPattern.get("remote");
 			if(sRemoteLine!=null){
-				String stemp = StringZZZ.replace(sRemoteLine, "%ip%", this.getRemoteIp());					
+				stemp = StringZZZ.replace(sRemoteLine, "%ip%", this.getRemoteIp());					
 				objReturn.put("remote", stemp);
-			}		
+			}	
+			
+			
+			//20200123: Der Name der Certifier Dateien entspricht dem Namen der Maschine.
+			//Beispiele:
+			//cert C:\\Programme\\OpenVPN\\config\\HANNIBALDEV04VM_CLIENT.crt
+			//key C:\\Programme\\OpenVPN\\config\\HANNIBALDEV04VM_CLIENT.key
+			String sKeyLine=null; String sFileKey=null;
+			String sCertifierLine=null; String sFileCertifier=null;
+			if(!this.getFlag("useCertifierKeyGlobal")) {
+				String sHostname = EnvironmentZZZ.getHostName();
+				sCertifierLine = (String)hmPattern.get("cert");				
+				if(sCertifierLine!=null) {					
+					sFileCertifier = sHostname.toUpperCase() + "_CLIENT.crt";									
+				}
+				
+				//+++++++++++++
+				sKeyLine = (String)hmPattern.get("key");
+				if(sKeyLine!=null) {
+					sFileKey = sHostname.toUpperCase() + "_CLIENT.key";
+				}
+			}else { //###################################################
+				sCertifierLine = (String)hmPattern.get("cert");				
+				if(sCertifierLine!=null) {					
+					sFileCertifier = "PAUL_HINDENBURG_CLIENT.crt";													
+				}
+				
+				//+++++++++++++
+				sKeyLine = (String)hmPattern.get("key");
+				if(sKeyLine!=null) {
+					sFileKey = "PAUL_HINDENBURG_CLIENT.key";									
+				}
+			}
+			if(sCertifierLine!=null) {
+				stemp = StringZZZ.replace(sCertifierLine, "%filecertifier%", this.getConfigChooserObject().getDirectoryConfig()+ File.separator + sFileCertifier);
+				stemp = StringZZZ.replace(stemp, "\\", "\\\\");//Die Verdoppelung der Backslashe wird von OVPN gewünscht, wg. Shell-Verwwendung
+				objReturn.put("cert", stemp);
+			}
+			if(sKeyLine!=null) {
+				stemp = StringZZZ.replace(sKeyLine, "%filekey%", this.getConfigChooserObject().getDirectoryConfig()+ File.separator + sFileKey);
+				stemp = StringZZZ.replace(stemp, "\\", "\\\\");//Die Verdoppelung der Backslashe wird von OVPN gewünscht, wg. Shell-Verwwendung
+				objReturn.put("key", stemp);
+			}
+			
 		}//END main:
 		return objReturn;
 	}
@@ -1070,6 +1122,13 @@ if(this.isPortScanEnabled()==true){
 	}
 	public void setFileConfigReached(ClientConfigFileZZZ objFileConfig){
 		this.objFileConfigReached = objFileConfig;
+	}
+	
+	public ConfigChooserZZZ getConfigChooserObject() {
+		return this.objConfigChooser;
+	}
+	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
+		this.objConfigChooser = objConfigChooser;
 	}
 	
 }//END class
