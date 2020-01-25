@@ -124,7 +124,7 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 			
 			this.logStatusString("Searching for configuration template files '*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			IKernelZZZ objKernel = this.getKernelObject();			
-			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel);
+			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel,"server");
 			
 			//TEST
 			//System.out.println(objChooser.toString());

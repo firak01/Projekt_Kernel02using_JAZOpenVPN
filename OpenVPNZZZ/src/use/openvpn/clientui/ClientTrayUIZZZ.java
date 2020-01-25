@@ -342,9 +342,9 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		//VPNIP
 		stemp = this.objClientMain.getVpnIpEstablished();
 		if(stemp == null){
-			sReturn = sReturn + "VPN-IP: Not yet connected.\n";
+			sReturn = sReturn + "Remote VPN-IP: Not yet connected.\n";
 		}else{
-			sReturn = sReturn + "VPN-IP: " + stemp + "\n";
+			sReturn = sReturn + "Remote VPN-IP: " + stemp + "\n";
 			/* Logischer Fehler: Wenn die VPN-Verbindung erstellt worden ist, dann ist ggf. auch ein anderer Port "anpingbar" per meinem JavaPing.
 			stemp = this.objConfig.getVpnPortEstablished();
 			sReturn = sReturn + ":" + stemp;
@@ -354,10 +354,10 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		if(this.objClientMain.isPortScanEnabled()==true){
 			stemp = this.objClientMain.getVpnPortScanned();
 			if(stemp == null){
-				sReturn = sReturn + "VPN-IP Port(s): Not yet scanned.\n";
+				sReturn = sReturn + "Remote VPN-IP Port(s): Not yet scanned.\n";
 			}else{
 				stemp = this.objClientMain.getVpnPortScanned();
-				sReturn = sReturn + "VPN-IP Port(s):" + stemp+"\n";
+				sReturn = sReturn + "Remote VPN-IP Port(s):" + stemp+"\n";
 			}
 		}
 

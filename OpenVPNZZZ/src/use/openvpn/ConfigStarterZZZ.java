@@ -18,6 +18,7 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 	private Process objProcess=null;
 	private String sMyAlias = "-1";
 	private boolean bFlagByBatch = false;
+	String sOvpnContextClientOrServer=null;
 	
 	public ConfigStarterZZZ(IKernelZZZ objKernel, File objFile, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
@@ -61,6 +62,9 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 				}
 				this.setFileConfig(objFile);
 				this.sMyAlias = sMyAlias;
+				
+				String sOvpnContextClientOrServer = StringZZZ.left(objFile.getName(), "_");
+				this.setOvpnContextUsed(sOvpnContextClientOrServer);
 			}//End check
 		}//END main
 	}
@@ -134,7 +138,7 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 					//1. Batch File erstellen
 					
 					//2. Batch File starten
-					ConfigChooserZZZ objPathConfig = new ConfigChooserZZZ(this.getKernelObject());				
+					ConfigChooserZZZ objPathConfig = new ConfigChooserZZZ(this.getKernelObject(), this.getOvpnContextUsed());				
 					String sCommandBatch = objPathConfig.getDirectoryConfig()+ File.separator+"starter_"+ this.getFileConfig().getName() + ".bat";
 					this.getLogObject().WriteLineDate("Excecuting by Batch '"+ sCommandBatch +"'");				
 					objReturn = load.exec("cmd /c " + sCommandBatch);
@@ -212,6 +216,13 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 	 */
 	public String getAlias(){
 		return this.sMyAlias;
+	}
+	
+	public String getOvpnContextUsed() {
+		return this.sOvpnContextClientOrServer;
+	}
+	public void setOvpnContextUsed(String sOvpnContextClientOrServer) {
+		this.sOvpnContextClientOrServer = sOvpnContextClientOrServer;
 	}
 	
 	
@@ -294,5 +305,5 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 		*/
 		}//END main:
 		return bFunction;
-	}
+	}	
 }//END class

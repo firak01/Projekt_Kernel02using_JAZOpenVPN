@@ -8,6 +8,7 @@ import java.util.Set;
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
 import use.openvpn.ConfigChooserZZZ;
+import use.openvpn.ConfigFileZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -121,9 +122,9 @@ main:{
 	//+++ DIE NEUE ZIELDATEI DEFINIEREN
 	//Den "Template"-Anfang aus dem Dateinamen entfernen.
 	String sName = objFileTemplate.getName();
-	if(sName.toLowerCase().startsWith("template")){
+	if(sName.toLowerCase().startsWith(ConfigFileZZZ.sFILE_TEMPLATE_PREFIX)){
 		//TODO GOON: Methode entwickeln, welche unabh�ngig von Gro�-/Kleinschreibung arbeitet
-		sName = StringZZZ.right(sName, "Template");
+		sName = StringZZZ.right(sName, ConfigFileZZZ.sFILE_TEMPLATE_PREFIX);
 		sName = sName.trim();
 	}
 	

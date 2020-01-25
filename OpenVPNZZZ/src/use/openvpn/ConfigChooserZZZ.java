@@ -19,9 +19,11 @@ import basic.zKernel.KernelZZZ;
 public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 	private File objFileDirRoot = null;
 	private File objFileDirTemplate = null;
+	private String sOvpnContextClientOrServer=null;
 	
-	public ConfigChooserZZZ(IKernelZZZ objKernel){
+	public ConfigChooserZZZ(IKernelZZZ objKernel, String sOvpnContextClientOrServer){
 		super(objKernel);
+		this.setOvpnContextUsed(sOvpnContextClientOrServer);
 	}
 	
 	
@@ -146,7 +148,7 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigTemplateZZZ objFilterConfig = new OVPNFileFilterConfigTemplateZZZ();			
+			OVPNFileFilterConfigTemplateZZZ objFilterConfig = new OVPNFileFilterConfigTemplateZZZ(this.getOvpnContextUsed());			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
@@ -190,7 +192,7 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigUsedZZZ objFilterConfig = new OVPNFileFilterConfigUsedZZZ();			
+			OVPNFileFilterConfigUsedZZZ objFilterConfig = new OVPNFileFilterConfigUsedZZZ(this.getOvpnContextUsed());			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
@@ -289,5 +291,11 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 		this.objFileDirTemplate = objDir;
 	}
 	
+	public String getOvpnContextUsed() {
+		return this.sOvpnContextClientOrServer;
+	}
+	public void setOvpnContextUsed(String sOvpnContextClientOrServer) {
+		this.sOvpnContextClientOrServer = sOvpnContextClientOrServer;
+	}
 	
 }
