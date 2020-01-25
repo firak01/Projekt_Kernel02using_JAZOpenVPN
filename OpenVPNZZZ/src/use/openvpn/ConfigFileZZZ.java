@@ -19,6 +19,7 @@ import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class ConfigFileZZZ extends KernelUseObjectZZZ{
+	public static String sFILE_TEMPLATE_PREFIX="template_";
 	private File objFileConfig;
 	private Properties objProperties = new Properties();
 	private String sRemotePort=null;
@@ -157,7 +158,7 @@ public class ConfigFileZZZ extends KernelUseObjectZZZ{
 		boolean bReturn = false;
 		main:{
 			//Template Dateinamen fangen mit dem vorangesetzten String an.
-			if(sFilename.toLowerCase().startsWith("template")) bReturn = true;
+			if(sFilename.toLowerCase().startsWith(ConfigFileZZZ.sFILE_TEMPLATE_PREFIX)) bReturn = true;
 		}
 		return bReturn;
 	}
@@ -200,7 +201,7 @@ public class ConfigFileZZZ extends KernelUseObjectZZZ{
 		String sReturn=null;
 		main:{
 			String sLine = this.getProperties().getProperty("ifconfig");
-			sReturn = StringZZZ.word(sLine, " ", 2);			
+			sReturn = StringZZZ.word(sLine, " ", 1);			
 		}//END main:
 		return sReturn;
 	}

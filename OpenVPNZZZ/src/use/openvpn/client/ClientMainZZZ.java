@@ -101,7 +101,7 @@ private boolean bFlagPortScanAllFinished = false;
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 			
 			this.logStatusString("Searching for configuration template files 'Template*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			IKernelZZZ objKernel = this.getKernelObject();			
-			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel);
+			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel,"client");
 			this.setConfigChooserObject(objChooser);
 			
 			//Die Template Dateien finden		
