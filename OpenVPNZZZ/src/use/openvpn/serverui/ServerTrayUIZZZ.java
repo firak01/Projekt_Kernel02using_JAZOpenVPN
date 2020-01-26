@@ -308,7 +308,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				sStatusString = sStatusString + "Rechner als Server: " + InetAddress.getLocalHost().getHostName() + "\n\n";
 			} catch (UnknownHostException e) {				
 				e.printStackTrace();
-				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
+				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernamens", iERROR_RUNTIME, (Object)this, (Exception)e);
 			}						
 			sReturn = sReturn + "STATUS: " + sStatusString + "\n\n";
 		}

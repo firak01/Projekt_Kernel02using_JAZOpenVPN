@@ -35,9 +35,13 @@ private String sURL = null;
 private String sProxyHost = null;
 private String sProxyPort = null;
 private String sIPRemote = null;
-//Ggf. ist dieser Wert aussagekr�ftiger als der Versuch �ber sIPVPN
+//Ggf. ist dieser Wert aussagekräftiger als der Versuch über sIPVPN
 private String sPortRemoteScanned = null;
 private String sPortVpnScanned = null;
+
+private String sVpnIpRemote = null;
+private String sVpnIpLocal = null;
+private String sTapAdapterUsed = null;
 
 private String sIPVPN = null;
 private ClientConfigFileZZZ objFileConfigReached = null;
@@ -171,7 +175,7 @@ private boolean bFlagPortScanAllFinished = false;
 			HashMap hmTask = this.readTaskHashMap();
 			
 		
-			//+++ B) Die gefundenen Werte �berall eintragen: IN neue Dateien
+			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
 			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");
 		
 			ClientConfigUpdaterZZZ objUpdater = new ClientConfigUpdaterZZZ(objKernel, objChooser, hmTask, null);
@@ -726,11 +730,37 @@ if(this.isPortScanEnabled()==true){
 		main:{
 			IKernelZZZ objKernel = this.getKernelObject();
 			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgVPNCheck","VPNPort2Check").getValue();
-			if(StringZZZ.isEmpty(sReturn)) sReturn =KernelPingHostZZZ.sPORT2CHECK;			
+			if(StringZZZ.isEmpty(sReturn)) sReturn = KernelPingHostZZZ.sPORT2CHECK;			
 		}//END main:
 		return sReturn;
 	}
 	
+	public String readVpnIpRemote() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigValues","VpnIpRemote").getValue();					
+		}//END main:
+		return sReturn;
+	}
+	
+	public String readVpnIpLocal() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigValues","VpnIpLocal").getValue();					
+		}//END main:
+		return sReturn;
+	}
+	
+	public String readTapAdapterUsed() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigValues","TapAdapterUsedLocal").getValue();					
+		}//END main:
+		return sReturn;
+	}
 	
 	/**Read from the configuration file the URL where the dynamic ip was written to.
 	 * @throws ExceptionZZZ, 
@@ -821,7 +851,7 @@ if(this.isPortScanEnabled()==true){
 		return sReturn;
 	}
 	
-	/** Ersetze die in .getConfigPattern() definierten 
+	/** Ersetze die in .getConfigPattern() definierten Platzhalter
 	 * @return
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
@@ -894,6 +924,16 @@ if(this.isPortScanEnabled()==true){
 				objReturn.put("key", stemp);
 			}
 			
+			//20200126: Einträge für ifconfig, damit hier auch keine Fehlkonfiguration im OVPNTemplate möglich ist.
+			String sIfconfigLine = (String)hmPattern.get("ifconfig");
+			stemp = StringZZZ.replace(sIfconfigLine, "%vpnipremote%", this.getVpnIpRemote());
+			stemp = StringZZZ.replace(stemp, "%vpniplocal%", this.getVpnIpLocal());
+			objReturn.put("ifconfig", stemp);
+			
+			//2020126: Einträge für dev-node, damit hier auch keine Fehlkonfiguration im OVPNTemplate möglich ist.
+			String sDevNodeLine = (String)hmPattern.get("dev-node");
+			stemp = StringZZZ.replace(sDevNodeLine, "%tapadapterusedlocal%", this.getTapAdapterUsed());
+			objReturn.put("dev-node", stemp);
 		}//END main:
 		return objReturn;
 	}
@@ -1052,14 +1092,19 @@ if(this.isPortScanEnabled()==true){
 	}
 	
 	public String getProxyHost(){
+		//Werte werden in readProxyEnabled gesetzt
 		return this.sProxyHost;
 	}
 	
 	public String getProxyPort(){
+		//Werte werden in readProxyEnabled gesetzt
 		return this.sProxyPort;
 	}
 	
-	public String getRemoteIp(){
+	public String getRemoteIp() throws ExceptionZZZ{
+		if(this.sIPRemote==null) {
+			this.sIPRemote = this.readRemoteIp();
+		}
 		return this.sIPRemote;
 	}
 	
@@ -1075,6 +1120,27 @@ if(this.isPortScanEnabled()==true){
 	//Achtung: Im Gegensatz zu sIPRemote ist das f�r jede Konfiguration verschieden. Darf also nur dann gesetzt werden, wenn die Verbindung erfolgreich hergestellt wurde.
 	public String getVpnIpEstablished(){
 		return this.sIPVPN;
+	}
+	
+	public String getVpnIpRemote() throws ExceptionZZZ {
+		if(this.sVpnIpRemote==null) {
+			this.sVpnIpRemote = this.readVpnIpRemote(); 
+		}
+		return this.sVpnIpRemote;
+	}
+	
+	public String getVpnIpLocal() throws ExceptionZZZ {
+		if(this.sVpnIpLocal==null) {
+			this.sVpnIpLocal = this.readVpnIpLocal(); 
+		}
+		return this.sVpnIpLocal;
+	}
+	
+	public String getTapAdapterUsed() throws ExceptionZZZ {
+		if(this.sTapAdapterUsed==null) {
+			this.sTapAdapterUsed = this.readTapAdapterUsed(); 
+		}
+		return this.sTapAdapterUsed;
 	}
 	
 	/**This is a string filled by a port-scanner, after the connection was established.

@@ -67,7 +67,7 @@ private FileTextParserZZZ objParser = null;
 			
 			this.setHashMapLine(hmLine);	
 			
-			//PROPRITES HABEN DIE ERWARTUNGEN NICHT ERF�LLT
+			//PROPERTIES HABEN DIE ERWARTUNGEN NICHT ERF�LLT
 			//this.filein = new FileInputStream(this.getFileTemplate());
 			//this.objProp = new Properties();
 			//objProp.load(filein);
@@ -123,27 +123,24 @@ main:{
 	//Den "Template"-Anfang aus dem Dateinamen entfernen.
 	String sName = objFileTemplate.getName();
 	if(sName.toLowerCase().startsWith(ConfigFileZZZ.sFILE_TEMPLATE_PREFIX)){
-		//TODO GOON: Methode entwickeln, welche unabh�ngig von Gro�-/Kleinschreibung arbeitet
+		//TODO GOON: Methode entwickeln, welche unabhängig von Groß-/Kleinschreibung arbeitet
 		sName = StringZZZ.right(sName, ConfigFileZZZ.sFILE_TEMPLATE_PREFIX);
 		sName = sName.trim();
 	}
 	
-	//TODO GOON: 20200121: Das gilt nicht mehr. Nun ist das Verzeichnis für die neue Datei ein anderes. 
-	//          Nämlich das Programmverzeichnis, der .exe.
-	//Das bekommt man über das ConfigChooserZZZ-Objekt
-	//TODO GOON: Das Objekt übergeben....
-	// Die neuen Dateien befinden sich im gleichen Verzeichnis wie die Template-Dateien
-	//File objFileDir = objFileTemplate.getParentFile();   11111111111111
+	//20200121: Das Verzeichnis für die neue Datei ein anderes, als das Template Verzeichnis. 
+	//          Nämlich das Programmverzeichnis, der .exe. Das Template Verzeichnis ist in das Java Projekt verlagert worden.
+	//          Das bekommt man über das ConfigChooserZZZ-Objekt
 	File objFileDir = this.getConfigChooserObject().getDirectoryConfig();			
 	String sPath = objFileDir.getPath();
 	
-	// Ggf. wurden die alten Dateien nicht gel�scht, dann das Feature der "Dateinummerierung" verwenden.
+	// Ggf. wurden die alten Dateien nicht gelöscht, dann das Feature der "Dateinummerierung" verwenden.
 	FileZZZ objFileExpander = new FileZZZ(sPath, sName, (String[])null);	
 	String stemp = objFileExpander.PathNameTotalExpandedNextCompute();
 	
 	objReturn = new File(stemp);
 	
-}//END main:
+		}//END main:
 		this.setFileUsed(objReturn);
 		return objReturn;
 	}
@@ -219,15 +216,18 @@ main:{
 				//System.out.println(objProp.getProperty("remoterrr")); //Merke: Nicht vorhanden Properties auslesen ergibt null.
 
 			//+++++++++++++++++++++++++++++++++++++++++++
-			//+++ Die neuen Konfigurationsdateienn erstellen
-			
-			
+			//+++ Die neuen Konfigurationsdateien erstellen
 				/* DIE PROPERTIES SIND ZWAR GUT ZUM AUSLESEN, ABER SCHLECHT BEIM SCHREIBEN
 				String sRemote = this.objProp.getProperty("remote");
 				if(sRemote!=null){
 					this.objProp.setProperty("remote", sIP);
 					bReturn = true;
 				}
+				*/
+				/* GRUND WARUM PROPRTEIES SCHLEICHT BEIM SCHREIBEN SIND:
+				 * DAS LÖSCHT ALLE KOMMENTARZEILEN UND SETZT GLEICHHEITSZEICHEN ZWISCHEN KONFIGURATIONS- UND WERTEEINTRAG
+				this.objProp.setProperty("remote", sIP);
+				bReturn = true;
 				*/
 				for(int icount=0; icount<saConfig.length;icount++){
 					String sConfig = saConfig[icount];
@@ -240,7 +240,7 @@ main:{
 					//Die NEUE Zeile haben wir ja schon im Objekt, als Wert der Hashmap
 					String sLine = (String)hmLine.get(sConfig);
 						
-					//Die ALTE Zeile findet der interne Parser in der f�r ihn aktuellen Datei. 
+					//Die ALTE Zeile findet der interne Parser in der für ihn aktuellen Datei. 
 					//Merke: Beim ersten Wert ist die aktuelle Datei die Template Datei.
 					//           Bei allen Folgewerten ist die aktuelle Datei aber schon die Datei, in die beim ersten Wert geschrieben worden ist.
 					//Merke2: Bei der Ersetzung mit dieser Parserklasse, basierend auf dem regul�ren Ausdruck, werden automatisch nur die Werte geschrieben, die schon vorhanden sind.
@@ -254,7 +254,7 @@ main:{
 							}
 					}else{
 							//Hier ggf. fehlende Eintr�ge anh�ngen
-							//Ein einfaches Ersetzen geht nicht, (s. Merke2). Man mus nun vorher pr�fen, ob die Zeile vorhanden ist.
+							//Ein einfaches Ersetzen geht nicht, (s. Merke2). Man mus nun vorher prüfen, ob die Zeile vorhanden ist.
 							boolean bExists = this.objParser.hasLine(objRe);
 							if(bExists==true){
 								//FALL: ZEILE IN DER KONFIGURATION ERSETZEN
@@ -270,14 +270,8 @@ main:{
 									//Diese Zeile nun anschliessen nicht mehr entfernen
 									listaConfig2Remove.remove(saConfig[icount]);
 								}
-							}
-							
-						}
-						
-						/* DAS L�SCHT ALLE KOMMENTARZEILEN UND SETZT GLEICHHEITSZEICHEN ZWISCHEN KONFIGURATIONS- UND WERTEEINTRAG
-						this.objProp.setProperty("remote", sIP);
-						bReturn = true;
-						*/			
+							}							
+						}														
 					}		//END for			
 				
 		
@@ -286,8 +280,8 @@ main:{
 					String stemp = (String)listaConfig2Remove.get(icount);
 					String sConfig = ClientConfigUpdaterZZZ.getConfigRegExp(stemp);
 					org.apache.regexp.RE objRe = new org.apache.regexp.RE(sConfig);
-				    this.objParser.removeLine(objFileNew, objRe);
-				   // if(itemp>= 1) bReturn = true; //Nicht mehr auf false zur�cksezten. Sobald etwas ersetzt wurde, bleibt der Returnwert auf true stehen.
+				    int itemp = this.objParser.removeLine(objFileNew, objRe);
+				    //if(itemp>= 1) bReturn = true; //Nicht mehr auf false zur�cksezten. Sobald etwas ersetzt wurde, bleibt der Returnwert auf true stehen.
 				}//END for
 			
 				bReturn = true;
@@ -320,15 +314,21 @@ public static String getConfigRegExp(String sConfiguration) throws ExceptionZZZ{
 		}
 	
 		//Hashmap erstellen. TODO GOON Dies an eine Stelle auslagern, so dass es nur einmal gemacht werden braucht.
-	HashMap hmConfig = new HashMap();
-	hmConfig.put("remote", "^remote ");
-	hmConfig.put("http-proxy", "^http-proxy ");
-	hmConfig.put("http-proxy-timeout", "^http-proxy-timeout ");
-	
+		HashMap hmConfig = new HashMap();
+		hmConfig.put("remote", "^remote ");
+		hmConfig.put("http-proxy", "^http-proxy ");
+		hmConfig.put("http-proxy-timeout", "^http-proxy-timeout ");
+		
 		//20200123: Key und certifier Datei mit dem Namen der Hostmaschine
-	hmConfig.put("cert", "^cert ");
-	hmConfig.put("key", "^key ");
+		hmConfig.put("cert", "^cert ");
+		hmConfig.put("key", "^key ");
 	
+		//20200126: Die verwendete lokale und remote IP Adresse ersetzen
+		hmConfig.put("ifconfig", "^ifconfig ");
+		
+		//202020126: Den verwendeten lokalen TAP Adapter setzen.
+		hmConfig.put("dev-node", "^dev-node ");
+		
 	//Hashmap auslesen
 	sReturn = (String)hmConfig.get(sConfiguration);
 	
@@ -360,7 +360,7 @@ public static HashMap getConfigPattern(){
 		check:{		
 		}
 	
-		//Die %xyz% Eintr�ge sollen dann ersetzt werden.
+		//Die %xyz% Einträge sollen dann ersetzt werden.
 		hmReturn.put("remote", "remote %ip%");
 		hmReturn.put("http-proxy", "http-proxy %proxy% %port%");
 		hmReturn.put("http-proxy-timeout", "http-proxy-timeout %timeout%");
@@ -368,6 +368,12 @@ public static HashMap getConfigPattern(){
 		//20200123: Nun die verwendeten Key-Namen erstetzen
 		hmReturn.put("cert", "cert %filecertifier%");
 		hmReturn.put("key", "key %filekey%");
+		
+		//20200126: Die verwendte lokale und remote IP Adresse ersetzen
+		hmReturn.put("ifconfig", "ifconfig %vpnipremote% %vpniplocal%");
+		
+		//202020126: Den verwendeten lokalen TAP Adapter setzen.
+		hmReturn.put("dev-node", "dev-node %tapadapterusedlocal%");
 	}//END main
 	return hmReturn;
 }

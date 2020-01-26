@@ -360,6 +360,20 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				sReturn = sReturn + "Remote VPN-IP Port(s):" + stemp+"\n";
 			}
 		}
+		
+		stemp = this.objClientMain.getTapAdapterUsed();
+		if(stemp==null){
+			sReturn = sReturn + "Local TAP Adapter used: Not defined in Kernel Ini-File.\n";
+		}else{
+			sReturn = sReturn + "Local TAP Adapter used: '" + stemp + "'\n";
+		}
+		
+		stemp = this.objClientMain.getVpnIpLocal();
+		if(stemp==null){
+			sReturn = sReturn + "Local VPN-IP: Not defined in Kernel Ini-File.\n";
+		}else{
+			sReturn = sReturn + "Local VPN-IP: '" + stemp + "' (must==TAP Adapter)\n";
+		}
 
 		}//END main
 		return sReturn;
