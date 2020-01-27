@@ -370,7 +370,7 @@ public static HashMap getConfigPattern(){
 		hmReturn.put("key", "key %filekey%");
 		
 		//20200126: Die verwendte lokale und remote IP Adresse ersetzen
-		hmReturn.put("ifconfig", "ifconfig %vpnipremote% %vpniplocal%");
+		hmReturn.put("ifconfig", "ifconfig %vpniplocal% %vpnipremote%");
 		
 		//202020126: Den verwendeten lokalen TAP Adapter setzen.
 		hmReturn.put("dev-node", "dev-node %tapadapterusedlocal%");

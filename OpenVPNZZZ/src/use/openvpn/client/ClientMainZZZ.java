@@ -35,6 +35,7 @@ private String sURL = null;
 private String sProxyHost = null;
 private String sProxyPort = null;
 private String sIPRemote = null;
+private String sIPLocal = null;
 //Ggf. ist dieser Wert aussagekräftiger als der Versuch über sIPVPN
 private String sPortRemoteScanned = null;
 private String sPortVpnScanned = null;
@@ -134,12 +135,12 @@ private boolean bFlagPortScanAllFinished = false;
 						
 //			###3. Voraussetzung: Auf der konfigurierten Web-Seite muss eine IP-Adresse auszulesen sein
 			this.logStatusString("Parsing IP-adress from URL."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
-			this.readRemoteIp();  //Dabei wird auch der Proxy eingestellt.
-			if(this.getRemoteIp()==null){
+			this.readIpRemote();  //Dabei wird auch der Proxy eingestellt.
+			if(this.getIpRemote()==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to receive new IP-adress.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}else{
-				this.logStatusString("New IP-adress received: " + this.getRemoteIp());			
+				this.logStatusString("New IP-adress received: " + this.getIpRemote());			
 			}
 			
 			
@@ -819,6 +820,20 @@ if(this.isPortScanEnabled()==true){
 		return bReturn;
 	}
 	
+
+	/** Read the used local IP.
+	 * @return
+	 * @throws ExceptionZZZ
+	 */
+	public String readIpLocal() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			sReturn = EnvironmentZZZ.getHostIp();
+		}//END main
+		this.sIPLocal = sReturn;
+		return sReturn;
+	}
+	
 	/**Reads the dynamic IP from a URL (uses a html-parser therefore).
 	 * Checks the necessarity of enabling a proxy and will enable the proxy.
 	 * The proxy has to be configured in the kernel-configuration-file.
@@ -827,7 +842,7 @@ if(this.isPortScanEnabled()==true){
 	* 
 	* lindhaueradmin; 13.07.2006 09:12:43
 	 */
-	public String readRemoteIp() throws ExceptionZZZ{
+	public String readIpRemote() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
 			
@@ -878,7 +893,7 @@ if(this.isPortScanEnabled()==true){
 					
 			String sRemoteLine = (String)hmPattern.get("remote");
 			if(sRemoteLine!=null){
-				stemp = StringZZZ.replace(sRemoteLine, "%ip%", this.getRemoteIp());					
+				stemp = StringZZZ.replace(sRemoteLine, "%ip%", this.getIpRemote());					
 				objReturn.put("remote", stemp);
 			}	
 			
@@ -1101,9 +1116,16 @@ if(this.isPortScanEnabled()==true){
 		return this.sProxyPort;
 	}
 	
-	public String getRemoteIp() throws ExceptionZZZ{
+	public String getIpLocal() throws ExceptionZZZ{
+		if(this.sIPLocal==null) {
+			this.sIPLocal = this.readIpLocal();
+		}
+		return this.sIPLocal;
+	}
+	
+	public String getIpRemote() throws ExceptionZZZ{
 		if(this.sIPRemote==null) {
-			this.sIPRemote = this.readRemoteIp();
+			this.sIPRemote = this.readIpRemote();
 		}
 		return this.sIPRemote;
 	}

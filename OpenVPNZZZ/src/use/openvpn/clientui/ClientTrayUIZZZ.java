@@ -280,6 +280,11 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return bReturn;
 	}
 	
+	/** Ausgabe des Strings für den Dialog, beim Clicken auf das TrayIcon. 
+	 *  Merke: Die Länge des Strings ist dafür begrenzt.
+	 * @return
+	 * @throws ExceptionZZZ
+	 */
 	public String readStatusDetailString() throws ExceptionZZZ{
 		String sReturn = "";
 		main:{
@@ -296,13 +301,13 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}else{
 			//20200114: Erweiterung - Angabe des Rechnernamens
 			try {
-				sReturn = sReturn + "Rechner als Client: " + InetAddress.getLocalHost().getHostName() + "\n\n";
+				sReturn = sReturn + "Clientrechner: " + InetAddress.getLocalHost().getHostName() + "\n";
 			} catch (UnknownHostException e) {				
 				e.printStackTrace();
 				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
 			}
 			
-			sReturn = sReturn + "STATUS: " + this.sStatusString + "\n\n";
+			sReturn = sReturn + "STATUS: " + this.sStatusString + "\n";
 		}
 		
 		if(this.objClientMain.getFlag("useProxy")==true){
@@ -319,7 +324,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		
 		//REMOTE
-		stemp = this.objClientMain.getRemoteIp();
+		stemp = this.objClientMain.getIpRemote();
 		if(stemp==null){
 			sReturn = sReturn + "Remote IP: Not found on URL.\n";
 		}else{
@@ -361,20 +366,26 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			}
 		}
 		
-		stemp = this.objClientMain.getTapAdapterUsed();
-		if(stemp==null){
-			sReturn = sReturn + "Local TAP Adapter used: Not defined in Kernel Ini-File.\n";
+		String sTap = this.objClientMain.getTapAdapterUsed();
+		if(sTap==null){
+			sTap = "-> TAP Adapter: Not defined in Kernel Ini-File.";
 		}else{
-			sReturn = sReturn + "Local TAP Adapter used: '" + stemp + "'\n";
+			sTap = "-> TAP Adapter: '" + sTap + "'";
 		}
 		
 		stemp = this.objClientMain.getVpnIpLocal();
 		if(stemp==null){
-			sReturn = sReturn + "Local VPN-IP: Not defined in Kernel Ini-File.\n";
+			sReturn = sReturn + "Local VPN-IP: Not defined in Kernel Ini-File.\n\t\t" + sTap + "\n";
 		}else{
-			sReturn = sReturn + "Local VPN-IP: '" + stemp + "' (must==TAP Adapter)\n";
+			sReturn = sReturn + "Local VPN-IP: '" + stemp + "'\n\t\t" + sTap + "\n";
 		}
-
+		
+		stemp = this.objClientMain.getIpLocal();
+		if(stemp==null){
+			sReturn = sReturn + "Local IP: Not availabel.\n";
+		}else{
+			sReturn = sReturn + "Local IP: '" + stemp + "'\n";
+		}
 		}//END main
 		return sReturn;
 	}
