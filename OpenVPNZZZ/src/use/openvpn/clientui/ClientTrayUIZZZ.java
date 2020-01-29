@@ -311,12 +311,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		
 		if(this.objClientMain.getFlag("useProxy")==true){
-			sReturn = sReturn + "Proxy: " + this.objClientMain.getProxyHost() + ":" + this.objClientMain.getProxyPort() + "\n"; 					
+			sReturn = sReturn + "Proxy: " + this.objClientMain.getApplicationObject().getProxyHost() + ":" + this.objClientMain.getApplicationObject().getProxyPort() + "\n"; 					
 		}else{
 			sReturn = sReturn + "No proxy.\n";
 		}
 		
-		stemp = this.objClientMain.getURL2Parse();
+		stemp = this.objClientMain.getApplicationObject().getURL2Parse();
 		if(stemp==null){
 			sReturn = sReturn + "Parsed URL: NOT RECEIVED\n";
 		}else{
@@ -324,7 +324,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		
 		//REMOTE
-		stemp = this.objClientMain.getIpRemote();
+		stemp = this.objClientMain.getApplicationObject().getIpRemote();
 		if(stemp==null){
 			sReturn = sReturn + "Remote IP: Not found on URL.\n";
 		}else{
@@ -332,11 +332,11 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		 
 		if(this.objClientMain.isPortScanEnabled()==true){
-			stemp = this.objClientMain.getRemotePortScanned();
+			stemp = this.objClientMain.getApplicationObject().getRemotePortScanned();
 			if(stemp == null){
 				sReturn = sReturn + "Remote Port(s): Not yet scanned.\n";
 			}else{
-				stemp = this.objClientMain.getRemotePortScanned();
+				stemp = this.objClientMain.getApplicationObject().getRemotePortScanned();
 				sReturn = sReturn + "Remote Port(s):" + stemp+"\n";
 			}
 		}
@@ -345,7 +345,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		
 		
 		//VPNIP
-		stemp = this.objClientMain.getVpnIpEstablished();
+		stemp = this.objClientMain.getApplicationObject().getVpnIpEstablished();
 		if(stemp == null){
 			sReturn = sReturn + "Remote VPN-IP: Not yet connected.\n";
 		}else{
@@ -357,30 +357,30 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		
 		if(this.objClientMain.isPortScanEnabled()==true){
-			stemp = this.objClientMain.getVpnPortScanned();
+			stemp = this.objClientMain.getApplicationObject().getVpnPortScanned();
 			if(stemp == null){
 				sReturn = sReturn + "Remote VPN-IP Port(s): Not yet scanned.\n";
 			}else{
-				stemp = this.objClientMain.getVpnPortScanned();
+				stemp = this.objClientMain.getApplicationObject().getVpnPortScanned();
 				sReturn = sReturn + "Remote VPN-IP Port(s):" + stemp+"\n";
 			}
 		}
 		
-		String sTap = this.objClientMain.getTapAdapterUsed();
+		String sTap = this.objClientMain.getApplicationObject().getTapAdapterUsed();
 		if(sTap==null){
 			sTap = "-> TAP Adapter: Not defined in Kernel Ini-File.";
 		}else{
 			sTap = "-> TAP Adapter: '" + sTap + "'";
 		}
 		
-		stemp = this.objClientMain.getVpnIpLocal();
+		stemp = this.objClientMain.getApplicationObject().getVpnIpLocal();
 		if(stemp==null){
 			sReturn = sReturn + "Local VPN-IP: Not defined in Kernel Ini-File.\n\t\t" + sTap + "\n";
 		}else{
 			sReturn = sReturn + "Local VPN-IP: '" + stemp + "'\n\t\t" + sTap + "\n";
 		}
 		
-		stemp = this.objClientMain.getIpLocal();
+		stemp = this.objClientMain.getApplicationObject().getIpLocal();
 		if(stemp==null){
 			sReturn = sReturn + "Local IP: Not availabel.\n";
 		}else{

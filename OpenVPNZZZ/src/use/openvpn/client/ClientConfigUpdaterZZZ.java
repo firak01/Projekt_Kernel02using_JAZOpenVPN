@@ -17,7 +17,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
 public class ClientConfigUpdaterZZZ extends KernelUseObjectZZZ {
-private ConfigChooserZZZ objConfigChooser = null;//Darin stehen die verwendeten Pfade zum Template Verzeichnis, Programverzeichnis, etc. 
+private ClientMainZZZ objClient = null;
 private File objFileTemplate=null;
 private File objFileUsed = null;
 private HashMap hmLine = null;
@@ -26,12 +26,16 @@ private HashMap hmLine = null;
 // Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
+	public ClientConfigUpdaterZZZ(IKernelZZZ objKernel, ClientMainZZZ objClient, ConfigChooserZZZ objConfigChooser, ClientConfigMapperOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel);
+		ConfigUpdaterNew_(objClient, objConfigChooser, objConfigMapper, null, saFlagControl);
+	}
 	public ClientConfigUpdaterZZZ(IKernelZZZ objKernel, ConfigChooserZZZ objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigUpdaterNew_(objConfigChooser, hmLine, saFlagControl);
+		ConfigUpdaterNew_(objClient, objConfigChooser, null, hmLine, saFlagControl);
 	}
 	
-	private void ConfigUpdaterNew_(ConfigChooserZZZ objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigUpdaterNew_(ClientMainZZZ objClient, ConfigChooserZZZ objConfigChooser, ClientConfigMapperOVPN objConfigMapper, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 			//try{		
@@ -50,16 +54,32 @@ private FileTextParserZZZ objParser = null;
 					if(this.getFlag("init")) break main;
 				}
 				
+				if(objClient==null) {
+					ExceptionZZZ ez = new ExceptionZZZ("Client-Object.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}
+				this.setClientObject(objClient);
+				
 				if(objConfigChooser==null) {
 					ExceptionZZZ ez = new ExceptionZZZ("ConfigChooser-Object containing the paths of the new file.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
 				this.setConfigChooserObject(objConfigChooser);
 				
-				if(hmLine==null){
-					ExceptionZZZ ez = new ExceptionZZZ("HashMap containing the updated lines.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				//+++ 2. Die Musterzeilen holen und dort die gefundenen Variablen reinsetzen
+				if(hmLine==null && objConfigMapper==null){
+					ExceptionZZZ ez = new ExceptionZZZ("HashMap or ConfigMapperObject containing the updated lines.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
-				}else if(hmLine.isEmpty()){
+				}
+				if(hmLine==null && objConfigMapper!=null) {
+					this.setConfigMapperObject(objConfigMapper);
+					
+					this.getClientObject().logStatusString( "Creating new configuration file - line(s) by ClientConfigMapperObject.");
+					hmLine = this.getConfigMapperObject().readTaskHashMap();					
+				}else {
+					this.getClientObject().logStatusString( "Creating new configuration file - line(s) by Hashmap direct.");
+				}				
+				if(hmLine.isEmpty()){
 					ExceptionZZZ ez = new ExceptionZZZ("HashMap containing the updated lines.", iERROR_PARAMETER_EMPTY, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
@@ -202,7 +222,7 @@ main:{
 			//Die dann gesetzten werte werden daraus entfernt.
 			//Was �brig bleibt wird durch den Parser gel�scht.
 			//TODO GOON: Methode aus einer HashMap eine KEyArray-List zu machen.
-			HashMap hmAll = ClientConfigUpdaterZZZ.getConfigPattern();			
+			HashMap hmAll = ClientConfigMapperOVPN.getConfigPattern();			
 			Set objSet2 = hmAll.keySet();
 			String[] saConfig2Remove = new String[hmAll.size()];
 			objSet2.toArray(saConfig2Remove);
@@ -231,7 +251,7 @@ main:{
 				*/
 				for(int icount=0; icount<saConfig.length;icount++){
 					String sConfig = saConfig[icount];
-					String sExp = ClientConfigUpdaterZZZ.getConfigRegExp(sConfig);					
+					String sExp = ClientConfigMapperOVPN.getConfigRegExp(sConfig);					
 					if(sExp==null){
 						ExceptionZZZ ez = new ExceptionZZZ("No regular expression available for the configuration '"+ sConfig + "'", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 						throw ez;
@@ -278,7 +298,7 @@ main:{
                 //ALLE ANDEREN ZEILEN L�SCHEN, Falls in dem KonfigurationsTemplate z.B. ein Proxy konfiguriert ist, aber keine Proxy-Zeile gesetzt werden soll
 				for(int icount=0; icount < listaConfig2Remove.size(); icount++){
 					String stemp = (String)listaConfig2Remove.get(icount);
-					String sConfig = ClientConfigUpdaterZZZ.getConfigRegExp(stemp);
+					String sConfig = ClientConfigMapperOVPN.getConfigRegExp(stemp);
 					org.apache.regexp.RE objRe = new org.apache.regexp.RE(sConfig);
 				    int itemp = this.objParser.removeLine(objFileNew, objRe);
 				    //if(itemp>= 1) bReturn = true; //Nicht mehr auf false zur�cksezten. Sobald etwas ersetzt wurde, bleibt der Returnwert auf true stehen.
@@ -295,96 +315,30 @@ main:{
 	}
 	
 
-/**TODO R�ckgabe des regul�ren Ausdrucks. TODOGOON: Dies sollte in Form einer HashMap passieren !!!
- *  TODO GOON Hashmap in der Form liste(ConfigAusdruck) = "^" + saConfig[icount] + " ";
- * @param sAlias
- * @return
- * @throws ExceptionZZZ, 
- *
- * @return String[]
- *
- * javadoc created by: 0823, 05.07.2006 - 08:31:35
- */
-public static String getConfigRegExp(String sConfiguration) throws ExceptionZZZ{
-	String sReturn = null;
-	main:{		
-		check:{
-			if(sConfiguration==null)break main;
-			if(sConfiguration.equals(""))break main;				
-		}
-	
-		//Hashmap erstellen. TODO GOON Dies an eine Stelle auslagern, so dass es nur einmal gemacht werden braucht.
-		HashMap hmConfig = new HashMap();
-		hmConfig.put("remote", "^remote ");
-		hmConfig.put("http-proxy", "^http-proxy ");
-		hmConfig.put("http-proxy-timeout", "^http-proxy-timeout ");
-		
-		//20200123: Key und certifier Datei mit dem Namen der Hostmaschine
-		hmConfig.put("cert", "^cert ");
-		hmConfig.put("key", "^key ");
-	
-		//20200126: Die verwendete lokale und remote IP Adresse ersetzen
-		hmConfig.put("ifconfig", "^ifconfig ");
-		
-		//202020126: Den verwendeten lokalen TAP Adapter setzen.
-		hmConfig.put("dev-node", "^dev-node ");
-		
-	//Hashmap auslesen
-	sReturn = (String)hmConfig.get(sConfiguration);
-	
-	}//END main
-	return sReturn;
-	
-}
 
 
-/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap
- * TODO GOON: Hashmap hat folgende Struktur. Liste(sConfigurationEntry)=sConfiigurationEntry + ' ' + die Werte ....
- * @param sAlias
- * @param sIP
- * @param sProxyHost
- * @param sProxyPort
- * @param iProxyTimeout
- * @return, 
- *
- * @return String[]
- * 
- * Die Ersetzung der Musterplatzhalter passiert in ClientMainZZZ.readTaskHashMap();
- * Zudem muss ein RegEx Ausdruck bereitgestellt werden in ClientConfigUpdaterZZZ.getConfigRegExp();
- *
- * javadoc created by: 0823, 05.07.2006 - 08:34:38
- */
-public static HashMap getConfigPattern(){
-	HashMap hmReturn = new HashMap();
-	main:{
-		check:{		
-		}
-	
-		//Die %xyz% Einträge sollen dann ersetzt werden.
-		hmReturn.put("remote", "remote %ip%");
-		hmReturn.put("http-proxy", "http-proxy %proxy% %port%");
-		hmReturn.put("http-proxy-timeout", "http-proxy-timeout %timeout%");
-		
-		//20200123: Nun die verwendeten Key-Namen erstetzen
-		hmReturn.put("cert", "cert %filecertifier%");
-		hmReturn.put("key", "key %filekey%");
-		
-		//20200126: Die verwendte lokale und remote IP Adresse ersetzen
-		hmReturn.put("ifconfig", "ifconfig %vpniplocal% %vpnipremote%");
-		
-		//202020126: Den verwendeten lokalen TAP Adapter setzen.
-		hmReturn.put("dev-node", "dev-node %tapadapterusedlocal%");
-	}//END main
-	return hmReturn;
-}
+
+
 	
 	
 	//############# Getter / Setter
+	public ClientMainZZZ getClientObject() {
+		return this.objClient;
+	}
+	public void setClientObject(ClientMainZZZ objClient) {
+		this.objClient = objClient;
+	}
+	public ClientConfigMapperOVPN getConfigMapperObject() {
+		return this.getClientObject().getConfigMapperObject();
+	}
+	public void setConfigMapperObject(ClientConfigMapperOVPN objConfigMapper) {
+		this.getClientObject().setConfigMapperObject(objConfigMapper);
+	}
 	public ConfigChooserZZZ getConfigChooserObject() {
-		return this.objConfigChooser;
+		return this.getClientObject().getConfigChooserObject();
 	}
 	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
-		this.objConfigChooser = objConfigChooser;
+		this.getClientObject().setConfigChooserObject(objConfigChooser);
 	}
 	public File getFileTemplate(){
 		return this.objFileTemplate;
@@ -404,7 +358,5 @@ public static HashMap getConfigPattern(){
 	}
 	public HashMap getHashMapLine(){
 		return this.hmLine;
-	}
-	
-	
+	}		
 }

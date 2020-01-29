@@ -65,9 +65,9 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainZZZ objC
 						//Aber auch nur einen Thread starten !!!
 						if(this.getFlag("ConnectionRunnerStarted")==false){ //DIe Theorie besagt, dass dies erst nach abschluss der Portscanns starten sollte, aber das dauert wohl zu lange. && objConfig.getFlag("PortScanAllFinished")==true){
 							//Den Runner starten ....							
-							String sIP = objConfig.getVpnIpEstablished();							
+							String sIP = objConfig.getApplicationObject().getVpnIpEstablished();			
 							try{
-								String sPort = objConfig.readVpnPort2Check();									
+								String sPort = objConfig.getApplicationObject().readVpnPort2Check();									
 								this.objWatchRunner = new OVPNConnectionWatchRunnerZZZ(this.getKernelObject(), sIP, sPort, null);
 							}catch(ExceptionZZZ ez){
 								System.out.println(ez.getDetailAllLast());
