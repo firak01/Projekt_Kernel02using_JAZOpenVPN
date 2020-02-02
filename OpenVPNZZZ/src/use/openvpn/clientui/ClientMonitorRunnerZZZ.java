@@ -58,31 +58,30 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainZZZ objC
 			}//END check:
 		   
 	boolean bCheck= false;
-			do{
-					bCheck = objConfig.getFlag("isconnected");
-					if(bCheck == true){											
-						//Nun erst, nachdem man den Verbindungsaufbau best�tigt hat, die VPN-IP anpingen
-						//Aber auch nur einen Thread starten !!!
-						if(this.getFlag("ConnectionRunnerStarted")==false){ //DIe Theorie besagt, dass dies erst nach abschluss der Portscanns starten sollte, aber das dauert wohl zu lange. && objConfig.getFlag("PortScanAllFinished")==true){
-							//Den Runner starten ....							
-							String sIP = objConfig.getApplicationObject().getVpnIpEstablished();			
-							try{
-								String sPort = objConfig.getApplicationObject().readVpnPort2Check();									
-								this.objWatchRunner = new OVPNConnectionWatchRunnerZZZ(this.getKernelObject(), sIP, sPort, null);
-							}catch(ExceptionZZZ ez){
-								System.out.println(ez.getDetailAllLast());
-							}
-							this.objWatchThread = new Thread(objWatchRunner);
-							this.objWatchThread.start();
-							this.setFlag("ConnectionRunnerStarted", true);
-						}//END if flagget "ConnectionRunnerStarted;
+		try {
+			do{				
+				bCheck = objConfig.getFlag("isconnected");
+				if(bCheck == true){											
+					//Nun erst, nachdem man den Verbindungsaufbau best�tigt hat, die VPN-IP anpingen
+					//Aber auch nur einen Thread starten !!!
+					if(this.getFlag("ConnectionRunnerStarted")==false){ //DIe Theorie besagt, dass dies erst nach abschluss der Portscanns starten sollte, aber das dauert wohl zu lange. && objConfig.getFlag("PortScanAllFinished")==true){
+						//Den Runner starten ....							
+						String sIP = objConfig.getApplicationObject().getVpnIpRemote();
 						
-						//... das normale Connection-Image-Setzen.
-						if(this.iStatusSet!=ClientTrayUIZZZ.iSTATUS_CONNECTED){
-							objTray.switchStatus(ClientTrayUIZZZ.iSTATUS_CONNECTED);
-							this.iStatusSet = ClientTrayUIZZZ.iSTATUS_CONNECTED;
-						}		
-					}//END if bCheck == true
+							String sPort = objConfig.getApplicationObject().readVpnPort2Check();									
+							this.objWatchRunner = new OVPNConnectionWatchRunnerZZZ(this.getKernelObject(), sIP, sPort, null);
+						
+						this.objWatchThread = new Thread(objWatchRunner);
+						this.objWatchThread.start();
+						this.setFlag("ConnectionRunnerStarted", true);
+					}//END if flagget "ConnectionRunnerStarted;
+					
+					//... das normale Connection-Image-Setzen.
+					if(this.iStatusSet!=ClientTrayUIZZZ.iSTATUS_CONNECTED){
+						objTray.switchStatus(ClientTrayUIZZZ.iSTATUS_CONNECTED);
+						this.iStatusSet = ClientTrayUIZZZ.iSTATUS_CONNECTED;
+					}		
+				}//END if bCheck == true
 					
 				 if(this.getFlag("ConnectionRunnerStarted")){
 						//Den Runner �berwachen....
@@ -100,22 +99,25 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainZZZ objC
 					 //System.out.println("wache noch nicht.....");
 				 }//END if "ConnectionRunnerStarted"
 				 
-					bCheck = objConfig.getFlag("haserror");
-					if(bCheck == true){	
-						if(this.iStatusSet!=ClientTrayUIZZZ.iSTATUS_ERROR){
-							objTray.switchStatus(ClientTrayUIZZZ.iSTATUS_ERROR);	
-							this.iStatusSet = ClientTrayUIZZZ.iSTATUS_ERROR;
-							break  main;
-						}
-					}//END if bCheck == true
-					
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				bCheck = objConfig.getFlag("haserror");
+				if(bCheck == true){	
+					if(this.iStatusSet!=ClientTrayUIZZZ.iSTATUS_ERROR){
+						objTray.switchStatus(ClientTrayUIZZZ.iSTATUS_ERROR);	
+						this.iStatusSet = ClientTrayUIZZZ.iSTATUS_ERROR;
+						break  main;
 					}
+				}//END if bCheck == true
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}while(true);
+		}catch(ExceptionZZZ ez){
+			System.out.println(ez.getDetailAllLast());
+		}
 	}//END main:
 	
 	}//END run

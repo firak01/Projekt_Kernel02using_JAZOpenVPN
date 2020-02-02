@@ -201,7 +201,7 @@ public class ConfigFileZZZ extends KernelUseObjectZZZ{
 		String sReturn=null;
 		main:{
 			String sLine = this.getProperties().getProperty("ifconfig");
-			sReturn = StringZZZ.word(sLine, " ", 1);			
+			sReturn = StringZZZ.word(sLine, " ", 2);			
 		}//END main:
 		return sReturn;
 	}

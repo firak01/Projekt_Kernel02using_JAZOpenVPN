@@ -301,7 +301,8 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}else{
 			//20200114: Erweiterung - Angabe des Rechnernamens
 			try {
-				sReturn = sReturn + "Clientrechner: " + InetAddress.getLocalHost().getHostName() + "\n";
+				String sServerOrClient = this.objClientMain.getConfigChooserObject().getOvpnContextUsed();
+				sReturn = sReturn + sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
 			} catch (UnknownHostException e) {				
 				e.printStackTrace();
 				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);

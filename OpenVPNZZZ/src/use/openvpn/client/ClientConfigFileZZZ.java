@@ -27,7 +27,7 @@ public class ClientConfigFileZZZ extends ConfigFileZZZ {
 	public boolean isRemoteReachable() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			String sRemoteIP = this.getRemoteIp();
+			String sRemoteIP = this.getVpnIpRemote();
 			String sRemotePort = this.getVpnPortRemote(); 
 			if(sRemoteIP!=null && sRemotePort != null){
 				KernelPingHostZZZ objPing = new KernelPingHostZZZ(objKernel, null);
