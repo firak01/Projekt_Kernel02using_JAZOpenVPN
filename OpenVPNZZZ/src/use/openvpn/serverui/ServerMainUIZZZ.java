@@ -1,5 +1,7 @@
 package use.openvpn.serverui;
 
+import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.server.ServerMainZZZ;
 import use.openvpn.serverui.ConfigOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
@@ -9,6 +11,7 @@ import custom.zKernel.LogZZZ;
 
 public class ServerMainUIZZZ implements IConstantZZZ {
 			private IKernelZZZ objKernel=null;
+			private ServerMainZZZ objServerMain = null;
 			private ServerTrayUIZZZ objServerTray=null;
 			
 			/**Entry point for the OVPN-Server-Starter.
@@ -28,12 +31,13 @@ public class ServerMainUIZZZ implements IConstantZZZ {
 					try {
 //						Parameter aus args auslesen
 						ConfigOVPN objConfig = new ConfigOVPN(saArg, "useFormula");
-						//objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNServer.ini", (String)null);
-						objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man �ber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
-						//objKernel.getLogObject().WriteLineDate("TEST");
+						this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man �ber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
+
+						//NUN DAS BACKEND-Handlebar machen
+						this.objServerMain = new ServerMainZZZ(objKernel, null);
 						
 						//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
-						objServerTray = new ServerTrayUIZZZ(objKernel, (String[]) null);
+						this.objServerTray = new ServerTrayUIZZZ(objKernel, (String[]) null);
 						bReturn = objServerTray.load();
 						
 						//Konfigurierbar: Beim Starten schon connecten

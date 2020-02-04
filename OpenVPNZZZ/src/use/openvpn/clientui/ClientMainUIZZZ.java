@@ -29,16 +29,13 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 			try {
 				//Parameter aus args auslesen
 				ConfigOVPN objConfig = new ConfigOVPN(saArg, "useFormula");
-//				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNClient.ini", (String)null);
-				objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man �ber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
-				
-				//objKernel.getLogObject().WriteLineDate("TEST");
+				this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man über die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 				
 				//NUN DAS BACKEND-Handlebar machen
 				this.objClientMain = new ClientMainZZZ(objKernel, null);
 				
 				//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
-				objClientTray = new ClientTrayUIZZZ(objKernel, this.objClientMain, (String[]) null);
+				this.objClientTray = new ClientTrayUIZZZ(objKernel, this.objClientMain, (String[]) null);
 
 				//Konfigurierbar: Beim Starten schon connecten
 				boolean btemp = this.objClientMain.isConnectOnStart();
