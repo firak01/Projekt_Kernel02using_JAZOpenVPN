@@ -30,13 +30,10 @@ import basic.zKernel.KernelZZZ;
  * @author 0823
  *
  */
-public class ClientMainZZZ extends KernelUseObjectZZZ implements Runnable{
-
-	
+public class ClientMainZZZ extends KernelUseObjectZZZ implements Runnable{	
 private ClientApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
 private ConfigChooserZZZ objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
 private ClientConfigMapperOVPN objConfigMapper = null; //Objekt, dass ein Mapping zu passenden Templatezeilen verwaltet.
-
 
 private ClientConfigFileZZZ objFileConfigReached = null;
 

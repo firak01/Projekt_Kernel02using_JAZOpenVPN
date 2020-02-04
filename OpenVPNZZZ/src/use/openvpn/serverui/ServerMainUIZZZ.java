@@ -41,7 +41,7 @@ public class ServerMainUIZZZ implements IConstantZZZ {
 						bReturn = objServerTray.load();
 						
 						//Konfigurierbar: Beim Starten schon connecten
-						boolean btemp = this.isListenOnStart();
+						boolean btemp = this.objServerMain.isListenOnStart();
 						if(btemp==true){
 							bReturn = objServerTray.listen();
 						}else{
@@ -64,24 +64,6 @@ public class ServerMainUIZZZ implements IConstantZZZ {
 					}//END main:
 				System.out.println("finished starting trayicon.");
 				return bReturn;			
-			}
-			
-			public boolean isListenOnStart() throws ExceptionZZZ{
-				boolean bReturn = false;
-				main:{
-					check:{
-						if(this.objKernel==null) break main;				
-					}//END check:
-				
-				//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enth�lt, die wie der Application - Key aussieht. 
-				String stemp = this.objKernel.getParameter("ListenOnStart").getValue();
-				if(stemp==null) break main;
-				if(stemp.equals("1")){
-					bReturn = true;
-				}
-				}//END main
-				return bReturn;
-			}
-			
+			}									
 
 }//END class

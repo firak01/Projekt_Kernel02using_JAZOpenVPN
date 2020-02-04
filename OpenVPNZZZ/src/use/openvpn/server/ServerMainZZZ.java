@@ -9,6 +9,7 @@ import use.openvpn.ConfigStarterZZZ;
 import use.openvpn.ConfigChooserZZZ;
 import use.openvpn.ConfigFileZZZ;
 import use.openvpn.ProcessWatchRunnerZZZ;
+import use.openvpn.client.ClientApplicationOVPN;
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -19,6 +20,9 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
 public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
+	private ServerApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
+	private ConfigChooserZZZ objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
+	
 	private String sStatusCurrent = null; //Hier�ber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
 	private ArrayList listaStatus = new ArrayList(); //Hier�ber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
     																	//Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
@@ -124,10 +128,13 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 			
 			this.logStatusString("Searching for configuration template files '*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			IKernelZZZ objKernel = this.getKernelObject();			
-			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel,"server");
 			
-			//TEST
-			//System.out.println(objChooser.toString());
+			ServerApplicationOVPN objApplication = new ServerApplicationOVPN(objKernel, this);
+			this.setApplicationObject(objApplication);
+			
+			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel,"server");
+			this.setConfigChooserObject(objChooser);
+			
 			
 			//Die Konfigurations Dateien finden		
 			File[] objaFileConfig = objChooser.findFileConfigUsed(null);
@@ -328,9 +335,23 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 		return listaConfigStarter;
 	}
 	
-	
-	
-
+	public boolean isListenOnStart() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			check:{
+				if(this.objKernel==null) break main;				
+			}//END check:
+		
+		//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enth�lt, die wie der Application - Key aussieht. 
+		String stemp = this.objKernel.getParameter("ListenOnStart").getValue();
+		if(stemp==null) break main;
+		if(stemp.equals("1")){
+			bReturn = true;
+		}
+		}//END main
+		return bReturn;
+	}
+		
 //	######### GetFlags - Handled ##############################################
 	/** (non-Javadoc)
 	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
@@ -397,4 +418,18 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 		return bFunction;
 	}
 
+	//##### GETTER / SETTER
+	public ConfigChooserZZZ getConfigChooserObject() {
+		return this.objConfigChooser;
+	}
+	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
+		this.objConfigChooser = objConfigChooser;
+	}
+	
+	public ServerApplicationOVPN getApplicationObject() {
+		return this.objApplication;
+	}
+	public void setApplicationObject(ServerApplicationOVPN objApplication) {
+		this.objApplication = objApplication;
+	}
 }//END class
