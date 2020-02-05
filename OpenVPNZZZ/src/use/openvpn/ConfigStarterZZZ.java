@@ -133,9 +133,13 @@ public class ConfigStarterZZZ extends KernelUseObjectZZZ{
 					
 					
 				}else{
-					//Das funktiniert das beim Server, indirekt über eine Batch starten
-						
-					//1. Batch File erstellen
+					//Das funktioniert das beim Server, indirekt über eine Batch starten
+					//TODO GOON 20200205
+					//0. Bestehende Batch Datei suchen und löschen
+					000000000000
+					
+					//1. Batch File neu erstellen (wg. ggfs. anderen/neuen Code)					
+					111111111111
 					
 					//2. Batch File starten
 					ConfigChooserZZZ objPathConfig = new ConfigChooserZZZ(this.getKernelObject(), this.getOvpnContextUsed());				

@@ -105,7 +105,7 @@ private boolean bFlagPortScanAllFinished = false;
 			ClientConfigMapperOVPN objMapper = new ClientConfigMapperOVPN(objKernel, this);
 			this.setConfigMapperObject(objMapper);
 			
-			//Die Template Dateien finden		
+			//Die Konfigurations-Template Dateien finden		
 			File[] objaFileConfigTemplate = objChooser.findFileConfigTemplate(null);
 			if(objaFileConfigTemplate==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");

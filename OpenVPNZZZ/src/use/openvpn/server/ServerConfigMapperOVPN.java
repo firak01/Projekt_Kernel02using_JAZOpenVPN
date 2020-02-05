@@ -13,7 +13,7 @@ import use.openvpn.ConfigChooserZZZ;
 public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 	private ServerMainZZZ objServerMain = null;
 		
-	public ServerConfigMapperOVPN(IKernelZZZ objKernel, ServerMainZZZ objClientMain) {
+	public ServerConfigMapperOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain) {
 		super(objKernel);
 		this.setServerMainObject(objServerMain);		
 	}
@@ -41,7 +41,7 @@ public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 			}
 		
 			//Die %xyz% Einträge sollen dann ersetzt werden.
-			hmReturn.put("remote", "remote %ip%");
+			//Der Server horcht, er muss nix zu einer Gegenstelle aufbauen: hmReturn.put("remote", "remote %ip%");
 			hmReturn.put("http-proxy", "http-proxy %proxy% %port%");
 			hmReturn.put("http-proxy-timeout", "http-proxy-timeout %timeout%");
 			
@@ -78,7 +78,7 @@ public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 		
 			//Hashmap erstellen. TODO GOON Dies an eine Stelle auslagern, so dass es nur einmal gemacht werden braucht.
 			HashMap hmConfig = new HashMap();
-			hmConfig.put("remote", "^remote ");
+			//Der Server horcht, er muss nix zu einer Gegenstelle aufbauen:hmConfig.put("remote", "^remote ");
 			hmConfig.put("http-proxy", "^http-proxy ");
 			hmConfig.put("http-proxy-timeout", "^http-proxy-timeout ");
 			
@@ -125,11 +125,12 @@ public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 				}	
 			}//END "useProxy"
 					
-			String sRemoteLine = (String)hmPattern.get("remote");
-			if(sRemoteLine!=null){
-				stemp = StringZZZ.replace(sRemoteLine, "%ip%", this.getServerMainObject().getApplicationObject().getIpRemote());					
-				objReturn.put("remote", stemp);
-			}	
+//          Den Sever zeihnet aus, dass er nur "horcht" und nicht aktiv mit einer Gegenstelle die Verbindung aufbaut
+//			String sRemoteLine = (String)hmPattern.get("remote");
+//			if(sRemoteLine!=null){
+//				stemp = StringZZZ.replace(sRemoteLine, "%ip%", this.getServerMainObject().getApplicationObject().getIpRemote());					
+//				objReturn.put("remote", stemp);
+//			}	
 			
 			
 			//20200123: Der Name der Certifier Dateien entspricht dem Namen der Maschine.
@@ -142,24 +143,24 @@ public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 				String sHostname = EnvironmentZZZ.getHostName();
 				sCertifierLine = (String)hmPattern.get("cert");				
 				if(sCertifierLine!=null) {					
-					sFileCertifier = sHostname.toUpperCase() + "_CLIENT.crt";									
+					sFileCertifier = sHostname.toUpperCase() + "_SERVER.crt";									
 				}
 				
 				//+++++++++++++
 				sKeyLine = (String)hmPattern.get("key");
 				if(sKeyLine!=null) {
-					sFileKey = sHostname.toUpperCase() + "_CLIENT.key";
+					sFileKey = sHostname.toUpperCase() + "_SERVER.key";
 				}
 			}else { //###################################################
 				sCertifierLine = (String)hmPattern.get("cert");				
 				if(sCertifierLine!=null) {					
-					sFileCertifier = "PAUL_HINDENBURG_CLIENT.crt";													
+					sFileCertifier = "PAUL_HINDENBURG_SERVER.crt";													
 				}
 				
 				//+++++++++++++
 				sKeyLine = (String)hmPattern.get("key");
 				if(sKeyLine!=null) {
-					sFileKey = "PAUL_HINDENBURG_CLIENT.key";									
+					sFileKey = "PAUL_HINDENBURG_SERVER.key";									
 				}
 			}
 			if(sCertifierLine!=null) {

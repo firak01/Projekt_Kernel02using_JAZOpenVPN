@@ -10,6 +10,8 @@ import use.openvpn.client.OVPNFileFilterConfigTemplateZZZ;
 import use.openvpn.client.OVPNFileFilterConfigUsedZZZ;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
+import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -197,6 +199,68 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 			
 		}//End main
 		return objaReturn;
+	}
+	
+	public int removeFileConfigUsed(File objDirectoryin, ReferenceArrayZZZ<String> strStatusUpdate) throws ExceptionZZZ{
+		int iReturn = -1;
+		main:{
+			File objDirectory=null;
+			check:{
+				if(objDirectoryin==null){
+					objDirectory = this.getDirectoryConfig();
+					if(objDirectory==null){				
+							ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to get the configuration directory.'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+							throw ez;
+						}
+				}else{
+					objDirectory = objDirectoryin;
+				}
+								
+				if(objDirectory.exists()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Directory '" + objDirectory.getPath() + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}else if(objDirectory.isDirectory()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + objDirectory.getPath() + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+			}//End check
+			
+			//##############################################################
+			iReturn = 0;
+			File[] objaFileConfigUsed = this.findFileConfigUsed(objDirectory);
+			if(objaFileConfigUsed==null){
+//				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+//				throw ez;
+				//this.logStatusString("No previously used file was found (null case). Nothing removed.");
+				strStatusUpdate.add("No previously used file was found (null case). Nothing removed.");
+				
+			}else if(objaFileConfigUsed.length == 0){
+//				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+//				throw ez;
+				//this.logStatusString("No previously used file was found (0 case). Nothing removed.");
+				strStatusUpdate.add("No previously used file was found (0 case). Nothing removed.");
+				
+			}else{
+//				this.logStatusString(objaFileConfig.length + " configuration file(s) were found in the directory: '" + objChooser.readDirectoryConfigPath() + "'");  //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+				//this.logStatusString("Trying to remove previously used file(s): " + objaFileConfigUsed.length);
+				strStatusUpdate.add("Trying to remove previously used file(s): " + objaFileConfigUsed.length);
+				for(int icount = 0; icount < objaFileConfigUsed.length; icount++){
+					boolean btemp = objaFileConfigUsed[icount].delete();
+					if(btemp==true){
+						iReturn=iReturn+1;
+						//this.logStatusString( "File successfully removed: '" + objaFileConfigUsed[icount].getPath()+"'");		
+						strStatusUpdate.add("File successfully removed: '" + objaFileConfigUsed[icount].getPath()+"'");
+					}else{
+						//this.logStatusString("Unable to remove file: '" + objaFileConfigUsed[icount].getPath()+"'");	
+						String stemp = "Unable to remove file: '" + objaFileConfigUsed[icount].getPath()+"'";
+						ExceptionZZZ ez = new ExceptionZZZ(stemp, iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
+						throw ez;
+					}					
+				}//END for
+			}
+			
+		}//End main
+		return iReturn;
 	}
 	
 	

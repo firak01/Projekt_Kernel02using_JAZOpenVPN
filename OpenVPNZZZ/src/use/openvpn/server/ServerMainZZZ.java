@@ -1,6 +1,7 @@
 package use.openvpn.server;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -10,11 +11,17 @@ import use.openvpn.ConfigChooserZZZ;
 import use.openvpn.ConfigFileZZZ;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
+import use.openvpn.client.ClientConfigMapperOVPN;
+import use.openvpn.client.ClientConfigUpdaterZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.ArrayListZZZ;
+import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
+import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
@@ -22,7 +29,8 @@ import basic.zWin32.com.wmi.KernelWMIZZZ;
 public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 	private ServerApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
 	private ConfigChooserZZZ objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
-	
+	private ServerConfigMapperOVPN objConfigMapper = null; //Objekt, dass ein Mapping zu passenden Templatezeilen verwaltet.
+
 	private String sStatusCurrent = null; //Hier�ber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
 	private ArrayList listaStatus = new ArrayList(); //Hier�ber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
     																	//Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
@@ -60,60 +68,6 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 		}//END mai
 	}
 
-	
-	/** Adds a line to the status arraylist. This status is used to enable the frontend-client to show a log dialogbox.
-	 * Remark: This method does not write anything to the kernel-log-file. 
-	* @param sStatus 
-	* 
-	* lindhaueradmin; 13.07.2006 08:34:56
-	 */
-	public void addStatusString(String sStatus){
-		if(sStatus!=null){
-			this.sStatusCurrent = sStatus;
-			this.listaStatus.add(sStatus);
-		}
-	}
-	
-	/**Adds a line to the status arraylist PLUS writes a line to the kernel-log-file.
-	 * Remark: The status arraylist is used to enable the frontend-client to show a log dialogbox.
-	* @param sStatus 
-	* 
-	* lindhaueradmin; 13.07.2006 08:38:51
-	 */
-	public void logStatusString(String sStatus){
-		if(sStatus!=null){
-			this.addStatusString(sStatus);
-			
-			IKernelZZZ objKernel = this.getKernelObject();
-			if(objKernel!= null){
-				objKernel.getLogObject().WriteLineDate(sStatus);
-			}
-		}
-	}
-	
-	/**This status is a type of "Log".
-	 * This is the last entry.
-	 * This is filled by ".addStatusString(...)"
-	 * @return String
-	 *
-	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
-	 */
-	public String getStatusStringCurrent(){
-		return this.sStatusCurrent;
-	}
-
-	/**This status is a type of "Log".
-	 * This are all entries.
-	 * This is filled by ".addStatusString(...)"
-	 * @return String
-	 *
-	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
-	 */
-	public ArrayList getStatusStringAll(){
-		return this.listaStatus;
-	}
-	
-	
 	/**Entrypoint for managing the configuration files for "OpenVPN" client.
 	 * @param args, 
 	 *
@@ -124,7 +78,8 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			//TODO Dies in eine Methode "find fileConfigAvailableAndConfigured" 
+			//TODO Dies in eine Methode "find fileConfigAvailableAndConfigured"
+			
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 			
 			this.logStatusString("Searching for configuration template files '*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			IKernelZZZ objKernel = this.getKernelObject();			
@@ -135,44 +90,88 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel,"server");
 			this.setConfigChooserObject(objChooser);
 			
+			ServerConfigMapperOVPN objMapper = new ServerConfigMapperOVPN(objKernel, this);
+			this.setConfigMapperObject(objMapper);
 			
-			//Die Konfigurations Dateien finden		
-			File[] objaFileConfig = objChooser.findFileConfigUsed(null);
-			if(objaFileConfig==null){
+			
+			//Die Konfigurations-Template Dateien finden
+			File[] objaFileConfigTemplate = objChooser.findFileConfigTemplate(null);
+			if(objaFileConfigTemplate==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
-			}else if(objaFileConfig.length == 0){
+			}else if(objaFileConfigTemplate.length == 0){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}else{
-				this.logStatusString(objaFileConfig.length + " configuration file(s) were found in the directory: '" + objChooser.readDirectoryConfigPath() + "'");  //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+				this.logStatusString(objaFileConfigTemplate.length + " configuration TEMPLATE file(s) was (were) found in the directory: '" + objChooser.readDirectoryConfigPath() + "'");  //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			}
 			
-			//ABER: Es werden nur die Konfigurationsdateien verwendet, die auch konfiguriert sind. Falls nix konfiguriert ist, werden alle gefundenen verwendet.
-			String sFileConfigConfigured = objKernel.getParameterByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();
-			ArrayList listaFileConfigUsed  = new ArrayList();
 			
+			
+			//####################################################################
+			//### DAS SCHREIBEN DER NEUEN KONFIGURATION
+					
+			//+++ A) Vorbereitung
+			///*TEST: Path Expanded Berechnung
+			
+			
+			
+			//+++ 1. Die früher mal verwendeten Dateien entfernen
+			this.logStatusString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+			ReferenceArrayZZZ<String> strUpdate=new ReferenceArrayZZZ<String>(null);
+			int itemp = objChooser.removeFileConfigUsed(null,strUpdate);			
+			this.logStatusString(strUpdate);
+			
+			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
+			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");		
+			ServerConfigUpdaterZZZ objUpdater = new ServerConfigUpdaterZZZ(objKernel, this, objChooser, objConfigMapper, null);
+			//ArrayList listaFileConfig = new ArrayList(objaFileConfigTemplate.length);
+			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){		
+				
+				//Mit dem Setzen der neuen Datei, basierend auf dem Datei-Template wird intern ein Parser für das Datei-Template aktiviert
+				File objFileNew = objUpdater.refreshFileUsed(objaFileConfigTemplate[icount]);	
+				if(objFileNew==null){
+					this.logStatusString("Unable to create 'used file' file base on template template: '" + objaFileConfigTemplate[icount].getPath() + "'");					
+				}else{
+					boolean btemp = objUpdater.update(objFileNew, true); //Bei false werden also auch Zeilen automatisch hinzugefügt, die nicht im Template sind. Z.B. Proxy-Einstellungen.
+					if(btemp==true){
+						this.logStatusString( "'Used file' successfully created for template: '" + objaFileConfigTemplate[icount].getPath() + "'");
+		
+						//+++ Nun dieses used-file dem Array hinzuf�gen, dass f�r den Start der OVPN-Verbindung verwendet wird.
+						//listaFileConfig.add(objUpdater.getFileUsed());
+					}else{
+						this.logStatusString( "'Used file' not processed, based upon: '" + objaFileConfigTemplate[icount].getPath() + "'");					
+					}	
+				}
+			}//end for
+			
+			//ABER: Es werden nur die Konfigurationsdateien verwendet, die auch konfiguriert sind. Falls nix konfiguriert ist, werden alle gefundenen verwendet.
+			ArrayList listaFileConfigUsed = new ArrayList();
+			String sFileConfigConfigured = objKernel.getParameterByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();			
+			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);//.findFileConfigTemplate(null);
 			if(StringZZZ.isEmpty(sFileConfigConfigured)){
 				//Die Arraylist besteht nun aus allen konfigurierten Dateien
-				for(int icount=0; icount < objaFileConfig.length; icount++){
-					listaFileConfigUsed.add(objaFileConfig[icount]);
+				for(int icount=0; icount < objaFileConfigUsed.length; icount++){
+					listaFileConfigUsed.add(objaFileConfigUsed[icount]);
 				}
 			}else{
 				//Aus der Liste aller zur Verf�gung stehenden Dateien nur diejenigen raussortieren, die konfiguriert sind.
 				StringTokenizer objToken = new StringTokenizer(sFileConfigConfigured, File.separator);
 				while(objToken.hasMoreTokens()){
 					String stemp = objToken.nextToken();
-					for(int icount=0; icount < objaFileConfig.length; icount++){
-						File objFileTemp = objaFileConfig[icount];
-						if(objFileTemp.getName().equalsIgnoreCase(stemp)){
+					for(int icount=0; icount < objaFileConfigUsed.length; icount++){
+						File objFileTemp = objaFileConfigUsed[icount];
+						String sFileTemp2 = objFileTemp.getName();
+						//String sFileTemp = FileEasyZZZ.getNameOnly(objFileTemp.getName());
+						//if(objFileTemp.getName().equalsIgnoreCase(stemp)){
+						if(sFileTemp2.equalsIgnoreCase(stemp)){
 							listaFileConfigUsed.add(objFileTemp);
-							break;
 						}
 					}//END for
 				}//END while
 			}//END if
 			if(listaFileConfigUsed.size()==0){
-				this.logStatusString("No configuration available which is configured.");
+				this.logStatusString("No configuration available which is configured in Kernel Ini File for Program 'ProgConfigHandler' and Property 'ConfigFile'.");
 				bReturn = false;
 				break main;
 			}else{
@@ -283,7 +282,6 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 		return bReturn;
 	}//END start()
 	
-
 	public void run() {
 		try {
 			this.start();
@@ -293,7 +291,76 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 		}
 	}
 	
+	/** Adds a line to the status arraylist. This status is used to enable the frontend-client to show a log dialogbox.
+	 * Remark: This method does not write anything to the kernel-log-file. 
+	* @param sStatus 
+	* 
+	* lindhaueradmin; 13.07.2006 08:34:56
+	 */
+	public void addStatusString(String sStatus){
+		if(sStatus!=null){
+			this.sStatusCurrent = sStatus;
+			this.listaStatus.add(sStatus);
+		}
+	}
 	
+	/**Adds a line to the status arraylist PLUS writes a line to the kernel-log-file.
+	 * Remark: The status arraylist is used to enable the frontend-client to show a log dialogbox.
+	* @param sStatus 
+	* 
+	* lindhaueradmin; 13.07.2006 08:38:51
+	 */
+	public void logStatusString(String sStatus){
+		if(sStatus!=null){
+			this.addStatusString(sStatus);
+			
+			IKernelZZZ objKernel = this.getKernelObject();
+			if(objKernel!= null){
+				objKernel.getLogObject().WriteLineDate(sStatus);
+			}
+		}
+	}
+	
+	public void logStatusString(String[] saStatus) {
+		if(saStatus!=null) {
+			int iMax = Array.getLength(saStatus)-1;
+			for(int icount=0;icount<=iMax;icount++) {
+				this.logStatusString(saStatus[icount]);
+			}
+		}		
+	}
+	
+	public void logStatusString(ArrayList<String>lista) {
+		String[]sa = ArrayListZZZ.toStringArray(lista);
+		this.logStatusString(sa);
+	}
+	
+	public void logStatusString(ReferenceArrayZZZ<String>strStatus) {
+		ArrayList<String>listas=strStatus.getArrayList();
+		this.logStatusString(listas);
+	}
+	
+	/**This status is a type of "Log".
+	 * This is the last entry.
+	 * This is filled by ".addStatusString(...)"
+	 * @return String
+	 *
+	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
+	 */
+	public String getStatusStringCurrent(){
+		return this.sStatusCurrent;
+	}
+
+	/**This status is a type of "Log".
+	 * This are all entries.
+	 * This is filled by ".addStatusString(...)"
+	 * @return String
+	 *
+	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
+	 */
+	public ArrayList getStatusStringAll(){
+		return this.listaStatus;
+	}
 	
 	 public  boolean addProcessStarter(ConfigStarterZZZ objStarter){
 		 boolean bReturn = false;
@@ -424,6 +491,13 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 	}
 	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
 		this.objConfigChooser = objConfigChooser;
+	}
+	
+	public ServerConfigMapperOVPN getConfigMapperObject() {
+		return this.objConfigMapper;
+	}
+	public void setConfigMapperObject(ServerConfigMapperOVPN objConfigMapper) {
+		this.objConfigMapper = objConfigMapper;
 	}
 	
 	public ServerApplicationOVPN getApplicationObject() {

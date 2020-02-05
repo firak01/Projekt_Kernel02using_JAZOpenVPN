@@ -116,9 +116,9 @@ public class ClientApplicationOVPN  extends KernelUseObjectZZZ{
 			
 		    //+++ Ggf. notwendige Proxy-Einstellung pr�fen.
 			//Z.B. bei der itelligence bin ich hinter einem Proxy. Die auszulesende Seite ist aber im Web.
-			this.sProxyHost = objKernel.getParameterByProgramAlias("OVPN","ProgIPReader","ProxyHost").getValue();
+			this.sProxyHost = objKernel.getParameterByProgramAlias("OVPN","ProgProxyHandler","ProxyHost").getValue();
 			if(sProxyHost!=null && sProxyHost.trim().equals("")==false){		//Eine Proxy-Konfiguration ist nicht Pflicht		
-				sProxyPort = objKernel.getParameterByProgramAlias("OVPN","ProgIPReader","ProxyPort").getValue();
+				sProxyPort = objKernel.getParameterByProgramAlias("OVPN","ProgProxyHandler","ProxyPort").getValue();
 				
 				//+++ Nun versuchen herauszufinden, ob der Proxy auch erreichbar ist und existiert. Nur nutzen, falls er existiert
 				KernelPingHostZZZ objPing = new KernelPingHostZZZ(objKernel, null);
