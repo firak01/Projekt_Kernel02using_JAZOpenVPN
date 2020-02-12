@@ -16,8 +16,7 @@ import javax.swing.JPopupMenu;
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
-
-import use.openvpn.ConfigStarterZZZ;
+import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainZZZ;
 
@@ -317,7 +316,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			sReturn = sReturn + "No proxy.\n";
 		}
 		
-		stemp = this.objClientMain.getApplicationObject().getURL2Parse();
+		stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getURL2Parse();
 		if(stemp==null){
 			sReturn = sReturn + "Parsed URL: NOT RECEIVED\n";
 		}else{
@@ -325,7 +324,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		
 		//REMOTE
-		stemp = this.objClientMain.getApplicationObject().getIpRemote();
+		stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getIpRemote();
 		if(stemp==null){
 			sReturn = sReturn + "Remote IP: Not found on URL.\n";
 		}else{
@@ -333,11 +332,11 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		 
 		if(this.objClientMain.isPortScanEnabled()==true){
-			stemp = this.objClientMain.getApplicationObject().getRemotePortScanned();
+			stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getRemotePortScanned();
 			if(stemp == null){
 				sReturn = sReturn + "Remote Port(s): Not yet scanned.\n";
 			}else{
-				stemp = this.objClientMain.getApplicationObject().getRemotePortScanned();
+				stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getRemotePortScanned();
 				sReturn = sReturn + "Remote Port(s):" + stemp+"\n";
 			}
 		}
@@ -346,7 +345,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		
 		
 		//VPNIP
-		stemp = this.objClientMain.getApplicationObject().getVpnIpEstablished();
+		stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getVpnIpEstablished();
 		if(stemp == null){
 			sReturn = sReturn + "Remote VPN-IP: Not yet connected.\n";
 		}else{
@@ -358,11 +357,11 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		
 		if(this.objClientMain.isPortScanEnabled()==true){
-			stemp = this.objClientMain.getApplicationObject().getVpnPortScanned();
+			stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getVpnPortScanned();
 			if(stemp == null){
 				sReturn = sReturn + "Remote VPN-IP Port(s): Not yet scanned.\n";
 			}else{
-				stemp = this.objClientMain.getApplicationObject().getVpnPortScanned();
+				stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getVpnPortScanned();
 				sReturn = sReturn + "Remote VPN-IP Port(s):" + stemp+"\n";
 			}
 		}
@@ -374,7 +373,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			sTap = "-> TAP Adapter: '" + sTap + "'";
 		}
 		
-		stemp = this.objClientMain.getApplicationObject().getVpnIpLocal();
+		stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getVpnIpLocal();
 		if(stemp==null){
 			sReturn = sReturn + "Local VPN-IP: Not defined in Kernel Ini-File.\n\t\t" + sTap + "\n";
 		}else{

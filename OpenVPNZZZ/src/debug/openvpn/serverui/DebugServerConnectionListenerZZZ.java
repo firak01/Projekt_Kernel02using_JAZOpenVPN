@@ -2,10 +2,12 @@ package debug.openvpn.serverui;
 
 import java.io.File;
 
-import use.openvpn.ConfigStarterZZZ;
+import use.openvpn.IMainOVPN;
+import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainZZZ;
 import use.openvpn.serverui.ServerConnectionListenerZZZ;
 import basic.zBasic.ExceptionZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
 
@@ -18,18 +20,20 @@ public class DebugServerConnectionListenerZZZ {
 	 */
 	public static void main(String[] args) {
 		main:{
-			KernelZZZ objKernel = null;		
-			ConfigStarterZZZ objConfig = null;
+			IKernelZZZ objKernel = null;		
+			ServerConfigStarterOVPN objConfig = null;
 			ServerConnectionListenerZZZ objListener = null;
 			File objFile = null;
 			try {
 				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNServer.ini", (String)null);
 				objKernel.getLogObject().WriteLineDate("TEST");
+				
+				ServerMainZZZ objServer = new ServerMainZZZ(objKernel, null);
 				 
-				//!!! Damit die lokale VPN-IP-Adresse aufgelöst werden kann, muss der entsprehcende Netzwerkadapter "verbunden" sein.
+				//!!! Damit die lokale VPN-IP-Adresse aufgelï¿½st werden kann, muss der entsprehcende Netzwerkadapter "verbunden" sein.
 				objFile = new File("C:\\Programme\\OpenVPN\\config\\client_TCP_443.ovpn");
 				//objFile = new File("C:\\Programme\\OpenVPN\\config\\serverVPN1_TCP_443.ovpn");				
-				objConfig = new ConfigStarterZZZ(objKernel, objFile, null);
+				objConfig = new ServerConfigStarterOVPN(objKernel, objServer, objFile, null);
 								
 				objListener = new ServerConnectionListenerZZZ(objKernel, objConfig, null);
 				objListener.start();

@@ -7,8 +7,8 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
-import use.openvpn.ConfigStarterZZZ;
-import use.openvpn.server.ServerConfigFileZZZ;
+import use.openvpn.server.ServerConfigFileOVPN;
+import use.openvpn.server.ServerConfigStarterOVPN;
 import basic.zKernel.KernelZZZ;
 
 /** !!! This will be no longer used. Use ServerConnectionListenerZZZ instead....
@@ -21,20 +21,20 @@ import basic.zKernel.KernelZZZ;
  *
  */
 public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implements Runnable{
-	private ServerConfigFileZZZ objFileConfigServer = null;
-	private ConfigStarterZZZ objProcessStarter = null;
+	private ServerConfigFileOVPN objFileConfigServer = null;
+	private ServerConfigStarterOVPN objProcessStarter = null;
 	private String sTargetIP = "";
 	private String sTargetPort = "";
 	private boolean bFlagIsConnected = false;
 	private boolean bFlagIsStarted = false;
 	private boolean bFlagHasError = false;
 	
-	public ServerConnectionWatchRunnerZZZ(IKernelZZZ objKernel, ConfigStarterZZZ objProcessStarter, String[] saFlagControl) throws ExceptionZZZ{
+	public ServerConnectionWatchRunnerZZZ(IKernelZZZ objKernel, ServerConfigStarterOVPN objProcessStarter, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ServerConnectionWatchRunnerNew_(objProcessStarter, saFlagControl);
 	}
 	
-	private void ServerConnectionWatchRunnerNew_(ConfigStarterZZZ objProcessStarter, String[] saFlagControl) throws ExceptionZZZ{
+	private void ServerConnectionWatchRunnerNew_(ServerConfigStarterOVPN objProcessStarter, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			check:{
 				if(objProcessStarter==null){
@@ -52,7 +52,7 @@ public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implement
 			ExceptionZZZ ez = new ExceptionZZZ("File-Object in ConfigStarterZZZ-Object", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
 		}
-		this.objFileConfigServer = new ServerConfigFileZZZ(objKernel, objFileTemp, null);
+		this.objFileConfigServer = new ServerConfigFileOVPN(objKernel, objFileTemp, null);
 	}
 
 	/* (non-Javadoc)
@@ -60,7 +60,7 @@ public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implement
 	 */
 	public void run() {
 		try{
-			ServerConfigFileZZZ objConfigFile = this.getConfigFileHandlerObject();
+			ServerConfigFileOVPN objConfigFile = this.getConfigFileHandlerObject();
 			this.setFlag("isstarted", true);
 			
 			
@@ -121,11 +121,11 @@ public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implement
 	}
 	
 	//####### Getter // Setter
-	public ServerConfigFileZZZ getConfigFileHandlerObject(){
+	public ServerConfigFileOVPN getConfigFileHandlerObject(){
 		return this.objFileConfigServer;		
 	}
 	
-	public ConfigStarterZZZ getStarterObject(){
+	public ServerConfigStarterOVPN getStarterObject(){
 		return this.objProcessStarter;
 	}
 	

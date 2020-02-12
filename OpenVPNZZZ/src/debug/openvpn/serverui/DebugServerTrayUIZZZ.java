@@ -2,7 +2,7 @@ package debug.openvpn.serverui;
 
 import java.io.File;
 
-import use.openvpn.ConfigStarterZZZ;
+import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainZZZ;
 import use.openvpn.serverui.ServerMonitorRunnerZZZ;
 import use.openvpn.serverui.ServerTrayUIZZZ;
@@ -26,15 +26,16 @@ public class DebugServerTrayUIZZZ {
 				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNServer_test.ini", (String)null);
 				objKernel.getLogObject().WriteLineDate("TEST");
 				 
+				ServerMainZZZ objServer = new ServerMainZZZ(objKernel, null);//Das Backendobjekt, das pro Konfigurationsfile eine OVPN.exe Datei als Process startet.
+				
 				//Das TrayIcon ohne, das ein Backend-Objekt aufgebaut worden ist.
 				ServerTrayUIZZZ objTray = new ServerTrayUIZZZ(objKernel, null);
 				
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//+++ Hier wird das "Listen" simuliert.
 				File objFile = new File("C:\\Programme\\OpenVPN\\config\\Template serverVPN1_TCP_443.ovpn_4_test");	
-				ConfigStarterZZZ objConfig = new ConfigStarterZZZ(objKernel, objFile, null);
+				ServerConfigStarterOVPN objConfig = new ServerConfigStarterOVPN(objKernel, objServer, objFile, null);
 				
-				ServerMainZZZ objServer = new ServerMainZZZ(objKernel, null);  //Das Backendobjekt, das pro Konfigurationsfile eine OVPN.exe Datei als Process startet.
 				objServer.addProcessStarter(objConfig);                                      //eben diese Datei
 				objTray.setServerBackendObject(objServer);                                //Damit wird ein Teil der .listen() Methode simuliert.
 								

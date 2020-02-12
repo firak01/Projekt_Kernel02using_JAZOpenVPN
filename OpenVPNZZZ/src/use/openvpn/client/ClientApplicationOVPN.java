@@ -11,29 +11,23 @@ import basic.zKernel.html.reader.KernelReaderHtmlZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.net.client.KernelReaderPageZZZ;
 import basic.zKernel.net.client.KernelReaderURLZZZ;
+import use.openvpn.AbstractApplicationOVPN;
+import use.openvpn.IMainOVPN;
+import use.openvpn.IMainUserOVPN;
 
-public class ClientApplicationOVPN  extends KernelUseObjectZZZ{
-	private ClientMainZZZ objClient = null;
-	
-	private String sURL = null;
-	private String sProxyHost = null;
-	private String sProxyPort = null;
+public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
+	private String sURL = null;	
 	private String sIPRemote = null;
-	private String sIPLocal = null;
+
 	//Ggf. ist dieser Wert aussagekräftiger als der Versuch über sIPVPN
 	private String sPortRemoteScanned = null;
 	private String sPortVpnScanned = null;
-
-	private String sVpnIpRemote = null;
-	private String sVpnIpLocal = null;
-	private String sTapAdapterUsed = null;
 
 	private String sIPVPN = null;
 	
 	
 	public ClientApplicationOVPN(IKernelZZZ objKernel, ClientMainZZZ objClient) {
-		super(objKernel);
-		this.setClientObject(objClient);
+		super(objKernel, objClient);		
 	}
 	
 	
@@ -99,59 +93,6 @@ public class ClientApplicationOVPN  extends KernelUseObjectZZZ{
 		return sReturn;
 	}
 	
-	/**Read from the configuration file a proxy which might be necessary to use AND enables the proxy for this application.
-	 * Remember: This proxy is used to read the url (containing the ip adress)
-	 *                    AND
-	 *                    The proxy is added to the open vpn configuration file(s) 
-	 * @throws ExceptionZZZ, 
-	 *
-	 * @return boolean
-	 *
-	 * javadoc created by: 0823, 11.07.2006 - 14:20:24
-	 */
-	public boolean readProxyEnabled() throws ExceptionZZZ{
-		boolean bReturn = false;
-		main:{
-			IKernelZZZ objKernel = this.getKernelObject();
-			
-		    //+++ Ggf. notwendige Proxy-Einstellung pr�fen.
-			//Z.B. bei der itelligence bin ich hinter einem Proxy. Die auszulesende Seite ist aber im Web.
-			this.sProxyHost = objKernel.getParameterByProgramAlias("OVPN","ProgProxyHandler","ProxyHost").getValue();
-			if(sProxyHost!=null && sProxyHost.trim().equals("")==false){		//Eine Proxy-Konfiguration ist nicht Pflicht		
-				sProxyPort = objKernel.getParameterByProgramAlias("OVPN","ProgProxyHandler","ProxyPort").getValue();
-				
-				//+++ Nun versuchen herauszufinden, ob der Proxy auch erreichbar ist und existiert. Nur nutzen, falls er existiert
-				KernelPingHostZZZ objPing = new KernelPingHostZZZ(objKernel, null);
-				try{ //Hier soll nicht abgebrochen werden, wenn es nicht klappt. Lediglich ins Log soll etwas geschrieben werden.
-					this.getClientObject().logStatusString( "Trying to reach the proxy configured. '" + sProxyHost + " : " + sProxyPort +"'");									
-					bReturn = objPing.ping(sProxyHost, sProxyPort);								
-					this.getClientObject().logStatusString("Configured proxy reached. " + sProxyHost + " : " + sProxyPort +"'");
-									
-				}catch(ExceptionZZZ ez){
-					objKernel.getLogObject().WriteLineDate("Will not use the proxy configured, because: " + ez.getDetailAllLast());
-					this.getClientObject().logStatusString("Configured proxy unreachable. " + sProxyHost + " : " + sProxyPort +"'. No proxy will be enabled.");
-				}	
-			}else{
-				this.getClientObject().logStatusString("No proxy configured.");								
-			}//END 	if(sProxyHost!=null && sProxyHost.equals("")==false){		//Eine Proxy-Konfiguration ist nicht Pflicht		
-		}//END main
-		this.setFlag("UseProxy", bReturn);
-		return bReturn;
-	}
-	
-
-	/** Read the used local IP.
-	 * @return
-	 * @throws ExceptionZZZ
-	 */
-	public String readIpLocal() throws ExceptionZZZ{
-		String sReturn = null;
-		main:{
-			sReturn = EnvironmentZZZ.getHostIp();
-		}//END main
-		this.sIPLocal = sReturn;
-		return sReturn;
-	}
 	
 	/**Reads the dynamic IP from a URL (uses a html-parser therefore).
 	 * Checks the necessarity of enabling a proxy and will enable the proxy.
@@ -188,43 +129,22 @@ public class ClientApplicationOVPN  extends KernelUseObjectZZZ{
 	//######################################################
 	//### Getter / Setter
 	public ClientMainZZZ getClientObject() {
-		return this.objClient;
+		return (ClientMainZZZ) this.getMainObject();
 	}
 	public void setClientObject(ClientMainZZZ objClient) {
-		this.objClient = objClient;
+		this.setMainObject((IMainOVPN) objClient);
 	}
-	
-	
-	public String getURL2Parse(){
+		
+	public String getURL2Parse() throws ExceptionZZZ{
+		if(this.sURL==null) {
+			this.sURL = this.readURL2Parse();
+		}
 		return this.sURL;
 	}
 	public void setURL2Parse(String sURL) {
 		this.sURL = sURL;
 	}
-	
-	public String getProxyHost(){
-		//Werte werden in readProxyEnabled gesetzt
-		return this.sProxyHost;
-	}
-	public void setProxyHost(String sProxyHost) {
-		this.sProxyHost = sProxyHost;
-	}
-	
-	public String getProxyPort(){
-		//Werte werden in readProxyEnabled gesetzt
-		return this.sProxyPort;
-	}
-	
-	public String getIpLocal() throws ExceptionZZZ{
-		if(this.sIPLocal==null) {
-			this.sIPLocal = this.readIpLocal();
-		}
-		return this.sIPLocal;
-	}
-	public void setIpLocal(String sIPLocal) {
-		this.sIPLocal = sIPLocal;
-	}
-	
+			
 	public String getIpRemote() throws ExceptionZZZ{
 		if(this.sIPRemote==null) {
 			this.sIPRemote = this.readIpRemote();
@@ -255,35 +175,6 @@ public class ClientApplicationOVPN  extends KernelUseObjectZZZ{
 		this.sIPVPN = sIPVPN;
 	}
 	
-	public String getVpnIpRemote() throws ExceptionZZZ {
-		if(this.sVpnIpRemote==null) {
-			this.sVpnIpRemote = this.readVpnIpRemote(); 
-		}
-		return this.sVpnIpRemote;
-	}
-	public void setVpnIpRemote(String sVpnIpRemote) {
-		this.sVpnIpRemote = sVpnIpRemote;
-	}
-	
-	public String getVpnIpLocal() throws ExceptionZZZ {
-		if(this.sVpnIpLocal==null) {
-			this.sVpnIpLocal = this.readVpnIpLocal(); 
-		}
-		return this.sVpnIpLocal;
-	}
-	public void setVpnIpLocal(String sVpnIpLocal) {
-		this.sVpnIpLocal = sVpnIpLocal;
-	}
-	
-	public String getTapAdapterUsed() throws ExceptionZZZ {
-		if(this.sTapAdapterUsed==null) {
-			this.sTapAdapterUsed = this.readTapAdapterUsed(); 
-		}
-		return this.sTapAdapterUsed;
-	}
-	public void setTapAdapterUsed(String sTapAdapterUsed) {
-		this.sTapAdapterUsed = sTapAdapterUsed;
-	}
 	
 	/**This is a string filled by a port-scanner, after the connection was established.
 	 * This string is read out by the fronteend ui - class to set the status.

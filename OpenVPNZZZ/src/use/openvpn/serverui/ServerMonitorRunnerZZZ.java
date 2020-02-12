@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import use.openvpn.ConfigStarterZZZ;
 import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.clientui.ClientTrayUIZZZ;
 import use.openvpn.clientui.OVPNConnectionWatchRunnerZZZ;
+import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -108,7 +108,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 			//Nun f�r alle in ServerMain gestarteten OpenVPN.exe - Processe einen Thread bereitstellen, der das VPN-IP-Adressen Ziel versuchen kann zu erreichen.
 			listaWatchRunner = new ArrayList(listaProcessStarter.size());			
 			for(int icount=0; icount < listaProcessStarter.size(); icount++){
-				ConfigStarterZZZ objProcessStarterTemp = (ConfigStarterZZZ) listaProcessStarter.get(icount);
+				ServerConfigStarterOVPN objProcessStarterTemp = (ServerConfigStarterOVPN) listaProcessStarter.get(icount);
 				if(objProcessStarterTemp!=null){
 				  
 					/* Merke: (A) Dies setzt voraus, dass auf dem Client ein Thread auf den entsprechenden Port "h�rt". Besser gef�llt mir die L�sung, dass auf dem Server ein spezieller Thread auf den Verbindungsaufbau des Clients h�rt und dementsprechend reagiert. 
@@ -139,7 +139,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 					//Das w�re ein aktiver Ping   ServerConnectionWatchRunnerZZZ objWatchTemp = (ServerConnectionWatchRunnerZZZ) listaWatchRunner.get(icount);
 					//Nun aber den passiven listener verwenden
 					ServerConnectionListenerZZZ objWatchTemp = (ServerConnectionListenerZZZ) listaWatchRunner.get(icount);
-					ConfigStarterZZZ objProcessStarterTemp = objWatchTemp.getStarterObject();
+					ServerConfigStarterOVPN objProcessStarterTemp = objWatchTemp.getStarterObject();
 					if(objProcessStarterTemp.isProcessAlive()==false){	
 						//+++ FALL: OVPN-Process wurde beendet 
 						hmWatchRunnerStatus.put(objProcessStarterTemp.getAlias(), "Stopped. Not listening.");
@@ -230,7 +230,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 	 *
 	 * javadoc created by: 0823, 24.07.2006 - 11:14:11
 	 */
-	public boolean addWatchRunnerThread(ConfigStarterZZZ objStarter){
+	public boolean addWatchRunnerThread(ServerConfigStarterOVPN objStarter){
 		boolean bReturn = false;
 		main:{
 			try {

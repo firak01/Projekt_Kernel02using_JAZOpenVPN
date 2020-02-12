@@ -7,7 +7,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
-import use.openvpn.ConfigFileZZZ;
+import use.openvpn.ConfigFileOVPN;
 
 
 /**This class changes the content of a configuration file.
@@ -15,14 +15,12 @@ import use.openvpn.ConfigFileZZZ;
  * @author 0823
  *
  */
-public class ClientConfigFileZZZ extends ConfigFileZZZ {
+public class ClientConfigFileZZZ extends ConfigFileOVPN {
 	private String sRemoteIP=null;
 	
 	public ClientConfigFileZZZ(IKernelZZZ objKernel, File objFile, String[] saFlagControl) throws ExceptionZZZ {
 		super(objKernel, objFile, saFlagControl);
 	}
-	
-	
 	
 	public boolean isRemoteReachable() throws ExceptionZZZ{
 		boolean bReturn = false;

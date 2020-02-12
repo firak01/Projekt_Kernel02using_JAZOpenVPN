@@ -1,5 +1,6 @@
 package use.openvpn.clientui;
 
+import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -66,9 +67,9 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainZZZ objC
 					//Aber auch nur einen Thread starten !!!
 					if(this.getFlag("ConnectionRunnerStarted")==false){ //DIe Theorie besagt, dass dies erst nach abschluss der Portscanns starten sollte, aber das dauert wohl zu lange. && objConfig.getFlag("PortScanAllFinished")==true){
 						//Den Runner starten ....							
-						String sIP = objConfig.getApplicationObject().getVpnIpRemote();
+						String sIP = ((ClientApplicationOVPN)objConfig.getApplicationObject()).getVpnIpRemote();
 						
-							String sPort = objConfig.getApplicationObject().readVpnPort2Check();									
+							String sPort = ((ClientApplicationOVPN)objConfig.getApplicationObject()).readVpnPort2Check();									
 							this.objWatchRunner = new OVPNConnectionWatchRunnerZZZ(this.getKernelObject(), sIP, sPort, null);
 						
 						this.objWatchThread = new Thread(objWatchRunner);

@@ -8,14 +8,13 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
-import use.openvpn.ConfigChooserZZZ;
+import use.openvpn.AbstractConfigMapperOVPN;
+import use.openvpn.ConfigChooserOVPN;
+import use.openvpn.IMainOVPN;
 
-public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
-	private ServerMainZZZ objServerMain = null;
-		
+public class ServerConfigMapperOVPN extends AbstractConfigMapperOVPN{	
 	public ServerConfigMapperOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain) {
-		super(objKernel);
-		this.setServerMainObject(objServerMain);		
+		super(objKernel, (IMainOVPN) objServerMain);		
 	}
 	
 	/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap
@@ -34,7 +33,7 @@ public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 	 *
 	 * javadoc created by: 0823, 05.07.2006 - 08:34:38
 	 */
-	public static HashMap getConfigPattern(){
+	public HashMap getConfigPattern(){
 		HashMap hmReturn = new HashMap();
 		main:{
 			check:{		
@@ -68,7 +67,7 @@ public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 	 *
 	 * javadoc created by: 0823, 05.07.2006 - 08:31:35
 	 */
-	public static String getConfigRegExp(String sConfiguration) throws ExceptionZZZ{
+	public String getConfigRegExp(String sConfiguration) throws ExceptionZZZ{
 		String sReturn = null;
 		main:{		
 			check:{
@@ -109,7 +108,7 @@ public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 		HashMap objReturn=new HashMap();
 		main:{		
 			String stemp;
-			HashMap hmPattern = ServerConfigMapperOVPN.getConfigPattern();
+			HashMap hmPattern = this.getConfigPattern();
 			if(this.getFlag("useProxy")==true){	
 				String sProxyLine = (String)hmPattern.get("http-proxy");
 				if(sProxyLine!=null){
@@ -190,21 +189,21 @@ public class ServerConfigMapperOVPN extends KernelUseObjectZZZ{
 	
 	//###### GETTER / SETTER
 	public ServerMainZZZ getServerMainObject() {
-		return this.objServerMain;
+		return (ServerMainZZZ) this.getMainObject();
 	}
 	public void setServerMainObject(ServerMainZZZ objServerMain) {
-		this.objServerMain = objServerMain;
+		this.setMainObject((IMainOVPN)objServerMain);
 	}
 	
-	public ConfigChooserZZZ getConfigChooserObject() {
+	public ConfigChooserOVPN getConfigChooserObject() {
 		return this.getServerMainObject().getConfigChooserObject();
 	}
-	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
+	public void setConfigChooserObject(ConfigChooserOVPN objConfigChooser) {
 		this.getServerMainObject().setConfigChooserObject(objConfigChooser);
 	}
 	
 	public ServerApplicationOVPN getApplicationObject() {
-		return this.getServerMainObject().getApplicationObject();
+		return (ServerApplicationOVPN) this.getServerMainObject().getApplicationObject();
 	}
 	public void setApplicationObject(ServerApplicationOVPN objApplication) {
 		this.getServerMainObject().setApplicationObject(objApplication);

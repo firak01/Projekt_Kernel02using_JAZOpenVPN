@@ -1,4 +1,4 @@
-package use.openvpn.server;
+package use.openvpn;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
-import use.openvpn.ConfigChooserZZZ;
-import use.openvpn.ConfigFileZZZ;
+import use.openvpn.ConfigChooserOVPN;
+import use.openvpn.ConfigFileOVPN;
 import use.openvpn.client.ClientConfigMapperOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -18,8 +18,8 @@ import basic.zBasic.util.file.FileTextParserZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
-public class ServerConfigUpdaterZZZ extends KernelUseObjectZZZ {
-private ServerMainZZZ objServer = null;
+public abstract class AbstractConfigUpdaterOVPN extends KernelUseObjectZZZ implements IConfigUpdaterOVPN, IMainUserOVPN {
+private IMainOVPN objMain = null;
 private File objFileTemplate=null;
 private File objFileUsed = null;
 private HashMap hmLine = null;
@@ -28,16 +28,16 @@ private HashMap hmLine = null;
 // Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
-	public ServerConfigUpdaterZZZ(IKernelZZZ objKernel, ServerMainZZZ objServer, ConfigChooserZZZ objConfigChooser, ServerConfigMapperOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapperOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigUpdaterNew_(objServer, objConfigChooser, objConfigMapper, null, saFlagControl);
+		ConfigUpdaterNew_(objMain, objConfigChooser, objConfigMapper, null, saFlagControl);
 	}
-	public ServerConfigUpdaterZZZ(IKernelZZZ objKernel, ConfigChooserZZZ objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigUpdaterNew_(objServer, objConfigChooser, null, hmLine, saFlagControl);
+		ConfigUpdaterNew_(objMain, objConfigChooser, null, hmLine, saFlagControl);
 	}
 	
-	private void ConfigUpdaterNew_(ServerMainZZZ objServer, ConfigChooserZZZ objConfigChooser, ServerConfigMapperOVPN objConfigMapper, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigUpdaterNew_(IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapperOVPN objConfigMapper, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 			//try{		
@@ -56,11 +56,11 @@ private FileTextParserZZZ objParser = null;
 					if(this.getFlag("init")) break main;
 				}
 				
-				if(objServer==null) {
-					ExceptionZZZ ez = new ExceptionZZZ("Client-Object.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				if(objMain==null) {
+					ExceptionZZZ ez = new ExceptionZZZ("Main-Object (Client/Server).", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
-				this.setServerObject(objServer);
+				this.setMainObject(objMain);
 				
 				if(objConfigChooser==null) {
 					ExceptionZZZ ez = new ExceptionZZZ("ConfigChooser-Object containing the paths of the new file.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
@@ -76,10 +76,10 @@ private FileTextParserZZZ objParser = null;
 				if(hmLine==null && objConfigMapper!=null) {
 					this.setConfigMapperObject(objConfigMapper);
 					
-					this.getServerObject().logStatusString( "Creating new configuration file - line(s) by ClientConfigMapperObject.");
+					this.getMainObject().logStatusString( "Creating new configuration file - line(s) by IConfigMapperObject.");
 					hmLine = this.getConfigMapperObject().readTaskHashMap();					
 				}else {
-					this.getServerObject().logStatusString( "Creating new configuration file - line(s) by Hashmap direct.");
+					this.getMainObject().logStatusString( "Creating new configuration file - line(s) by Hashmap direct.");
 				}				
 				if(hmLine.isEmpty()){
 					ExceptionZZZ ez = new ExceptionZZZ("HashMap containing the updated lines.", iERROR_PARAMETER_EMPTY, this, ReflectCodeZZZ.getMethodCurrentName());
@@ -144,9 +144,9 @@ main:{
 	//+++ DIE NEUE ZIELDATEI DEFINIEREN
 	//Den "Template"-Anfang aus dem Dateinamen entfernen.
 	String sName = objFileTemplate.getName();
-	if(sName.toLowerCase().startsWith(ConfigFileZZZ.sFILE_TEMPLATE_PREFIX)){
+	if(sName.toLowerCase().startsWith(ConfigFileOVPN.sFILE_TEMPLATE_PREFIX)){
 		//TODO GOON: Methode entwickeln, welche unabhängig von Groß-/Kleinschreibung arbeitet
-		sName = StringZZZ.right(sName, ConfigFileZZZ.sFILE_TEMPLATE_PREFIX);
+		sName = StringZZZ.right(sName, ConfigFileOVPN.sFILE_TEMPLATE_PREFIX);
 		sName = sName.trim();
 	}
 	
@@ -222,9 +222,9 @@ main:{
 			//Die nicht gesetzten Werte sollen entfernt werden. 
 			//Dazu erst einmal ein Array aller "setzbaren" - werte holen
 			//Die dann gesetzten werte werden daraus entfernt.
-			//Was �brig bleibt wird durch den Parser gel�scht.
+			//Was �brig bleibt wird durch den Parser gelöscht.
 			//TODO GOON: Methode aus einer HashMap eine KEyArray-List zu machen.
-			HashMap hmAll = ClientConfigMapperOVPN.getConfigPattern();			
+			HashMap hmAll = this.getConfigMapperObject().getConfigPattern();			
 			Set objSet2 = hmAll.keySet();
 			String[] saConfig2Remove = new String[hmAll.size()];
 			objSet2.toArray(saConfig2Remove);
@@ -253,7 +253,7 @@ main:{
 				*/
 				for(int icount=0; icount<saConfig.length;icount++){
 					String sConfig = saConfig[icount];
-					String sExp = ClientConfigMapperOVPN.getConfigRegExp(sConfig);					
+					String sExp = this.getConfigMapperObject().getConfigRegExp(sConfig);					
 					if(sExp==null){
 						ExceptionZZZ ez = new ExceptionZZZ("No regular expression available for the configuration '"+ sConfig + "'", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 						throw ez;
@@ -300,7 +300,7 @@ main:{
                 //ALLE ANDEREN ZEILEN L�SCHEN, Falls in dem KonfigurationsTemplate z.B. ein Proxy konfiguriert ist, aber keine Proxy-Zeile gesetzt werden soll
 				for(int icount=0; icount < listaConfig2Remove.size(); icount++){
 					String stemp = (String)listaConfig2Remove.get(icount);
-					String sConfig = ClientConfigMapperOVPN.getConfigRegExp(stemp);
+					String sConfig = this.getConfigMapperObject().getConfigRegExp(stemp);
 					org.apache.regexp.RE objRe = new org.apache.regexp.RE(sConfig);
 				    int itemp = this.objParser.removeLine(objFileNew, objRe);
 				    //if(itemp>= 1) bReturn = true; //Nicht mehr auf false zur�cksezten. Sobald etwas ersetzt wurde, bleibt der Returnwert auf true stehen.
@@ -324,23 +324,17 @@ main:{
 	
 	
 	//############# Getter / Setter
-	public ServerMainZZZ getServerObject() {
-		return this.objServer;
+	public IConfigMapperOVPN getConfigMapperObject() {
+		return this.getMainObject().getConfigMapperObject();
 	}
-	public void setServerObject(ServerMainZZZ objServer) {
-		this.objServer = objServer;
+	public void setConfigMapperObject(IConfigMapperOVPN objConfigMapper) {
+		this.getMainObject().setConfigMapperObject(objConfigMapper);
 	}
-	public ServerConfigMapperOVPN getConfigMapperObject() {
-		return this.getServerObject().getConfigMapperObject();
+	public ConfigChooserOVPN getConfigChooserObject() {
+		return this.getMainObject().getConfigChooserObject();
 	}
-	public void setConfigMapperObject(ServerConfigMapperOVPN objConfigMapper) {
-		this.getServerObject().setConfigMapperObject(objConfigMapper);
-	}
-	public ConfigChooserZZZ getConfigChooserObject() {
-		return this.getServerObject().getConfigChooserObject();
-	}
-	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
-		this.getServerObject().setConfigChooserObject(objConfigChooser);
+	public void setConfigChooserObject(ConfigChooserOVPN objConfigChooser) {
+		this.getMainObject().setConfigChooserObject(objConfigChooser);
 	}
 	public File getFileTemplate(){
 		return this.objFileTemplate;
@@ -360,5 +354,13 @@ main:{
 	}
 	public HashMap getHashMapLine(){
 		return this.hmLine;
+	}
+	@Override
+	public IMainOVPN getMainObject() {
+		return this.objMain;
+	}
+	@Override
+	public void setMainObject(IMainOVPN objMain) {
+		this.objMain = objMain;
 	}		
 }

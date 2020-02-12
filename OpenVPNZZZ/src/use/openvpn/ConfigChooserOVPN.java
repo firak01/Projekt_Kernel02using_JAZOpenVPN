@@ -18,12 +18,12 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class ConfigChooserZZZ extends KernelUseObjectZZZ{
+public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	private File objFileDirRoot = null;
 	private File objFileDirTemplate = null;
 	private String sOvpnContextClientOrServer=null;
 	
-	public ConfigChooserZZZ(IKernelZZZ objKernel, String sOvpnContextClientOrServer){
+	public ConfigChooserOVPN(IKernelZZZ objKernel, String sOvpnContextClientOrServer){
 		super(objKernel);
 		this.setOvpnContextUsed(sOvpnContextClientOrServer);
 	}
@@ -44,7 +44,7 @@ public class ConfigChooserZZZ extends KernelUseObjectZZZ{
 			File objFileExe = null;
 			if(bUseSearch == true){				
 				//AUS DER KOMMANDOZEILE F�R DEN AUFRUF, DAS ROOT-VERZEICNIS DER APPLIKATION ERMITTELN
-				objFileExe = ConfigFileZZZ.findFileExe();
+				objFileExe = ConfigFileOVPN.findFileExe();
 			}else{
 				objFileExe = new File(sFile);
 			}//END if bUseSearch == true;

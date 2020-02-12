@@ -8,14 +8,12 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
-import use.openvpn.ConfigChooserZZZ;
+import use.openvpn.AbstractConfigMapperOVPN;
+import use.openvpn.ConfigChooserOVPN;
 
-public class ClientConfigMapperOVPN extends KernelUseObjectZZZ{
-	private ClientMainZZZ objClientMain = null;
-		
+public class ClientConfigMapperOVPN extends AbstractConfigMapperOVPN{	
 	public ClientConfigMapperOVPN(IKernelZZZ objKernel, ClientMainZZZ objClientMain) {
-		super(objKernel);
-		this.setClientMainObject(objClientMain);		
+		super(objKernel, objClientMain);		
 	}
 	
 	/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap
@@ -34,7 +32,7 @@ public class ClientConfigMapperOVPN extends KernelUseObjectZZZ{
 	 *
 	 * javadoc created by: 0823, 05.07.2006 - 08:34:38
 	 */
-	public static HashMap getConfigPattern(){
+	public HashMap getConfigPattern(){
 		HashMap hmReturn = new HashMap();
 		main:{
 			check:{		
@@ -68,7 +66,7 @@ public class ClientConfigMapperOVPN extends KernelUseObjectZZZ{
 	 *
 	 * javadoc created by: 0823, 05.07.2006 - 08:31:35
 	 */
-	public static String getConfigRegExp(String sConfiguration) throws ExceptionZZZ{
+	public String getConfigRegExp(String sConfiguration) throws ExceptionZZZ{
 		String sReturn = null;
 		main:{		
 			check:{
@@ -109,7 +107,7 @@ public class ClientConfigMapperOVPN extends KernelUseObjectZZZ{
 		HashMap objReturn=new HashMap();
 		main:{		
 			String stemp;
-			HashMap hmPattern = ClientConfigMapperOVPN.getConfigPattern();
+			HashMap hmPattern = this.getConfigPattern();
 			if(this.getFlag("useProxy")==true){	
 				String sProxyLine = (String)hmPattern.get("http-proxy");
 				if(sProxyLine!=null){
@@ -127,7 +125,7 @@ public class ClientConfigMapperOVPN extends KernelUseObjectZZZ{
 					
 			String sRemoteLine = (String)hmPattern.get("remote");
 			if(sRemoteLine!=null){
-				stemp = StringZZZ.replace(sRemoteLine, "%ip%", this.getClientMainObject().getApplicationObject().getIpRemote());					
+				stemp = StringZZZ.replace(sRemoteLine, "%ip%", ((ClientApplicationOVPN)this.getClientMainObject().getApplicationObject()).getIpRemote());					
 				objReturn.put("remote", stemp);
 			}	
 			
@@ -176,7 +174,7 @@ public class ClientConfigMapperOVPN extends KernelUseObjectZZZ{
 			//20200126: Einträge für ifconfig, damit hier auch keine Fehlkonfiguration im OVPNTemplate möglich ist.
 			String sIfconfigLine = (String)hmPattern.get("ifconfig");
 			stemp = StringZZZ.replace(sIfconfigLine, "%vpnipremote%", this.getClientMainObject().getApplicationObject().getVpnIpRemote());
-			stemp = StringZZZ.replace(stemp, "%vpniplocal%", this.getClientMainObject().getApplicationObject().getVpnIpLocal());
+			stemp = StringZZZ.replace(stemp, "%vpniplocal%", ((ClientApplicationOVPN)this.getClientMainObject().getApplicationObject()).getVpnIpLocal());
 			objReturn.put("ifconfig", stemp);
 			
 			//2020126: Einträge für dev-node, damit hier auch keine Fehlkonfiguration im OVPNTemplate möglich ist.
@@ -189,21 +187,21 @@ public class ClientConfigMapperOVPN extends KernelUseObjectZZZ{
 	
 	//###### GETTER / SETTER
 	public ClientMainZZZ getClientMainObject() {
-		return this.objClientMain;
+		return (ClientMainZZZ) this.getMainObject();
 	}
 	public void setClientMainObject(ClientMainZZZ objClientMain) {
-		this.objClientMain = objClientMain;
+		this.setMainObject(objClientMain);
 	}
 	
-	public ConfigChooserZZZ getConfigChooserObject() {
+	public ConfigChooserOVPN getConfigChooserObject() {
 		return this.getClientMainObject().getConfigChooserObject();
 	}
-	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
+	public void setConfigChooserObject(ConfigChooserOVPN objConfigChooser) {
 		this.getClientMainObject().setConfigChooserObject(objConfigChooser);
 	}
 	
 	public ClientApplicationOVPN getApplicationObject() {
-		return this.getClientMainObject().getApplicationObject();
+		return (ClientApplicationOVPN) this.getClientMainObject().getApplicationObject();
 	}
 	public void setApplicationObject(ClientApplicationOVPN objApplication) {
 		this.getClientMainObject().setApplicationObject(objApplication);

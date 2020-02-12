@@ -7,7 +7,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
-import use.openvpn.ConfigFileZZZ;
+import use.openvpn.ConfigFileOVPN;
 
 public class OVPNFileFilterConfigTemplateZZZ implements FilenameFilter {
 	FileFilterEndingZZZ objFilterEnding;
@@ -34,10 +34,10 @@ public class OVPNFileFilterConfigTemplateZZZ implements FilenameFilter {
 		if(this.objFilterEnding.accept(objFileDir, sName)==false) break main;
 				
 		//Template-Dateinamen fangen eben mit einem bestimmten String an.
-		if(!ConfigFileZZZ.isTemplate(sName)) break main;
+		if(!ConfigFileOVPN.isTemplate(sName)) break main;
 		
 		//Falls der Anfang nicht passt
-		String sNameWithoutTemplate = StringZZZ.rightback(sName,ConfigFileZZZ.sFILE_TEMPLATE_PREFIX);
+		String sNameWithoutTemplate = StringZZZ.rightback(sName,ConfigFileOVPN.sFILE_TEMPLATE_PREFIX);
 		if(this.objFilterPrefix.accept(objFileDir, sNameWithoutTemplate)==false) break main;
 						
 		bReturn = true;

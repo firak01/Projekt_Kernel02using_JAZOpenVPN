@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import use.openvpn.ConfigStarterZZZ;
-import use.openvpn.ConfigChooserZZZ;
-import use.openvpn.ConfigFileZZZ;
+import use.openvpn.AbstractMainOVPN;
+import use.openvpn.ConfigChooserOVPN;
+import use.openvpn.IMainOVPN;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapperOVPN;
@@ -26,10 +26,10 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
-public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
-	private ServerApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
-	private ConfigChooserZZZ objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
-	private ServerConfigMapperOVPN objConfigMapper = null; //Objekt, dass ein Mapping zu passenden Templatezeilen verwaltet.
+public class ServerMainZZZ extends AbstractMainOVPN {
+//	private ServerApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
+//	private ConfigChooserOVPN objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
+//	private ServerConfigMapperOVPN objConfigMapper = null; //Objekt, dass ein Mapping zu passenden Templatezeilen verwaltet.
 
 	private String sStatusCurrent = null; //Hier�ber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
 	private ArrayList listaStatus = new ArrayList(); //Hier�ber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
@@ -41,31 +41,7 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 	                                                                      //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
 
 	public ServerMainZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel); 
-		ServerMainNew_(saFlagControl);
-	}
-	
-	private void ServerMainNew_(String[] saFlagControl) throws ExceptionZZZ{
-		main:{
-			
-			check:{
-		 		
-				if(saFlagControl != null){
-					String stemp; boolean btemp;
-					for(int iCount = 0;iCount<=saFlagControl.length-1;iCount++){
-						stemp = saFlagControl[iCount];
-						btemp = setFlag(stemp, true);
-						if(btemp==false){ 								   
-							   ExceptionZZZ ez = new ExceptionZZZ( stemp, iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							  
-							   throw ez;		 
-						}
-					}
-					if(this.getFlag("init")) break main;
-				}
-										
-			}//End check
-	
-		}//END mai
+		super(objKernel, saFlagControl);
 	}
 
 	/**Entrypoint for managing the configuration files for "OpenVPN" client.
@@ -87,7 +63,7 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 			ServerApplicationOVPN objApplication = new ServerApplicationOVPN(objKernel, this);
 			this.setApplicationObject(objApplication);
 			
-			ConfigChooserZZZ objChooser = new ConfigChooserZZZ(objKernel,"server");
+			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"server");
 			this.setConfigChooserObject(objChooser);
 			
 			ServerConfigMapperOVPN objMapper = new ServerConfigMapperOVPN(objKernel, this);
@@ -124,7 +100,7 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 			
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
 			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");		
-			ServerConfigUpdaterZZZ objUpdater = new ServerConfigUpdaterZZZ(objKernel, this, objChooser, objConfigMapper, null);
+			ServerConfigUpdaterOVPN objUpdater = new ServerConfigUpdaterOVPN(objKernel, this, objChooser, objMapper, null);
 			//ArrayList listaFileConfig = new ArrayList(objaFileConfigTemplate.length);
 			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){		
 				
@@ -195,7 +171,7 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 			//++++++++++++++++++++++++++++++
 			//Starterlaubnis: L�uft schon ovpn ???
 		   //TODO KernelWMIZZZ eines win32 - packages.
-			File objFileExe = ServerConfigFileZZZ.findFileExe();   //Anders als im Client muss nix weiter gemacht werden
+			File objFileExe = ServerConfigFileOVPN.findFileExe();   //Anders als im Client muss nix weiter gemacht werden
 			if(objFileExe!=null){
 				String sExeCaption = objFileExe.getName();
 								
@@ -253,7 +229,7 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 				File objFile = (File) listaFileConfigUsed.get(icount);
 				String sAlias = Integer.toString(icount);
 				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endg�ltige auszuf�hrende Befehl �ber eine Batch gegeben werden muss. Herausgefunden durch Try and Error.
-				ConfigStarterZZZ objStarter = new ConfigStarterZZZ(objKernel, objFile, sAlias, saTemp);
+				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, objFile, sAlias, saTemp);
 				this.logStatusString("Requesting start of process #"+ icount + " (File: " + objFile.getName() + ")");				
 				Process objProcessTemp = objStarter.requestStart();			
 				if(objProcessTemp==null){
@@ -362,7 +338,7 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 		return this.listaStatus;
 	}
 	
-	 public  boolean addProcessStarter(ConfigStarterZZZ objStarter){
+	 public  boolean addProcessStarter(ServerConfigStarterOVPN objStarter){
 		 boolean bReturn = false;
 		 main:{
 			 check:{
@@ -381,13 +357,13 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 	 *
 	 * javadoc created by: 0823, 24.07.2006 - 09:32:09
 	 */
-	public ConfigStarterZZZ getProcessStarter(int iPosition){
-		 ConfigStarterZZZ objReturn=null;
+	public ServerConfigStarterOVPN getProcessStarter(int iPosition){
+		ServerConfigStarterOVPN objReturn=null;
 		 main:{
 			 check:{				
 				 if(iPosition<= 0 || iPosition > listaConfigStarter.size()) break main;
 			 }//END check
-		 	objReturn = (ConfigStarterZZZ) listaConfigStarter.get(iPosition);
+		 	objReturn = (ServerConfigStarterOVPN) listaConfigStarter.get(iPosition);
 		 	
 		 }//END main
 		 return objReturn;
@@ -486,24 +462,24 @@ public class ServerMainZZZ extends KernelUseObjectZZZ implements Runnable{
 	}
 
 	//##### GETTER / SETTER
-	public ConfigChooserZZZ getConfigChooserObject() {
-		return this.objConfigChooser;
-	}
-	public void setConfigChooserObject(ConfigChooserZZZ objConfigChooser) {
-		this.objConfigChooser = objConfigChooser;
-	}
-	
-	public ServerConfigMapperOVPN getConfigMapperObject() {
-		return this.objConfigMapper;
-	}
-	public void setConfigMapperObject(ServerConfigMapperOVPN objConfigMapper) {
-		this.objConfigMapper = objConfigMapper;
-	}
-	
-	public ServerApplicationOVPN getApplicationObject() {
-		return this.objApplication;
-	}
-	public void setApplicationObject(ServerApplicationOVPN objApplication) {
-		this.objApplication = objApplication;
-	}
+//	public ConfigChooserOVPN getConfigChooserObject() {
+//		return this.objConfigChooser;
+//	}
+//	public void setConfigChooserObject(ConfigChooserOVPN objConfigChooser) {
+//		this.objConfigChooser = objConfigChooser;
+//	}
+//	
+//	public ServerConfigMapperOVPN getConfigMapperObject() {
+//		return this.objConfigMapper;
+//	}
+//	public void setConfigMapperObject(ServerConfigMapperOVPN objConfigMapper) {
+//		this.objConfigMapper = objConfigMapper;
+//	}
+//	
+//	public ServerApplicationOVPN getApplicationObject() {
+//		return this.objApplication;
+//	}
+//	public void setApplicationObject(ServerApplicationOVPN objApplication) {
+//		this.objApplication = objApplication;
+//	}
 }//END class
