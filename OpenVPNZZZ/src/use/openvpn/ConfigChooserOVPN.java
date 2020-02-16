@@ -19,7 +19,8 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class ConfigChooserOVPN extends KernelUseObjectZZZ{
-	private File objFileDirRoot = null;
+	private File objFileDirExe = null;
+	private File objFileDirExeRoot = null;
 	private File objFileDirTemplate = null;
 	private String sOvpnContextClientOrServer=null;
 	
@@ -28,8 +29,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 		this.setOvpnContextUsed(sOvpnContextClientOrServer);
 	}
 	
-	
-	public File findDirectoryRoot() throws ExceptionZZZ{
+	public File findDirectoryExe() throws ExceptionZZZ{
 		File objReturn = null;
 		main:{
 			//+++ Prüfen, ob nicht ein anderes Verzeichnis konfiguriert ist
@@ -60,11 +60,16 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			}
 			
 			//Nun das Verzeichnis holen. Es wird erwartet, dass die configuration dort liegt. 
-			String sDir = objFileExe.getParent();
-			
-			File objFileDir = new File(sDir);
-			sDir = objFileDir.getParent();
-			objReturn = new File(sDir);					
+			objReturn = objFileExe.getParentFile();								
+		}//END main
+		return objReturn;
+	}
+	
+	public File findDirectoryExeRoot() throws ExceptionZZZ{
+		File objReturn = null;
+		main:{
+			File objFileExe = this.findDirectoryExe();
+			objReturn = objFileExe.getParentFile();					
 		}//END main
 		return objReturn;
 	}
@@ -268,7 +273,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 		String sReturn = new String("");
 		main:{
 		
-			File objDirRoot = this.getDirectoryRoot();
+			File objDirRoot = this.getDirectoryExeRoot();
 			if(objDirRoot==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive root directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
@@ -334,15 +339,30 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	}
 	
 	//####### Getter / Setterr
-	public File getDirectoryRoot() throws ExceptionZZZ{
-		if(this.objFileDirRoot==null){
-			return this.findDirectoryRoot();
-		}else{
-			return this.objFileDirRoot;
+	public File getDirectoryExeRoot() throws ExceptionZZZ{
+		if(this.objFileDirExeRoot==null){
+			this.objFileDirExeRoot = this.findDirectoryExeRoot();
 		}
+		return this.objFileDirExeRoot;		
 	}
-	public void setDirectoryRoot(File objDir){
-		this.objFileDirRoot = objDir;
+	/** Private, da das Verzeichnis primär von der exe-Installation abhängt und nicht frei definiert werden kann.
+	 * @param objDir
+	 */
+	private void setDirectoryExeRoot(File objDir){
+		this.objFileDirExeRoot = objDir;
+	}	
+	public File getDirectoryExe() throws ExceptionZZZ{
+		if(this.objFileDirExe==null){
+			this.objFileDirExe = this.findDirectoryExe();
+		}
+		return this.objFileDirExe;		
+	}
+	
+	/** Private, da das Verzeichnis primär von der exe-Installation abhängt und nicht frei definiert werden kann.
+	 * @param objDir
+	 */
+	private void setDirectoryExe(File objDir){
+		this.objFileDirExe = objDir;
 	}
 	
 	public File getDirectoryTemplate() throws ExceptionZZZ{

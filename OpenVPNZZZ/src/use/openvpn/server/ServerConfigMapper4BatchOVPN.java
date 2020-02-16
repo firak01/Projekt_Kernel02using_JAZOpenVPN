@@ -59,11 +59,11 @@ pause
 			 */
 			
 			
-			File objDirectoryExeOvpn = this.getServerMainObject().getConfigChooserObject().getDirectoryRoot();
+			File objDirectoryExeOvpn = this.getServerMainObject().getConfigChooserObject().getDirectoryExe();
 			String sDirectoryExeOvpn = objDirectoryExeOvpn.getAbsolutePath();
 			String sFileExeOvpn = sDirectoryExeOvpn+File.separator+"openvpn.exe";
 			
-			File objDirectoryTemplateOvpn = this.getServerMainObject().getConfigChooserObject().getDirectoryTemplate();
+			File objDirectoryTemplateOvpn = this.getServerMainObject().getConfigChooserObject().getDirectoryConfig();
 			String sDirectoryTemplateOvpn = objDirectoryTemplateOvpn.getAbsolutePath();
 			
 			//Nur eine konkrete, für den Start der Batch verwendete Konfiguration hier behandeln
