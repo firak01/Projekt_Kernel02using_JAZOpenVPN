@@ -1,4 +1,4 @@
-package use.openvpn.server;
+package use.openvpn.client;
 
 import java.io.File;
 import java.util.HashMap;
@@ -8,13 +8,12 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
-import use.openvpn.AbstractConfigMapperOVPN;
+import use.openvpn.AbstractConfigMapper4TemplateOVPN;
 import use.openvpn.ConfigChooserOVPN;
-import use.openvpn.IMainOVPN;
 
-public class ServerConfigMapperOVPN extends AbstractConfigMapperOVPN{	
-	public ServerConfigMapperOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain) {
-		super(objKernel, (IMainOVPN) objServerMain);		
+public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4TemplateOVPN{	
+	public ClientConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ClientMainZZZ objClientMain) {
+		super(objKernel, objClientMain);		
 	}
 	
 	/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap
@@ -40,7 +39,7 @@ public class ServerConfigMapperOVPN extends AbstractConfigMapperOVPN{
 			}
 		
 			//Die %xyz% Einträge sollen dann ersetzt werden.
-			//Der Server horcht, er muss nix zu einer Gegenstelle aufbauen: hmReturn.put("remote", "remote %ip%");
+			hmReturn.put("remote", "remote %ip%");
 			hmReturn.put("http-proxy", "http-proxy %proxy% %port%");
 			hmReturn.put("http-proxy-timeout", "http-proxy-timeout %timeout%");
 			
@@ -77,7 +76,7 @@ public class ServerConfigMapperOVPN extends AbstractConfigMapperOVPN{
 		
 			//Hashmap erstellen. TODO GOON Dies an eine Stelle auslagern, so dass es nur einmal gemacht werden braucht.
 			HashMap hmConfig = new HashMap();
-			//Der Server horcht, er muss nix zu einer Gegenstelle aufbauen:hmConfig.put("remote", "^remote ");
+			hmConfig.put("remote", "^remote ");
 			hmConfig.put("http-proxy", "^http-proxy ");
 			hmConfig.put("http-proxy-timeout", "^http-proxy-timeout ");
 			
@@ -112,8 +111,8 @@ public class ServerConfigMapperOVPN extends AbstractConfigMapperOVPN{
 			if(this.getFlag("useProxy")==true){	
 				String sProxyLine = (String)hmPattern.get("http-proxy");
 				if(sProxyLine!=null){
-					stemp = StringZZZ.replace(sProxyLine, "%proxy%", this.getServerMainObject().getApplicationObject().getProxyHost());
-					stemp = StringZZZ.replace(stemp, "%port%", this.getServerMainObject().getApplicationObject().getProxyPort());
+					stemp = StringZZZ.replace(sProxyLine, "%proxy%", this.getClientMainObject().getApplicationObject().getProxyHost());
+					stemp = StringZZZ.replace(stemp, "%port%", this.getClientMainObject().getApplicationObject().getProxyPort());
 					objReturn.put("http-proxy", stemp);
 					}
 				
@@ -124,12 +123,11 @@ public class ServerConfigMapperOVPN extends AbstractConfigMapperOVPN{
 				}	
 			}//END "useProxy"
 					
-//          Den Sever zeihnet aus, dass er nur "horcht" und nicht aktiv mit einer Gegenstelle die Verbindung aufbaut
-//			String sRemoteLine = (String)hmPattern.get("remote");
-//			if(sRemoteLine!=null){
-//				stemp = StringZZZ.replace(sRemoteLine, "%ip%", this.getServerMainObject().getApplicationObject().getIpRemote());					
-//				objReturn.put("remote", stemp);
-//			}	
+			String sRemoteLine = (String)hmPattern.get("remote");
+			if(sRemoteLine!=null){
+				stemp = StringZZZ.replace(sRemoteLine, "%ip%", ((ClientApplicationOVPN)this.getClientMainObject().getApplicationObject()).getIpRemote());					
+				objReturn.put("remote", stemp);
+			}	
 			
 			
 			//20200123: Der Name der Certifier Dateien entspricht dem Namen der Maschine.
@@ -142,24 +140,24 @@ public class ServerConfigMapperOVPN extends AbstractConfigMapperOVPN{
 				String sHostname = EnvironmentZZZ.getHostName();
 				sCertifierLine = (String)hmPattern.get("cert");				
 				if(sCertifierLine!=null) {					
-					sFileCertifier = sHostname.toUpperCase() + "_SERVER.crt";									
+					sFileCertifier = sHostname.toUpperCase() + "_CLIENT.crt";									
 				}
 				
 				//+++++++++++++
 				sKeyLine = (String)hmPattern.get("key");
 				if(sKeyLine!=null) {
-					sFileKey = sHostname.toUpperCase() + "_SERVER.key";
+					sFileKey = sHostname.toUpperCase() + "_CLIENT.key";
 				}
 			}else { //###################################################
 				sCertifierLine = (String)hmPattern.get("cert");				
 				if(sCertifierLine!=null) {					
-					sFileCertifier = "PAUL_HINDENBURG_SERVER.crt";													
+					sFileCertifier = "PAUL_HINDENBURG_CLIENT.crt";													
 				}
 				
 				//+++++++++++++
 				sKeyLine = (String)hmPattern.get("key");
 				if(sKeyLine!=null) {
-					sFileKey = "PAUL_HINDENBURG_SERVER.key";									
+					sFileKey = "PAUL_HINDENBURG_CLIENT.key";									
 				}
 			}
 			if(sCertifierLine!=null) {
@@ -175,38 +173,38 @@ public class ServerConfigMapperOVPN extends AbstractConfigMapperOVPN{
 			
 			//20200126: Einträge für ifconfig, damit hier auch keine Fehlkonfiguration im OVPNTemplate möglich ist.
 			String sIfconfigLine = (String)hmPattern.get("ifconfig");
-			stemp = StringZZZ.replace(sIfconfigLine, "%vpnipremote%", this.getServerMainObject().getApplicationObject().getVpnIpRemote());
-			stemp = StringZZZ.replace(stemp, "%vpniplocal%", this.getServerMainObject().getApplicationObject().getVpnIpLocal());
+			stemp = StringZZZ.replace(sIfconfigLine, "%vpnipremote%", this.getClientMainObject().getApplicationObject().getVpnIpRemote());
+			stemp = StringZZZ.replace(stemp, "%vpniplocal%", ((ClientApplicationOVPN)this.getClientMainObject().getApplicationObject()).getVpnIpLocal());
 			objReturn.put("ifconfig", stemp);
 			
 			//2020126: Einträge für dev-node, damit hier auch keine Fehlkonfiguration im OVPNTemplate möglich ist.
 			String sDevNodeLine = (String)hmPattern.get("dev-node");
-			stemp = StringZZZ.replace(sDevNodeLine, "%tapadapterusedlocal%", this.getServerMainObject().getApplicationObject().getTapAdapterUsed());
+			stemp = StringZZZ.replace(sDevNodeLine, "%tapadapterusedlocal%", this.getClientMainObject().getApplicationObject().getTapAdapterUsed());
 			objReturn.put("dev-node", stemp);
 		}//END main:
 		return objReturn;
 	}
 	
 	//###### GETTER / SETTER
-	public ServerMainZZZ getServerMainObject() {
-		return (ServerMainZZZ) this.getMainObject();
+	public ClientMainZZZ getClientMainObject() {
+		return (ClientMainZZZ) this.getMainObject();
 	}
-	public void setServerMainObject(ServerMainZZZ objServerMain) {
-		this.setMainObject((IMainOVPN)objServerMain);
+	public void setClientMainObject(ClientMainZZZ objClientMain) {
+		this.setMainObject(objClientMain);
 	}
 	
 	public ConfigChooserOVPN getConfigChooserObject() {
-		return this.getServerMainObject().getConfigChooserObject();
+		return this.getClientMainObject().getConfigChooserObject();
 	}
 	public void setConfigChooserObject(ConfigChooserOVPN objConfigChooser) {
-		this.getServerMainObject().setConfigChooserObject(objConfigChooser);
+		this.getClientMainObject().setConfigChooserObject(objConfigChooser);
 	}
 	
-	public ServerApplicationOVPN getApplicationObject() {
-		return (ServerApplicationOVPN) this.getServerMainObject().getApplicationObject();
+	public ClientApplicationOVPN getApplicationObject() {
+		return (ClientApplicationOVPN) this.getClientMainObject().getApplicationObject();
 	}
-	public void setApplicationObject(ServerApplicationOVPN objApplication) {
-		this.getServerMainObject().setApplicationObject(objApplication);
+	public void setApplicationObject(ClientApplicationOVPN objApplication) {
+		this.getClientMainObject().setApplicationObject(objApplication);
 	}
 	
 	

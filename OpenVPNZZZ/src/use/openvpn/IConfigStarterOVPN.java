@@ -1,6 +1,7 @@
 package use.openvpn;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import basic.zBasic.ExceptionZZZ;
 
@@ -17,6 +18,6 @@ public interface IConfigStarterOVPN {
 	public File getFileConfig();
 	public String getOvpnContextUsed();
 	public void setOvpnContextUsed(String sOvpnContextClientOrServer);
-		
-
+	
+	public ArrayList<String>computeBatchLines(File fileConfigTemplateOvpn) throws ExceptionZZZ;
 }

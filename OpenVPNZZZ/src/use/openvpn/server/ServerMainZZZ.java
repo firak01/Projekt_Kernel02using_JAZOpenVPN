@@ -11,7 +11,7 @@ import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
-import use.openvpn.client.ClientConfigMapperOVPN;
+import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientConfigUpdaterZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
@@ -30,6 +30,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 //	private ServerApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
 //	private ConfigChooserOVPN objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
 //	private ServerConfigMapperOVPN objConfigMapper = null; //Objekt, dass ein Mapping zu passenden Templatezeilen verwaltet.
+	private ArrayList<File> listaConfigFile = null;
 
 	private String sStatusCurrent = null; //Hier�ber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
 	private ArrayList listaStatus = new ArrayList(); //Hier�ber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
@@ -66,7 +67,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"server");
 			this.setConfigChooserObject(objChooser);
 			
-			ServerConfigMapperOVPN objMapper = new ServerConfigMapperOVPN(objKernel, this);
+			ServerConfigMapper4TemplateOVPN objMapper = new ServerConfigMapper4TemplateOVPN(objKernel, this);
 			this.setConfigMapperObject(objMapper);
 			
 			
@@ -122,7 +123,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			}//end for
 			
 			//ABER: Es werden nur die Konfigurationsdateien verwendet, die auch konfiguriert sind. Falls nix konfiguriert ist, werden alle gefundenen verwendet.
-			ArrayList listaFileConfigUsed = new ArrayList();
+			ArrayList<File> listaFileConfigUsed = this.getConfigFileObjectsAll();
 			String sFileConfigConfigured = objKernel.getParameterByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();			
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);//.findFileConfigTemplate(null);
 			if(StringZZZ.isEmpty(sFileConfigConfigured)){
@@ -482,4 +483,15 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 //	public void setApplicationObject(ServerApplicationOVPN objApplication) {
 //		this.objApplication = objApplication;
 //	}
+	
+	
+	public ArrayList<File> getConfigFileObjectsAll() {
+		if(this.listaConfigFile==null) {
+			this.listaConfigFile = new ArrayList<File>();
+		}
+		return this.listaConfigFile;
+	}
+	public void setConfigFileObjectsAll(ArrayList<File> listaConfigFile) {
+		this.listaConfigFile = listaConfigFile;
+	}
 }//END class

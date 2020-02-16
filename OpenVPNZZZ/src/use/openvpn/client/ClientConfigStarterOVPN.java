@@ -2,8 +2,7 @@ package use.openvpn.client;
 
 import java.io.File;
 import java.io.IOException;
-
-
+import java.util.ArrayList;
 
 import basic.zKernel.KernelZZZ;
 import use.openvpn.AbstractConfigStarterOVPN;
@@ -110,6 +109,12 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 		}
 		this.setProcess(objReturn);
 		return objReturn;
+	}
+
+	@Override
+	public ArrayList<String> computeBatchLines(File fileConfigTemplateOvpn) throws ExceptionZZZ {
+		//Client wird derzeit noch nicht per Batch gestartet.
+		return null;
 	}
 	
 	

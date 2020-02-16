@@ -2,8 +2,7 @@ package use.openvpn;
 
 import java.io.File;
 import java.io.IOException;
-
-
+import java.util.ArrayList;
 
 import basic.zKernel.KernelZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -238,4 +237,7 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 
 	@Override
 	public abstract Process requestStart() throws ExceptionZZZ;
+	
+	@Override
+	public abstract ArrayList<String> computeBatchLines(File objFileTemplateOvpn) throws ExceptionZZZ;
 }//END class

@@ -2,8 +2,10 @@ package use.openvpn.server;
 
 import java.io.File;
 import java.io.IOException;
-
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
 import use.openvpn.AbstractConfigStarterOVPN;
@@ -14,6 +16,8 @@ import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.file.FileEasyZZZ;
+import basic.zBasic.util.file.FileTextWriterZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
@@ -86,22 +90,35 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				if (this.getFlag("byBatch")==false){			
 					this.getLogObject().WriteLineDate("Excecuting direkt 'not implemented'");									
 				}else{
-					//Das funktioniert das beim Server, indirekt über eine Batch starten
-					//TODO GOON 20200205
-					//-1. Name der zu verwendenden Batch Datei ausrechnen.
+					//Das funktioniert das beim Server, indirekt über eine Batch starten					
+					//Name der zu verwendenden Batch Datei ausrechnen.
 					String sBatch = this.computeBatchPath();
 					
 					//0. Bestehende Batch Datei suchen und löschen
-					//000000000000
+					boolean  bBatchExists = FileEasyZZZ.exists(sBatch);
+					if(bBatchExists) {
+						this.getLogObject().WriteLineDate("Deleting existing batch file: '"+sBatch +"'.");
+						boolean bSuccess = FileEasyZZZ.removeFile(sBatch);
+						if(bSuccess) {
+							this.getLogObject().WriteLineDate("Existing batch file successful deleted.");
+						}else {
+							this.getLogObject().WriteLineDate("Unable to delete existing batch.");
+						}
+					}
 					
-					//1. Batch File neu erstellen (wg. ggfs. anderen/neuen Code)	
+					
+					//TODO GOON 20200213
+					//1. Batch File neu erstellen (wg. ggfs. anderen/neuen Code)
 					//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.
-					
-					//111111111111
+					FileTextWriterZZZ objBatch = new FileTextWriterZZZ(sBatch);					
+					ArrayList<String> listaLine = this.computeBatchLines(this.getFileConfig());
+					for(String sLine : listaLine){
+						objBatch.writeLine(sLine);
+					}
 					
 					//2. Batch File starten
 					ConfigChooserOVPN objPathConfig = new ConfigChooserOVPN(this.getKernelObject(), this.getOvpnContextUsed());				
-					String sCommandBatch = objPathConfig.getDirectoryConfig()+ File.separator+"starter_"+ this.getFileConfig().getName() + ".bat";
+					String sCommandBatch = sBatch; //objPathConfig.getDirectoryConfig()+ File.separator+"starter_"+ this.getFileConfig().getName() + ".bat";
 					this.getLogObject().WriteLineDate("Excecuting by Batch '"+ sCommandBatch +"'");				
 					objReturn = load.exec("cmd /c " + sCommandBatch);
 				}//END if
@@ -139,7 +156,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 		main:{			
 			File objFile = this.getFileConfig();
 			if(objFile==null)break main;
-			String sConfigName = sBATCH_STARTER_PREFIX + objFile.getName() + ".bat";
+			sReturn = sBATCH_STARTER_PREFIX + objFile.getName() + ".bat";
 		}
 		return sReturn;
 	}
@@ -152,6 +169,21 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	}
 	public void setServerObject(ServerMainZZZ objServer) {
 		this.setMainObject((IMainOVPN) objServer);
+	}
+
+	@Override
+	public ArrayList<String> computeBatchLines(File fileConfigTemplateOvpn) throws ExceptionZZZ {
+		ArrayList<String>listasReturn=new ArrayList<String>();
+		main:{
+			ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject());
+			HashMap<String,String>hmBatchLines = objMapperBatch.readTaskHashMap(fileConfigTemplateOvpn);
+			Set<String> setBatchLineNumber = hmBatchLines.keySet();
+			for(String sLineNumber : setBatchLineNumber) {
+				String sLine = hmBatchLines.get(sLineNumber);
+				listasReturn.add(sLine);
+			}			
+		}
+		return listasReturn;
 	}
 	
 }//END class

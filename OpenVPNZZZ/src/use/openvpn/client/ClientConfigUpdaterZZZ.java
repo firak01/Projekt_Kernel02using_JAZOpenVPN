@@ -23,7 +23,7 @@ public class ClientConfigUpdaterZZZ extends AbstractConfigUpdaterOVPN {
 // Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
-	public ClientConfigUpdaterZZZ(IKernelZZZ objKernel, ClientMainZZZ objClient, ConfigChooserOVPN objConfigChooser, ClientConfigMapperOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientConfigUpdaterZZZ(IKernelZZZ objKernel, ClientMainZZZ objClient, ConfigChooserOVPN objConfigChooser, ClientConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, objClient, objConfigChooser, objConfigMapper, saFlagControl);
 	}
 		
@@ -34,10 +34,10 @@ private FileTextParserZZZ objParser = null;
 	public void setClientObject(ClientMainZZZ objClient) {
 		this.setMainObject(objClient);
 	}
-	public ClientConfigMapperOVPN getConfigMapperObject() {
-		return (ClientConfigMapperOVPN) this.getClientObject().getConfigMapperObject();
+	public ClientConfigMapper4TemplateOVPN getConfigMapperObject() {
+		return (ClientConfigMapper4TemplateOVPN) this.getClientObject().getConfigMapperObject();
 	}
-	public void setConfigMapperObject(ClientConfigMapperOVPN objConfigMapper) {
+	public void setConfigMapperObject(ClientConfigMapper4TemplateOVPN objConfigMapper) {
 		this.getClientObject().setConfigMapperObject(objConfigMapper);
 	}
 	public ConfigChooserOVPN getConfigChooserObject() {

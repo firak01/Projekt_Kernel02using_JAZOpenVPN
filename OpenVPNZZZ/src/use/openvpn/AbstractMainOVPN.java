@@ -9,7 +9,7 @@ import basic.zKernel.KernelUseObjectZZZ;
 public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Runnable,IMainOVPN{
 	private IApplicationOVPN objApplication = null;
 	private ConfigChooserOVPN objConfigChooser = null;
-	private IConfigMapperOVPN objConfigMapper = null;
+	private IConfigMapper4TemplateOVPN objConfigMapper = null;
 	
 	
 	private String sStatusCurrent = null; //Hier�ber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
@@ -101,12 +101,12 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	}
 
 	@Override
-	public IConfigMapperOVPN getConfigMapperObject() {
+	public IConfigMapper4TemplateOVPN getConfigMapperObject() {
 		return this.objConfigMapper;
 	}
 
 	@Override
-	public void setConfigMapperObject(IConfigMapperOVPN objConfigMapper) {
+	public void setConfigMapperObject(IConfigMapper4TemplateOVPN objConfigMapper) {
 		this.objConfigMapper = objConfigMapper;
 	}
 }

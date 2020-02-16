@@ -10,7 +10,7 @@ public interface IMainOVPN {
 	public ConfigChooserOVPN getConfigChooserObject();
 	public void setConfigChooserObject(ConfigChooserOVPN objConfigChooser);
 	
-	public IConfigMapperOVPN getConfigMapperObject();
-	public void setConfigMapperObject(IConfigMapperOVPN objConfigMapper);
+	public IConfigMapper4TemplateOVPN getConfigMapperObject();
+	public void setConfigMapperObject(IConfigMapper4TemplateOVPN objConfigMapper);
 	
 }

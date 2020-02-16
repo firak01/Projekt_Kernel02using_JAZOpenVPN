@@ -9,7 +9,7 @@ import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.ConfigFileOVPN;
-import use.openvpn.client.ClientConfigMapperOVPN;
+import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -28,7 +28,7 @@ private HashMap hmLine = null;
 // Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
-	public AbstractConfigUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapperOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ConfigUpdaterNew_(objMain, objConfigChooser, objConfigMapper, null, saFlagControl);
 	}
@@ -37,7 +37,7 @@ private FileTextParserZZZ objParser = null;
 		ConfigUpdaterNew_(objMain, objConfigChooser, null, hmLine, saFlagControl);
 	}
 	
-	private void ConfigUpdaterNew_(IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapperOVPN objConfigMapper, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigUpdaterNew_(IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 			//try{		
@@ -324,10 +324,10 @@ main:{
 	
 	
 	//############# Getter / Setter
-	public IConfigMapperOVPN getConfigMapperObject() {
+	public IConfigMapper4TemplateOVPN getConfigMapperObject() {
 		return this.getMainObject().getConfigMapperObject();
 	}
-	public void setConfigMapperObject(IConfigMapperOVPN objConfigMapper) {
+	public void setConfigMapperObject(IConfigMapper4TemplateOVPN objConfigMapper) {
 		this.getMainObject().setConfigMapperObject(objConfigMapper);
 	}
 	public ConfigChooserOVPN getConfigChooserObject() {
