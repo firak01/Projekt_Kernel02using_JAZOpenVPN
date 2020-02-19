@@ -36,7 +36,7 @@ public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 		HashMap hmReturn = new HashMap();
 		main:{
 			check:{		
-			}
+			}		
 		
 			//Die %xyz% Einträge sollen dann ersetzt werden.
 			hmReturn.put("remote", "remote %ip%");

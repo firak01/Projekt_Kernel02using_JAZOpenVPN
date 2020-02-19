@@ -27,7 +27,15 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 		
 			//Die %xyz% Einträge sollen dann ersetzt werden.
 			//Das Beispielergebnis: C:\Programme\OpenVPN\bin\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\serverVPN1_TCP_443.ovpn
-			hmReturn.put("line001", "%exeovpn% --pause-exit --config %templateovpn%");			
+			//Merke: 2>&1 soll bewirken, dass sowohl die Standardausgabe als auch die Fehler in die gleiche Datei kommen
+		    
+			//Hole das Template für die Batch-Datei
+			
+		
+			//Lies das Template ein, jede Zeile 1 Eintrag in der HashMap (ist damit anders als beim OVPN-Template, bei dem alle Zeile gegen einen RegEx-Ausdruck geprüft werden.)
+			
+		
+			hmReturn.put("line001", "%exeovpn% --pause-exit --log c:\\\\fglkernel\\\\kernellog\\\\ovpn.log --config %templateovpn% > c:\\fglkernel\\kernellog\\ovpnStarter.log 2>&1");			
 		}//END main
 		return hmReturn;
 	}

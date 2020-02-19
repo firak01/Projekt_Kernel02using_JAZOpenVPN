@@ -10,7 +10,7 @@ import java.util.Set;
 import basic.zKernel.KernelZZZ;
 import use.openvpn.AbstractConfigStarterOVPN;
 import use.openvpn.ConfigChooserOVPN;
-import use.openvpn.ConfigFileOVPN;
+import use.openvpn.ConfigFileTemplateOvpnOVPN;
 import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -45,7 +45,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			String sCommandConcrete=null;
 			try {
 				this.getLogObject().WriteLineDate("Trying to find OVPNExecutable.");
-				File objFileExe = ConfigFileOVPN.findFileExe();
+				File objFileExe = ConfigFileTemplateOvpnOVPN.findFileExe();
 				if(objFileExe==null){
 					ExceptionZZZ ez = new ExceptionZZZ( "Executabel associated with .ovpn can not be found.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
@@ -58,7 +58,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				}
 				this.getLogObject().WriteLineDate("OVPNExecutable found");
 				
-				String sCommandParameter = ConfigFileOVPN.readCommandParameter();
+				String sCommandParameter = ConfigFileTemplateOvpnOVPN.readCommandParameter();
 				String sCommand = null;
 				if(sCommandParameter!=null){
 					if(sCommandParameter.equals("")){
@@ -177,6 +177,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 		main:{
 			ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject());
 			HashMap<String,String>hmBatchLines = objMapperBatch.readTaskHashMap(fileConfigTemplateOvpn);
+			
 			Set<String> setBatchLineNumber = hmBatchLines.keySet();
 			for(String sLineNumber : setBatchLineNumber) {
 				String sLine = hmBatchLines.get(sLineNumber);

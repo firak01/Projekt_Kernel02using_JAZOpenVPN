@@ -7,18 +7,18 @@ import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 
-public class OVPNFileFilterConfigUsedZZZ implements FilenameFilter {
+public class OVPNFileFilterConfigOvpnUsedZZZ implements FilenameFilter {
 	private FileFilterEndingZZZ objFilterEnding;
 	private FileFilterPrefixZZZ objFilterPrefix;
 	private String sEnding="ovpn";
 	private String sPrefix="";
 	
-	public OVPNFileFilterConfigUsedZZZ(String sContextServerOrClient) {
+	public OVPNFileFilterConfigOvpnUsedZZZ(String sContextServerOrClient) {
 		this.setPrefix(sContextServerOrClient);
 		objFilterEnding = new FileFilterEndingZZZ(this.getEnding());
 		objFilterPrefix = new FileFilterPrefixZZZ(this.getPrefix());
 	}
-	public OVPNFileFilterConfigUsedZZZ(){
+	public OVPNFileFilterConfigOvpnUsedZZZ(){
 		this("");
 	} 
 	public boolean accept(File objFileDir, String sName) {

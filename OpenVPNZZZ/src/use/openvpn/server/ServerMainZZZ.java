@@ -12,7 +12,7 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
-import use.openvpn.client.ClientConfigUpdaterZZZ;
+import use.openvpn.client.ClientConfigTemplateUpdaterZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -72,7 +72,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			
 			
 			//Die Konfigurations-Template Dateien finden
-			File[] objaFileConfigTemplate = objChooser.findFileConfigTemplate(null);
+			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplate(null);
 			if(objaFileConfigTemplate==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
@@ -101,7 +101,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
 			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");		
-			ServerConfigUpdaterOVPN objUpdater = new ServerConfigUpdaterOVPN(objKernel, this, objChooser, objMapper, null);
+			ServerConfigTemplateUpdaterOVPN objUpdater = new ServerConfigTemplateUpdaterOVPN(objKernel, this, objChooser, objMapper, null);
 			//ArrayList listaFileConfig = new ArrayList(objaFileConfigTemplate.length);
 			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){		
 				

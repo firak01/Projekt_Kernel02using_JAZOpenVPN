@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import use.openvpn.ConfigFileOVPN;
+import use.openvpn.ConfigFileTemplateOvpnOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
@@ -15,7 +15,7 @@ import basic.zKernel.net.server.KernelServerTcpZZZ;
 
 public class ServerConnectionListenerZZZ extends KernelServerTcpZZZ{
 	private ServerConfigStarterOVPN objConfigStarter=null;   //dar�ber ist u.a. das OVPN-Konfigurations-File zu holen, aus dem man die IP und den Port auslesen kann.
-	private ConfigFileOVPN objConfigFile = null;
+	private ConfigFileTemplateOvpnOVPN objConfigFile = null;
 
 		
 	public ServerConnectionListenerZZZ(IKernelZZZ objKernel, ServerConfigStarterOVPN objConfigStarter, String[] saFlagControl) throws ExceptionZZZ {
@@ -47,7 +47,7 @@ public class ServerConnectionListenerZZZ extends KernelServerTcpZZZ{
 				}//END check
 			
 			//Nun das File-Object in ein Configuration-File-Objekt bringen. Dabei werden dann auch alle Properties zur Verf�gung gestellt.
-			this.objConfigFile = new ConfigFileOVPN(this.getKernelObject(), objFile, null);
+			this.objConfigFile = new ConfigFileTemplateOvpnOVPN(this.getKernelObject(), objFile, null);
 			sHost = this.objConfigFile.getVpnIpLocal();    //Auf welche lokale VPN-Verbindung soll geachtet werden
 			
 			//TODO GOON: Fehlermeldung java.net.BindException

@@ -7,7 +7,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
-import use.openvpn.ConfigFileOVPN;
+import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
 
 /**This class changes the content of a configuration file.
@@ -15,7 +15,7 @@ import use.openvpn.ConfigFileOVPN;
  * @author 0823
  *
  */
-public class ClientConfigFileZZZ extends ConfigFileOVPN {
+public class ClientConfigFileZZZ extends ConfigFileTemplateOvpnOVPN {
 	private String sRemoteIP=null;
 	
 	public ClientConfigFileZZZ(IKernelZZZ objKernel, File objFile, String[] saFlagControl) throws ExceptionZZZ {

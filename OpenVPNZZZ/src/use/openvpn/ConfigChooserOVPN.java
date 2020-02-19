@@ -6,8 +6,8 @@ import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
 import org.jdesktop.jdic.filetypes.AssociationService;
 
-import use.openvpn.client.OVPNFileFilterConfigTemplateZZZ;
-import use.openvpn.client.OVPNFileFilterConfigUsedZZZ;
+import use.openvpn.client.OVPNFileFilterConfigOvpnTemplateZZZ;
+import use.openvpn.client.OVPNFileFilterConfigOvpnUsedZZZ;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
@@ -44,7 +44,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			File objFileExe = null;
 			if(bUseSearch == true){				
 				//AUS DER KOMMANDOZEILE F�R DEN AUFRUF, DAS ROOT-VERZEICNIS DER APPLIKATION ERMITTELN
-				objFileExe = ConfigFileOVPN.findFileExe();
+				objFileExe = ConfigFileTemplateOvpnOVPN.findFileExe();
 			}else{
 				objFileExe = new File(sFile);
 			}//END if bUseSearch == true;
@@ -119,7 +119,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	}
 	
 	
-	/**Finds configuration files started with "'Template * .ovpn'.
+	/**Finds configuration files started with "'template * .ovpn'.
 	 * This is usefull for the client-configuration - starter, because this template file is used to create the real configuration files (which then will e.g. get an updated 'remote' entry -line). 
 	 * @param objDirectoryin
 	 * @return
@@ -129,7 +129,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	 *
 	 * javadoc created by: 0823, 18.07.2006 - 08:38:44
 	 */
-	public File[] findFileConfigTemplate(File objDirectoryin) throws ExceptionZZZ{
+	public File[] findFileConfigOvpnTemplate(File objDirectoryin) throws ExceptionZZZ{
 		File[] objaReturn = null;
 		main:{
 			File objDirectory=null;
@@ -155,7 +155,50 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigTemplateZZZ objFilterConfig = new OVPNFileFilterConfigTemplateZZZ(this.getOvpnContextUsed());			
+			OVPNFileFilterConfigOvpnTemplateZZZ objFilterConfig = new OVPNFileFilterConfigOvpnTemplateZZZ(this.getOvpnContextUsed());			
+			objaReturn = objDirectory.listFiles(objFilterConfig);
+			
+		}//End main
+		return objaReturn;
+	}
+	
+	/**Finds configuration files started with "'template * .ovpn'.
+	 * This is usefull for the client-configuration - starter, because this template file is used to create the real configuration files (which then will e.g. get an updated 'remote' entry -line). 
+	 * @param objDirectoryin
+	 * @return
+	 * @throws ExceptionZZZ, 
+	 *
+	 * @return File[]
+	 *
+	 * javadoc created by: 0823, 18.07.2006 - 08:38:44
+	 */
+	public File[] findFileConfigBatchTemplate(File objDirectoryin) throws ExceptionZZZ{
+		File[] objaReturn = null;
+		main:{
+			File objDirectory=null;
+			check:{
+				if(objDirectoryin==null){
+					objDirectory = this.getDirectoryTemplate();
+					if(objDirectory==null){				
+							ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to get the template directory.'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+							throw ez;
+						}
+				}else{
+					objDirectory = objDirectoryin;
+				}
+								
+				if(objDirectory.exists()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Directory '" + objDirectory.getPath() + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}else if(objDirectory.isDirectory()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + objDirectory.getPath() + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+			}//End check
+			
+			//##############################################################
+//			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
+			OVPNFileFilterConfigOvpnTemplateZZZ objFilterConfig = new OVPNFileFilterConfigOvpnTemplateZZZ(this.getOvpnContextUsed());			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
@@ -199,7 +242,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigUsedZZZ objFilterConfig = new OVPNFileFilterConfigUsedZZZ(this.getOvpnContextUsed());			
+			OVPNFileFilterConfigOvpnUsedZZZ objFilterConfig = new OVPNFileFilterConfigOvpnUsedZZZ(this.getOvpnContextUsed());			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main

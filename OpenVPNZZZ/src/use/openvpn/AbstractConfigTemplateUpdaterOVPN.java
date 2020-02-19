@@ -8,7 +8,7 @@ import java.util.Set;
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
 import use.openvpn.ConfigChooserOVPN;
-import use.openvpn.ConfigFileOVPN;
+import use.openvpn.ConfigFileTemplateOvpnOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -18,7 +18,7 @@ import basic.zBasic.util.file.FileTextParserZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
-public abstract class AbstractConfigUpdaterOVPN extends KernelUseObjectZZZ implements IConfigUpdaterOVPN, IMainUserOVPN {
+public abstract class AbstractConfigTemplateUpdaterOVPN extends KernelUseObjectZZZ implements IConfigTemplateUpdaterOVPN, IMainUserOVPN {
 private IMainOVPN objMain = null;
 private File objFileTemplate=null;
 private File objFileUsed = null;
@@ -28,11 +28,11 @@ private HashMap hmLine = null;
 // Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
-	public AbstractConfigUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ConfigUpdaterNew_(objMain, objConfigChooser, objConfigMapper, null, saFlagControl);
 	}
-	public AbstractConfigUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ConfigUpdaterNew_(objMain, objConfigChooser, null, hmLine, saFlagControl);
 	}
@@ -144,9 +144,9 @@ main:{
 	//+++ DIE NEUE ZIELDATEI DEFINIEREN
 	//Den "Template"-Anfang aus dem Dateinamen entfernen.
 	String sName = objFileTemplate.getName();
-	if(sName.toLowerCase().startsWith(ConfigFileOVPN.sFILE_TEMPLATE_PREFIX)){
+	if(sName.toLowerCase().startsWith(ConfigFileTemplateOvpnOVPN.sFILE_TEMPLATE_PREFIX)){
 		//TODO GOON: Methode entwickeln, welche unabhängig von Groß-/Kleinschreibung arbeitet
-		sName = StringZZZ.right(sName, ConfigFileOVPN.sFILE_TEMPLATE_PREFIX);
+		sName = StringZZZ.right(sName, ConfigFileTemplateOvpnOVPN.sFILE_TEMPLATE_PREFIX);
 		sName = sName.trim();
 	}
 	

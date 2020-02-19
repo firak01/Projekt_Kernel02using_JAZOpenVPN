@@ -7,9 +7,9 @@ import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
 import custom.zUtil.io.FileZZZ;
-import use.openvpn.AbstractConfigUpdaterOVPN;
+import use.openvpn.AbstractConfigTemplateUpdaterOVPN;
 import use.openvpn.ConfigChooserOVPN;
-import use.openvpn.ConfigFileOVPN;
+import use.openvpn.ConfigFileTemplateOvpnOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -17,13 +17,13 @@ import basic.zBasic.util.file.FileTextParserZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
-public class ClientConfigUpdaterZZZ extends AbstractConfigUpdaterOVPN {
+public class ClientConfigTemplateUpdaterZZZ extends AbstractConfigTemplateUpdaterOVPN {
 
 //private FileInputStream filein=null;
 // Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
-	public ClientConfigUpdaterZZZ(IKernelZZZ objKernel, ClientMainZZZ objClient, ConfigChooserOVPN objConfigChooser, ClientConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientConfigTemplateUpdaterZZZ(IKernelZZZ objKernel, ClientMainZZZ objClient, ConfigChooserOVPN objConfigChooser, ClientConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, objClient, objConfigChooser, objConfigMapper, saFlagControl);
 	}
 		

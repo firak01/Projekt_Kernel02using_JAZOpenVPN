@@ -18,15 +18,16 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class ConfigFileOVPN extends KernelUseObjectZZZ{
+public class ConfigFileTemplateOvpnOVPN extends KernelUseObjectZZZ{
 	public static String sFILE_TEMPLATE_PREFIX="template_";
+	public static String sFILE_TEMPLATE_SUFFIX="";
 	private File objFileConfig;
 	private Properties objProperties = new Properties();
 	private String sRemotePort=null;
 	private String sTargetIP=null;
 	private String sLocalIP = null;
 	
-	public ConfigFileOVPN(IKernelZZZ objKernel, File objFile, String[] saFlagControl) throws ExceptionZZZ{
+	public ConfigFileTemplateOvpnOVPN(IKernelZZZ objKernel, File objFile, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ConfigFileReaderNew_(objFile, saFlagControl);		
 	}
@@ -119,7 +120,7 @@ public class ConfigFileOVPN extends KernelUseObjectZZZ{
 	public static File findFileExe() throws ExceptionZZZ{
 		File objReturn = null;
 		main:{
-			String sCommand = ConfigFileOVPN.readCommandAssociatedRun();
+			String sCommand = ConfigFileTemplateOvpnOVPN.readCommandAssociatedRun();
 			int ileft = sCommand.indexOf("\"");
 			int iright = sCommand.indexOf("\"", ileft+1);			
 			String sFile = sCommand.substring(ileft+1, iright);
@@ -143,8 +144,8 @@ public class ConfigFileOVPN extends KernelUseObjectZZZ{
 	public static String readCommandParameter() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
-			File objFileExe = ConfigFileOVPN.findFileExe();
-			String sCommand = ConfigFileOVPN.readCommandAssociatedRun();
+			File objFileExe = ConfigFileTemplateOvpnOVPN.findFileExe();
+			String sCommand = ConfigFileTemplateOvpnOVPN.readCommandAssociatedRun();
 			
 			//Nun den Executable - Part incl. Anf�hrungszeichen entfernen
 			String sFile = "\"" + objFileExe.getPath() + "\"";
@@ -158,7 +159,7 @@ public class ConfigFileOVPN extends KernelUseObjectZZZ{
 		boolean bReturn = false;
 		main:{
 			//Template Dateinamen fangen mit dem vorangesetzten String an.
-			if(sFilename.toLowerCase().startsWith(ConfigFileOVPN.sFILE_TEMPLATE_PREFIX)) bReturn = true;
+			if(sFilename.toLowerCase().startsWith(ConfigFileTemplateOvpnOVPN.sFILE_TEMPLATE_PREFIX)) bReturn = true;
 		}
 		return bReturn;
 	}

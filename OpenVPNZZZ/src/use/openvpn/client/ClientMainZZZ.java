@@ -81,7 +81,7 @@ private boolean bFlagPortScanAllFinished = false;
 			this.setConfigMapperObject(objMapper);
 			
 			//Die Konfigurations-Template Dateien finden		
-			File[] objaFileConfigTemplate = objChooser.findFileConfigTemplate(null);
+			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplate(null);
 			if(objaFileConfigTemplate==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
@@ -142,7 +142,7 @@ private boolean bFlagPortScanAllFinished = false;
 						
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
 			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");		
-			ClientConfigUpdaterZZZ objUpdater = new ClientConfigUpdaterZZZ(objKernel, this, objChooser, objMapper, null);
+			ClientConfigTemplateUpdaterZZZ objUpdater = new ClientConfigTemplateUpdaterZZZ(objKernel, this, objChooser, objMapper, null);
 			ArrayList listaFileUsed = new ArrayList(objaFileConfigTemplate.length);
 			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){		
 				
