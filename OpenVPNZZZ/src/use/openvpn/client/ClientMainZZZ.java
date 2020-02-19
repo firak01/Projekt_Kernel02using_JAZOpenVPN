@@ -81,7 +81,7 @@ private boolean bFlagPortScanAllFinished = false;
 			this.setConfigMapperObject(objMapper);
 			
 			//Die Konfigurations-Template Dateien finden		
-			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplate(null);
+			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplates();
 			if(objaFileConfigTemplate==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
@@ -120,7 +120,7 @@ private boolean bFlagPortScanAllFinished = false;
 			///*TEST: Path Expanded Berechnung
 			//+++ 1. Die früher mal verwendeten Dateien entfernen
 			this.logStatusString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
-			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);
+			File[] objaFileConfigUsed = objChooser.findFileConfigUsed();
 			if(objaFileConfigUsed==null){
 				this.logStatusString("No previously used file was found (null case). Nothing removed.");
 			}else if(objaFileConfigUsed.length==0){
@@ -267,7 +267,7 @@ private boolean bFlagPortScanAllFinished = false;
 				Process objProcess = objStarter.requestStart();
 				if(objProcess==null){
 					//Hier nicht abbrechen, sondern die Verarbeitung bei der n�chsten Datei fortf�hren
-					this.logStatusString( "Unable to create process, using file: '"+ objStarter.getFileConfig().getPath()+"'");
+					this.logStatusString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"'");
 				}else{	
 					
 					//NEU: Einen anderen Thread zum "Monitoren" des Inputstreams des Processes verwenden. Dadurch werden die anderen Prozesse nicht angehalten.
@@ -375,7 +375,7 @@ private boolean bFlagPortScanAllFinished = false;
 										if(!listaIntegerFinished.contains(intTemp)){
 											
 											ClientConfigStarterOVPN objStarter = (ClientConfigStarterOVPN) listaStarter.get(icount2);
-											File objFileStarter = objStarter.getFileConfig();
+											File objFileStarter = objStarter.getFileConfigOvpn();
 											String sPathStarter = objFileStarter.getPath();
 											if(sPath.equalsIgnoreCase(sPathStarter) == false){											
 												this.logStatusString("Requesting to end thread # " + icount2);							

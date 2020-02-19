@@ -24,8 +24,14 @@ import basic.zKernel.KernelUseObjectZZZ;
 
 public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{	
 	public static final String sBATCH_STARTER_PREFIX="starter_";
-	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFile, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel, objMain, objFile, sMyAlias, saFlagControl);
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objMain, objFileConfigOvpn, "0", saFlagControl);
+	}
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileConfigOvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objMain, objFileConfigOvpn, sMyAlias, saFlagControl);
+	}
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain,  File objFileTemplateBatch, File objFileConfigOvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objMain, objFileTemplateBatch, objFileConfigOvpn, sMyAlias, saFlagControl);
 	}
 	
 	/**Choose this constructor, if a you don�t want to use the .getNumber() - Method.
@@ -35,8 +41,8 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	 * @param saFlagControl
 	 * @throws ExceptionZZZ
 	 */
-	public ServerConfigStarterOVPN(IKernelZZZ objKernel, ServerMainZZZ objServer, File objFile, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel,(IMainOVPN) objServer, objFile, "-1", saFlagControl);
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, ServerMainZZZ objServer, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel,(IMainOVPN) objServer, objFileTemplateBatch, objFileConfigOvpn, "-1", saFlagControl);
 	}
 			
 	public Process requestStart() throws ExceptionZZZ{
@@ -73,7 +79,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				
 				//sCommandConcrete = StringZZZ.replace(sCommand, "%1", this.getFileConfig().getName());
 				//sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfig().getName());
-				sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfig().getPath());
+				sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfigOvpn().getPath());
 				//System.out.println(sCommandConcrete);
 				//load.exec("cmd.exe /K " +  sCommandConcrete);
 			//	load.exec("cmd.exe /K C:\\Programme\\OpenVPN\\bin\\openvpn.exe"); // --pause-exit --config client_itelligence.ovpn");
@@ -106,12 +112,14 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 						}
 					}
 					
+					File fileConfigOvpn = this.getFileConfigOvpn();
+					
 					
 					//TODO GOON 20200213
 					//1. Batch File neu erstellen (wg. ggfs. anderen/neuen Code)
 					//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.
 					FileTextWriterZZZ objBatch = new FileTextWriterZZZ(sBatch);					
-					ArrayList<String> listaLine = this.computeBatchLines(this.getFileConfig());
+					ArrayList<String> listaLine = this.computeBatchLines(this.getFileTemplateBatch(), fileConfigOvpn);
 					for(String sLine : listaLine){
 						objBatch.writeLine(sLine);
 					}
@@ -154,7 +162,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	public String computeBatchName() {
 		String sReturn = null;
 		main:{			
-			File objFile = this.getFileConfig();
+			File objFile = this.getFileConfigOvpn();
 			if(objFile==null)break main;
 			sReturn = sBATCH_STARTER_PREFIX + objFile.getName() + ".bat";
 		}
@@ -172,7 +180,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	}
 
 	@Override
-	public ArrayList<String> computeBatchLines(File fileConfigTemplateOvpn) throws ExceptionZZZ {
+	public ArrayList<String> computeBatchLines(File fileConfigTemplateBatch, File fileConfigTemplateOvpn) throws ExceptionZZZ {
 		ArrayList<String>listasReturn=new ArrayList<String>();
 		main:{
 			ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject());
@@ -186,5 +194,4 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 		}
 		return listasReturn;
 	}
-	
 }//END class

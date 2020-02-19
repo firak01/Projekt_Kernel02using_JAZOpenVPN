@@ -15,7 +15,7 @@ import basic.zKernel.net.server.KernelServerTcpZZZ;
 
 public class ServerConnectionListenerZZZ extends KernelServerTcpZZZ{
 	private ServerConfigStarterOVPN objConfigStarter=null;   //dar�ber ist u.a. das OVPN-Konfigurations-File zu holen, aus dem man die IP und den Port auslesen kann.
-	private ConfigFileTemplateOvpnOVPN objConfigFile = null;
+	private ConfigFileTemplateOvpnOVPN objConfigFileTemplateOvpn = null;
 
 		
 	public ServerConnectionListenerZZZ(IKernelZZZ objKernel, ServerConfigStarterOVPN objConfigStarter, String[] saFlagControl) throws ExceptionZZZ {
@@ -29,7 +29,7 @@ public class ServerConnectionListenerZZZ extends KernelServerTcpZZZ{
 		try{
 			String sHost=null;
 			String sPort=null;
-			File objFile = null;
+			File objFileConfigOvpn = null;
 			main:{
 				check:{
 					if(objConfigStarter==null){
@@ -38,8 +38,8 @@ public class ServerConnectionListenerZZZ extends KernelServerTcpZZZ{
 					}
 					this.objConfigStarter = objConfigStarter;
 					
-					objFile = objConfigStarter.getFileConfig();
-					if(objFile==null){
+					objFileConfigOvpn = objConfigStarter.getFileConfigOvpn();
+					if(objFileConfigOvpn==null){
 						ExceptionZZZ ez = new ExceptionZZZ("File - Object at ConfigStarterZZZ - Object", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 						throw ez;
 					}
@@ -47,8 +47,8 @@ public class ServerConnectionListenerZZZ extends KernelServerTcpZZZ{
 				}//END check
 			
 			//Nun das File-Object in ein Configuration-File-Objekt bringen. Dabei werden dann auch alle Properties zur Verf�gung gestellt.
-			this.objConfigFile = new ConfigFileTemplateOvpnOVPN(this.getKernelObject(), objFile, null);
-			sHost = this.objConfigFile.getVpnIpLocal();    //Auf welche lokale VPN-Verbindung soll geachtet werden
+			this.objConfigFileTemplateOvpn = new ConfigFileTemplateOvpnOVPN(this.getKernelObject(), objFileConfigOvpn, null);
+			sHost = this.objConfigFileTemplateOvpn.getVpnIpLocal();    //Auf welche lokale VPN-Verbindung soll geachtet werden
 			
 			//TODO GOON: Fehlermeldung java.net.BindException
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName()+"#"+sHost+" , kann der aufgel�st werden ????");			
@@ -166,9 +166,9 @@ public class ServerConnectionListenerZZZ extends KernelServerTcpZZZ{
 		String sReturn = "";
 		main:{
 			check:{
-				if(this.objConfigFile==null) break main;
+				if(this.objConfigFileTemplateOvpn==null) break main;
 			}		
-			sReturn = this.objConfigFile.getVpnIpRemote();
+			sReturn = this.objConfigFileTemplateOvpn.getVpnIpRemote();
 		}//END main
 		return sReturn;
 	}

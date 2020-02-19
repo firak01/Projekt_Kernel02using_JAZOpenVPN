@@ -12,8 +12,8 @@ import use.openvpn.ConfigFileTemplateOvpnOVPN;
 public class OVPNFileFilterConfigOvpnTemplateZZZ implements FilenameFilter {
 	FileFilterEndingZZZ objFilterEnding;
 	FileFilterPrefixZZZ objFilterPrefix;
-	private String sEnding="txt";
-	private String sPrefix="";
+	private String sEnding="ovpn";
+	private String sPrefix="template_";
 	
 	public OVPNFileFilterConfigOvpnTemplateZZZ(String sOvpnContextServerOrClient) {
 		this.setOvpnContextPrefix(sOvpnContextServerOrClient);

@@ -47,7 +47,7 @@ public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implement
 		 //	+++ Aus dem File die IP und den Port auslesen.
 		this.objProcessStarter = objProcessStarter;
 		
-		File objFileTemp = objProcessStarter.getFileConfig();
+		File objFileTemp = objProcessStarter.getFileConfigOvpn();
 		if(objFileTemp==null){
 			ExceptionZZZ ez = new ExceptionZZZ("File-Object in ConfigStarterZZZ-Object", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;

@@ -72,7 +72,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			
 			
 			//Die Konfigurations-Template Dateien finden
-			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplate(null);
+			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplates(null);
 			if(objaFileConfigTemplate==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
@@ -116,6 +116,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 		
 						//+++ Nun dieses used-file dem Array hinzuf�gen, dass f�r den Start der OVPN-Verbindung verwendet wird.
 						//listaFileConfig.add(objUpdater.getFileUsed());
+						this.getConfigFileObjectsAll().add(objUpdater.getFileUsed());
 					}else{
 						this.logStatusString( "'Used file' not processed, based upon: '" + objaFileConfigTemplate[icount].getPath() + "'");					
 					}	
@@ -227,15 +228,16 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			ProcessWatchRunnerZZZ[] runneraOVPN = new ProcessWatchRunnerZZZ[listaFileConfigUsed.size()];	
 			int iNumberOfProcessStarted = 0;
 			for(int icount=0; icount < listaFileConfigUsed.size(); icount++){
-				File objFile = (File) listaFileConfigUsed.get(icount);
+				File objFileConfigOvpn = (File) listaFileConfigUsed.get(icount);
 				String sAlias = Integer.toString(icount);
 				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endg�ltige auszuf�hrende Befehl �ber eine Batch gegeben werden muss. Herausgefunden durch Try and Error.
-				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, objFile, sAlias, saTemp);
-				this.logStatusString("Requesting start of process #"+ icount + " (File: " + objFile.getName() + ")");				
+				File[] objaFileTemplateBatch = objChooser.findFileConfigBatchTemplates();
+				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, objFileConfigOvpn, sAlias, saTemp);
+				this.logStatusString("Requesting start of process #"+ icount + " (File: " + objFileConfigOvpn.getName() + ")");				
 				Process objProcessTemp = objStarter.requestStart();			
 				if(objProcessTemp==null){
 					//Hier nicht abbrechen, sondern die Verarbeitung bei der n�chsten Datei fortf�hren
-					this.logStatusString( "Unable to create process, using file: '"+ objStarter.getFileConfig().getPath()+"'");
+					this.logStatusString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"'");
 				}else{			
 					this.addProcessStarter(objStarter);
 					

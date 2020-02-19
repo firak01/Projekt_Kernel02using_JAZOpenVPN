@@ -65,7 +65,7 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				
 				//sCommandConcrete = StringZZZ.replace(sCommand, "%1", this.getFileConfig().getName());
 				//sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfig().getName());
-				sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfig().getPath());
+				sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfigOvpn().getPath());
 				//System.out.println(sCommandConcrete);
 				//load.exec("cmd.exe /K " +  sCommandConcrete);
 			//	load.exec("cmd.exe /K C:\\Programme\\OpenVPN\\bin\\openvpn.exe"); // --pause-exit --config client_itelligence.ovpn");
@@ -112,13 +112,8 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	}
 
 	@Override
-	public ArrayList<String> computeBatchLines(File fileConfigTemplateOvpn) throws ExceptionZZZ {
-		//Client wird derzeit noch nicht per Batch gestartet.
+	public ArrayList<String> computeBatchLines(File objFileBatch, File objFileTemplateOvpn) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
-	
-	
-	
 }//END class

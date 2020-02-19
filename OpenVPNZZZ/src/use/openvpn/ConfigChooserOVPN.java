@@ -129,7 +129,10 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	 *
 	 * javadoc created by: 0823, 18.07.2006 - 08:38:44
 	 */
-	public File[] findFileConfigOvpnTemplate(File objDirectoryin) throws ExceptionZZZ{
+	public File[] findFileConfigOvpnTemplates() throws ExceptionZZZ{
+		return this.findFileConfigOvpnTemplates(null);
+	}
+	public File[] findFileConfigOvpnTemplates(File objDirectoryin) throws ExceptionZZZ{
 		File[] objaReturn = null;
 		main:{
 			File objDirectory=null;
@@ -172,7 +175,10 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	 *
 	 * javadoc created by: 0823, 18.07.2006 - 08:38:44
 	 */
-	public File[] findFileConfigBatchTemplate(File objDirectoryin) throws ExceptionZZZ{
+	public File[] findFileConfigBatchTemplates() throws ExceptionZZZ{
+		return this.findFileConfigBatchTemplates(null);
+	}
+	public File[] findFileConfigBatchTemplates(File objDirectoryin) throws ExceptionZZZ{
 		File[] objaReturn = null;
 		main:{
 			File objDirectory=null;
@@ -216,6 +222,9 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	 *
 	 * javadoc created by: 0823, 18.07.2006 - 08:44:26
 	 */
+	public File[] findFileConfigUsed() throws ExceptionZZZ{
+		return this.findFileConfigUsed(null);
+	}
 	public File[] findFileConfigUsed(File objDirectoryin) throws ExceptionZZZ{
 		File[] objaReturn = null;
 		main:{

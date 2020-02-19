@@ -14,10 +14,13 @@ public interface IConfigStarterOVPN {
 	public void setProcess(Process objProcess);
 	public String getAlias();//Ein Alias für die Proces id
 	
-	public void setFileConfig(File objFile);
-	public File getFileConfig();
+	public void setFileTemplateBatch(File objFileTemplateBatch);
+	public File getFileTemplateBatch();
+	
+	public void setFileConfigOvpn(File objFileConfigOvpn);
+	public File getFileConfigOvpn();
 	public String getOvpnContextUsed();
 	public void setOvpnContextUsed(String sOvpnContextClientOrServer);
 	
-	public ArrayList<String>computeBatchLines(File fileConfigTemplateOvpn) throws ExceptionZZZ;
+	public ArrayList<String>computeBatchLines(File fileBatch, File fileConfigTemplateOvpn) throws ExceptionZZZ;
 }

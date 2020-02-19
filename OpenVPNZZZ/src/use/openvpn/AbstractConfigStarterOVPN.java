@@ -14,15 +14,21 @@ import basic.zKernel.KernelUseObjectZZZ;
 
 public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ implements IConfigStarterOVPN, IMainUserOVPN{
 	private IMainOVPN objMain = null;
-	private File objFileConfig=null;
+	private File objFileConfigOvpn=null;
+	private File objFileTemplateBatch=null;
 	private Process objProcess=null;
 	private String sMyAlias = "-1";
 	private boolean bFlagByBatch = false;
 	String sOvpnContextClientOrServer=null;
-	
-	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFile, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+		
+	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileOConfigvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigStarterNew_(objMain, sMyAlias, objFile, saFlagControl);
+		ConfigStarterNew_(objMain, sMyAlias, null, objFileOConfigvpn, saFlagControl);
+	}
+	
+	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileTemplateBatch, File objFileOConfigvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel);
+		ConfigStarterNew_(objMain, sMyAlias, objFileTemplateBatch, objFileOConfigvpn, saFlagControl);
 	}
 	
 	/**Choose this constructor, if a you don�t want to use the .getNumber() - Method.
@@ -32,12 +38,12 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 	 * @param saFlagControl
 	 * @throws ExceptionZZZ
 	 */
-	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFile, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigStarterNew_(objMain, "-1", objFile, saFlagControl);
+		ConfigStarterNew_(objMain, "-1", objFileTemplateBatch, objFileConfigOvpn, saFlagControl);
 	}
 	
-	private void ConfigStarterNew_(IMainOVPN objMain, String sMyAlias, File objFile, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigStarterNew_(IMainOVPN objMain, String sMyAlias, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 				 
 			check:{
@@ -56,19 +62,21 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 				}
 				
 				if(objMain==null) {
-					ExceptionZZZ ez = new ExceptionZZZ("MainApplicatonObject", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+					ExceptionZZZ ez = new ExceptionZZZ("MainApplicationObject", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
 				this.setMainObject(objMain);
 				
-				if(objFile==null){
-					ExceptionZZZ ez = new ExceptionZZZ("File", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				if(objFileConfigOvpn==null){
+					ExceptionZZZ ez = new ExceptionZZZ("OvpnConfigurationFile", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
-				this.setFileConfig(objFile);
+				
+				this.setFileTemplateBatch(objFileTemplateBatch);
+				this.setFileConfigOvpn(objFileConfigOvpn);
 				this.sMyAlias = sMyAlias;
 				
-				String sOvpnContextClientOrServer = StringZZZ.left(objFile.getName(), "_");
+				String sOvpnContextClientOrServer = StringZZZ.left(objFileConfigOvpn.getName(), "_");
 				this.setOvpnContextUsed(sOvpnContextClientOrServer);
 			}//End check
 		}//END main
@@ -122,11 +130,22 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 		this.objMain = objMain;
 	}
 	
-	public void setFileConfig(File objFile){
-		this.objFileConfig = objFile;
+	public void setFileConfigOvpn(File objFileConfigOvpn){
+		this.objFileConfigOvpn = objFileConfigOvpn;
 	}
-	public File getFileConfig(){
-		return this.objFileConfig;
+	public File getFileConfigOvpn(){
+		return this.objFileConfigOvpn;
+	}
+	
+		
+	@Override
+	public void setFileTemplateBatch(File objFileTemplateBatch) {
+		this.objFileTemplateBatch = objFileTemplateBatch;
+	}
+
+	@Override
+	public File getFileTemplateBatch() {
+		return this.objFileTemplateBatch;
 	}
 	
 	public Process getProcess(){
@@ -239,5 +258,5 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 	public abstract Process requestStart() throws ExceptionZZZ;
 	
 	@Override
-	public abstract ArrayList<String> computeBatchLines(File objFileTemplateOvpn) throws ExceptionZZZ;
+	public abstract ArrayList<String> computeBatchLines(File objFileBatch, File objFileTemplateOvpn) throws ExceptionZZZ;
 }//END class

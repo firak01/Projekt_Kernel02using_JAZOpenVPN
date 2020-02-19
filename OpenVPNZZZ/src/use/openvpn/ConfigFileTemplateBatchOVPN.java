@@ -31,11 +31,11 @@ public class ConfigFileTemplateBatchOVPN extends KernelUseObjectZZZ{
 		
 	public ConfigFileTemplateBatchOVPN(IKernelZZZ objKernel, File objFile, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigFileTemplateBatchReaderNew_(objFile, saFlagControl);		
+		ConfigFileTemplateBatchNew_(objFile, saFlagControl);		
 	}
 
 	
-	private void ConfigFileBatchReaderNew_(File objFile, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigFileTemplateBatchNew_(File objFile, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 					

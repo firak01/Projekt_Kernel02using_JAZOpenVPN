@@ -45,11 +45,11 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
 	 */
-	public HashMap readTaskHashMap(File objFileTemplate) throws ExceptionZZZ{
+	public HashMap readTaskHashMap(File objFileConfigTemplateOvpn) throws ExceptionZZZ{
 		HashMap objReturn=new HashMap();
 		main:{		
-			if(objFileTemplate==null) {
-				ExceptionZZZ ez = new ExceptionZZZ("Template file", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+			if(objFileConfigTemplateOvpn==null) {
+				ExceptionZZZ ez = new ExceptionZZZ("OVPN Template file", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}
 			
@@ -75,7 +75,7 @@ pause
 			String sDirectoryTemplateOvpn = objDirectoryTemplateOvpn.getAbsolutePath();
 			
 			//Nur eine konkrete, für den Start der Batch verwendete Konfiguration hier behandeln
-			String sFileTemplateOvpn = objFileTemplate.getName();
+			String sFileTemplateOvpn = objFileConfigTemplateOvpn.getName();
 			
 			String stemp;
 			HashMap<String,String> hmPattern = this.getConfigPattern();

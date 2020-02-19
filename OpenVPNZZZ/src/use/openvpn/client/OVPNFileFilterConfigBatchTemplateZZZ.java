@@ -9,18 +9,18 @@ import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
-public class OVPNFileFilterConfigBatchTemplateZZZ2 implements FilenameFilter {
+public class OVPNFileFilterConfigBatchTemplateZZZ implements FilenameFilter {
 	FileFilterEndingZZZ objFilterEnding;
 	FileFilterPrefixZZZ objFilterPrefix;
-	private String sEnding="ovpn";
-	private String sPrefix="";
+	private String sEnding="txt";
+	private String sPrefix="template_";
 	
-	public OVPNFileFilterConfigBatchTemplateZZZ2(String sOvpnContextServerOrClient) {
+	public OVPNFileFilterConfigBatchTemplateZZZ(String sOvpnContextServerOrClient) {
 		this.setOvpnContextPrefix(sOvpnContextServerOrClient);
 		objFilterEnding = new FileFilterEndingZZZ(this.getEnding());
 		objFilterPrefix = new FileFilterPrefixZZZ(this.getOvpnContextPrefix());
 	} 
-	public OVPNFileFilterConfigBatchTemplateZZZ2() {
+	public OVPNFileFilterConfigBatchTemplateZZZ() {
 		this("");
 	}
 	public boolean accept(File objFileDir, String sName) {
