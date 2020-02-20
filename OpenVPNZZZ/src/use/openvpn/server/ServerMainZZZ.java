@@ -230,9 +230,9 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			for(int icount=0; icount < listaFileConfigUsed.size(); icount++){
 				File objFileConfigOvpn = (File) listaFileConfigUsed.get(icount);
 				String sAlias = Integer.toString(icount);
-				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endg�ltige auszuf�hrende Befehl �ber eine Batch gegeben werden muss. Herausgefunden durch Try and Error.
-				File[] objaFileTemplateBatch = objChooser.findFileConfigBatchTemplates();
-				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, objFileConfigOvpn, sAlias, saTemp);
+				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endg�ltige auszuf�hrende Befehl �ber eine Batch gegeben werden muss. Herausgefunden durch Try and Error.				
+				File objFileTemplateBatch = objChooser.findFileConfigBatchTemplateFirst();				
+				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, objFileTemplateBatch, objFileConfigOvpn, sAlias, saTemp);
 				this.logStatusString("Requesting start of process #"+ icount + " (File: " + objFileConfigOvpn.getName() + ")");				
 				Process objProcessTemp = objStarter.requestStart();			
 				if(objProcessTemp==null){

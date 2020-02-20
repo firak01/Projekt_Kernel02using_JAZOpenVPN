@@ -1,11 +1,13 @@
 package use.openvpn;
 
 import java.io.File;
+import java.lang.reflect.Array;
 
 import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
 import org.jdesktop.jdic.filetypes.AssociationService;
 
+import use.openvpn.client.OVPNFileFilterConfigBatchTemplateZZZ;
 import use.openvpn.client.OVPNFileFilterConfigOvpnTemplateZZZ;
 import use.openvpn.client.OVPNFileFilterConfigOvpnUsedZZZ;
 
@@ -166,7 +168,8 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	}
 	
 	/**Finds configuration files started with "'template * .ovpn'.
-	 * This is usefull for the client-configuration - starter, because this template file is used to create the real configuration files (which then will e.g. get an updated 'remote' entry -line). 
+	 * PLUS: The right ones for the given Context.
+	 * This is usefull for the configuration - starter, because this template file is used to create the real batch files. 
 	 * @param objDirectoryin
 	 * @return
 	 * @throws ExceptionZZZ, 
@@ -204,11 +207,36 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigOvpnTemplateZZZ objFilterConfig = new OVPNFileFilterConfigOvpnTemplateZZZ(this.getOvpnContextUsed());			
+			OVPNFileFilterConfigBatchTemplateZZZ objFilterConfig = new OVPNFileFilterConfigBatchTemplateZZZ(this.getOvpnContextUsed());			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
 		return objaReturn;
+	}
+	/**Normalerweise gibt es nur 1 Batch-Starter Template für den ausgewählten Context.
+	 * Das bekommt man hiermit.
+	 * @return
+	 * @throws ExceptionZZZ
+	 * @author Fritz Lindhauer, 20.02.2020, 17:44:02
+	 */
+	public File findFileConfigBatchTemplateFirst() throws ExceptionZZZ{
+		File objReturn = null;		
+		main:{
+			File[] objaFileTemplates = this.findFileConfigBatchTemplates();
+			
+			 //Ich weiss komplizierter als notwendig.
+			 //Aber schon mal die Idee aus ReferenceArrayZZZ übernommen
+			 //a) generisch die Sache anzugehen, b) aus dem Array meherer Werte noch etwas spezielles herauszufiltern.
+			 if(objaFileTemplates.getClass().isArray()) {
+    			//listaReferent.addAll(initialValue); GEHT NICHT SO
+    			
+    			//int iMax = Array.getLength(initialValue)-1;
+    			//for(int i=0; i<=iMax;i++) {
+    				Object objTemp = Array.get(objaFileTemplates, 0);
+    				objReturn = (File)objTemp;
+			 }
+		}//end main:
+		return objReturn;
 	}
 	
 	/**Finds configuration files. Everything in the configuration directory with the ending .ovpn,

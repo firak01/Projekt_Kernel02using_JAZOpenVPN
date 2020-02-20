@@ -30,7 +30,7 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 			//Merke: 2>&1 soll bewirken, dass sowohl die Standardausgabe als auch die Fehler in die gleiche Datei kommen
 		    
 			//Hole das Template für die Batch-Datei
-			
+			TODO GOON 111111111111
 		
 			//Lies das Template ein, jede Zeile 1 Eintrag in der HashMap (ist damit anders als beim OVPN-Template, bei dem alle Zeile gegen einen RegEx-Ausdruck geprüft werden.)
 			
