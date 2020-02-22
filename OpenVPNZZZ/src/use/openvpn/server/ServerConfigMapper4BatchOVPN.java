@@ -3,9 +3,12 @@ package use.openvpn.server;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.TreeMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.HashtableIndexedZZZ;
+import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
 
@@ -40,9 +43,16 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 			//Lies das Template ein, jede Zeile 1 Eintrag in der HashMap (ist damit anders als beim OVPN-Template, bei dem alle Zeile gegen einen RegEx-Ausdruck geprüft werden.)
 			IKernelZZZ objKernel = this.getKernelObject();		
 			ConfigFileTemplateBatchOVPN objBatchReader = new ConfigFileTemplateBatchOVPN(objKernel, fileTemplateBatch, null);
-					
-		
-						
+			
+			//TODO GOON: Methode, die Interne Hashtable als HashMap<String,String> zurückzugen
+			11111
+			
+			//TODO GOON neue Klasse: HashtableExtendesZZZ , darin Static Methode um aus einer HashTable eine HashMap<String,String> zurückzugenben.
+			//                                    besser: Aus einer HashTableIndexedZZZ eine HashMap<String,String> zurückzugenben.
+			HashtableIndexedZZZ objHt =  objBatchReader.getLines();
+			VectorExtendedZZZ objVec = objHt.getVectorIndex();
+		TreeMap<Integer,Object>tm = objHt.getTreeMap();
+			hmReturn.putAll(tm);			
 		}//END main
 		return hmReturn;
 	}
