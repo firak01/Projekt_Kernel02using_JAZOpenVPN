@@ -12,8 +12,8 @@ import use.openvpn.AbstractConfigMapper4TemplateOVPN;
 import use.openvpn.ConfigChooserOVPN;
 
 public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4TemplateOVPN{	
-	public ClientConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ClientMainZZZ objClientMain) {
-		super(objKernel, objClientMain);		
+	public ClientConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ClientMainZZZ objClientMain, File fileTemplateOvpn) {
+		super(objKernel, objClientMain, fileTemplateOvpn);		
 	}
 	
 	/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap

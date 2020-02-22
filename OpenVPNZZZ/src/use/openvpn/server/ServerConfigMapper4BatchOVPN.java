@@ -8,34 +8,41 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
+
 import use.openvpn.AbstractConfigMapper4BatchOVPN;
 import use.openvpn.AbstractConfigMapper4TemplateOVPN;
+import use.openvpn.ConfigFileTemplateBatchOVPN;
 import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainZZZ;
 
 public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN{	
-	public ServerConfigMapper4BatchOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain) {
-		super(objKernel, objServerMain);		
+	public ServerConfigMapper4BatchOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain, File fileTemplateBatch) {
+		super(objKernel, objServerMain, fileTemplateBatch);		
 	}
 
 	@Override
-	public HashMap getConfigPattern() {
+	public HashMap getConfigPattern() throws ExceptionZZZ {
 		HashMap hmReturn = new HashMap();
 		main:{
 			check:{		
 			}
 		
 			//Die %xyz% Einträge sollen dann ersetzt werden.
+			//hmReturn.put("line001", "%exeovpn% --pause-exit --log c:\\\\fglkernel\\\\kernellog\\\\ovpn.log --config %templateovpn% > c:\\fglkernel\\kernellog\\ovpnStarter.log 2>&1");
+		
 			//Das Beispielergebnis: C:\Programme\OpenVPN\bin\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\serverVPN1_TCP_443.ovpn
 			//Merke: 2>&1 soll bewirken, dass sowohl die Standardausgabe als auch die Fehler in die gleiche Datei kommen
 		    
+		
 			//Hole das Template für die Batch-Datei
-			TODO GOON 111111111111
-		
+			File fileTemplateBatch = this.getFileConfigTemplateBatchUsed();
+					
 			//Lies das Template ein, jede Zeile 1 Eintrag in der HashMap (ist damit anders als beim OVPN-Template, bei dem alle Zeile gegen einen RegEx-Ausdruck geprüft werden.)
-			
+			IKernelZZZ objKernel = this.getKernelObject();		
+			ConfigFileTemplateBatchOVPN objBatchReader = new ConfigFileTemplateBatchOVPN(objKernel, fileTemplateBatch, null);
+					
 		
-			hmReturn.put("line001", "%exeovpn% --pause-exit --log c:\\\\fglkernel\\\\kernellog\\\\ovpn.log --config %templateovpn% > c:\\fglkernel\\kernellog\\ovpnStarter.log 2>&1");			
+						
 		}//END main
 		return hmReturn;
 	}
@@ -45,13 +52,18 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
 	 */
-	public HashMap readTaskHashMap(File objFileConfigTemplateOvpn) throws ExceptionZZZ{
+	public HashMap readTaskHashMap(File fileConfigTemplateOvpnIn) throws ExceptionZZZ{
 		HashMap objReturn=new HashMap();
-		main:{		
-			if(objFileConfigTemplateOvpn==null) {
+		main:{					
+			if(fileConfigTemplateOvpnIn!=null) {
+				this.setFileConfigTemplateOvpnUsed(fileConfigTemplateOvpnIn);
+			}
+			File fileConfigTemplateOvpn=this.getFileConfigTemplateOvpnUsed();
+			if(fileConfigTemplateOvpn==null) {
 				ExceptionZZZ ez = new ExceptionZZZ("OVPN Template file", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}
+			
 			
 			
 			//Merke: In der Batch Datei muss der Pfad zur neu erstellten Template-Datei stehen.
@@ -75,7 +87,7 @@ pause
 			String sDirectoryTemplateOvpn = objDirectoryTemplateOvpn.getAbsolutePath();
 			
 			//Nur eine konkrete, für den Start der Batch verwendete Konfiguration hier behandeln
-			String sFileTemplateOvpn = objFileConfigTemplateOvpn.getName();
+			String sFileTemplateOvpn = fileConfigTemplateOvpn.getName();
 			
 			String stemp;
 			HashMap<String,String> hmPattern = this.getConfigPattern();

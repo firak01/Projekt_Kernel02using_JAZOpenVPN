@@ -13,8 +13,8 @@ import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
 
 public class ServerConfigMapper4TemplateOVPN extends AbstractConfigMapper4TemplateOVPN{	
-	public ServerConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain) {
-		super(objKernel, (IMainOVPN) objServerMain);		
+	public ServerConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain, File fileConfigTemplateOvpn) {
+		super(objKernel, (IMainOVPN) objServerMain, fileConfigTemplateOvpn);		
 	}
 	
 	/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap

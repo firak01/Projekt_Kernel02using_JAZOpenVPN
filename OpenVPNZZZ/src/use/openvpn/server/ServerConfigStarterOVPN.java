@@ -113,12 +113,9 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					}
 					
 					File fileConfigOvpn = this.getFileConfigOvpn();
-					
-					
-					//TODO GOON 20200213
-					//1. Batch File neu erstellen (wg. ggfs. anderen/neuen Code)
-					//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.
-					FileTextWriterZZZ objBatch = new FileTextWriterZZZ(sBatch);					
+
+					//1. Batch File neu erstellen (wg. ggfs. anderen/neuen Code)				
+					FileTextWriterZZZ objBatch = new FileTextWriterZZZ(sBatch);	 	//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.				
 					ArrayList<String> listaLine = this.computeBatchLines(this.getFileTemplateBatch(), fileConfigOvpn);
 					for(String sLine : listaLine){
 						objBatch.writeLine(sLine);
@@ -183,7 +180,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	public ArrayList<String> computeBatchLines(File fileConfigTemplateBatch, File fileConfigTemplateOvpn) throws ExceptionZZZ {
 		ArrayList<String>listasReturn=new ArrayList<String>();
 		main:{
-			ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject());
+			ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch);
 			HashMap<String,String>hmBatchLines = objMapperBatch.readTaskHashMap(fileConfigTemplateOvpn);
 			
 			Set<String> setBatchLineNumber = hmBatchLines.keySet();

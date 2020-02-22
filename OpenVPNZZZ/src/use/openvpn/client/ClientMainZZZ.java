@@ -76,10 +76,7 @@ private boolean bFlagPortScanAllFinished = false;
 			
 			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"client");
 			this.setConfigChooserObject(objChooser);
-			
-			ClientConfigMapper4TemplateOVPN objMapper = new ClientConfigMapper4TemplateOVPN(objKernel, this);
-			this.setConfigMapperObject(objMapper);
-			
+						
 			//Die Konfigurations-Template Dateien finden		
 			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplates();
 			if(objaFileConfigTemplate==null){
@@ -141,13 +138,17 @@ private boolean bFlagPortScanAllFinished = false;
 			
 						
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
-			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");		
-			ClientConfigTemplateUpdaterZZZ objUpdater = new ClientConfigTemplateUpdaterZZZ(objKernel, this, objChooser, objMapper, null);
+			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");									
 			ArrayList listaFileUsed = new ArrayList(objaFileConfigTemplate.length);
-			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){		
+			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){
+				File fileTemplateOvpnUsed = objaFileConfigTemplate[icount];
+				
+				ClientConfigMapper4TemplateOVPN objMapper = new ClientConfigMapper4TemplateOVPN(objKernel, this, fileTemplateOvpnUsed);
+				this.setConfigMapperObject(objMapper);
 				
 				//Mit dem Setzen der neuen Datei, basierend auf dem Datei-Template wird intern ein Parser f�r das Datei-Template aktiviert
-				File objFileNew = objUpdater.refreshFileUsed(objaFileConfigTemplate[icount]);	
+				ClientConfigTemplateUpdaterZZZ objUpdater = new ClientConfigTemplateUpdaterZZZ(objKernel, this, objChooser, objMapper, null);				
+				File objFileNew = objUpdater.refreshFileUsed(fileTemplateOvpnUsed);					
 				if(objFileNew==null){
 					this.logStatusString("Unable to create 'used file' file base on template template: '" + objaFileConfigTemplate[icount].getPath() + "'");					
 				}else{
@@ -159,7 +160,7 @@ private boolean bFlagPortScanAllFinished = false;
 						listaFileUsed.add(objUpdater.getFileUsed());
 					}else{
 						this.logStatusString( "'Used file' not processed, based upon: '" + objaFileConfigTemplate[icount].getPath() + "'");					
-					}	
+					}																						
 				}
 			}//end for
 			

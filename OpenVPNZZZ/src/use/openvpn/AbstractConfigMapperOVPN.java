@@ -1,14 +1,19 @@
 package use.openvpn;
 
+import java.io.File;
 import java.util.HashMap;
 
+import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
 public abstract class AbstractConfigMapperOVPN extends KernelUseObjectZZZ implements IConfigMapperOVPN, IMainUserOVPN{
 	private IMainOVPN objMain = null;
-
+	private File fileConfigTemplateUsedOvpn = null;
+	private File fileConfigTemplateUsedBatch = null;
+	
 	public AbstractConfigMapperOVPN(IKernelZZZ objKernel, IMainOVPN objMain) {
+		super(objKernel);
 		this.setMainObject(objMain);
 	}
 		
@@ -21,8 +26,44 @@ public abstract class AbstractConfigMapperOVPN extends KernelUseObjectZZZ implem
 	public void setMainObject(IMainOVPN objMain) {
 		this.objMain = objMain;
 	}
-
+	
 	@Override
-	public abstract HashMap getConfigPattern();
+	public File getFileConfigTemplateOvpnUsed() {
+		return this.fileConfigTemplateUsedOvpn;
+	}
+	
+	@Override
+	public void setFileConfigTemplateOvpnUsed(File fileConfigTemplateOvpn) {
+		this.fileConfigTemplateUsedOvpn = fileConfigTemplateOvpn;
+	}
+	
+	@Override
+	public File getFileConfigTemplateBatchUsed() {
+		return this.fileConfigTemplateUsedBatch;
+	}
+	
+	@Override
+	public void setFileConfigTemplateBatchUsed(File fileConfigTemplateBatch) {
+		this.fileConfigTemplateUsedBatch = fileConfigTemplateBatch;
+	}
+
+	/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap
+	 * TODO GOON: Hashmap hat folgende Struktur. Liste(sConfigurationEntry)=sConfiigurationEntry + ' ' + die Werte ....
+	 * @param sAlias
+	 * @param sIP
+	 * @param sProxyHost
+	 * @param sProxyPort
+	 * @param iProxyTimeout
+	 * @return, 
+	 *
+	 * @return String[]
+	 * 
+	 * Die Ersetzung der Musterplatzhalter passiert in ClientMainZZZ.readTaskHashMap();
+	 * Zudem muss ein RegEx Ausdruck bereitgestellt werden in ClientConfigUpdaterZZZ.getConfigRegExp();
+	 *
+	 * javadoc created by: 0823, 05.07.2006 - 08:34:38
+	 */
+	@Override
+	public abstract HashMap getConfigPattern() throws ExceptionZZZ;
 
 }

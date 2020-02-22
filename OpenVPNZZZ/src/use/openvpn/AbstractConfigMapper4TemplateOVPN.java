@@ -14,29 +14,11 @@ import use.openvpn.server.ServerConfigMapper4TemplateOVPN;
 public abstract class AbstractConfigMapper4TemplateOVPN extends AbstractConfigMapperOVPN implements IConfigMapper4TemplateOVPN{
 	private IMainOVPN objMain = null;
 		
-	public AbstractConfigMapper4TemplateOVPN(IKernelZZZ objKernel, IMainOVPN objMain) {
+	public AbstractConfigMapper4TemplateOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateOvpn) {
 		super(objKernel, objMain);			
+		this.setFileConfigTemplateOvpnUsed(fileTemplateOvpn);
 	}
-	
-	/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap
-	 * TODO GOON: Hashmap hat folgende Struktur. Liste(sConfigurationEntry)=sConfiigurationEntry + ' ' + die Werte ....
-	 * @param sAlias
-	 * @param sIP
-	 * @param sProxyHost
-	 * @param sProxyPort
-	 * @param iProxyTimeout
-	 * @return, 
-	 *
-	 * @return String[]
-	 * 
-	 * Die Ersetzung der Musterplatzhalter passiert in ClientMainZZZ.readTaskHashMap();
-	 * Zudem muss ein RegEx Ausdruck bereitgestellt werden in ClientConfigUpdaterZZZ.getConfigRegExp();
-	 *
-	 * javadoc created by: 0823, 05.07.2006 - 08:34:38
-	 */
-	public abstract HashMap getConfigPattern();
-	
-	
+		
 	/**TODO R�ckgabe des regul�ren Ausdrucks. TODOGOON: Dies sollte in Form einer HashMap passieren !!!
 	 *  TODO GOON Hashmap in der Form liste(ConfigAusdruck) = "^" + saConfig[icount] + " ";
 	 * @param sAlias

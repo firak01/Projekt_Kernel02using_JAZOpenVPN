@@ -71,9 +71,15 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 					ExceptionZZZ ez = new ExceptionZZZ("OvpnConfigurationFile", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
-				
-				this.setFileTemplateBatch(objFileTemplateBatch);
 				this.setFileConfigOvpn(objFileConfigOvpn);
+				
+				if(objFileTemplateBatch==null){
+					ExceptionZZZ ez = new ExceptionZZZ("BatchConfigurationFile", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}
+				this.setFileTemplateBatch(objFileTemplateBatch);	
+				
+				
 				this.sMyAlias = sMyAlias;
 				
 				String sOvpnContextClientOrServer = StringZZZ.left(objFileConfigOvpn.getName(), "_");

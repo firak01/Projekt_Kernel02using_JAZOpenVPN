@@ -71,22 +71,20 @@ public class ConfigFileTemplateBatchOVPN extends KernelUseObjectZZZ{
 	public int refreshLines()throws ExceptionZZZ{
 		return this.refreshLines(null);
 	}
-	public int refreshLines(File objFileConfigTemplateBatchIn) throws ExceptionZZZ {
+	public int refreshLines(File fileConfigTemplateBatchIn) throws ExceptionZZZ {
 		int iReturn=0;
-		main:{
-			File objFileConfigTemplateBatch=null;
-			if(objFileConfigTemplateBatchIn!=null) {
-				this.setFileConfigTemplateBatch(objFileConfigTemplateBatchIn);
+		main:{			
+			if(fileConfigTemplateBatchIn!=null) {
+				this.setFileConfigTemplateBatch(fileConfigTemplateBatchIn);
 			}
-			objFileConfigTemplateBatch = this.getFileConfigTemplateBatch();
-			
-			if(objFileConfigTemplateBatch==null){
-				ExceptionZZZ ez = new ExceptionZZZ("File", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			File fileConfigTemplateBatch = this.getFileConfigTemplateBatch();			
+			if(fileConfigTemplateBatch==null){
+				ExceptionZZZ ez = new ExceptionZZZ("FileTemplateBatch", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
 			
 			//Zeilen der Datei einlesen
-			TxtReaderZZZ objReader = new TxtReaderZZZ(objFileConfigTemplateBatch);
+			TxtReaderZZZ objReader = new TxtReaderZZZ(fileConfigTemplateBatch);
 			Vector<String> vecLine = objReader.readVectorStringByByte(0);
 			
 			//Alle Zeilen nun mit einer Nummer versehen und der HashTable "indiziert" übergeben.

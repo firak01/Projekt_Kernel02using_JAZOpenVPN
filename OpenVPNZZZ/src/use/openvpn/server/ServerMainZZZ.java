@@ -67,10 +67,6 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"server");
 			this.setConfigChooserObject(objChooser);
 			
-			ServerConfigMapper4TemplateOVPN objMapper = new ServerConfigMapper4TemplateOVPN(objKernel, this);
-			this.setConfigMapperObject(objMapper);
-			
-			
 			//Die Konfigurations-Template Dateien finden
 			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplates(null);
 			if(objaFileConfigTemplate==null){
@@ -100,16 +96,20 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			this.logStatusString(strUpdate);
 			
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
-			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");		
-			ServerConfigTemplateUpdaterOVPN objUpdater = new ServerConfigTemplateUpdaterOVPN(objKernel, this, objChooser, objMapper, null);
+			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");					
 			//ArrayList listaFileConfig = new ArrayList(objaFileConfigTemplate.length);
-			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){		
+			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){	
+				File fileConfigTemplateOvpnUsed = objaFileConfigTemplate[icount];
+				ServerConfigMapper4TemplateOVPN objMapper = new ServerConfigMapper4TemplateOVPN(objKernel, this, fileConfigTemplateOvpnUsed);
+				this.setConfigMapperObject(objMapper);
 				
 				//Mit dem Setzen der neuen Datei, basierend auf dem Datei-Template wird intern ein Parser für das Datei-Template aktiviert
-				File objFileNew = objUpdater.refreshFileUsed(objaFileConfigTemplate[icount]);	
+				ServerConfigTemplateUpdaterOVPN objUpdater = new ServerConfigTemplateUpdaterOVPN(objKernel, this, objChooser, objMapper, null);
+				File objFileNew = objUpdater.refreshFileUsed(fileConfigTemplateOvpnUsed);	
 				if(objFileNew==null){
 					this.logStatusString("Unable to create 'used file' file base on template template: '" + objaFileConfigTemplate[icount].getPath() + "'");					
 				}else{
+					
 					boolean btemp = objUpdater.update(objFileNew, true); //Bei false werden also auch Zeilen automatisch hinzugefügt, die nicht im Template sind. Z.B. Proxy-Einstellungen.
 					if(btemp==true){
 						this.logStatusString( "'Used file' successfully created for template: '" + objaFileConfigTemplate[icount].getPath() + "'");
