@@ -1,13 +1,18 @@
 package use.openvpn.server;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashtableIndexedZZZ;
+import basic.zBasic.util.abstractList.SetZZZ;
 import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -24,12 +29,9 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 	}
 
 	@Override
-	public HashMap getConfigPattern() throws ExceptionZZZ {
-		HashMap hmReturn = new HashMap();
-		main:{
-			check:{		
-			}
-		
+	public HashMap<String,String> getConfigPattern() throws ExceptionZZZ {
+		HashMap<String,String> hmReturn = new HashMap<String,String>();
+		main:{			
 			//Die %xyz% Einträge sollen dann ersetzt werden.
 			//hmReturn.put("line001", "%exeovpn% --pause-exit --log c:\\\\fglkernel\\\\kernellog\\\\ovpn.log --config %templateovpn% > c:\\fglkernel\\kernellog\\ovpnStarter.log 2>&1");
 		
@@ -43,16 +45,7 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 			//Lies das Template ein, jede Zeile 1 Eintrag in der HashMap (ist damit anders als beim OVPN-Template, bei dem alle Zeile gegen einen RegEx-Ausdruck geprüft werden.)
 			IKernelZZZ objKernel = this.getKernelObject();		
 			ConfigFileTemplateBatchOVPN objBatchReader = new ConfigFileTemplateBatchOVPN(objKernel, fileTemplateBatch, null);
-			
-			//TODO GOON: Methode, die Interne Hashtable als HashMap<String,String> zurückzugen
-			11111
-			
-			//TODO GOON neue Klasse: HashtableExtendesZZZ , darin Static Methode um aus einer HashTable eine HashMap<String,String> zurückzugenben.
-			//                                    besser: Aus einer HashTableIndexedZZZ eine HashMap<String,String> zurückzugenben.
-			HashtableIndexedZZZ objHt =  objBatchReader.getLines();
-			VectorExtendedZZZ objVec = objHt.getVectorIndex();
-		TreeMap<Integer,Object>tm = objHt.getTreeMap();
-			hmReturn.putAll(tm);			
+			hmReturn = objBatchReader.getLinesAsHashMap_StringString();
 		}//END main
 		return hmReturn;
 	}
@@ -102,8 +95,11 @@ pause
 			String stemp;
 			HashMap<String,String> hmPattern = this.getConfigPattern();
 			Set<String> setKey = hmPattern.keySet();
-			for(String sKey : setKey) {
-				
+			
+			//Aber: Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
+			//List<Integer>numbersList = (List<Integer>) SetZZZ.sortAsInteger(setKey);						
+			List<String>numbersList = (List<String>) SetZZZ.sortAsInteger(setKey);
+			for(String sKey : numbersList) {
 				String sLine = hmPattern.get(sKey);				
 				stemp = StringZZZ.replace(sLine, "%exeovpn%", sFileExeOvpn);
 				

@@ -329,7 +329,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 //				this.logStatusString(objaFileConfig.length + " configuration file(s) were found in the directory: '" + objChooser.readDirectoryConfigPath() + "'");  //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 				//this.logStatusString("Trying to remove previously used file(s): " + objaFileConfigUsed.length);
 				strStatusUpdate.add("Trying to remove previously used file(s): " + objaFileConfigUsed.length);
-				for(int icount = 0; icount < objaFileConfigUsed.length; icount++){
+				for(int icount = 0; icount <= objaFileConfigUsed.length-1; icount++){
 					boolean btemp = objaFileConfigUsed[icount].delete();
 					if(btemp==true){
 						iReturn=iReturn+1;

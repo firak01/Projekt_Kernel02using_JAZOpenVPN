@@ -64,6 +64,6 @@ public abstract class AbstractConfigMapperOVPN extends KernelUseObjectZZZ implem
 	 * javadoc created by: 0823, 05.07.2006 - 08:34:38
 	 */
 	@Override
-	public abstract HashMap getConfigPattern() throws ExceptionZZZ;
+	public abstract HashMap<String,String> getConfigPattern() throws ExceptionZZZ;
 
 }

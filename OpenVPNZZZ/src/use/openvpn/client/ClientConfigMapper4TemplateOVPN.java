@@ -32,8 +32,8 @@ public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 	 *
 	 * javadoc created by: 0823, 05.07.2006 - 08:34:38
 	 */
-	public HashMap getConfigPattern(){
-		HashMap hmReturn = new HashMap();
+	public HashMap<String,String> getConfigPattern(){
+		HashMap<String,String> hmReturn = new HashMap<String,String>();
 		main:{
 			check:{		
 			}		

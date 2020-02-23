@@ -3,7 +3,10 @@ package use.openvpn.server;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -15,6 +18,7 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.SetZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.FileTextWriterZZZ;
@@ -184,7 +188,11 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			HashMap<String,String>hmBatchLines = objMapperBatch.readTaskHashMap(fileConfigTemplateOvpn);
 			
 			Set<String> setBatchLineNumber = hmBatchLines.keySet();
-			for(String sLineNumber : setBatchLineNumber) {
+			
+			//Aber: Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
+			//List<String>numbersList=(List<String>) SetZZZ.sortAsString(setBatchLineNumber);			
+			List<String>numbersList=(List<String>) SetZZZ.sortAsInteger(setBatchLineNumber);
+			for(String sLineNumber : numbersList) {
 				String sLine = hmBatchLines.get(sLineNumber);
 				listasReturn.add(sLine);
 			}			

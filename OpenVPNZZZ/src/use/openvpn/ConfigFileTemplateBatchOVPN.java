@@ -3,6 +3,7 @@ package use.openvpn;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
@@ -16,6 +17,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashtableIndexedZZZ;
 import basic.zBasic.util.abstractList.HashtableSortedZZZ;
+import basic.zBasic.util.abstractList.HashtableZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.txt.TxtReaderZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -131,5 +133,13 @@ public class ConfigFileTemplateBatchOVPN extends KernelUseObjectZZZ{
 	}
 	public void setLines(HashtableIndexedZZZ<Integer,String>htLines) {
 		this.htLines = htLines;
+	}
+	public HashMap<String,String> getLinesAsHashMap_StringString() throws ExceptionZZZ{
+		HashMap<String,String> hmReturn=null;
+		main:{
+			HashtableIndexedZZZ<Integer,String>htIndexed = this.getLines();
+			hmReturn = HashtableZZZ.toHashMap_StringString(htIndexed);
+		}
+		return hmReturn;
 	}
 }//END class

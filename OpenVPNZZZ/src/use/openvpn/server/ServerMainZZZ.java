@@ -98,7 +98,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
 			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");					
 			//ArrayList listaFileConfig = new ArrayList(objaFileConfigTemplate.length);
-			for(int icount = 0; icount < objaFileConfigTemplate.length; icount++){	
+			for(int icount = 0; icount <= objaFileConfigTemplate.length-1; icount++){	
 				File fileConfigTemplateOvpnUsed = objaFileConfigTemplate[icount];
 				ServerConfigMapper4TemplateOVPN objMapper = new ServerConfigMapper4TemplateOVPN(objKernel, this, fileConfigTemplateOvpnUsed);
 				this.setConfigMapperObject(objMapper);
@@ -127,9 +127,11 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			ArrayList<File> listaFileConfigUsed = this.getConfigFileObjectsAll();
 			String sFileConfigConfigured = objKernel.getParameterByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();			
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);//.findFileConfigTemplate(null);
+			
+			listaFileConfigUsed.clear();//Baue die Lsite der letztendlich genutzten Konfigurationen neu auf.
 			if(StringZZZ.isEmpty(sFileConfigConfigured)){
 				//Die Arraylist besteht nun aus allen konfigurierten Dateien
-				for(int icount=0; icount < objaFileConfigUsed.length; icount++){
+				for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
 					listaFileConfigUsed.add(objaFileConfigUsed[icount]);
 				}
 			}else{
@@ -137,7 +139,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				StringTokenizer objToken = new StringTokenizer(sFileConfigConfigured, File.separator);
 				while(objToken.hasMoreTokens()){
 					String stemp = objToken.nextToken();
-					for(int icount=0; icount < objaFileConfigUsed.length; icount++){
+					for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
 						File objFileTemp = objaFileConfigUsed[icount];
 						String sFileTemp2 = objFileTemp.getName();
 						//String sFileTemp = FileEasyZZZ.getNameOnly(objFileTemp.getName());
@@ -154,7 +156,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				break main;
 			}else{
 				String stemp = "";
-				for(int icount=0; icount < listaFileConfigUsed.size(); icount++){
+				for(int icount=0; icount <= listaFileConfigUsed.size()-1; icount++){
 					File objFileTemp = (File) listaFileConfigUsed.get(icount);
 					if(stemp.equals("")){
 						stemp = objFileTemp.getName();
@@ -227,7 +229,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			Thread[] threadaOVPN = new Thread[listaFileConfigUsed.size()];
 			ProcessWatchRunnerZZZ[] runneraOVPN = new ProcessWatchRunnerZZZ[listaFileConfigUsed.size()];	
 			int iNumberOfProcessStarted = 0;
-			for(int icount=0; icount < listaFileConfigUsed.size(); icount++){
+			for(int icount=0; icount <= listaFileConfigUsed.size()-1; icount++){
 				File objFileConfigOvpn = (File) listaFileConfigUsed.get(icount);
 				String sAlias = Integer.toString(icount);
 				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endg�ltige auszuf�hrende Befehl �ber eine Batch gegeben werden muss. Herausgefunden durch Try and Error.				
