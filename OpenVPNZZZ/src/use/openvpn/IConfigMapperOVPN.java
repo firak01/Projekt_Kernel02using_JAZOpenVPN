@@ -7,8 +7,6 @@ import basic.zBasic.ExceptionZZZ;
 
 public interface IConfigMapperOVPN {
 	public HashMap<String,String> getConfigPattern() throws ExceptionZZZ;
-	public void setFileConfigTemplateOvpnUsed(File fileTemplateOvpn);
-	public File getFileConfigTemplateOvpnUsed();
-	public void setFileConfigTemplateBatchUsed(File fileTemplateBatch);
-	public File getFileConfigTemplateBatchUsed();
+		
+	public HashMap<String,String> readTaskHashMap() throws ExceptionZZZ;
 }

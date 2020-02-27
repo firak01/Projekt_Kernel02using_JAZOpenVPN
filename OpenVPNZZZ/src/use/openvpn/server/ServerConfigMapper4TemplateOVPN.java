@@ -104,11 +104,11 @@ public class ServerConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
 	 */
-	public HashMap readTaskHashMap() throws ExceptionZZZ{
-		HashMap objReturn=new HashMap();
+	public HashMap<String,String> readTaskHashMap() throws ExceptionZZZ{
+		HashMap<String,String> objReturn=new HashMap();
 		main:{		
 			String stemp;
-			HashMap hmPattern = this.getConfigPattern();
+			HashMap<String,String> hmPattern = this.getConfigPattern();
 			if(this.getFlag("useProxy")==true){	
 				String sProxyLine = (String)hmPattern.get("http-proxy");
 				if(sProxyLine!=null){

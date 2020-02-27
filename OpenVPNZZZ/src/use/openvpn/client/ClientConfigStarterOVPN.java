@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import basic.zKernel.KernelZZZ;
 import use.openvpn.AbstractConfigStarterOVPN;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
+import use.openvpn.IConfigMapper4BatchOVPN;
 import use.openvpn.IMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -113,6 +114,12 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 
 	@Override
 	public ArrayList<String> computeBatchLines(File objFileBatch, File objFileTemplateOvpn) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConfigMapper4BatchOVPN createConfigMapperObject() {
 		// TODO Auto-generated method stub
 		return null;
 	}

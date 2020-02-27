@@ -28,16 +28,17 @@ import basic.zKernel.KernelZZZ;
 public class ConfigFileTemplateBatchOVPN extends KernelUseObjectZZZ{
 	public static String sFILE_TEMPLATE_PREFIX="template_";
 	public static String sFILE_TEMPLATE_SUFFIX="_starter";
-	private File objFileConfig;
+	private File fileTemplateBatch=null;
+	private File fileTemplateOvpn=null;
 	private HashtableIndexedZZZ<Integer, String> htLines = null;
 		
-	public ConfigFileTemplateBatchOVPN(IKernelZZZ objKernel, File objFile, String[] saFlagControl) throws ExceptionZZZ{
+	public ConfigFileTemplateBatchOVPN(IKernelZZZ objKernel, File fileTemplateBatch, File fileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigFileTemplateBatchNew_(objFile, saFlagControl);		
+		ConfigFileTemplateBatchNew_(fileTemplateBatch, fileConfigOvpn, saFlagControl);		
 	}
 
 	
-	private void ConfigFileTemplateBatchNew_(File objFile, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigFileTemplateBatchNew_(File fileTemplateBatch, File fileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 					
@@ -57,12 +58,20 @@ public class ConfigFileTemplateBatchOVPN extends KernelUseObjectZZZ{
 				}
 				
 				
-				if(objFile==null){
-					ExceptionZZZ ez = new ExceptionZZZ("File", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				if(fileTemplateBatch==null){
+					ExceptionZZZ ez = new ExceptionZZZ("FileTemplateBatch", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}else{
-					this.setFileConfigTemplateBatch(objFile);
+					this.setFileConfigTemplateBatch(fileTemplateBatch);
 				}
+				
+				if(fileConfigOvpn==null){
+					ExceptionZZZ ez = new ExceptionZZZ("FileConfigOvpn", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}else{
+					this.setFileConfigTemplateOvpn(fileConfigOvpn);
+				}
+				
 			}//End check
 			
 			this.refreshLines();
@@ -119,12 +128,20 @@ public class ConfigFileTemplateBatchOVPN extends KernelUseObjectZZZ{
 	
 	
 	//#### GETTER / SETTER
-	public void setFileConfigTemplateBatch(File objFile){
-		this.objFileConfig = objFile;
+	public void setFileConfigTemplateBatch(File fileTemplateBatch){
+		this.fileTemplateBatch = fileTemplateBatch;
 	}
 	public File getFileConfigTemplateBatch(){
-		return this.objFileConfig;
+		return this.fileTemplateBatch;
 	}
+	
+	public void setFileConfigTemplateOvpn(File fileTemplateOvpn){
+		this.fileTemplateOvpn = fileTemplateOvpn;
+	}
+	public File getFileConfigTemplateOvpn(){
+		return this.fileTemplateOvpn;
+	}
+	
 	public HashtableIndexedZZZ<Integer,String> getLines() throws ExceptionZZZ{
 		if(this.htLines==null) {
 			this.htLines = new HashtableIndexedZZZ<Integer,String>();

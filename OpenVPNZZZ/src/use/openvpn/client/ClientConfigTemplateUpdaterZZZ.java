@@ -10,6 +10,7 @@ import custom.zUtil.io.FileZZZ;
 import use.openvpn.AbstractConfigTemplateUpdaterOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
+import use.openvpn.IConfigMapperOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;

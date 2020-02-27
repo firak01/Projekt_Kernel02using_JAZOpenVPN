@@ -7,9 +7,33 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
 
 public abstract class AbstractConfigMapper4BatchOVPN  extends AbstractConfigMapperOVPN implements IConfigMapper4BatchOVPN{
+	private File fileTemplateUsedBatch = null;
+	private File fileConfigUsedOvpn = null;
 	
-	public AbstractConfigMapper4BatchOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateBatch) {
+	public AbstractConfigMapper4BatchOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateBatch, File fileConfigOvpn) {
 		super(objKernel, objMain);
-		this.setFileConfigTemplateBatchUsed(fileTemplateBatch);
+		this.setFileTemplateBatchUsed(fileTemplateBatch);
+		this.setFileConfigOvpnUsed(fileConfigOvpn);
 	}
+	
+	@Override
+	public File getFileTemplateBatchUsed() {
+		return this.fileTemplateUsedBatch;
+	}
+	
+	@Override
+	public void setFileTemplateBatchUsed(File fileTemplateBatch) {
+		this.fileTemplateUsedBatch = fileTemplateBatch;
+	}
+	
+	@Override
+	public File getFileConfigOvpnUsed() {
+		return this.fileConfigUsedOvpn;
+	}
+	
+	@Override
+	public void setFileConfigOvpnUsed(File fileConfigOvpn) {
+		this.fileConfigUsedOvpn = fileConfigOvpn;
+	}
+	
 }

@@ -6,11 +6,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.HashMapZZZ;
 import basic.zBasic.util.abstractList.HashtableIndexedZZZ;
 import basic.zBasic.util.abstractList.SetZZZ;
 import basic.zBasic.util.abstractList.VectorExtendedZZZ;
@@ -24,8 +26,8 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainZZZ;
 
 public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN{	
-	public ServerConfigMapper4BatchOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain, File fileTemplateBatch) {
-		super(objKernel, objServerMain, fileTemplateBatch);		
+	public ServerConfigMapper4BatchOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain, File fileTemplateBatch, File fileConfigOvpn) {
+		super(objKernel, objServerMain, fileTemplateBatch, fileConfigOvpn);		
 	}
 
 	@Override
@@ -40,13 +42,22 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 		    
 		
 			//Hole das Template für die Batch-Datei
-			File fileTemplateBatch = this.getFileConfigTemplateBatchUsed();
-					
+			File fileTemplateBatch = this.getFileTemplateBatchUsed();
+			File fileConfigOvpn = this.getFileConfigOvpnUsed();
+			
 			//Lies das Template ein, jede Zeile 1 Eintrag in der HashMap (ist damit anders als beim OVPN-Template, bei dem alle Zeile gegen einen RegEx-Ausdruck geprüft werden.)
 			IKernelZZZ objKernel = this.getKernelObject();		
-			ConfigFileTemplateBatchOVPN objBatchReader = new ConfigFileTemplateBatchOVPN(objKernel, fileTemplateBatch, null);
+			ConfigFileTemplateBatchOVPN objBatchReader = new ConfigFileTemplateBatchOVPN(objKernel, fileTemplateBatch, fileConfigOvpn, null);
 			hmReturn = objBatchReader.getLinesAsHashMap_StringString();
 		}//END main
+		return hmReturn;
+	}
+	
+	public HashMap<String,String> readTaskHashMap() throws ExceptionZZZ{
+		HashMap<String,String> hmReturn=new HashMap<String,String>();
+		main:{											
+			hmReturn= this.readTaskHashMap(null);
+		}//END main:
 		return hmReturn;
 	}
 	
@@ -55,15 +66,15 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
 	 */
-	public HashMap readTaskHashMap(File fileConfigTemplateOvpnIn) throws ExceptionZZZ{
-		HashMap objReturn=new HashMap();
+	public HashMap<String,String> readTaskHashMap(File fileConfigOvpnIn) throws ExceptionZZZ{
+		HashMap<String,String> hmReturn=new HashMap<String,String>();
 		main:{					
-			if(fileConfigTemplateOvpnIn!=null) {
-				this.setFileConfigTemplateOvpnUsed(fileConfigTemplateOvpnIn);
+			if(fileConfigOvpnIn!=null) {
+				this.setFileConfigOvpnUsed(fileConfigOvpnIn);
 			}
-			File fileConfigTemplateOvpn=this.getFileConfigTemplateOvpnUsed();
-			if(fileConfigTemplateOvpn==null) {
-				ExceptionZZZ ez = new ExceptionZZZ("OVPN Template file", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+			File fileConfigOvpn=this.getFileConfigOvpnUsed();
+			if(fileConfigOvpn==null) {
+				ExceptionZZZ ez = new ExceptionZZZ("OVPN Config file", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}
 			
@@ -90,27 +101,27 @@ pause
 			String sDirectoryTemplateOvpn = objDirectoryTemplateOvpn.getAbsolutePath();
 			
 			//Nur eine konkrete, für den Start der Batch verwendete Konfiguration hier behandeln
-			String sFileTemplateOvpn = fileConfigTemplateOvpn.getName();
+			String sFileConfigOvpn = fileConfigOvpn.getName();
 			
 			String stemp;
-			HashMap<String,String> hmPattern = this.getConfigPattern();
-			Set<String> setKey = hmPattern.keySet();
+			HashMap<String,String> hmPattern = this.getConfigPattern();//Merke: Das scheint noch nciht sortiert zu sein, warum ?
 			
-			//Aber: Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
-			//List<Integer>numbersList = (List<Integer>) SetZZZ.sortAsInteger(setKey);						
-			List<String>numbersList = (List<String>) SetZZZ.sortAsInteger(setKey);
+			//Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
+			//Merke: Intern wird vewendet: List<String>numbersList = (List<String>) SetZZZ.sortAsInteger(setKey);
+			Map<String,String> hmPatternSorted = HashMapZZZ.sortByKeyAsInteger(hmPattern);			
+			Set<String> setKey = hmPatternSorted.keySet();	
+			List<String> numbersList = SetZZZ.toListString(setKey);//new ArrayList<String>(setKey) ;        //set -> list
 			for(String sKey : numbersList) {
 				String sLine = hmPattern.get(sKey);				
 				stemp = StringZZZ.replace(sLine, "%exeovpn%", sFileExeOvpn);
 				
-				stemp = StringZZZ.replace(stemp, "%templateovpn%", sDirectoryTemplateOvpn + File.separator + sFileTemplateOvpn);
-				
-				
-				objReturn.put(sKey, stemp);
+				stemp = StringZZZ.replace(stemp, "%templateovpn%", sDirectoryTemplateOvpn + File.separator + sFileConfigOvpn);
+								
+				hmReturn.put(sKey, stemp);
 			}
 			
 		}//END main:
-		return objReturn;
+		return hmReturn;
 	}
 	
 	//###### GETTER / SETTER

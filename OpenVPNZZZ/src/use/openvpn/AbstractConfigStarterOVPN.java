@@ -3,17 +3,25 @@ package use.openvpn;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
+import use.openvpn.server.ServerConfigMapper4BatchOVPN;
+import use.openvpn.server.ServerMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.SetZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
 
-public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ implements IConfigStarterOVPN, IMainUserOVPN{
+public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ implements IConfigStarterOVPN, IMainUserOVPN, IConfigMapper4BatchUserOVPN{
 	private IMainOVPN objMain = null;
+	private IConfigMapper4BatchOVPN objMapper4Batch = null;
+	
 	private File objFileConfigOvpn=null;
 	private File objFileTemplateBatch=null;
 	private Process objProcess=null;
@@ -134,6 +142,24 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 	}
 	public void setMainObject(IMainOVPN objMain) {
 		this.objMain = objMain;
+	}
+	
+	@Override
+	public IConfigMapper4BatchOVPN getConfigMapperObject() {
+		IConfigMapper4BatchOVPN objReturn = null;
+		if(this.objMapper4Batch==null) {			
+			objReturn = this.createConfigMapperObject();
+			this.setConfigMapperObject(objReturn);		
+		}
+		return this.objMapper4Batch;	
+	}
+	
+	public abstract IConfigMapper4BatchOVPN createConfigMapperObject();
+		
+	
+	@Override
+	public void setConfigMapperObject(IConfigMapper4BatchOVPN objConfigMapper) {
+		this.objMapper4Batch = objConfigMapper;
 	}
 	
 	public void setFileConfigOvpn(File objFileConfigOvpn){
@@ -263,6 +289,26 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 	@Override
 	public abstract Process requestStart() throws ExceptionZZZ;
 	
+	//@Override
+	//public abstract ArrayList<String> computeBatchLines(File objFileBatch, File objFileTemplateOvpn) throws ExceptionZZZ;
 	@Override
-	public abstract ArrayList<String> computeBatchLines(File objFileBatch, File objFileTemplateOvpn) throws ExceptionZZZ;
+	public ArrayList<String> computeBatchLines(File fileConfigTemplateBatch, File fileConfigTemplateOvpn) throws ExceptionZZZ {		
+		ArrayList<String>listasReturn=new ArrayList<String>();
+		main:{
+			//ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch);
+			IConfigMapper4BatchOVPN objMapperBatch = this.getConfigMapperObject(); //new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch);
+			HashMap<String,String>hmBatchLines = objMapperBatch.readTaskHashMap();								
+			Set<String> setBatchLineNumber = hmBatchLines.keySet();
+			
+			//Aber: Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
+			//List<String>numbersList=(List<String>) SetZZZ.sortAsString(setBatchLineNumber);			
+			List<String>numbersList=(List<String>) SetZZZ.sortAsInteger(setBatchLineNumber);
+			for(String sLineNumber : numbersList) {
+				String sLine = hmBatchLines.get(sLineNumber);
+				listasReturn.add(sLine);
+			}			
+		}
+		return listasReturn;
+	}	
+	
 }//END class

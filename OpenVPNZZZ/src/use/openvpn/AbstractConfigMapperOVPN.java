@@ -9,9 +9,7 @@ import basic.zKernel.KernelUseObjectZZZ;
 
 public abstract class AbstractConfigMapperOVPN extends KernelUseObjectZZZ implements IConfigMapperOVPN, IMainUserOVPN{
 	private IMainOVPN objMain = null;
-	private File fileConfigTemplateUsedOvpn = null;
-	private File fileConfigTemplateUsedBatch = null;
-	
+		
 	public AbstractConfigMapperOVPN(IKernelZZZ objKernel, IMainOVPN objMain) {
 		super(objKernel);
 		this.setMainObject(objMain);
@@ -27,26 +25,6 @@ public abstract class AbstractConfigMapperOVPN extends KernelUseObjectZZZ implem
 		this.objMain = objMain;
 	}
 	
-	@Override
-	public File getFileConfigTemplateOvpnUsed() {
-		return this.fileConfigTemplateUsedOvpn;
-	}
-	
-	@Override
-	public void setFileConfigTemplateOvpnUsed(File fileConfigTemplateOvpn) {
-		this.fileConfigTemplateUsedOvpn = fileConfigTemplateOvpn;
-	}
-	
-	@Override
-	public File getFileConfigTemplateBatchUsed() {
-		return this.fileConfigTemplateUsedBatch;
-	}
-	
-	@Override
-	public void setFileConfigTemplateBatchUsed(File fileConfigTemplateBatch) {
-		this.fileConfigTemplateUsedBatch = fileConfigTemplateBatch;
-	}
-
 	/**TODO R�ckagebe der einzutragenden Zeile pro configurations Eintrag ALS MUSTER. TODO GOON: R�ckgabe in Form einer HashMap
 	 * TODO GOON: Hashmap hat folgende Struktur. Liste(sConfigurationEntry)=sConfiigurationEntry + ' ' + die Werte ....
 	 * @param sAlias

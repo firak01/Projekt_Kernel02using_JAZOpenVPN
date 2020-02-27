@@ -13,10 +13,12 @@ import use.openvpn.server.ServerConfigMapper4TemplateOVPN;
 
 public abstract class AbstractConfigMapper4TemplateOVPN extends AbstractConfigMapperOVPN implements IConfigMapper4TemplateOVPN{
 	private IMainOVPN objMain = null;
+	private File fileTemplateUsedOvpn = null;
+	
 		
 	public AbstractConfigMapper4TemplateOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateOvpn) {
 		super(objKernel, objMain);			
-		this.setFileConfigTemplateOvpnUsed(fileTemplateOvpn);
+		this.setFileTemplateOvpnUsed(fileTemplateOvpn);
 	}
 		
 	/**TODO R�ckgabe des regul�ren Ausdrucks. TODOGOON: Dies sollte in Form einer HashMap passieren !!!
@@ -36,9 +38,19 @@ public abstract class AbstractConfigMapper4TemplateOVPN extends AbstractConfigMa
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
 	 */
-	public abstract HashMap readTaskHashMap() throws ExceptionZZZ;
+	public abstract HashMap<String,String> readTaskHashMap() throws ExceptionZZZ;
 	
-	//###### GETTER / SETTER	
+	//###### GETTER / SETTER
+	@Override
+	public File getFileTemplateOvpnUsed() {
+		return this.fileTemplateUsedOvpn;
+	}
+	
+	@Override
+	public void setFileTemplateOvpnUsed(File fileTemplateOvpn) {
+		this.fileTemplateUsedOvpn = fileTemplateOvpn;
+	}
+	
 	public ConfigChooserOVPN getConfigChooserObject() {
 		return this.getMainObject().getConfigChooserObject();
 	}

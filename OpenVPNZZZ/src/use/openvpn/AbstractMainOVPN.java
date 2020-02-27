@@ -10,6 +10,7 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	private IApplicationOVPN objApplication = null;
 	private ConfigChooserOVPN objConfigChooser = null;
 	private IConfigMapper4TemplateOVPN objConfigMapper = null;
+	//private IConfigMapperOVPN objConfigMapper = null;
 	
 	
 	private String sStatusCurrent = null; //Hier�ber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
@@ -103,10 +104,18 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	@Override
 	public IConfigMapper4TemplateOVPN getConfigMapperObject() {
 		return this.objConfigMapper;
-	}
+	}	
+//	@Override
+//	public IConfigMapperOVPN getConfigMapperObject() {
+//		return this.objConfigMapper;
+//	}
 
 	@Override
 	public void setConfigMapperObject(IConfigMapper4TemplateOVPN objConfigMapper) {
 		this.objConfigMapper = objConfigMapper;
-	}
+	}	
+//	@Override
+//	public void setConfigMapperObject(IConfigMapperOVPN objConfigMapper) {
+//		this.objConfigMapper = objConfigMapper;
+//	}
 }

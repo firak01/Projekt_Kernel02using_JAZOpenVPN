@@ -18,26 +18,26 @@ import basic.zBasic.util.file.FileTextParserZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
-public abstract class AbstractConfigTemplateUpdaterOVPN extends KernelUseObjectZZZ implements IConfigTemplateUpdaterOVPN, IMainUserOVPN {
+public abstract class AbstractConfigTemplateUpdaterOVPN extends KernelUseObjectZZZ implements IConfigTemplateUpdaterOVPN, IMainUserOVPN, IConfigMapper4TemplateUserOVPN {
 private IMainOVPN objMain = null;
 private File objFileTemplate=null;
 private File objFileUsed = null;
 private HashMap hmLine = null;
 
 //private FileInputStream filein=null;
-// Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
+// Die Properties erfüllen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
 	public AbstractConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ConfigUpdaterNew_(objMain, objConfigChooser, objConfigMapper, null, saFlagControl);
 	}
-	public AbstractConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, HashMap<String,String> hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ConfigUpdaterNew_(objMain, objConfigChooser, null, hmLine, saFlagControl);
 	}
 	
-	private void ConfigUpdaterNew_(IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, HashMap hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigUpdaterNew_(IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, HashMap<String,String> hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 			//try{		
@@ -330,6 +330,10 @@ main:{
 	public void setConfigMapperObject(IConfigMapper4TemplateOVPN objConfigMapper) {
 		this.getMainObject().setConfigMapperObject(objConfigMapper);
 	}
+//	@Override
+//	public void setConfigMapperObject(IConfigMapperOVPN objConfigMapper) {
+//		this.getMainObject().setConfigMapperObject(objConfigMapper);
+//	}
 	public ConfigChooserOVPN getConfigChooserObject() {
 		return this.getMainObject().getConfigChooserObject();
 	}

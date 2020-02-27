@@ -14,6 +14,7 @@ import basic.zKernel.KernelZZZ;
 import use.openvpn.AbstractConfigStarterOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
+import use.openvpn.IConfigMapper4BatchOVPN;
 import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -173,30 +174,30 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 		return this.getServerObject().getConfigChooserObject().getDirectoryConfig().getAbsolutePath();
 	}
 	
+	
+	
 	public ServerMainZZZ getServerObject() {
 		return (ServerMainZZZ) this.getMainObject();
 	}
 	public void setServerObject(ServerMainZZZ objServer) {
 		this.setMainObject((IMainOVPN) objServer);
 	}
-
-	@Override
-	public ArrayList<String> computeBatchLines(File fileConfigTemplateBatch, File fileConfigTemplateOvpn) throws ExceptionZZZ {
-		ArrayList<String>listasReturn=new ArrayList<String>();
-		main:{
-			ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch);
-			HashMap<String,String>hmBatchLines = objMapperBatch.readTaskHashMap(fileConfigTemplateOvpn);
-			
-			Set<String> setBatchLineNumber = hmBatchLines.keySet();
-			
-			//Aber: Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
-			//List<String>numbersList=(List<String>) SetZZZ.sortAsString(setBatchLineNumber);			
-			List<String>numbersList=(List<String>) SetZZZ.sortAsInteger(setBatchLineNumber);
-			for(String sLineNumber : numbersList) {
-				String sLine = hmBatchLines.get(sLineNumber);
-				listasReturn.add(sLine);
-			}			
-		}
-		return listasReturn;
+	
+	public ServerConfigMapper4BatchOVPN getServerConfigMapper4BatchObject() {
+		return (ServerConfigMapper4BatchOVPN) this.getConfigMapperObject();		
 	}
+	public void setServerConfigMapper4BatchObject(ServerConfigMapper4BatchOVPN objConfigMapper) {
+		this.setConfigMapperObject(objConfigMapper);
+	}
+	public IConfigMapper4BatchOVPN createConfigMapperObject() {
+		IConfigMapper4BatchOVPN objReturn = null;
+		main:{
+			File fileConfigTemplateBatch = this.getFileTemplateBatch();
+			File fileConfigOvpn = this.getFileConfigOvpn();
+			objReturn = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch, fileConfigOvpn);
+		}//end main:
+		return objReturn;		
+	}
+
+	
 }//END class
