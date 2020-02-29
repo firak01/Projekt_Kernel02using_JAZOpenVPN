@@ -104,14 +104,17 @@ pause
 			String sFileConfigOvpn = fileConfigOvpn.getName();
 			
 			String stemp;
-			HashMap<String,String> hmPattern = this.getConfigPattern();//Merke: Das scheint noch nciht sortiert zu sein, warum ?
+			HashMap<String,String> hmPattern = this.getConfigPattern();//Merke: Das scheint noch nicht sortiert zu sein, warum ? Eine normale HashMap ist nie sortiert....
+			
+			1111111
+			//TODO GOON 20200229: Das ist in Arbeit, der "Wunschcode" soll dann ausführbar sein....
 			
 			//Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
 			//Merke: Intern wird vewendet: List<String>numbersList = (List<String>) SetZZZ.sortAsInteger(setKey);
-			Map<String,String> hmPatternSorted = HashMapZZZ.sortByKeyAsInteger(hmPattern);			
-			Set<String> setKey = hmPatternSorted.keySet();	
-			List<String> numbersList = SetZZZ.toListString(setKey);//new ArrayList<String>(setKey) ;        //set -> list
-			for(String sKey : numbersList) {
+			HashMapIterableZZZ<String,String> hmPatternSorted = HashMapZZZ.sortByKeyAsInteger(hmPattern);			
+			//Set<String> setKey = hmPatternSorted.keySet();	
+			//List<String> numbersList = SetZZZ.toListString(setKey);//new ArrayList<String>(setKey) ;        //set -> list
+			for(String sKey : hmPatternSorted) {
 				String sLine = hmPattern.get(sKey);				
 				stemp = StringZZZ.replace(sLine, "%exeovpn%", sFileExeOvpn);
 				
