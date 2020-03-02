@@ -151,11 +151,11 @@ public class ConfigFileTemplateBatchOVPN extends KernelUseObjectZZZ{
 	public void setLines(HashtableIndexedZZZ<Integer,String>htLines) {
 		this.htLines = htLines;
 	}
-	public HashMap<String,String> getLinesAsHashMap_StringString() throws ExceptionZZZ{
+	public HashMap<String, String> getLinesAsHashMap_StringString() throws ExceptionZZZ{
 		HashMap<String,String> hmReturn=null;
 		main:{
 			HashtableIndexedZZZ<Integer,String>htIndexed = this.getLines();
-			hmReturn = HashtableZZZ.toHashMap_StringString(htIndexed);
+			hmReturn = HashtableZZZ.toHashMap_IntegerString(htIndexed);
 		}
 		return hmReturn;
 	}

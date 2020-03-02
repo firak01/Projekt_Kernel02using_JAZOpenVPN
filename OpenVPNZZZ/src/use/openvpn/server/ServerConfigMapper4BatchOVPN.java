@@ -112,11 +112,11 @@ pause
 			
 			//Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
 			//Merke: Intern wird vewendet: List<String>numbersList = (List<String>) SetZZZ.sortAsInteger(setKey);
-			HashMapIterableKeyZZZ<String,String> hmPatternSorted = HashMapZZZ.sortByKeyAsInteger(hmPattern);			
+			HashMapIterableKeyZZZ<String,Object> hmPatternSorted = HashMapZZZ.sortByKeyAsInteger_StringString(hmPattern);			
 			//Set<String> setKey = hmPatternSorted.keySet();	
 			//List<String> numbersList = SetZZZ.toListString(setKey);//new ArrayList<String>(setKey) ;        //set -> list
 			for(String sKey : hmPatternSorted) {
-				String sLine = hmPattern.get(sKey);				
+				String sLine = (String) hmPattern.get(sKey);				
 				stemp = StringZZZ.replace(sLine, "%exeovpn%", sFileExeOvpn);
 				
 				stemp = StringZZZ.replace(stemp, "%templateovpn%", sDirectoryTemplateOvpn + File.separator + sFileConfigOvpn);
