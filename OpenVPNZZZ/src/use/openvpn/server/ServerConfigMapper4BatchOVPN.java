@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.abstractList.HashMapZZZ;
 import basic.zBasic.util.abstractList.HashtableIndexedZZZ;
 import basic.zBasic.util.abstractList.SetZZZ;
@@ -106,12 +107,12 @@ pause
 			String stemp;
 			HashMap<String,String> hmPattern = this.getConfigPattern();//Merke: Das scheint noch nicht sortiert zu sein, warum ? Eine normale HashMap ist nie sortiert....
 			
-			1111111
+			//1111111
 			//TODO GOON 20200229: Das ist in Arbeit, der "Wunschcode" soll dann ausführbar sein....
 			
 			//Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
 			//Merke: Intern wird vewendet: List<String>numbersList = (List<String>) SetZZZ.sortAsInteger(setKey);
-			HashMapIterableZZZ<String,String> hmPatternSorted = HashMapZZZ.sortByKeyAsInteger(hmPattern);			
+			HashMapIterableKeyZZZ<String,String> hmPatternSorted = HashMapZZZ.sortByKeyAsInteger(hmPattern);			
 			//Set<String> setKey = hmPatternSorted.keySet();	
 			//List<String> numbersList = SetZZZ.toListString(setKey);//new ArrayList<String>(setKey) ;        //set -> list
 			for(String sKey : hmPatternSorted) {
