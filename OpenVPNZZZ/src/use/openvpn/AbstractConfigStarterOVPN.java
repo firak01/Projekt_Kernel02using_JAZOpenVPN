@@ -12,6 +12,7 @@ import use.openvpn.server.ServerConfigMapper4BatchOVPN;
 import use.openvpn.server.ServerMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.abstractList.SetZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -297,9 +298,10 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 		main:{
 			//ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch);
 			IConfigMapper4BatchOVPN objMapperBatch = this.getConfigMapperObject(); //new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch);
-			HashMap<String,String>hmBatchLines = objMapperBatch.readTaskHashMap();								
+			HashMapIterableKeyZZZ<String, String>hmBatchLines = objMapperBatch.readTaskHashMap();								
 			Set<String> setBatchLineNumber = hmBatchLines.keySet();
 			
+			//111111111 TODO GOON 20200304: Mal sehen was die IterableKey HashMap leistet...
 			//Aber: Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
 			//List<String>numbersList=(List<String>) SetZZZ.sortAsString(setBatchLineNumber);			
 			List<String>numbersList=(List<String>) SetZZZ.sortAsInteger(setBatchLineNumber);

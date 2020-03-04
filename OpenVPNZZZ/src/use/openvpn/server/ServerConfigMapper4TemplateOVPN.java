@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -104,8 +105,8 @@ public class ServerConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
 	 */
-	public HashMap<String,String> readTaskHashMap() throws ExceptionZZZ{
-		HashMap<String,String> objReturn=new HashMap();
+	public HashMapIterableKeyZZZ<String, String> readTaskHashMap() throws ExceptionZZZ{
+		HashMapIterableKeyZZZ<String, String> hmReturn=new HashMapIterableKeyZZZ<String, String>();
 		main:{		
 			String stemp;
 			HashMap<String,String> hmPattern = this.getConfigPattern();
@@ -114,13 +115,13 @@ public class ServerConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 				if(sProxyLine!=null){
 					stemp = StringZZZ.replace(sProxyLine, "%proxy%", this.getServerMainObject().getApplicationObject().getProxyHost());
 					stemp = StringZZZ.replace(stemp, "%port%", this.getServerMainObject().getApplicationObject().getProxyPort());
-					objReturn.put("http-proxy", stemp);
+					hmReturn.put("http-proxy", stemp);
 					}
 				
 				String sProxyTimeoutLine = (String) hmPattern.get("http-proxy-timeout");
 				if(sProxyTimeoutLine!=null){
 					stemp = StringZZZ.replace(sProxyTimeoutLine, "%timeout%", "10");
-					objReturn.put("http-proxy-timeout", stemp);
+					hmReturn.put("http-proxy-timeout", stemp);
 				}	
 			}//END "useProxy"
 					
@@ -165,26 +166,26 @@ public class ServerConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 			if(sCertifierLine!=null) {
 				stemp = StringZZZ.replace(sCertifierLine, "%filecertifier%", this.getConfigChooserObject().getDirectoryConfig()+ File.separator + sFileCertifier);
 				stemp = StringZZZ.replace(stemp, "\\", "\\\\");//Die Verdoppelung der Backslashe wird von OVPN gewünscht, wg. Shell-Verwwendung
-				objReturn.put("cert", stemp);
+				hmReturn.put("cert", stemp);
 			}
 			if(sKeyLine!=null) {
 				stemp = StringZZZ.replace(sKeyLine, "%filekey%", this.getConfigChooserObject().getDirectoryConfig()+ File.separator + sFileKey);
 				stemp = StringZZZ.replace(stemp, "\\", "\\\\");//Die Verdoppelung der Backslashe wird von OVPN gewünscht, wg. Shell-Verwwendung
-				objReturn.put("key", stemp);
+				hmReturn.put("key", stemp);
 			}
 			
 			//20200126: Einträge für ifconfig, damit hier auch keine Fehlkonfiguration im OVPNTemplate möglich ist.
 			String sIfconfigLine = (String)hmPattern.get("ifconfig");
 			stemp = StringZZZ.replace(sIfconfigLine, "%vpnipremote%", this.getServerMainObject().getApplicationObject().getVpnIpRemote());
 			stemp = StringZZZ.replace(stemp, "%vpniplocal%", this.getServerMainObject().getApplicationObject().getVpnIpLocal());
-			objReturn.put("ifconfig", stemp);
+			hmReturn.put("ifconfig", stemp);
 			
 			//2020126: Einträge für dev-node, damit hier auch keine Fehlkonfiguration im OVPNTemplate möglich ist.
 			String sDevNodeLine = (String)hmPattern.get("dev-node");
 			stemp = StringZZZ.replace(sDevNodeLine, "%tapadapterusedlocal%", this.getServerMainObject().getApplicationObject().getTapAdapterUsed());
-			objReturn.put("dev-node", stemp);
+			hmReturn.put("dev-node", stemp);
 		}//END main:
-		return objReturn;
+		return hmReturn;
 	}
 	
 	//###### GETTER / SETTER

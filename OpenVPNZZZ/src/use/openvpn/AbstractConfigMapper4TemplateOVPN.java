@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -38,7 +39,7 @@ public abstract class AbstractConfigMapper4TemplateOVPN extends AbstractConfigMa
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
 	 */
-	public abstract HashMap<String,String> readTaskHashMap() throws ExceptionZZZ;
+	public abstract HashMapIterableKeyZZZ<String, String> readTaskHashMap() throws ExceptionZZZ;
 	
 	//###### GETTER / SETTER
 	@Override

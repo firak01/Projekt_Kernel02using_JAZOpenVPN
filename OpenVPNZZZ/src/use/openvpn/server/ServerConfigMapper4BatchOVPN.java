@@ -54,8 +54,8 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 		return hmReturn;
 	}
 	
-	public HashMap<String,String> readTaskHashMap() throws ExceptionZZZ{
-		HashMap<String,String> hmReturn=new HashMap<String,String>();
+	public HashMapIterableKeyZZZ<String, String> readTaskHashMap() throws ExceptionZZZ{
+		HashMapIterableKeyZZZ<String,String> hmReturn=new HashMapIterableKeyZZZ<String,String>();
 		main:{											
 			hmReturn= this.readTaskHashMap(null);
 		}//END main:
@@ -67,8 +67,8 @@ public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 23.01.2020, 10:07:16
 	 */
-	public HashMap<String,String> readTaskHashMap(File fileConfigOvpnIn) throws ExceptionZZZ{
-		HashMap<String,String> hmReturn=new HashMap<String,String>();
+	public HashMapIterableKeyZZZ<String,String> readTaskHashMap(File fileConfigOvpnIn) throws ExceptionZZZ{
+		HashMapIterableKeyZZZ<String,String> hmReturn=new HashMapIterableKeyZZZ<String,String>();
 		main:{					
 			if(fileConfigOvpnIn!=null) {
 				this.setFileConfigOvpnUsed(fileConfigOvpnIn);

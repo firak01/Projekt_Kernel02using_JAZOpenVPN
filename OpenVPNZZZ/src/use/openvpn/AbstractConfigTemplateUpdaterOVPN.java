@@ -13,6 +13,7 @@ import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileTextParserZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -22,7 +23,7 @@ public abstract class AbstractConfigTemplateUpdaterOVPN extends KernelUseObjectZ
 private IMainOVPN objMain = null;
 private File objFileTemplate=null;
 private File objFileUsed = null;
-private HashMap hmLine = null;
+private HashMapIterableKeyZZZ<String,String> hmLine = null;
 
 //private FileInputStream filein=null;
 // Die Properties erfüllen nicht meine Erwartungen           private Properties objProp = null;
@@ -32,12 +33,12 @@ private FileTextParserZZZ objParser = null;
 		super(objKernel);
 		ConfigUpdaterNew_(objMain, objConfigChooser, objConfigMapper, null, saFlagControl);
 	}
-	public AbstractConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, HashMap<String,String> hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, HashMapIterableKeyZZZ<String, String> hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		ConfigUpdaterNew_(objMain, objConfigChooser, null, hmLine, saFlagControl);
 	}
 	
-	private void ConfigUpdaterNew_(IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, HashMap<String,String> hmLine, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigUpdaterNew_(IMainOVPN objMain, ConfigChooserOVPN objConfigChooser, IConfigMapper4TemplateOVPN objConfigMapper, HashMapIterableKeyZZZ<String, String> hmLine, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 			//try{		
@@ -353,10 +354,10 @@ main:{
 	public void setFileUsed(File objFile){
 		this.objFileUsed = objFile;
 	}
-	public void setHashMapLine(HashMap hmLine){
-		this.hmLine = hmLine;
+	public void setHashMapLine(HashMapIterableKeyZZZ<String, String> hmLine2){
+		this.hmLine = hmLine2;
 	}
-	public HashMap getHashMapLine(){
+	public HashMapIterableKeyZZZ<String, String> getHashMapLine(){
 		return this.hmLine;
 	}
 	@Override
