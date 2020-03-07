@@ -82,11 +82,16 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 				}
 				this.setFileConfigOvpn(objFileConfigOvpn);
 				
+				
+				//Falls nicht explizit das Flag gesetzt ist, wirf keinen Fehler. Übernimm dann trotzdem die Batchdatei - wenn übergeben -, was man hat dat hat man. 
 				if(objFileTemplateBatch==null){
-					ExceptionZZZ ez = new ExceptionZZZ("BatchConfigurationFile", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
+					if(this.getFlag("byBatch")) {
+						ExceptionZZZ ez = new ExceptionZZZ("BatchConfigurationFile", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+						throw ez;
+					}
+				}else{
+					this.setFileTemplateBatch(objFileTemplateBatch);
 				}
-				this.setFileTemplateBatch(objFileTemplateBatch);	
 				
 				
 				this.sMyAlias = sMyAlias;

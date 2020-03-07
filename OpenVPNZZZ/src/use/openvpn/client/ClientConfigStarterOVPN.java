@@ -72,7 +72,7 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			//	load.exec("cmd.exe /K C:\\Programme\\OpenVPN\\bin\\openvpn.exe"); // --pause-exit --config client_itelligence.ovpn");
 				
 				
-				/* DAS LIEFERT WENIGSTESN EIEN AUSGABE ALLER FELENDEN PARAMETER
+				/* DAS LIEFERT WENIGSTESN EIEN AUSGABE ALLER FEHLENDEN PARAMETER
 				Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe" );
 			    BufferedReader in = new BufferedReader( new InputStreamReader(p.getInputStream()) );
 			    for ( String s; (s = in.readLine()) != null; ){

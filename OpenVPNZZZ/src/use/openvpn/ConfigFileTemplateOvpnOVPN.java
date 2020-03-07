@@ -267,7 +267,7 @@ public class ConfigFileTemplateOvpnOVPN extends KernelUseObjectZZZ{
 					bReturn = objPing.ping(sTargetIP, sTargetPort);
 				}catch(ExceptionZZZ ez){
 					//Keine Konsequenzz. Ich erwarte ja einen Fehler.
-					//MERKE: Die Exception, welche die Methode throwen k�nnte kommt vom Konstruktor des KernelPingHost-Objekts.
+					//MERKE: Die Exception, welche die Methode throwen könnte kommt vom Konstruktor des KernelPingHost-Objekts.
 					bReturn = false;
 				}
 			}
