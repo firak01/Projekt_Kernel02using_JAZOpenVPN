@@ -131,7 +131,8 @@ public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 			}	
 			
 			
-			//20200123: Der Name der Certifier Dateien entspricht dem Namen der Maschine.
+			//20200123: Der Name der Certifier Dateien entspricht dem CN-Namen der Maschine.
+			//          Der CN-Name der Maschine entspricht dem Namen der Maschine + _CLIENT.
 			//Beispiele:
 			//cert C:\\Programme\\OpenVPN\\config\\HANNIBALDEV04VM_CLIENT.crt
 			//key C:\\Programme\\OpenVPN\\config\\HANNIBALDEV04VM_CLIENT.key
