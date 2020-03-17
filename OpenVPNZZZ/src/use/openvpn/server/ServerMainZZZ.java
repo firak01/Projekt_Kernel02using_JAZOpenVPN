@@ -128,14 +128,14 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			String sFileConfigConfigured = objKernel.getParameterByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();			
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);//.findFileConfigTemplate(null);
 			
-			listaFileConfigUsed.clear();//Baue die Lsite der letztendlich genutzten Konfigurationen neu auf.
+			listaFileConfigUsed.clear();//Baue die Liste der letztendlich genutzten Konfigurationen neu auf.
 			if(StringZZZ.isEmpty(sFileConfigConfigured)){
 				//Die Arraylist besteht nun aus allen konfigurierten Dateien
 				for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
 					listaFileConfigUsed.add(objaFileConfigUsed[icount]);
 				}
 			}else{
-				//Aus der Liste aller zur Verf�gung stehenden Dateien nur diejenigen raussortieren, die konfiguriert sind.
+				//Aus der Liste aller zur Verfügung stehenden Dateien nur diejenigen raussortieren, die konfiguriert sind.
 				StringTokenizer objToken = new StringTokenizer(sFileConfigConfigured, File.separator);
 				while(objToken.hasMoreTokens()){
 					String stemp = objToken.nextToken();
@@ -173,7 +173,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
 			
 			//++++++++++++++++++++++++++++++
-			//Starterlaubnis: L�uft schon ovpn ???
+			//Starterlaubnis: Läuft schon ovpn ???
 		   //TODO KernelWMIZZZ eines win32 - packages.
 			File objFileExe = ServerConfigFileOVPN.findFileExe();   //Anders als im Client muss nix weiter gemacht werden
 			if(objFileExe!=null){
@@ -193,7 +193,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			this.logStatusString("Open VPN not yet running. Continue starting process.");
 			
             //+++++++++++++++++++++++++++++++
-			//Starterlaubnis: L�uft der domino Server schon ???
+			//Starterlaubnis: Läuft der Domino Server schon ???
 			//Falls nicht: Warte eine konfigurierte Zeit. (Merke: Nicht abbrechen, weil ja ggf. Probleme existieren oder der Server gar nicht starten soll).			
 			String sDominoCaption = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","Process2Check").getValue();
 			if(StringZZZ.isEmpty(sDominoCaption)==false){
@@ -232,7 +232,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			for(int icount=0; icount <= listaFileConfigUsed.size()-1; icount++){
 				File objFileConfigOvpn = (File) listaFileConfigUsed.get(icount);
 				String sAlias = Integer.toString(icount);
-				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endg�ltige auszuf�hrende Befehl �ber eine Batch gegeben werden muss. Herausgefunden durch Try and Error.				
+				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endgültige auszuführende Befehl über eine Batch gegeben werden muss. Herausgefunden durch Try and Error.				
 				File objFileTemplateBatch = objChooser.findFileConfigBatchTemplateFirst();				
 				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, objFileTemplateBatch, objFileConfigOvpn, sAlias, saTemp);
 				this.logStatusString("Requesting start of process #"+ icount + " (File: " + objFileConfigOvpn.getName() + ")");				

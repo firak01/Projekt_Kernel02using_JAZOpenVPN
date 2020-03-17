@@ -226,7 +226,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			 //Ich weiss komplizierter als notwendig.
 			 //Aber schon mal die Idee aus ReferenceArrayZZZ übernommen
-			 //a) generisch die Sache anzugehen, b) aus dem Array meherer Werte noch etwas spezielles herauszufiltern.
+			 //a) generisch die Sache anzugehen, b) aus dem Array mehrer Werte noch etwas Spezielles herauszufiltern.
 			 if(objaFileTemplates.getClass().isArray()) {
     			//listaReferent.addAll(initialValue); GEHT NICHT SO
     			
