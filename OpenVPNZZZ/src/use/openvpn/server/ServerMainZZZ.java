@@ -194,7 +194,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			
             //+++++++++++++++++++++++++++++++
 			//Starterlaubnis: Läuft der Domino Server schon ???
-			//Falls nicht: Warte eine konfigurierte Zeit. (Merke: Nicht abbrechen, weil ja ggf. Probleme existieren oder der Server gar nicht starten soll).			
+			//Falls nicht: Warte eine konfigurierte Zeit. (Merke: Nicht abbrechen, weil ja ggf. Probleme existieren oder der Server gar nicht starten soll).
 			String sDominoCaption = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","Process2Check").getValue();
 			if(StringZZZ.isEmpty(sDominoCaption)==false){
 				String sTimeoutSecond = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","CheckTimeout").getValue();

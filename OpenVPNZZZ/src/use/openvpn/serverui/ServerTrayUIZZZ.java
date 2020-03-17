@@ -263,7 +263,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
 				this.objServerBackend = new ServerMainZZZ(this.getKernelObject(), null);
 				
-				//DIES �ber einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
 				Thread objThreadConfig = new Thread(this.objServerBackend);
 				objThreadConfig.start();
 					
