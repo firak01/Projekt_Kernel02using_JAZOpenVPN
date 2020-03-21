@@ -5,58 +5,53 @@ import java.io.FilenameFilter;
 
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileFilterEndingZZZ;
+import basic.zBasic.util.file.FileFilterMiddleZZZ;
 import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
-public class OVPNFileFilterConfigOvpnTemplateZZZ implements FilenameFilter {
-	FileFilterEndingZZZ objFilterEnding;
-	FileFilterPrefixZZZ objFilterPrefix;
-	private String sEnding="ovpn";
-	private String sPrefix="template_";
-	
+public class OVPNFileFilterConfigOvpnTemplateZZZ extends AbstractOVPNFileFilterZZZ{
+	public static String sPREFIX="template_";
+	public static String sMIDDLE="";
+	public static String sSUFFIX="";
+	public static String sENDING="ovpn";
+				
 	public OVPNFileFilterConfigOvpnTemplateZZZ(String sOvpnContextServerOrClient) {
-		this.setOvpnContextPrefix(sOvpnContextServerOrClient);
-		objFilterEnding = new FileFilterEndingZZZ(this.getEnding());
-		objFilterPrefix = new FileFilterPrefixZZZ(this.getOvpnContextPrefix());
+		super(sOvpnContextServerOrClient);
 	} 
 	public OVPNFileFilterConfigOvpnTemplateZZZ() {
-		this("");
+		super();
 	}
-	public boolean accept(File objFileDir, String sName) {
-		boolean bReturn=false;
-		main:{
-			check:{
-				if(sName==null) break main;				
-			}
-			
-		//Falls die Endung nicht passt
-		if(this.objFilterEnding.accept(objFileDir, sName)==false) break main;
-				
-		//Template-Dateinamen fangen eben mit einem bestimmten String an.
-		if(!ConfigFileTemplateOvpnOVPN.isTemplate(sName)) break main;
-		
-		//Falls der Anfang nicht passt
-		String sNameWithoutTemplate = StringZZZ.rightback(sName,ConfigFileTemplateOvpnOVPN.sFILE_TEMPLATE_PREFIX);
-		if(this.objFilterPrefix.accept(objFileDir, sNameWithoutTemplate)==false) break main;
-						
-		bReturn = true;
-		}//END main:
-		return bReturn;		
+	//##### GETTER / SETTER	
+	public void setPrefix(String sPrefix) {
+		if(StringZZZ.isEmpty(super.getPrefix())) {
+			super.setPrefix(OVPNFileFilterConfigOvpnTemplateZZZ.sPREFIX);
+		}else {
+			super.setPrefix(sPrefix);
+		}
 	}
 	
-	//##### GETTER / SETTER
-		public void setEnding(String sEnding) {
-			this.sEnding = sEnding;
+	public void setMiddle(String sMiddle) {
+		if(StringZZZ.isEmpty(super.getMiddle())) {
+			super.setMiddle(OVPNFileFilterConfigOvpnTemplateZZZ.sMIDDLE);
+		}else {
+			super.setPrefix(sMiddle);
 		}
-		private String getEnding() {
-			return this.sEnding;
+	}
+	
+	public void setSuffix(String sSuffix) {
+		if(StringZZZ.isEmpty(super.getSuffix())) {
+			super.setSuffix(OVPNFileFilterConfigOvpnTemplateZZZ.sSUFFIX);
+		}else {
+			super.setSuffix(sSuffix);
 		}
-		
-		public void setOvpnContextPrefix(String sPrefix) {
-			this.sPrefix = sPrefix;
+	}
+				
+	public void setEnding(String sEnding) {
+		if(StringZZZ.isEmpty(super.getEnding())) {
+			super.setEnding(OVPNFileFilterConfigOvpnTemplateZZZ.sENDING);
+		}else {
+			super.setEnding(sEnding);
 		}
-		private String getOvpnContextPrefix() {
-			return this.sPrefix;
-		}
+	}		
 }//END class
