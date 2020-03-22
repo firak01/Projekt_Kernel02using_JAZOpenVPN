@@ -11,24 +11,24 @@ import basic.zBasic.util.file.FileFilterSuffixZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
 public abstract class AbstractOVPNFileFilterZZZ implements FilenameFilter {
-	FileFilterPrefixZZZ objFilterPrefix;
-	FileFilterMiddleZZZ objFilterMiddle;
-	FileFilterSuffixZZZ objFilterSuffix;	
-	FileFilterEndingZZZ objFilterEnding;
+	protected FileFilterPrefixZZZ objFilterPrefix;
+	protected FileFilterMiddleZZZ objFilterMiddle;
+	protected FileFilterSuffixZZZ objFilterSuffix;	
+	protected FileFilterEndingZZZ objFilterEnding;
 	
-	private String sOvpnContext="";
+	protected String sOvpnContext="";
 	
-	private String sPrefix="";
-	private String sMiddle="";
-	private String sSuffix="";
-	private String sEnding="";
-				
+	protected String sPrefix="";
+	protected String sMiddle="";
+	protected String sSuffix="";
+	protected String sEnding="";
+					
 	public AbstractOVPNFileFilterZZZ(String sOvpnContextServerOrClient) {
 		this.setOvpnContext(sOvpnContextServerOrClient);
 		
 		this.setPrefix(ConfigFileTemplateOvpnOVPN.sFILE_TEMPLATE_PREFIX);
 		this.setMiddle(this.getOvpnContext());
-		
+				
 		objFilterPrefix = new FileFilterPrefixZZZ(this.getPrefix());
 		objFilterMiddle = new FileFilterMiddleZZZ(this.getMiddle());
 		objFilterSuffix = new FileFilterSuffixZZZ(this.getSuffix());
@@ -69,31 +69,44 @@ public abstract class AbstractOVPNFileFilterZZZ implements FilenameFilter {
 			return this.sOvpnContext;
 		}
 	
-		public void setPrefix(String sPrefix) {
+		protected void setPrefix(String sPrefix) {
 			this.sPrefix = sPrefix;
 		}
 		protected String getPrefix() {
+			if(StringZZZ.isEmpty(this.sPrefix)) {
+				this.setPrefix("");
+			}
 			return this.sPrefix;
 		}
 		
-		public void setMiddle(String sMiddle) {
+		protected void setMiddle(String sMiddle) {
 			this.sMiddle = sMiddle;
 		}
 		protected String getMiddle() {
+			if(StringZZZ.isEmpty(this.sMiddle)) {
+				this.setMiddle("");
+			}
 			return this.sMiddle;
 		}
+
 		
-		public void setSuffix(String sSuffix) {
+		protected void setSuffix(String sSuffix) {
 			this.sSuffix = sSuffix;
 		}
 		protected String getSuffix() {
+			if(StringZZZ.isEmpty(this.sSuffix)) {
+				this.setSuffix("");
+			}
 			return this.sSuffix;
 		}
 		
-		public void setEnding(String sEnding) {
+		protected void setEnding(String sEnding){
 			this.sEnding = sEnding;
 		}
 		protected String getEnding() {
+			if(StringZZZ.isEmpty(this.sEnding)) {
+				this.setEnding("");
+			}
 			return this.sEnding;
 		}
 }//END class

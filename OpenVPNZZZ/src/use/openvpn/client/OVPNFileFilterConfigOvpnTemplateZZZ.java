@@ -15,16 +15,16 @@ public class OVPNFileFilterConfigOvpnTemplateZZZ extends AbstractOVPNFileFilterZ
 	public static String sMIDDLE="";
 	public static String sSUFFIX="";
 	public static String sENDING="ovpn";
-				
+	
 	public OVPNFileFilterConfigOvpnTemplateZZZ(String sOvpnContextServerOrClient) {
-		super(sOvpnContextServerOrClient);
+		super(sOvpnContextServerOrClient);		
 	} 
 	public OVPNFileFilterConfigOvpnTemplateZZZ() {
-		super();
+		super();		
 	}
 	//##### GETTER / SETTER	
 	public void setPrefix(String sPrefix) {
-		if(StringZZZ.isEmpty(super.getPrefix())) {
+		if(StringZZZ.isEmpty(sPrefix)) {
 			super.setPrefix(OVPNFileFilterConfigOvpnTemplateZZZ.sPREFIX);
 		}else {
 			super.setPrefix(sPrefix);
@@ -32,26 +32,27 @@ public class OVPNFileFilterConfigOvpnTemplateZZZ extends AbstractOVPNFileFilterZ
 	}
 	
 	public void setMiddle(String sMiddle) {
-		if(StringZZZ.isEmpty(super.getMiddle())) {
+		if(StringZZZ.isEmpty(sMiddle)) {
 			super.setMiddle(OVPNFileFilterConfigOvpnTemplateZZZ.sMIDDLE);
 		}else {
-			super.setPrefix(sMiddle);
+			super.setMiddle(sMiddle);
 		}
 	}
 	
 	public void setSuffix(String sSuffix) {
-		if(StringZZZ.isEmpty(super.getSuffix())) {
+		if(StringZZZ.isEmpty(sSuffix)) {
 			super.setSuffix(OVPNFileFilterConfigOvpnTemplateZZZ.sSUFFIX);
 		}else {
 			super.setSuffix(sSuffix);
 		}
 	}
+
 				
 	public void setEnding(String sEnding) {
-		if(StringZZZ.isEmpty(super.getEnding())) {
+		if(StringZZZ.isEmpty(sEnding)) {
 			super.setEnding(OVPNFileFilterConfigOvpnTemplateZZZ.sENDING);
 		}else {
 			super.setEnding(sEnding);
 		}
-	}		
+	}
 }//END class

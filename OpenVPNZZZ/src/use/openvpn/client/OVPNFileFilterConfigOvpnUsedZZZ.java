@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileFilterEndingZZZ;
+import basic.zBasic.util.file.FileFilterMiddleZZZ;
 import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 
@@ -18,28 +19,29 @@ public class OVPNFileFilterConfigOvpnUsedZZZ extends AbstractOVPNFileFilterZZZ {
 		super(sContextServerOrClient);
 	}
 	public OVPNFileFilterConfigOvpnUsedZZZ(){
-		super();
+		super();				
 	} 
 	
 	//##### GETTER / SETTER	
 		public void setPrefix(String sPrefix) {
-			if(StringZZZ.isEmpty(super.getPrefix())) {
+			if(StringZZZ.isEmpty(sPrefix)) {
 				super.setPrefix(OVPNFileFilterConfigOvpnUsedZZZ.sPREFIX);
 			}else {
 				super.setPrefix(sPrefix);
 			}
 		}
 		
+		
 		public void setMiddle(String sMiddle) {
-			if(StringZZZ.isEmpty(super.getMiddle())) {
+			if(StringZZZ.isEmpty(sMiddle)) {
 				super.setMiddle(OVPNFileFilterConfigOvpnUsedZZZ.sMIDDLE);
 			}else {
-				super.setPrefix(sMiddle);
+				super.setMiddle(sMiddle);
 			}
 		}
 		
 		public void setSuffix(String sSuffix) {
-			if(StringZZZ.isEmpty(super.getSuffix())) {
+			if(StringZZZ.isEmpty(sSuffix)) {
 				super.setSuffix(OVPNFileFilterConfigOvpnUsedZZZ.sSUFFIX);
 			}else {
 				super.setSuffix(sSuffix);
@@ -47,10 +49,10 @@ public class OVPNFileFilterConfigOvpnUsedZZZ extends AbstractOVPNFileFilterZZZ {
 		}
 					
 		public void setEnding(String sEnding) {
-			if(StringZZZ.isEmpty(super.getEnding())) {
+			if(StringZZZ.isEmpty(sEnding)) {
 				super.setEnding(OVPNFileFilterConfigOvpnUsedZZZ.sENDING);
 			}else {
 				super.setEnding(sEnding);
 			}
-		}			
+		}		
 }//END class
