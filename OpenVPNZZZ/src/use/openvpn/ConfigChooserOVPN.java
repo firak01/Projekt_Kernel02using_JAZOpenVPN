@@ -160,7 +160,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigOvpnTemplateZZZ objFilterConfig = new OVPNFileFilterConfigOvpnTemplateZZZ(this.getOvpnContextUsed());			
+			OVPNFileFilterConfigOvpnTemplateZZZ objFilterConfig = new OVPNFileFilterConfigOvpnTemplateZZZ(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
@@ -279,7 +279,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigOvpnUsedZZZ objFilterConfig = new OVPNFileFilterConfigOvpnUsedZZZ(this.getOvpnContextUsed());			
+			OVPNFileFilterConfigOvpnUsedZZZ objFilterConfig = new OVPNFileFilterConfigOvpnUsedZZZ(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main

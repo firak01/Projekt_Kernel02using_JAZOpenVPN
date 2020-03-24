@@ -3,6 +3,7 @@ package use.openvpn.client;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterMiddleZZZ;
@@ -16,10 +17,10 @@ public class OVPNFileFilterConfigBatchTemplateZZZ extends AbstractOVPNFileFilter
 	public static String sSUFFIX="_starter";
 	public static String sENDING="txt";		
 		
-	public OVPNFileFilterConfigBatchTemplateZZZ(String sOvpnContextServerOrClient) {
+	public OVPNFileFilterConfigBatchTemplateZZZ(String sOvpnContextServerOrClient) throws ExceptionZZZ {
 		super(sOvpnContextServerOrClient);
 	} 
-	public OVPNFileFilterConfigBatchTemplateZZZ() {
+	public OVPNFileFilterConfigBatchTemplateZZZ() throws ExceptionZZZ {
 		super();
 	}
 

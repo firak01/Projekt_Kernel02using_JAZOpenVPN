@@ -141,7 +141,12 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 					String stemp = objToken.nextToken();
 					for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
 						File objFileTemp = objaFileConfigUsed[icount];
-						String sFileTemp2 = objFileTemp.getName();
+						String sFileTemp2 = objFileTemp.getName();xxxxxxxxxxxxxxxxxx
+						
+						IDEE, //static Methode:
+							Expansion.isExpanded(File objFileTemp, stemp, 3);
+						
+						
 						if(sFileTemp2.equalsIgnoreCase(stemp)){ //TODO GOON 20200322: Was tun mit Dateien, die eine "Zählererweiterung ...001, ... 002, usw. haben
 							                                    //Diese Zählererweiterung darf eigentlich nicht passieren. Da wird nicht gut genug aufgeräumt....
 							//1111111111111
