@@ -14,6 +14,8 @@ import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientConfigTemplateUpdaterZZZ;
 import basic.zKernel.KernelZZZ;
+import basic.zUtil.io.KernelFileExpansionZZZ;
+import custom.zUtil.io.FileExpansionZZZ;
 import custom.zUtil.io.FileZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -140,16 +142,9 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				while(objToken.hasMoreTokens()){
 					String stemp = objToken.nextToken();
 					for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
-						File objFileTemp = objaFileConfigUsed[icount];
-						String sFileTemp2 = objFileTemp.getName();xxxxxxxxxxxxxxxxxx
-						
-						IDEE, //static Methode:
-							Expansion.isExpanded(File objFileTemp, stemp, 3);
-						
-						
-						if(sFileTemp2.equalsIgnoreCase(stemp)){ //TODO GOON 20200322: Was tun mit Dateien, die eine "Zählererweiterung ...001, ... 002, usw. haben
-							                                    //Diese Zählererweiterung darf eigentlich nicht passieren. Da wird nicht gut genug aufgeräumt....
-							//1111111111111
+						File objFileTemp = objaFileConfigUsed[icount];						
+						boolean bIsExpandedOrSameFilename = KernelFileExpansionZZZ.isExpansionOrSameFilename(objFileTemp, stemp, 3);
+						if(bIsExpandedOrSameFilename) {
 							listaFileConfigUsed.add(objFileTemp);
 						}
 					}//END for
