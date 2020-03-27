@@ -3,13 +3,14 @@ package use.openvpn;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 
 public class OVPNFileFilterConfigZZZ implements FilenameFilter {
-	FileFilterSuffixZZZ objFilterSuffix;
+	FileFilterEndingZZZ objFilterEnding;
 	
 	public OVPNFileFilterConfigZZZ(){
-		objFilterSuffix = new FileFilterSuffixZZZ("ovpn");
+		objFilterEnding = new FileFilterEndingZZZ("ovpn");
 	} 
 	/* (non-Javadoc)
 	 * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
@@ -22,9 +23,9 @@ public class OVPNFileFilterConfigZZZ implements FilenameFilter {
 			}
 			 
 		//Falls die Endung nicht passt
-		if(this.objFilterSuffix.accept(objFileDir, sName)==false) break main;
+		if(this.objFilterEnding.accept(objFileDir, sName)==false) break main;
 		
-		//Weitere Einschr‰nkungen sind erste einmal nicht bekannt.
+		//Weitere Einschr√§nkungen sind erste einmal nicht bekannt.
 		//if(! sName.toLowerCase().startsWith("zkernelconfig")) break main;
 		bReturn = true;
 		}//END main:
@@ -36,7 +37,7 @@ public class OVPNFileFilterConfigZZZ implements FilenameFilter {
 			check:{
 				if(objFile.isDirectory()) break main;
 			}
-			bReturn = this.objFilterSuffix.accept(objFile);
+			bReturn = this.objFilterEnding.accept(objFile);
 		}//END main
 		return bReturn;
 	}

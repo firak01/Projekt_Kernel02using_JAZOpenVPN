@@ -595,26 +595,24 @@ if(this.isPortScanEnabled()==true){
 				if(listaFileUsed==null) break main;
 				if(listaFileUsed.isEmpty()) break main;
 				 
-				//Pr�fen, ob es sich um File-Objekte handelt
+				//Prüfen, ob es sich um File-Objekte handelt
 				for (int icount = 0; icount < listaFileUsed.size(); icount++){
 					File objFileConfig2start = null;				
 					try{ //Falls eine Arraylist ohne File-Objekte �bergeben wird, dann hier den Fehler abfangen
 						objFileConfig2start = (File) listaFileUsed.get(icount);
-						
-						//Pr�fen, ob es sich auch immer um ein Configuration-File handelt.
-						OVPNFileFilterConfigZZZ objFileFilter = new OVPNFileFilterConfigZZZ();
-						boolean btemp = objFileFilter.accept(objFileConfig2start);
-						if(btemp==false){
-							ExceptionZZZ ez = new ExceptionZZZ("Error on Element " + icount + " of the ArrayList. This should be a ovpn configuration file. It is a file but OVPNFileFilterConfigZZZ.accept() reports 'false'.", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
-							throw ez;
-						}
 					}catch(Exception e){
 						ExceptionZZZ ez = new ExceptionZZZ("Error on Element " + icount + " of the ArrayList. This should be a file object. Error reported: " + e.getMessage(), iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
 						throw ez;
 					}
-				}
-				 
-				
+					
+					//Prüfen, ob es sich auch immer um ein Configuration-File handelt.
+					OVPNFileFilterConfigZZZ objFileFilter = new OVPNFileFilterConfigZZZ();
+					boolean btemp = objFileFilter.accept(objFileConfig2start);
+					if(btemp==false){
+						ExceptionZZZ ez = new ExceptionZZZ("Error on Element " + icount + " of the ArrayList. This should be a ovpn configuration file. It is a file but OVPNFileFilterConfigZZZ.accept() reports 'false'.", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
+						throw ez;
+					}					
+				}				 				
 			}//END check
 		
 		//+++ Performanceverbesserung: Eine Art "Unique" �ber die ArrayList, daraus kommt dann die zu �berpr�fende Liste.
