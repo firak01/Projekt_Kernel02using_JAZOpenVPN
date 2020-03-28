@@ -12,9 +12,11 @@ import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterMiddleZZZ;
 import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
+import basic.zUtil.io.IFileExpansionUserZZZ;
+import basic.zUtil.io.IFileExpansionZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
-public abstract class AbstractOVPNFileFilterZZZ extends ObjectZZZ implements FilenameFilter{
+public abstract class AbstractOVPNFileFilterZZZ extends ObjectZZZ implements FilenameFilter, IFileExpansionUserZZZ{
 	public enum FLAGZ{
 		REGARD_FILE_EXPANSION_ALL, REGARD_FILE_EXPANSION_LAST;
 	}
@@ -29,6 +31,9 @@ public abstract class AbstractOVPNFileFilterZZZ extends ObjectZZZ implements Fil
 	protected String sMiddle="";
 	protected String sSuffix="";
 	protected String sEnding="";
+	
+	//wg. des Interfaces IFileExpansionUserZZZ
+	protected IFileExpansionZZZ objExpansion = null;
 	
 	
 	public AbstractOVPNFileFilterZZZ() throws ExceptionZZZ {
@@ -108,7 +113,14 @@ public abstract class AbstractOVPNFileFilterZZZ extends ObjectZZZ implements Fil
 			if(this.objFilterEnding.accept(objFileDir, sName)==false) break main;
 					
 			//Falls das Suffix nicht passt
-			this.objFilterSuffix.setCriterion(this.getSuffix());//TODO GOON 20200324 Übergabe der "Schnittmengen" - Flags aus der aktuellen Klasse
+			//TODO GOON 20200324: Berücksichtigung der "FileExpansion" 
+			//Falls das Flag Regard_FILE_EXPANSION_ALL gesetzt ist:
+			//... Nur prüfen, ob hinter dem Suffix ein "Zahlenwert steht".
+			
+			//Falls das Flag Regard_FILE_EXPANSION_LAST gesetzt ist:
+			//... Rückwärts vom maximalen Wert zu 1 gehen und den ersten gefundenen Wert zurückgeben.
+			//
+			this.objFilterSuffix.setCriterion(this.getSuffix());
 			if(this.objFilterSuffix.accept(objFileDir, sName)==false) break main;
 			
 			bReturn = true;
