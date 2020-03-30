@@ -220,7 +220,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 						}
 					}//bProof == false
 				}while(bProof==false);
-				this.logStatusString("Depending process '" + sDominoCaption + "' running. Continue stating process.");
+				this.logStatusString("Depending process '" + sDominoCaption + "' running. Continue starting process.");
 			}//END if sDominoCaption isempty
 			
 			
