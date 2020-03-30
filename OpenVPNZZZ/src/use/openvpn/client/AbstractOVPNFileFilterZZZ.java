@@ -113,16 +113,23 @@ public abstract class AbstractOVPNFileFilterZZZ extends ObjectZZZ implements Fil
 			if(this.objFilterEnding.accept(objFileDir, sName)==false) break main;
 					
 			//Falls das Suffix nicht passt
-			//TODO GOON 20200324: Berücksichtigung der "FileExpansion" 
-			//Falls das Flag Regard_FILE_EXPANSION_ALL gesetzt ist:
-			//... Nur prüfen, ob hinter dem Suffix ein "Zahlenwert steht".
-			
-			//Falls das Flag Regard_FILE_EXPANSION_LAST gesetzt ist:
-			//... Rückwärts vom maximalen Wert zu 1 gehen und den ersten gefundenen Wert zurückgeben.
-			//
-			this.objFilterSuffix.setCriterion(this.getSuffix());
-			if(this.objFilterSuffix.accept(objFileDir, sName)==false) break main;
-			
+			if(this.getFlag(FLAGZ.REGARD_FILE_EXPANSION_ALL.name()) || (this.getFlag(FLAGZ.REGARD_FILE_EXPANSION_LAST.name()))) {
+				IFileExpansionZZZ objExpansion = this.getFileExpansionObject();
+				
+				//TODO GOON 20200324: Berücksichtigung der "FileExpansion" 
+				if(this.getFlag(FLAGZ.REGARD_FILE_EXPANSION_ALL.name())){
+					//Falls das Flag Regard_FILE_EXPANSION_ALL gesetzt ist:
+					//... Nur prüfen, ob hinter dem Suffix ein "Zahlenwert steht".
+					
+				}else if(this.getFlag(FLAGZ.REGARD_FILE_EXPANSION_LAST.name())) {
+					//Falls das Flag Regard_FILE_EXPANSION_LAST gesetzt ist:
+					//... Rückwärts vom maximalen Wert zu 1 gehen und den ersten gefundenen Wert zurückgeben.
+					//
+				}												
+			}else {
+				this.objFilterSuffix.setCriterion(this.getSuffix());
+				if(this.objFilterSuffix.accept(objFileDir, sName)==false) break main;
+			}												
 			bReturn = true;
 		}//END main:
 		return bReturn;		
@@ -175,5 +182,12 @@ public abstract class AbstractOVPNFileFilterZZZ extends ObjectZZZ implements Fil
 				this.setEnding("");
 			}
 			return this.sEnding;
+		}
+		
+		public void setFileExpansionObject(IFileExpansionZZZ objFileExpansion) {
+			this.objExpansion = objFileExpansion;
+		}
+		public IFileExpansionZZZ getFileExpansionObject() {
+			return this.objExpansion;
 		}
 }//END class
