@@ -128,7 +128,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			//ABER: Es werden nur die Konfigurationsdateien verwendet, die auch konfiguriert sind. Falls nix konfiguriert ist, werden alle gefundenen verwendet.
 			ArrayList<File> listaFileConfigUsed = this.getConfigFileObjectsAll();
 			//TODO GOON 2020407: String sFileConfigConfigured = objKernel.getParameterByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();			
-			String[] saFileConfigConfigured = objKernel.getParameterArrayByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();
+			String[] saFileConfigConfigured = objKernel.getParameterArrayStringByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);//.findFileConfigTemplate(null);
 			
 			listaFileConfigUsed.clear();//Baue die Liste der letztendlich genutzten Konfigurationen neu auf.
@@ -168,6 +168,28 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				this.logStatusString("Finally used configuration  file(s): " + stemp);
 			}
 			
+			
+			//TODO GOON 20200408: Auslesen der "erlaubten" Clients und Datei dafür in einem bestimmten Verzeichnis anlegen.
+			//TODO GOON Das in einer eigenen Klasse auslagern ServerConfigCientAllowedOVPN
+			//
+			/* Auszug aus der ini - Datei
+			 * 
+[OVPN!01_ConfigServerClientConfig];Werte werden in die mit Client-config-dir als Verzeichnis angegebenen Dateien (CN-Namen der jeweiligen Client) eingetragen, bzw. dafür verwendet.
+DirectoryTemplate=<Z>[OVPN!01_Config]DirectoryTemplate</Z>
+FileNameTemplate=template_server_clientconfig.txt
+
+#Mehrere Werte durch Path-Separator getrennt. Die Hostnamen. Für jeden der hier definierten Namen eine Datei mit dem CN-Namen des Hosts (also plus _CLIENT) im TemplateVerzeichnis per Program erstellen.
+ClientConfigHostname=HANNIBALDEV04VM
+			 */
+			//Aber zuerst den Ordner samt Inhalt löschen (quasi die alte Konfiguration entfernen)
+			
+			String s = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryTemplate").getValue();
+			String sFile = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
+			//Danach den Ordner anlegen und mit Dateien füllen
+			String sa = objKernel.getParameterArrayByProgramAlias("OVPN","ProgConfigServerClientConfig","ClientConfigHostname").getValue();
+			
+			//TODO Nun einen Mapper nutzen, um die Dateien zu befüllen.
+			//Neue Klasse ServerConfigMapper4ClientConfigOVPN
 			
 			//######################################################
 			//2. Diverse Dinge mit WMI testen.
