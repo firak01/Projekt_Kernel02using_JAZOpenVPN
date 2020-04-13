@@ -22,6 +22,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
+import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -126,30 +127,32 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			}//end for
 			
 			//ABER: Es werden nur die Konfigurationsdateien verwendet, die auch konfiguriert sind. Falls nix konfiguriert ist, werden alle gefundenen verwendet.
-			ArrayList<File> listaFileConfigUsed = this.getConfigFileObjectsAll();
-			//TODO GOON 2020407: String sFileConfigConfigured = objKernel.getParameterByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();			
-			String[] saFileConfigConfigured = objKernel.getParameterArrayStringByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile").getValue();
+			ArrayList<File> listaFileConfigUsed = this.getConfigFileObjectsAll();		
+			String[] saFileConfigConfigured = objKernel.getParameterArrayStringByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile");
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);//.findFileConfigTemplate(null);
 			
-			listaFileConfigUsed.clear();//Baue die Liste der letztendlich genutzten Konfigurationen neu auf.
-			if(StringZZZ.isEmpty(sFileConfigConfigured)){
-				//Die Arraylist besteht nun aus allen konfigurierten Dateien
+			listaFileConfigUsed.clear();//Baue die Liste der letztendlich genutzten Konfigurationen neu auf.			
+			if(StringArrayZZZ.isEmpty(saFileConfigConfigured)){
+				//Wenn true: Die Arraylist besteht nun aus allen konfigurierten Dateien
 				for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
 					listaFileConfigUsed.add(objaFileConfigUsed[icount]);
 				}
 			}else{
 				//Aus der Liste aller zur Verfügung stehenden Dateien nur diejenigen raussortieren, die konfiguriert sind.
-				StringTokenizer objToken = new StringTokenizer(sFileConfigConfigured, File.separator);
-				while(objToken.hasMoreTokens()){
-					String stemp = objToken.nextToken();
-					for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
-						File objFileTemp = objaFileConfigUsed[icount];						
-						boolean bIsExpandedOrSameFilename = KernelFileExpansionZZZ.isExpansionOrSameFilename(objFileTemp, stemp, 3);
-						if(bIsExpandedOrSameFilename) {
-							listaFileConfigUsed.add(objFileTemp);
-						}
-					}//END for
-				}//END while
+				for(int iCounter=0;iCounter<=saFileConfigConfigured.length-1;iCounter++) {
+					String sFileConfigConfigured = saFileConfigConfigured[iCounter];				
+					StringTokenizer objToken = new StringTokenizer(sFileConfigConfigured, File.separator);
+					while(objToken.hasMoreTokens()){
+						String stemp = objToken.nextToken();
+						for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
+							File objFileTemp = objaFileConfigUsed[icount];						
+							boolean bIsExpandedOrSameFilename = KernelFileExpansionZZZ.isExpansionOrSameFilename(objFileTemp, stemp, 3);
+							if(bIsExpandedOrSameFilename) {
+								listaFileConfigUsed.add(objFileTemp);
+							}
+						}//END for
+					}//END while
+				}//END for
 			}//END if
 			if(listaFileConfigUsed.size()==0){
 				this.logStatusString("No configuration available which is configured in Kernel Ini File for Program 'ProgConfigHandler' and Property 'ConfigFile'.");
@@ -184,9 +187,11 @@ ClientConfigHostname=HANNIBALDEV04VM
 			//Aber zuerst den Ordner samt Inhalt löschen (quasi die alte Konfiguration entfernen)
 			
 			String s = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryTemplate").getValue();
+			
+			jkljlkjlkjlj
 			String sFile = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
 			//Danach den Ordner anlegen und mit Dateien füllen
-			String sa = objKernel.getParameterArrayByProgramAlias("OVPN","ProgConfigServerClientConfig","ClientConfigHostname").getValue();
+			String[] sa = objKernel.getParameterArrayStringByProgramAlias("OVPN","ProgConfigServerClientConfig","ClientConfigHostname");
 			
 			//TODO Nun einen Mapper nutzen, um die Dateien zu befüllen.
 			//Neue Klasse ServerConfigMapper4ClientConfigOVPN
