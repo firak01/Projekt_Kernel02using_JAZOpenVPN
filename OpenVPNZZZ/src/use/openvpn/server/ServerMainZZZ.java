@@ -184,18 +184,52 @@ FileNameTemplate=template_server_clientconfig.txt
 #Mehrere Werte durch Path-Separator getrennt. Die Hostnamen. Für jeden der hier definierten Namen eine Datei mit dem CN-Namen des Hosts (also plus _CLIENT) im TemplateVerzeichnis per Program erstellen.
 ClientConfigHostname=HANNIBALDEV04VM
 			 */
-			//Aber zuerst den Ordner samt Inhalt löschen (quasi die alte Konfiguration entfernen)
 			
-			String s = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryTemplate").getValue();
+			//TODO GOON 20200414:
+			jjjjjjj
+			//Aber zuerst den Ordner samt Inhalt löschen (quasi die alte Konfiguration entfernen)	
+			String sDirectoryClientConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryClientConfig").getValue();
+			String sDirectoryClientConfigPath=null;
+			if(!StringZZZ.isEmpty(sDirectoryClientConfig)) {
+				File fileDirectoryConfig = this.getConfigChooserObject().getDirectoryConfig();				
+				sDirectoryClientConfigPath = FileEasyZZZ.joinFilePathName(fileDirectoryConfig,sDirectoryClientConfig);
+			}
 			
-			jkljlkjlkjlj
-			String sFile = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
-			//Danach den Ordner anlegen und mit Dateien füllen
+			if(!StringZZZ.isEmpty(sDirectoryClientConfigPath)) {
+				boolean bSuccess = FileEasyZZZ.removeDirectory(sDirectoryClientConfigPath, true);//true= Entferne zuvor den Inhalt!!!				
+			} 
+			
+			//Neue Konfigurationsdateien erstellen, sofern welche konfiguriert sind.
 			String[] sa = objKernel.getParameterArrayStringByProgramAlias("OVPN","ProgConfigServerClientConfig","ClientConfigHostname");
+			if(!StringArrayZZZ.isEmpty(sa)) {
 			
+			if(!StringZZZ.isEmpty(sDirectoryClientConfigPath)) {
+				//Den Ordner der ClientConfigurationen (auf dem Server) erstellen.
+				
+				
+				
+				
+			//Den Ordner der Templatekonfiguration
+			String sDirectoryTemplate = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryTemplate").getValue();		
+			String sDirectoryTemplatePath = null;
+			if(!StringZZZ.isEmpty(sDirectoryTemplate)) {
+				File fileDirectoryConfig = this.getConfigChooserObject().getDirectoryConfig();				
+				sDirectoryTemplatePath = FileEasyZZZ.joinFilePathName(fileDirectoryConfig,sDirectoryTemplate);
+			}
+			
+		
+		
+				String sFile = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
 			//TODO Nun einen Mapper nutzen, um die Dateien zu befüllen.
 			//Neue Klasse ServerConfigMapper4ClientConfigOVPN
+			//1. Oben gelöschtes Verzeichnis neu erstellen.
+			//2. Readme-Datei hineinkopieren: Das Verzeichnis wurde automatisch erstellt, aller Inhalt wird auch automatisch wieder gelöscht, bla bla
+			//3. In einer Schleife die Strings durchgehen und Dateien erstellen. Mapping Vorgehen.
 			
+
+			}//end if(!StringZZZ.isEmpty(sDirectoryClientConfigPath)) {
+		}//end if(!StringArrayZZZ.isEmpty(sa)) {
+		
 			//######################################################
 			//2. Diverse Dinge mit WMI testen.
 			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
