@@ -87,11 +87,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			//####################################################################
 			//### DAS SCHREIBEN DER NEUEN KONFIGURATION
 					
-			//+++ A) Vorbereitung
-			///*TEST: Path Expanded Berechnung
-			
-			
-			
+			//+++ A) Vorbereitung			
 			//+++ 1. Die früher mal verwendeten Dateien entfernen
 			this.logStatusString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			ReferenceArrayZZZ<String> strUpdate=new ReferenceArrayZZZ<String>(null);
@@ -187,14 +183,16 @@ ClientConfigHostname=HANNIBALDEV04VM
 			
 			//TODO GOON 20200414:
 			//+++ Neuen Ordner für die Client-Konfigurations-Dateien "auf dem Server" erstellen.	
-			String sDirectoryClientConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryClientConfig").getValue();			
+			verwende objChooser.readDirectoryServerClientPath
+			
+			String sDirectoryClientConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryServerClientConfig").getValue();			
 			boolean bUseDirectoryClientConfig = false;
 			if(!StringZZZ.isEmpty(sDirectoryClientConfig)){
 				bUseDirectoryClientConfig = true;
 			}
 			
 			//Neue Konfigurationsdateien erstellen, sofern welche konfiguriert sind.
-			String[] saClientConfig = objKernel.getParameterArrayStringByProgramAlias("OVPN","ProgConfigServerClientConfig","ClientConfigHostname");
+			String[] saClientConfig = objKernel.getParameterArrayStringByProgramAlias("OVPN","ProgConfigServerClientConfig","ServerClientConfigHostname");
 			boolean bUseClientConfig = false;
 			if(!StringArrayZZZ.isEmpty(saClientConfig)) {
 				bUseClientConfig = true;

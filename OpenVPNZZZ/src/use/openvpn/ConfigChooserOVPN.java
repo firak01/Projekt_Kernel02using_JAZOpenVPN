@@ -1,16 +1,17 @@
 package use.openvpn;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.reflect.Array;
 
 import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
 import org.jdesktop.jdic.filetypes.AssociationService;
 
-import use.openvpn.client.OVPNFileFilterConfigBatchTemplateZZZ;
-import use.openvpn.client.OVPNFileFilterConfigOvpnTemplateZZZ;
-import use.openvpn.client.OVPNFileFilterConfigOvpnUsedZZZ;
-
+import use.openvpn.client.FileFilterConfigBatchTemplateOVPN;
+import use.openvpn.client.FileFilterConfigOvpnTemplateOVPN;
+import use.openvpn.client.FileFilterConfigOvpnUsedOVPN;
+import use.openvpn.server.FileFilterReadmeServerClientConfigTemplateOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
@@ -113,7 +114,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigZZZ objFilterConfig = new OVPNFileFilterConfigZZZ();			
+			FileFilterConfigOVPN objFilterConfig = new FileFilterConfigOVPN();			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
@@ -160,7 +161,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigOvpnTemplateZZZ objFilterConfig = new OVPNFileFilterConfigOvpnTemplateZZZ(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
+			FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
@@ -207,7 +208,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigBatchTemplateZZZ objFilterConfig = new OVPNFileFilterConfigBatchTemplateZZZ(this.getOvpnContextUsed());			
+			FileFilterConfigBatchTemplateOVPN objFilterConfig = new FileFilterConfigBatchTemplateOVPN(this.getOvpnContextUsed());			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
@@ -279,7 +280,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 			//##############################################################
 //			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			OVPNFileFilterConfigOvpnUsedZZZ objFilterConfig = new OVPNFileFilterConfigOvpnUsedZZZ(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
+			FileFilterConfigOvpnUsedOVPN objFilterConfig = new FileFilterConfigOvpnUsedOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
 			
 		}//End main
@@ -412,6 +413,96 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 					throw ez;
 				}else if(objReturn.isDirectory()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The path '" + objReturn.getAbsolutePath() + "'(for '" + sDirTemplate + "'),  was expected to be a directory, not e.g. a file.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+		}//End main
+		return objReturn;		
+	}
+	
+	//++++++++++++++++++++++++++++++++++++++++++++++++
+	public File[] findFileReadmeServerClientConfigTemplates(File objDirectoryin) throws ExceptionZZZ{
+		File[] objaReturn = null;
+		main:{
+			File objDirectory=null;
+			check:{
+				if(objDirectoryin==null){
+					objDirectory = this.getDirectoryTemplate();
+					if(objDirectory==null){				
+							ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to get the template directory.'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+							throw ez;
+						}
+				}else{
+					objDirectory = objDirectoryin;
+				}
+								
+				if(objDirectory.exists()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Directory '" + objDirectory.getPath() + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}else if(objDirectory.isDirectory()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + objDirectory.getPath() + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+				
+			}//End check
+			
+			//##############################################################
+//			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
+			FileFilterReadmeServerClientConfigTemplateOVPN objFilterConfig = new FileFilterReadmeServerClientConfigTemplateOVPN();			
+			objaReturn = objDirectory.listFiles(objFilterConfig);
+			
+		}//End main
+		return objaReturn;
+	}
+	
+	public File getDirectoryServerClientConfig() throws ExceptionZZZ{
+		File objReturn = null;
+		main:{			
+				String sDirConfig = this.readDirectoryServerClientConfigPath();
+				if(sDirConfig==null){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive configuration directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}else if(sDirConfig.equals("")){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive configuration directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+
+				objReturn = new File(sDirConfig);
+				if(objReturn.exists()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirConfig + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}else if(objReturn.isDirectory()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The path '" + sDirConfig + "', was expected to be a directory, not e.g. a file.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+		}//End main
+		return objReturn;		
+	}
+	
+	public String readDirectoryServerClientConfigPath() throws ExceptionZZZ{
+		String sReturn = new String("");
+		main:{		
+			String sDirectoryConfig = this.readDirectoryConfigPath();
+			String sDirectoryServerClientConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryServerClientConfig").getValue();
+			String sDirectoryServerClientConfigTotal = FileEasyZZZ.joinFilePathName(sDirectoryConfig, sDirectoryServerClientConfig); 						
+		}//End main
+		return sReturn;
+	}
+	
+	public File findDirectoryServerClientConfig() throws ExceptionZZZ{
+		File objReturn = null;
+		main:{			
+				String sDirServerClientconfig = this.readDirectoryServerClientConfigPath();
+				if(sDirServerClientconfig==null){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive ServerClientConfig directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+
+				objReturn = FileEasyZZZ.searchDirectory(sDirServerClientconfig);
+				if(objReturn.exists()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + objReturn.getAbsolutePath() + "', does not exist (for '" + sDirServerClientconfig + "').", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}else if(objReturn.isDirectory()==false){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The path '" + objReturn.getAbsolutePath() + "'(for '" + sDirServerClientconfig + "'),  was expected to be a directory, not e.g. a file.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
 		}//End main

@@ -6,10 +6,10 @@ import java.io.FilenameFilter;
 import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 
-public class OVPNFileFilterConfigZZZ implements FilenameFilter {
+public class FileFilterConfigOVPN implements FilenameFilter {
 	FileFilterEndingZZZ objFilterEnding;
 	
-	public OVPNFileFilterConfigZZZ(){
+	public FileFilterConfigOVPN(){
 		objFilterEnding = new FileFilterEndingZZZ("ovpn");
 	} 
 	/* (non-Javadoc)

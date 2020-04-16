@@ -5,31 +5,32 @@ import java.io.FilenameFilter;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.file.AbstractOVPNFileFilterZZZ;
 import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterMiddleZZZ;
 import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
-public class OVPNFileFilterConfigOvpnTemplateZZZ extends AbstractOVPNFileFilterZZZ{
+public class FileFilterConfigOvpnTemplateOVPN extends AbstractOVPNFileFilterZZZ{
 	public static String sPREFIX="template_";
 	public static String sMIDDLE="";
 	public static String sSUFFIX="";
 	public static String sENDING="ovpn";
 	
-	public OVPNFileFilterConfigOvpnTemplateZZZ(String sOvpnContextServerOrClient, String[] saFlagControl) throws ExceptionZZZ {
+	public FileFilterConfigOvpnTemplateOVPN(String sOvpnContextServerOrClient, String[] saFlagControl) throws ExceptionZZZ {
 		super(sOvpnContextServerOrClient, saFlagControl);	
 		OVPNFileFilterConfigOvpnTemplateNew_();
 	} 
-	public OVPNFileFilterConfigOvpnTemplateZZZ(String sOvpnContextServerOrClient, String sFlagControl) throws ExceptionZZZ {
+	public FileFilterConfigOvpnTemplateOVPN(String sOvpnContextServerOrClient, String sFlagControl) throws ExceptionZZZ {
 		super(sOvpnContextServerOrClient, sFlagControl);
 		OVPNFileFilterConfigOvpnTemplateNew_();
 	} 
-	public OVPNFileFilterConfigOvpnTemplateZZZ(String sOvpnContextServerOrClient) throws ExceptionZZZ {
+	public FileFilterConfigOvpnTemplateOVPN(String sOvpnContextServerOrClient) throws ExceptionZZZ {
 		super(sOvpnContextServerOrClient);		
 		OVPNFileFilterConfigOvpnTemplateNew_();
 	} 
-	public OVPNFileFilterConfigOvpnTemplateZZZ() throws ExceptionZZZ {
+	public FileFilterConfigOvpnTemplateOVPN() throws ExceptionZZZ {
 		super();		
 		OVPNFileFilterConfigOvpnTemplateNew_();
 	}
@@ -41,7 +42,7 @@ public class OVPNFileFilterConfigOvpnTemplateZZZ extends AbstractOVPNFileFilterZ
 	//##### GETTER / SETTER	
 	public void setPrefix(String sPrefix) {
 		if(StringZZZ.isEmpty(sPrefix)) {
-			super.setPrefix(OVPNFileFilterConfigOvpnTemplateZZZ.sPREFIX);
+			super.setPrefix(FileFilterConfigOvpnTemplateOVPN.sPREFIX);
 		}else {
 			super.setPrefix(sPrefix);
 		}
@@ -49,7 +50,7 @@ public class OVPNFileFilterConfigOvpnTemplateZZZ extends AbstractOVPNFileFilterZ
 	
 	public void setMiddle(String sMiddle) {
 		if(StringZZZ.isEmpty(sMiddle)) {
-			super.setMiddle(OVPNFileFilterConfigOvpnTemplateZZZ.sMIDDLE);
+			super.setMiddle(FileFilterConfigOvpnTemplateOVPN.sMIDDLE);
 		}else {
 			super.setMiddle(sMiddle);
 		}
@@ -57,7 +58,7 @@ public class OVPNFileFilterConfigOvpnTemplateZZZ extends AbstractOVPNFileFilterZ
 	
 	public void setSuffix(String sSuffix) {
 		if(StringZZZ.isEmpty(sSuffix)) {
-			super.setSuffix(OVPNFileFilterConfigOvpnTemplateZZZ.sSUFFIX);
+			super.setSuffix(FileFilterConfigOvpnTemplateOVPN.sSUFFIX);
 		}else {
 			super.setSuffix(sSuffix);
 		}
@@ -66,7 +67,7 @@ public class OVPNFileFilterConfigOvpnTemplateZZZ extends AbstractOVPNFileFilterZ
 				
 	public void setEnding(String sEnding) {
 		if(StringZZZ.isEmpty(sEnding)) {
-			super.setEnding(OVPNFileFilterConfigOvpnTemplateZZZ.sENDING);
+			super.setEnding(FileFilterConfigOvpnTemplateOVPN.sENDING);
 		}else {
 			super.setEnding(sEnding);
 		}

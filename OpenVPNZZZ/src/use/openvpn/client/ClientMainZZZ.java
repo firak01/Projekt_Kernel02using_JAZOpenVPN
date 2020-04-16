@@ -7,7 +7,7 @@ import java.util.HashMap;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
-import use.openvpn.OVPNFileFilterConfigZZZ;
+import use.openvpn.FileFilterConfigOVPN;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -606,7 +606,7 @@ if(this.isPortScanEnabled()==true){
 					}
 					
 					//Prüfen, ob es sich auch immer um ein Configuration-File handelt.
-					OVPNFileFilterConfigZZZ objFileFilter = new OVPNFileFilterConfigZZZ();
+					FileFilterConfigOVPN objFileFilter = new FileFilterConfigOVPN();
 					boolean btemp = objFileFilter.accept(objFileConfig2start);
 					if(btemp==false){
 						ExceptionZZZ ez = new ExceptionZZZ("Error on Element " + icount + " of the ArrayList. This should be a ovpn configuration file. It is a file but OVPNFileFilterConfigZZZ.accept() reports 'false'.", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
