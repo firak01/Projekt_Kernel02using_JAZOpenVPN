@@ -15,6 +15,7 @@ import use.openvpn.server.FileFilterReadmeServerClientConfigTemplateOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
+import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -468,8 +469,10 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 
 				objReturn = new File(sDirConfig);
 				if(objReturn.exists()==false){
-					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirConfig + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
-					throw ez;
+//					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirConfig + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+//					throw ez;
+					//Keinen Fehler werfen, kann ja noch erstellt werden...
+					break main;
 				}else if(objReturn.isDirectory()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The path '" + sDirConfig + "', was expected to be a directory, not e.g. a file.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
@@ -480,10 +483,12 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	
 	public String readDirectoryServerClientConfigPath() throws ExceptionZZZ{
 		String sReturn = new String("");
-		main:{		
-			String sDirectoryConfig = this.readDirectoryConfigPath();
+		main:{					
 			String sDirectoryServerClientConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryServerClientConfig").getValue();
-			String sDirectoryServerClientConfigTotal = FileEasyZZZ.joinFilePathName(sDirectoryConfig, sDirectoryServerClientConfig); 						
+			if(StringZZZ.isEmpty(sDirectoryServerClientConfig)) break main;
+			
+			String sDirectoryConfig = this.readDirectoryConfigPath();
+			sReturn = FileEasyZZZ.joinFilePathName(sDirectoryConfig, sDirectoryServerClientConfig); 						
 		}//End main
 		return sReturn;
 	}

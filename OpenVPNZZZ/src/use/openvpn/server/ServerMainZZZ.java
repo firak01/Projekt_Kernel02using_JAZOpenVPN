@@ -182,53 +182,59 @@ ClientConfigHostname=HANNIBALDEV04VM
 			 */
 			
 			//TODO GOON 20200414:
-			//+++ Neuen Ordner für die Client-Konfigurations-Dateien "auf dem Server" erstellen.	
-			verwende objChooser.readDirectoryServerClientPath
-			
-			String sDirectoryClientConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryServerClientConfig").getValue();			
-			boolean bUseDirectoryClientConfig = false;
-			if(!StringZZZ.isEmpty(sDirectoryClientConfig)){
-				bUseDirectoryClientConfig = true;
+			//+++ Neuen Ordner für die Client-Konfigurations-Dateien "auf dem Server" erstellen.		
+			File fileDirectoryServerClientConfig = this.getConfigChooserObject().getDirectoryServerClientConfig();				
+			String sDirectoryClientConfigPath;
+			if(fileDirectoryServerClientConfig!=null) {
+				sDirectoryClientConfigPath = fileDirectoryServerClientConfig.getAbsolutePath();
+				
+				//Zuerst den Ordner samt Inhalt löschen (quasi die alte Konfiguration entfernen)											
+				boolean bSuccess = FileEasyZZZ.removeDirectory(fileDirectoryServerClientConfig, true);//true= Entferne zuvor den Inhalt!!!
+				if(!bSuccess) {											
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + " unable to remove directory '" + sDirectoryClientConfigPath + "' (is there a file with the same name?)", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+			}else {
+				sDirectoryClientConfigPath = null;
 			}
 			
 			//Neue Konfigurationsdateien erstellen, sofern welche konfiguriert sind.
 			String[] saClientConfig = objKernel.getParameterArrayStringByProgramAlias("OVPN","ProgConfigServerClientConfig","ServerClientConfigHostname");
-			boolean bUseClientConfig = false;
-			if(!StringArrayZZZ.isEmpty(saClientConfig)) {
-				bUseClientConfig = true;
+			boolean bUseDirectoryClientConfig = true;
+			boolean bUseClientConfig = true;
+			if(StringArrayZZZ.isEmpty(saClientConfig)) {
+				bUseClientConfig = false;
+				bUseDirectoryClientConfig = false;
 			}
-			
-			String sDirectoryClientConfigPath = null;
-			if(bUseDirectoryClientConfig) {
-				//Aber zuerst den Ordner samt Inhalt löschen (quasi die alte Konfiguration entfernen)
-				File fileDirectoryConfig = this.getConfigChooserObject().getDirectoryConfig();				
-				sDirectoryClientConfigPath = FileEasyZZZ.joinFilePathName(fileDirectoryConfig,sDirectoryClientConfig);
-
-				boolean bSuccess = FileEasyZZZ.removeDirectory(sDirectoryClientConfigPath, true);//true= Entferne zuvor den Inhalt!!!				
-			} 
-			
+					
 									 
 			if(bUseClientConfig && bUseDirectoryClientConfig) {
-				//1. Oben gelöschtes Verzeichnis neu erstellen: Den Ordner der ClientConfigurationen (auf dem Server) erstellen.
+				//1. Readme-Datei hineinkopieren mit Text, z.B.: Das Verzeichnis wurde automatisch erstellt, aller Inhalt wird auch automatisch wieder gelöscht, bla bla				
+				//1a. Ordner der Templatekonfiguration
+				File fileDirectoryConfig = this.getConfigChooserObject().getDirectoryTemplate();			
+				if(fileDirectoryConfig==null) {
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + " unable to get template directory '", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+				
+				//2. Oben gelöschtes Verzeichnis neu erstellen: Den Ordner der ClientConfigurationen (auf dem Server) erstellen.
 				boolean bSuccess = FileEasyZZZ.createDirectory(sDirectoryClientConfigPath);
 				if(!bSuccess) {											
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + " unable to create directory '" + sDirectoryClientConfigPath + "' (is there a file with the same name?)", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
 				
-				//2. Ordner der Templatekonfiguration
-				String sDirectoryTemplate = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryTemplate").getValue();		
-				String sDirectoryTemplatePath = null;
-				if(!StringZZZ.isEmpty(sDirectoryTemplate)) {
-					File fileDirectoryConfig = this.getConfigChooserObject().getDirectoryConfig();				
-					sDirectoryTemplatePath = FileEasyZZZ.joinFilePathName(fileDirectoryConfig,sDirectoryTemplate);
-				}
-			
-				//3. Readme-Datei hineinkopieren mit Text, z.B.: Das Verzeichnis wurde automatisch erstellt, aller Inhalt wird auch automatisch wieder gelöscht, bla bla
-				jjjjjjjjj
+				//++++++++
+				//1b. Readme Schablone holen.
+				jjjjjjjjjjjjjjjjjj
+				
+				//1c. ggfs. Platzhalter ersetzen
+				
+				//1d. Fertige ReadmeDatei kopieren.
 				
 				
-				//4. Das Template holen
+				//+++++++++			
+				//2a. Das Template für die ServerClientConfig Dateien holen
 				String sFileTemplate = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
 				
 				//Die einzelnen Dateien erstellen - basierend auf einem Template.
