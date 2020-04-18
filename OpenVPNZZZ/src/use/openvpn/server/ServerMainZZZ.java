@@ -170,98 +170,11 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			
 			
 			//TODO GOON 20200408: Auslesen der "erlaubten" Clients und Datei dafür in einem bestimmten Verzeichnis anlegen.
-			//TODO GOON Das in einer eigenen Klasse auslagern ServerConfigCientAllowedOVPN
-			//
-			/* Auszug aus der ini - Datei
-			 * 
-[OVPN!01_ConfigServerClientConfig];Werte werden in die mit Client-config-dir als Verzeichnis angegebenen Dateien (CN-Namen der jeweiligen Client) eingetragen, bzw. dafür verwendet.
-DirectoryTemplate=<Z>[OVPN!01_Config]DirectoryTemplate</Z>
-FileNameTemplate=template_server_clientconfig.txt
-
-#Mehrere Werte durch Path-Separator getrennt. Die Hostnamen. Für jeden der hier definierten Namen eine Datei mit dem CN-Namen des Hosts (also plus _CLIENT) im TemplateVerzeichnis per Program erstellen.
-ClientConfigHostname=HANNIBALDEV04VM
-			 */
+			//TODO GOON Das in einer eigenen Klasse auslagern ServerConfigCientAllowedOVPN			
+			//Das wird alles in einem Handler gekapselt, den Namen (auch der Methode noch optimieren)
+			ServerConfigClientConfigHandlerOVPN objClientConfigHandler = new ServerConfigClientConfigHandlerOVPN(this.getKernelObject(), this, null);
+			boolean bSuccess = objClientConfigHandler.execute();
 			
-			//TODO GOON 20200414:
-			//+++ Neuen Ordner für die Client-Konfigurations-Dateien "auf dem Server" erstellen.		
-			File fileDirectoryServerClientConfig = this.getConfigChooserObject().getDirectoryServerClientConfig();				
-			String sDirectoryClientConfigPath;
-			if(fileDirectoryServerClientConfig!=null) {
-				sDirectoryClientConfigPath = fileDirectoryServerClientConfig.getAbsolutePath();
-				
-				//Zuerst den Ordner samt Inhalt löschen (quasi die alte Konfiguration entfernen)											
-				boolean bSuccess = FileEasyZZZ.removeDirectory(fileDirectoryServerClientConfig, true);//true= Entferne zuvor den Inhalt!!!
-				if(!bSuccess) {											
-					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + " unable to remove directory '" + sDirectoryClientConfigPath + "' (is there a file with the same name?)", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
-					throw ez;
-				}
-			}else {
-				sDirectoryClientConfigPath = null;
-			}
-			
-			//Neue Konfigurationsdateien erstellen, sofern welche konfiguriert sind.
-			String[] saClientConfig = objKernel.getParameterArrayStringByProgramAlias("OVPN","ProgConfigServerClientConfig","ServerClientConfigHostname");
-			boolean bUseDirectoryClientConfig = true;
-			boolean bUseClientConfig = true;
-			if(StringArrayZZZ.isEmpty(saClientConfig)) {
-				bUseClientConfig = false;
-				bUseDirectoryClientConfig = false;
-			}
-					
-									 
-			if(bUseClientConfig && bUseDirectoryClientConfig) {
-				//1. Readme-Datei hineinkopieren mit Text, z.B.: Das Verzeichnis wurde automatisch erstellt, aller Inhalt wird auch automatisch wieder gelöscht, bla bla				
-				//1a. Ordner der Templatekonfiguration
-				File fileDirectoryConfig = this.getConfigChooserObject().getDirectoryTemplate();			
-				if(fileDirectoryConfig==null) {
-					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + " unable to get template directory '", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
-					throw ez;
-				}
-				
-				//2. Oben gelöschtes Verzeichnis neu erstellen: Den Ordner der ClientConfigurationen (auf dem Server) erstellen.
-				boolean bSuccess = FileEasyZZZ.createDirectory(sDirectoryClientConfigPath);
-				if(!bSuccess) {											
-					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + " unable to create directory '" + sDirectoryClientConfigPath + "' (is there a file with the same name?)", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
-					throw ez;
-				}
-				
-				//++++++++
-				//1b. Readme Schablone holen.
-				//FileFilterReadmeServerClientConfigTemplateOVPN
-				File[] objaFileTemplateReadme = this.getConfigChooserObject().findFileReadmeServerClientConfigTemplates(fileDirectoryConfig);
-				File objFileTemplateReadme = objaFileTemplateReadme[0];
-				
-				//##########
-				Hole den Dateinamen der ReadmeDatei. Woher?
-						
-						
-				sReadmePath = sDirectoryClientConfigPath + Dateiname
-				
-				//1. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)				
-				FileTextWriterZZZ objReadmy = new FileTextWriterZZZ(sReadmePath);	 	//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.				
-				ArrayList<String> listaLine = this.computeReadmeLines(objFileTemplateReadmy, fileConfigOvpn);
-				for(String sLine : listaLine){
-					objBatch.writeLine(sLine);
-				}
-				
-				//##########
-				//1c. ggfs. Platzhalter ersetzen
-				
-				//1d. Fertige ReadmeDatei kopieren.
-				
-				
-				//+++++++++			
-				//2a. Das Template für die ServerClientConfig Dateien holen
-				String sFileTemplate = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
-				
-				//Die einzelnen Dateien erstellen - basierend auf einem Template.
-				//5. In einer Schleife die Strings durchgehen und Dateien erstellen. Mapping Vorgehen.
-				//TODO Nun einen Mapper nutzen, um die Dateien zu befüllen.
-				//Neue Klasse ServerConfigMapper4ClientConfigOVPN
-
-			}//end if(bUseClientConfig && bUseDirectoryClientConfig) {
-		
-		
 			//######################################################
 			//2. Diverse Dinge mit WMI testen.
 			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
