@@ -25,6 +25,7 @@ import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
+import basic.zBasic.util.file.FileTextWriterZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
@@ -226,8 +227,24 @@ ClientConfigHostname=HANNIBALDEV04VM
 				
 				//++++++++
 				//1b. Readme Schablone holen.
-				jjjjjjjjjjjjjjjjjj
+				//FileFilterReadmeServerClientConfigTemplateOVPN
+				File[] objaFileTemplateReadme = this.getConfigChooserObject().findFileReadmeServerClientConfigTemplates(fileDirectoryConfig);
+				File objFileTemplateReadme = objaFileTemplateReadme[0];
 				
+				//##########
+				Hole den Dateinamen der ReadmeDatei. Woher?
+						
+						
+				sReadmePath = sDirectoryClientConfigPath + Dateiname
+				
+				//1. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)				
+				FileTextWriterZZZ objReadmy = new FileTextWriterZZZ(sReadmePath);	 	//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.				
+				ArrayList<String> listaLine = this.computeReadmeLines(objFileTemplateReadmy, fileConfigOvpn);
+				for(String sLine : listaLine){
+					objBatch.writeLine(sLine);
+				}
+				
+				//##########
 				//1c. ggfs. Platzhalter ersetzen
 				
 				//1d. Fertige ReadmeDatei kopieren.

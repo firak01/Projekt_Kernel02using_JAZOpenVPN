@@ -295,26 +295,13 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 	@Override
 	public abstract Process requestStart() throws ExceptionZZZ;
 	
-	//@Override
-	//public abstract ArrayList<String> computeBatchLines(File objFileBatch, File objFileTemplateOvpn) throws ExceptionZZZ;
 	@Override
 	public ArrayList<String> computeBatchLines(File fileConfigTemplateBatch, File fileConfigTemplateOvpn) throws ExceptionZZZ {		
 		ArrayList<String>listasReturn=new ArrayList<String>();
-		main:{
-			//ServerConfigMapper4BatchOVPN objMapperBatch = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch);
+		main:{			
 			IConfigMapper4BatchOVPN objMapperBatch = this.getConfigMapperObject(); //new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch);
 			HashMapIterableKeyZZZ<String, String>hmBatchLines = objMapperBatch.readTaskHashMap();								
-			
-			//111111111 TODO GOON 20200304: Mal sehen was die IterableKey HashMap leistet...
-			//Aber: Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren.
-			//List<String>numbersList=(List<String>) SetZZZ.sortAsString(setBatchLineNumber);
-//			Set<String> setBatchLineNumber = hmBatchLines.keySet();			
-//			List<String>numbersList=(List<String>) SetZZZ.sortAsInteger(setBatchLineNumber);
-//			for(String sLineNumber : numbersList) {
-//				String sLine = hmBatchLines.get(sLineNumber);
-//				listasReturn.add(sLine);
-//			}	
-			
+							
 			for(String sKey : hmBatchLines) {
 				String sLine = hmBatchLines.getValue(sKey);
 				listasReturn.add(sLine);
