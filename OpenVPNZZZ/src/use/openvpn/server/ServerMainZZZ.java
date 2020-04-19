@@ -168,8 +168,8 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				this.logStatusString("Finally used configuration  file(s): " + stemp);
 			}
 			
-			
-			//TODO GOON 20200408: Auslesen der "erlaubten" Clients und Datei dafür in einem bestimmten Verzeichnis anlegen.
+			//#############
+			//Auslesen der "erlaubten" Clients und Datei dafür in einem bestimmten Verzeichnis anlegen.
 			//TODO GOON Das in einer eigenen Klasse auslagern ServerConfigCientAllowedOVPN			
 			//Das wird alles in einem Handler gekapselt, den Namen (auch der Methode noch optimieren)
 			ServerConfigClientConfigHandlerOVPN objClientConfigHandler = new ServerConfigClientConfigHandlerOVPN(this.getKernelObject(), this, null);

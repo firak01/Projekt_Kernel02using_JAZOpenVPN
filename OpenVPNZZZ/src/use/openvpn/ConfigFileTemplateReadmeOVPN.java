@@ -75,20 +75,20 @@ public class ConfigFileTemplateReadmeOVPN extends KernelUseObjectZZZ{
 	public int refreshLines()throws ExceptionZZZ{
 		return this.refreshLines(null);
 	}
-	public int refreshLines(File fileConfigTemplateBatchIn) throws ExceptionZZZ {
+	public int refreshLines(File fileConfigTemplateReadmeIn) throws ExceptionZZZ {
 		int iReturn=0;
 		main:{			
-			if(fileConfigTemplateBatchIn!=null) {
-				this.setFileConfigTemplateBatch(fileConfigTemplateBatchIn);
+			if(fileConfigTemplateReadmeIn!=null) {
+				this.setFileConfigTemplateReadme(fileConfigTemplateReadmeIn);
 			}
-			File fileConfigTemplateBatch = this.getFileConfigTemplateBatch();			
-			if(fileConfigTemplateBatch==null){
-				ExceptionZZZ ez = new ExceptionZZZ("FileTemplateBatch", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			File fileConfigTemplateReadme = this.getFileConfigTemplateReadme();			
+			if(fileConfigTemplateReadme==null){
+				ExceptionZZZ ez = new ExceptionZZZ("FileTemplateReadme", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
 			
 			//Zeilen der Datei einlesen
-			TxtReaderZZZ objReader = new TxtReaderZZZ(fileConfigTemplateBatch);
+			TxtReaderZZZ objReader = new TxtReaderZZZ(fileConfigTemplateReadme);
 			Vector<String> vecLine = objReader.readVectorStringByByte(0);
 			
 			//Alle Zeilen nun mit einer Nummer versehen und der HashTable "indiziert" übergeben.

@@ -74,10 +74,13 @@ public class ServerConfigMapper4ReadmeOVPN extends AbstractConfigMapper4ReadmeOV
 				String sLine = (String) hmPattern.get(sKey);	
 				
 				//In jeder Zeile der Datei nun die definierten Platzhalter ersetzen.
+				//Falls überhaupt nix zu ersetzen ist, die ganze Zeile übernehmen 
+				stemp = sLine;
 				
-				//stemp = StringZZZ.replace(sLine, "%exeovpn%", sFileExeOvpn);				
-				//stemp = StringZZZ.replace(stemp, "%templateovpn%", sDirectoryTemplateOvpn + File.separator + sFileConfigOvpn);							
-				//hmReturn.put(sKey, stemp);
+				//stemp = StringZZZ.replace(stemp, "%exeovpn%", sFileExeOvpn);				
+				//stemp = StringZZZ.replace(stemp, "%templateovpn%", sDirectoryTemplateOvpn + File.separator + sFileConfigOvpn);
+												
+				hmReturn.put(sKey, stemp);
 			}
 			
 		}//END main:

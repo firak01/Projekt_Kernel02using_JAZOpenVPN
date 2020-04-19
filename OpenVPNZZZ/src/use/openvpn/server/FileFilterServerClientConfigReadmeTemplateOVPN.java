@@ -12,13 +12,13 @@ import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
-public class FileFilterReadmeServerClientConfigTemplateOVPN extends AbstractOVPNFileFilterZZZ{
+public class FileFilterServerClientConfigReadmeTemplateOVPN extends AbstractOVPNFileFilterZZZ{
 	public static String sPREFIX="readme_";
 	public static String sMIDDLE="_directory_";
 	public static String sSUFFIX="_clientconfig";
 	public static String sENDING="txt";		
 		
-	public FileFilterReadmeServerClientConfigTemplateOVPN() throws ExceptionZZZ {
+	public FileFilterServerClientConfigReadmeTemplateOVPN() throws ExceptionZZZ {
 		super("server"); //der Context ist halt server. Das ist Bestandteil des Templatenamens
 	} 
 	
@@ -26,7 +26,7 @@ public class FileFilterReadmeServerClientConfigTemplateOVPN extends AbstractOVPN
 	//##### GETTER / SETTER		
 		public void setPrefix(String sPrefix) {
 			if(StringZZZ.isEmpty(sPrefix)) {
-				super.setPrefix(FileFilterReadmeServerClientConfigTemplateOVPN.sPREFIX);
+				super.setPrefix(FileFilterServerClientConfigReadmeTemplateOVPN.sPREFIX);
 			}else {
 				super.setPrefix(sPrefix);
 			}
@@ -35,7 +35,7 @@ public class FileFilterReadmeServerClientConfigTemplateOVPN extends AbstractOVPN
 		
 		public void setMiddle(String sMiddle) {
 			if(StringZZZ.isEmpty(sMiddle)) {
-				super.setMiddle(FileFilterReadmeServerClientConfigTemplateOVPN.sMIDDLE);
+				super.setMiddle(FileFilterServerClientConfigReadmeTemplateOVPN.sMIDDLE);
 			}else {
 				super.setPrefix(sMiddle);
 			}
@@ -43,7 +43,7 @@ public class FileFilterReadmeServerClientConfigTemplateOVPN extends AbstractOVPN
 		
 		public void setSuffix(String sSuffix) {
 			if(StringZZZ.isEmpty(sSuffix)) {
-				super.setSuffix(FileFilterReadmeServerClientConfigTemplateOVPN.sSUFFIX);
+				super.setSuffix(FileFilterServerClientConfigReadmeTemplateOVPN.sSUFFIX);
 			}else {
 				super.setSuffix(sSuffix);
 			}
@@ -51,7 +51,7 @@ public class FileFilterReadmeServerClientConfigTemplateOVPN extends AbstractOVPN
 					
 		public void setEnding(String sEnding) {
 			if(StringZZZ.isEmpty(sEnding)) {
-				super.setEnding(FileFilterReadmeServerClientConfigTemplateOVPN.sENDING);
+				super.setEnding(FileFilterServerClientConfigReadmeTemplateOVPN.sENDING);
 			}else {
 				super.setEnding(sEnding);
 			}

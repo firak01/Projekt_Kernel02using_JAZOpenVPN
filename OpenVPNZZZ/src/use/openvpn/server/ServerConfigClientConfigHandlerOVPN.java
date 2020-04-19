@@ -22,6 +22,7 @@ import use.openvpn.IMainUserOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.abstractList.SetZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -34,12 +35,16 @@ import basic.zKernel.KernelUseObjectZZZ;
 public class ServerConfigClientConfigHandlerOVPN extends KernelUseObjectZZZ implements IMainUserOVPN, IConfigMapper4ReadmeUserOVPN{	
 	
 	private IMainOVPN objMain=null;
+	private IConfigMapper4ReadmeOVPN objConfigMapper=null;
+	
+	private File fileServerConfigClientTemplate = null;
 	
 	public ServerConfigClientConfigHandlerOVPN() {
 		super();
 	}
 	public ServerConfigClientConfigHandlerOVPN(IKernelZZZ objKernel, IMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, saFlagControl);
+		ServerConfigClientConfigHandler_(objMain, saFlagControl);
 	}
 	
 	private boolean ServerConfigClientConfigHandler_(IMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ {
@@ -95,10 +100,8 @@ ClientConfigHostname=HANNIBALDEV04VM
 				bUseClientConfig = false;
 				bUseDirectoryClientConfig = false;
 			}
-					
-									 
-			if(bUseClientConfig && bUseDirectoryClientConfig) {
-				//1. Readme-Datei hineinkopieren mit Text, z.B.: Das Verzeichnis wurde automatisch erstellt, aller Inhalt wird auch automatisch wieder gelöscht, bla bla				
+														 
+			if(bUseClientConfig && bUseDirectoryClientConfig) {								
 				//1a. Ordner der Templatekonfiguration
 				File fileDirectoryConfig = this.getDirectoryTemplate();			
 				if(fileDirectoryConfig==null) {
@@ -113,32 +116,29 @@ ClientConfigHostname=HANNIBALDEV04VM
 					throw ez;
 				}
 				
-				//++++++++
+				//#####################################
+				//+++ Erstelle 1 Readme Datei in dem neuen Verzeichnis
+				//1. Readme-Datei hineinkopieren mit Text, z.B.: Das Verzeichnis wurde automatisch erstellt, aller Inhalt wird auch automatisch wieder gelöscht, bla bla
+				
 				//1b. Readme Schablone holen.
-				//FileFilterReadmeServerClientConfigTemplateOVPN
-				File[] objaFileTemplateReadme = this.findFileReadmeServerClientConfigTemplates(fileDirectoryConfig);
-				File objFileTemplateReadme = objaFileTemplateReadme[0];
-				
-				//##########
-				//Hole den Dateinamen der ReadmeDatei. Woher?
-						jkhkjhkjhjkhjk
+				File objFileTemplateReadme = this.getFileServerClientConfigReadmeTemplate();
+														
+				//1c. Hole den Dateinamen der ReadmeDatei.
+				String sReadmePath = this.computeServerClientConfigReadmePath();
 						
-				sReadmePath = sDirectoryClientConfigPath + Dateiname
-				
-				//1. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)				
-				FileTextWriterZZZ objReadmy = new FileTextWriterZZZ(sReadmePath);	 	//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.				
+				//1d. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)				
+				FileTextWriterZZZ objReadme = new FileTextWriterZZZ(sReadmePath);	 	//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.				
 				ArrayList<String> listaLine = this.computeReadmeLines(objFileTemplateReadme);
 				for(String sLine : listaLine){
-					objBatch.writeLine(sLine);
+					objReadme.writeLine(sLine);
 				}
 				
-				//##########
-				//1c. ggfs. Platzhalter ersetzen
+												
+				//#####################################
+				//+++ Erstelle mehrerer Konfigurationsdateien in dem neuen Verzeichnis			
+				TODOGOON;
 				
-				//1d. Fertige ReadmeDatei kopieren.
 				
-				
-				//+++++++++			
 				//2a. Das Template für die ServerClientConfig Dateien holen
 				String sFileTemplate = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
 				
@@ -155,52 +155,9 @@ ClientConfigHostname=HANNIBALDEV04VM
 	
 	
 	//### noch nicht im Interface
-	public String computeBatchPath() throws ExceptionZZZ {
-		String sReturn = null;
-		main:{
-			String sBatchName = this.computeBatchName();
-			if(StringZZZ.isEmpty(sBatchName))break main;
 			
-			String sBatchDirectory = this.computeBatchDirectory();
-			if(StringZZZ.isEmpty(sBatchDirectory))break main;
-			
-			sReturn = sBatchDirectory + File.separator+ sBatchName;
-		}
-		return sReturn;
-	}
-	public String computeReadmeName() {
-		String sReturn = null;
-		main:{			
-
-		}
-		return sReturn;
-	}
-	public String computeReadmeDirectory() throws ExceptionZZZ {
-		return this.getServerObject().getConfigChooserObject().getDirectoryConfig().getAbsolutePath();
-	}
 	
-	
-	//##### Komfort
-//	public File getDirectoryServerClientConfig() throws ExceptionZZZ {
-//		File objReturn = null;
-//		main:{
-//			IMainOVPN objMain = this.getMainObject();
-//			if(objMain==null) {
-//				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PROPERTY_MISSING + " unable to get MainObject '", iERROR_PROPERTY_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
-//				throw ez;
-//			}
-//		
-//			ConfigChooserOVPN objConfigChooser = objMain.getConfigChooserObject();
-//			if(objConfigChooser==null) {
-//				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PROPERTY_MISSING + " unable to get ConfigChooserObject '", iERROR_PROPERTY_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
-//				throw ez;
-//			}
-//			
-//			objReturn = objConfigChooser.getDirectoryServerClientConfig();
-//		}
-//		return objReturn;
-//	}
-	
+	//##### Komfort	
 	public File getDirectoryTemplate() throws ExceptionZZZ {
 		File objReturn = null;
 		main:{
@@ -221,8 +178,26 @@ ClientConfigHostname=HANNIBALDEV04VM
 		return objReturn;
 	}
 	
+	
 	//++++++++++++++++++++++++++++++++++++++++++++++++
-		public File[] findFileReadmeServerClientConfigTemplates(File objDirectoryin) throws ExceptionZZZ{
+	public File getFileServerClientConfigReadmeTemplate() throws ExceptionZZZ {
+		File objReturn = null;
+		main:{
+			if(this.fileServerConfigClientTemplate==null) {
+				File[] fileaTemplate = this.findFileServerClientConfigReadmeTemplates();
+				if(fileaTemplate!=null) {
+					this.fileServerConfigClientTemplate = fileaTemplate[0];
+				}
+			}
+			objReturn = this.fileServerConfigClientTemplate;
+		}
+		return objReturn;
+	}
+	
+	public File[]findFileServerClientConfigReadmeTemplates() throws ExceptionZZZ{
+		return this.findFileServerClientConfigReadmeTemplates(null); 
+	}
+		public File[] findFileServerClientConfigReadmeTemplates(File objDirectoryin) throws ExceptionZZZ{
 			File[] objaReturn = null;
 			main:{
 				File objDirectory=null;
@@ -249,7 +224,7 @@ ClientConfigHostname=HANNIBALDEV04VM
 				
 				//##############################################################
 //				Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-				FileFilterReadmeServerClientConfigTemplateOVPN objFilterConfig = new FileFilterReadmeServerClientConfigTemplateOVPN();			
+				FileFilterServerClientConfigReadmeTemplateOVPN objFilterConfig = new FileFilterServerClientConfigReadmeTemplateOVPN();			
 				objaReturn = objDirectory.listFiles(objFilterConfig);
 				
 			}//End main
@@ -285,10 +260,23 @@ ClientConfigHostname=HANNIBALDEV04VM
 		public String readDirectoryServerClientConfigPath() throws ExceptionZZZ{
 			String sReturn = new String("");
 			main:{					
-				String sDirectoryServerClientConfig = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryServerClientConfig").getValue();
+				String sDirectoryServerClientConfig = this.getKernelObject().getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","DirectoryServerClientConfig").getValue();
 				if(StringZZZ.isEmpty(sDirectoryServerClientConfig)) break main;
 				
-				String sDirectoryConfig = this.readDirectoryConfigPath();
+				
+				
+				IMainOVPN objMain = this.getMainObject();
+				if(objMain==null) {
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PROPERTY_MISSING + " unable to get MainObject '", iERROR_PROPERTY_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+				
+				ConfigChooserOVPN objConfigChooser = objMain.getConfigChooserObject();
+				if(objConfigChooser==null) {
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PROPERTY_MISSING + " unable to get ConfigChooserObject '", iERROR_PROPERTY_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}												
+				String sDirectoryConfig = objConfigChooser.readDirectoryConfigPath();
 				sReturn = FileEasyZZZ.joinFilePathName(sDirectoryConfig, sDirectoryServerClientConfig); 						
 			}//End main
 			return sReturn;
@@ -314,6 +302,44 @@ ClientConfigHostname=HANNIBALDEV04VM
 			}//End main
 			return objReturn;		
 		}
+		
+		//+++++++++++++++++++++++++++++++++++++++++++++++++++
+		//### noch nicht im Interface
+		public String computeServerClientConfigReadmePath() throws ExceptionZZZ {
+			String sReturn = null;
+			main:{
+				String sReadmeName = this.computeServerClientConfigReadmeName();
+				if(StringZZZ.isEmpty(sReadmeName))break main;
+				
+				File objReadmeDirectory = this.computeServerClientConfigReadmeDirectory();				
+				sReturn = FileEasyZZZ.joinFilePathName(objReadmeDirectory, sReadmeName);
+			}
+			return sReturn;
+		}
+		public String computeServerClientConfigReadmeName() throws ExceptionZZZ {
+			String sReturn = null;
+			main:{			
+				sReturn = "readme" + this.getKernelObject().getApplicationKey() + ".txt";
+			}
+			return sReturn;
+		}
+		public File computeServerClientConfigReadmeDirectory() throws ExceptionZZZ {
+			return this.getDirectoryServerClientConfig();
+		}
+		
+		public ArrayList<String> computeReadmeLines(File fileConfigTemplateReadme) throws ExceptionZZZ {		
+			ArrayList<String>listasReturn=new ArrayList<String>();
+			main:{			
+			IConfigMapper4ReadmeOVPN objMapperReadme = this.getConfigMapperObject(); 
+				HashMapIterableKeyZZZ<String, String>hmReadmeLines = objMapperReadme.readTaskHashMap();								
+								
+				for(String sKey : hmReadmeLines) {
+					String sLine = hmReadmeLines.getValue(sKey);
+					listasReturn.add(sLine);
+				}				
+			}
+			return listasReturn;
+		}	
 	
 	
 	
@@ -328,19 +354,27 @@ ClientConfigHostname=HANNIBALDEV04VM
 	
 	
 
-	public IConfigMapper4ReadmeOVPN createConfigMapperObject() {
+	public IConfigMapper4ReadmeOVPN createConfigMapperObject() throws ExceptionZZZ {
 		IConfigMapper4ReadmeOVPN objReturn = null;
 		main:{
-			File fileConfigTemplateReadme = this.getFileTemplateReadme();			
+			File fileConfigTemplateReadme = this.getFileServerClientConfigReadmeTemplate();			
 			objReturn = new ServerConfigMapper4ReadmeOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateReadme);
 		}//end main:
 		return objReturn;		
 	}
 
-	@Override
-	public IConfigMapper4ReadmeOVPN getConfigMapperObject() {
-		// TODO Auto-generated method stub
-		return null;
+	public IConfigMapper4ReadmeOVPN getConfigMapperObject() throws ExceptionZZZ {
+		IConfigMapper4ReadmeOVPN objReturn = null;
+		main:{		
+		//1. Nachsehen, ob das Objekt als private gesetzt ist
+		if(this.objConfigMapper==null) {
+			//2. Falls nein, erzeugen.
+			this.objConfigMapper = this.createConfigMapperObject();
+		}
+		
+		objReturn = this.objConfigMapper;
+		}//end main:
+		return objReturn;
 	}
 
 	@Override

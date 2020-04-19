@@ -11,7 +11,7 @@ import org.jdesktop.jdic.filetypes.AssociationService;
 import use.openvpn.client.FileFilterConfigBatchTemplateOVPN;
 import use.openvpn.client.FileFilterConfigOvpnTemplateOVPN;
 import use.openvpn.client.FileFilterConfigOvpnUsedOVPN;
-import use.openvpn.server.FileFilterReadmeServerClientConfigTemplateOVPN;
+import use.openvpn.server.FileFilterServerClientConfigReadmeTemplateOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
