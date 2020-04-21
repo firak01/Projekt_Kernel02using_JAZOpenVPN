@@ -5,15 +5,15 @@ import java.io.FilenameFilter;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.file.AbstractOVPNFileFilterZZZ;
+import basic.zBasic.util.file.AbstractFileFilterZZZ;
 import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterMiddleZZZ;
 import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
-public class FileFilterServerClientConfigReadmeTemplateOVPN extends AbstractOVPNFileFilterZZZ{
-	public static String sPREFIX="template_";
+public class FileFilterServerClientConfigReadmeTemplateOVPN extends AbstractFileFilterZZZ{
+	public static String sPREFIX="readme_";
 	public static String sMIDDLE="_directory_";
 	public static String sSUFFIX="_clientconfig";
 	public static String sENDING="txt";		

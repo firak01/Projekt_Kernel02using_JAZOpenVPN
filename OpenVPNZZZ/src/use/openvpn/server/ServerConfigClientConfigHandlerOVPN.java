@@ -32,10 +32,10 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
 
-public class ServerConfigClientConfigHandlerOVPN extends KernelUseObjectZZZ implements IMainUserOVPN, IConfigMapper4ReadmeUserOVPN{	
+public class ServerConfigClientConfigHandlerOVPN extends KernelUseObjectZZZ implements IMainUserOVPN{	
 	
 	private IMainOVPN objMain=null;
-	private IConfigMapper4ReadmeOVPN objConfigMapper=null;
+	
 	
 	private File fileServerConfigClientReadmeTemplate = null;
 	private File fileServerConfigClientTemplate = null;
@@ -126,18 +126,16 @@ ClientConfigHostname=HANNIBALDEV04VM
 														
 				//1c. Hole den Dateinamen der ReadmeDatei.
 				String sReadmePath = this.computeServerClientConfigReadmePath();
-						
-				//1d. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)				
-				FileTextWriterZZZ objReadme = new FileTextWriterZZZ(sReadmePath);	 					
-				ArrayList<String> listaLineReadme = this.computeReadmeLines(objFileTemplateReadme);
-				for(String sLine : listaLineReadme){
-					objReadme.writeLine(sLine);
-				}
 				
+				//1d. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)
+				//TODO GOON: Wenn man das Main Objekt übergibt... sollte dann nicht auch die Berechnung des Dateipfads, etc. im Creator stattfinden???
+				//TODO GOON: Wenn man die Berechnung des Dateipfads macht, dann kann man ja ggfs. auch das Löschen/Hinzufügen des Verzeichnisses dahin auslagern?
+				FileCreatorReadmeOVPN objReadmeCreator = new FileCreatorReadmeOVPN(this.getKernelObject(), this.getMainObject(), objFileTemplateReadme, sReadmePath);
+				objReadmeCreator.createFile();												
 												
 				//#####################################
 				//+++ Erstelle mehrerer Konfigurationsdateien in dem neuen Verzeichnis			
-				
+				TODOGOON;
 				//2b. Das Template für die ServerClientConfig Dateien holen
 				//Merke: Das wird nun per FileFilter gemacht. Alternativ dazu direktes Auslesen über einen Ini-Wert.
 				//String sFileTemplate = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
@@ -151,19 +149,14 @@ ClientConfigHostname=HANNIBALDEV04VM
 					String sClientConfigPath = this.computeServerClientConfigPath(sClientConfig);
 					
 					//1d. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)				
-					FileTextWriterZZZ objClientConfig = new FileTextWriterZZZ(sClientConfigPath);	 				
-					ArrayList<String> listaLineClientConfig = this.computeClientConfigLines(objFileTemplateClientConfig);
-					for(String sLine : listaLineClientConfig){
-						objReadme.writeLine(sLine);
-					}
+//					FileTextWriterZZZ objClientConfig = new FileTextWriterZZZ(sClientConfigPath);	 				
+//					ArrayList<String> listaLineClientConfig = this.computeClientConfigLines(objFileTemplateClientConfig);
+//					for(String sLine : listaLineClientConfig){
+//						objReadme.writeLine(sLine);
+//					}
 				}
 				
 
-				
-				TODOGOON;
-				
-				
-				
 				//Die einzelnen Dateien erstellen - basierend auf einem Template.
 				//5. In einer Schleife die Strings durchgehen und Dateien erstellen. Mapping Vorgehen.
 				//TODO Nun einen Mapper nutzen, um die Dateien zu befüllen.
@@ -349,20 +342,7 @@ ClientConfigHostname=HANNIBALDEV04VM
 			return this.getDirectoryServerClientConfig();
 		}
 		
-		public ArrayList<String> computeReadmeLines(File fileConfigTemplateReadme) throws ExceptionZZZ {		
-			ArrayList<String>listasReturn=new ArrayList<String>();
-			main:{			
-			IConfigMapper4ReadmeOVPN objMapperReadme = this.getConfigMapperObject(); 
-				HashMapIterableKeyZZZ<String, String>hmReadmeLines = objMapperReadme.readTaskHashMap();								
-								
-				for(String sKey : hmReadmeLines) {
-					String sLine = hmReadmeLines.getValue(sKey);
-					listasReturn.add(sLine);
-				}				
-			}
-			return listasReturn;
-		}	
-		
+					
 		//+++++++++++++++++++++++++++++++++++++
 		public File getFileServerClientConfigTemplate() throws ExceptionZZZ {
 			File objReturn = null;
@@ -432,19 +412,7 @@ ClientConfigHostname=HANNIBALDEV04VM
 		}
 		
 		
-		public ArrayList<String> computeClientConfigLines(File fileConfigTemplateClientConfig) throws ExceptionZZZ {		
-			ArrayList<String>listasReturn=new ArrayList<String>();
-			main:{			
-			IConfigMapper4ServerClientConfigOVPN objMapperReadme = this.getConfigMapperObject(); 
-				HashMapIterableKeyZZZ<String, String>hmReadmeLines = objMapperReadme.readTaskHashMap();								
-								
-				for(String sKey : hmReadmeLines) {
-					String sLine = hmReadmeLines.getValue(sKey);
-					listasReturn.add(sLine);
-				}				
-			}
-			return listasReturn;
-		}
+		
 	
 	
 	//###### Getter / Setter
@@ -455,41 +423,6 @@ ClientConfigHostname=HANNIBALDEV04VM
 		this.setMainObject((IMainOVPN) objServer);
 	}
 	
-	
-	
-
-	public IConfigMapper4ReadmeOVPN createConfigMapperObject() throws ExceptionZZZ {
-		IConfigMapper4ReadmeOVPN objReturn = null;
-		main:{
-			File fileConfigTemplateReadme = this.getFileServerClientConfigReadmeTemplate();			
-			objReturn = new ServerConfigMapper4ReadmeOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateReadme);
-		}//end main:
-		return objReturn;		
-	}
-
-	public IConfigMapper4ReadmeOVPN getConfigMapperReadmeObject() throws ExceptionZZZ {
-		IConfigMapper4ReadmeOVPN objReturn = null;
-		main:{		
-		//1. Nachsehen, ob das Objekt als private gesetzt ist
-		if(this.objConfigMapperReadme==null) {
-			//2. Falls nein, erzeugen.
-			this.objConfigMapperReadme = this.createConfigMapperObject();
-		}
-		
-		objReturn = this.objConfigMapperReadme;
-		}//end main:
-		return objReturn;
-	}
-
-	@Override
-	public void setConfigMapperObject(IConfigMapper4ReadmeOVPN objConfigMapperReadme) {
-		// TODO Auto-generated method stub
-		
-		TODO GOON; //Die Readme und die Template - Behandlung in jeweils ein eingen "Handler" Klasse.... Die dann nur 1 Mapper Objekt hat!
-		
-	}
-
-	//###### GETTER  / SETTER
 	public IMainOVPN getMainObject() {
 		return this.objMain;
 	}
