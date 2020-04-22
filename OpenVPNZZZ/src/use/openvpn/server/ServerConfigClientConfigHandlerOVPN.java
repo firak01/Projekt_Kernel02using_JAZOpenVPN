@@ -162,7 +162,7 @@ ClientConfigHostname=HANNIBALDEV04VM
 				//Neue Klasse ServerConfigMapper4ClientConfigOVPN
 
 			}//end if(bUseClientConfig && bUseDirectoryClientConfig) {
-		
+			bREturn = true;
 		}
 		return bReturn;
 	}
