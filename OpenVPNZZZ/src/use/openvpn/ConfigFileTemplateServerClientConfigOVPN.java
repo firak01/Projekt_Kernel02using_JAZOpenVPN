@@ -25,20 +25,20 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class ConfigFileTemplateReadmeOVPN extends KernelUseObjectZZZ{
-	public static String sFILE_TEMPLATE_PREFIX="readme_";
+public class ConfigFileTemplateServerClientConfigOVPN extends KernelUseObjectZZZ{
+	public static String sFILE_TEMPLATE_PREFIX="template_";
 	public static String sFILE_TEMPLATE_SUFFIX="_server_directory_clientconfig";
-	private File fileTemplateReadme=null;
+	private File fileTemplate=null;
 
 	private HashtableIndexedZZZ<Integer, String> htLines = null;
 		
-	public ConfigFileTemplateReadmeOVPN(IKernelZZZ objKernel, File fileTemplateReadme, String[] saFlagControl) throws ExceptionZZZ{
+	public ConfigFileTemplateServerClientConfigOVPN(IKernelZZZ objKernel, File fileTemplate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigFileTemplateReadmeNew_(fileTemplateReadme, saFlagControl);		
+		ConfigFileTemplateServerClientConfigNew_(fileTemplate, saFlagControl);		
 	}
 
 	
-	private void ConfigFileTemplateReadmeNew_(File fileTemplateReadme, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigFileTemplateServerClientConfigNew_(File fileTemplate, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 			
 					
@@ -58,11 +58,11 @@ public class ConfigFileTemplateReadmeOVPN extends KernelUseObjectZZZ{
 				}
 				
 				
-				if(fileTemplateReadme==null){
-					ExceptionZZZ ez = new ExceptionZZZ("FileTemplateReadme", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				if(fileTemplate==null){
+					ExceptionZZZ ez = new ExceptionZZZ("FileTemplate", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}else{
-					this.setFileConfigTemplateReadme(fileTemplateReadme);
+					this.setFileConfigTemplateServerClientConfig(fileTemplate);
 				}
 				
 			}//End check
@@ -75,20 +75,20 @@ public class ConfigFileTemplateReadmeOVPN extends KernelUseObjectZZZ{
 	public int refreshLines()throws ExceptionZZZ{
 		return this.refreshLines(null);
 	}
-	public int refreshLines(File fileConfigTemplateReadmeIn) throws ExceptionZZZ {
+	public int refreshLines(File fileConfigTemplateIn) throws ExceptionZZZ {
 		int iReturn=0;
 		main:{			
-			if(fileConfigTemplateReadmeIn!=null) {
-				this.setFileConfigTemplateReadme(fileConfigTemplateReadmeIn);
+			if(fileConfigTemplateIn!=null) {
+				this.setFileConfigTemplateServerClientConfig(fileConfigTemplateIn);
 			}
-			File fileConfigTemplateReadme = this.getFileConfigTemplateReadme();			
-			if(fileConfigTemplateReadme==null){
-				ExceptionZZZ ez = new ExceptionZZZ("FileTemplateReadme", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			File fileConfigTemplate = this.getFileConfigTemplateServerClientConfig();			
+			if(fileConfigTemplate==null){
+				ExceptionZZZ ez = new ExceptionZZZ("FileTemplate", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
 			
 			//Zeilen der Datei einlesen
-			TxtReaderZZZ objReader = new TxtReaderZZZ(fileConfigTemplateReadme);
+			TxtReaderZZZ objReader = new TxtReaderZZZ(fileConfigTemplate);
 			Vector<String> vecLine = objReader.readVectorStringByByte(0);
 			
 			//Alle Zeilen nun mit einer Nummer versehen und der HashTable "indiziert" übergeben.
@@ -106,13 +106,13 @@ public class ConfigFileTemplateReadmeOVPN extends KernelUseObjectZZZ{
 		boolean bReturn = false;
 		main:{
 			//Template Dateinamen fangen mit dem vorangesetzten String an.
-			if(sFilename.toLowerCase().startsWith(ConfigFileTemplateReadmeOVPN.sFILE_TEMPLATE_PREFIX)) bReturn = true;
+			if(sFilename.toLowerCase().startsWith(ConfigFileTemplateServerClientConfigOVPN.sFILE_TEMPLATE_PREFIX)) bReturn = true;
 			if(bReturn = false) break main;
 			
 			//Template Batch Dateinamen enden mit einem Suffix (ggfs. auch noch die Endung definert)
-			if(sFilename.toLowerCase().endsWith(ConfigFileTemplateReadmeOVPN.sFILE_TEMPLATE_SUFFIX)) bReturn = true;
+			if(sFilename.toLowerCase().endsWith(ConfigFileTemplateServerClientConfigOVPN.sFILE_TEMPLATE_SUFFIX)) bReturn = true;
 			if(bReturn = false) {
-				if(sFilename.toLowerCase().endsWith(ConfigFileTemplateReadmeOVPN.sFILE_TEMPLATE_SUFFIX+".txt")) bReturn = true;
+				if(sFilename.toLowerCase().endsWith(ConfigFileTemplateServerClientConfigOVPN.sFILE_TEMPLATE_SUFFIX+".txt")) bReturn = true;
 			}
 		}
 		return bReturn;
@@ -121,11 +121,11 @@ public class ConfigFileTemplateReadmeOVPN extends KernelUseObjectZZZ{
 	
 	
 	//#### GETTER / SETTER
-	public void setFileConfigTemplateReadme(File fileTemplateReadme){
-		this.fileTemplateReadme = fileTemplateReadme;
+	public void setFileConfigTemplateServerClientConfig(File fileTemplate){
+		this.fileTemplate = fileTemplate;
 	}
-	public File getFileConfigTemplateReadme(){
-		return this.fileTemplateReadme;
+	public File getFileConfigTemplateServerClientConfig(){
+		return this.fileTemplate;
 	}
 	
 	public HashtableIndexedZZZ<Integer,String> getLines() throws ExceptionZZZ{

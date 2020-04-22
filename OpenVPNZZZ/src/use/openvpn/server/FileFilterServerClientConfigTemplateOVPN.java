@@ -13,7 +13,7 @@ import basic.zBasic.util.file.FileFilterSuffixZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
 public class FileFilterServerClientConfigTemplateOVPN extends AbstractFileFilterZZZ{
-	public static String sPREFIX="readme_";
+	public static String sPREFIX="template_";
 	public static String sMIDDLE="_directory_";
 	public static String sSUFFIX="_clientconfig";
 	public static String sENDING="txt";		

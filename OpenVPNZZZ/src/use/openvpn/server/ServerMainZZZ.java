@@ -170,7 +170,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			
 			//#############
 			//Auslesen der "erlaubten" Clients und Datei dafür in einem bestimmten Verzeichnis anlegen.
-			//TODO GOON Das in einer eigenen Klasse auslagern ServerConfigCientAllowedOVPN			
+			//TODO GOON Klasse umbenennen in: ServerConfigOnServerAllowedClientHandlerOVPN			
 			//Das wird alles in einem Handler gekapselt, den Namen (auch der Methode noch optimieren)
 			ServerConfigClientConfigHandlerOVPN objClientConfigHandler = new ServerConfigClientConfigHandlerOVPN(this.getKernelObject(), this, null);
 			boolean bSuccess = objClientConfigHandler.execute();

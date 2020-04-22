@@ -22,14 +22,17 @@ import basic.zKernel.IKernelZZZ;
 
 import use.openvpn.AbstractConfigMapper4BatchOVPN;
 import use.openvpn.AbstractConfigMapper4ReadmeOVPN;
+import use.openvpn.AbstractConfigMapper4ServerClientConfigOVPN;
 import use.openvpn.AbstractConfigMapper4TemplateOVPN;
 import use.openvpn.ConfigFileTemplateBatchOVPN;
 import use.openvpn.ConfigFileTemplateReadmeOVPN;
+import use.openvpn.ConfigFileTemplateServerClientConfigOVPN;
+import use.openvpn.IApplicationOVPN;
 import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainZZZ;
 
-public class ServerConfigMapper4ReadmeOVPN extends AbstractConfigMapper4ReadmeOVPN{	
-	public ServerConfigMapper4ReadmeOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateReadme) {
+public class ServerConfigMapper4ServerClientConfigOVPN extends AbstractConfigMapper4ServerClientConfigOVPN{	
+	public ServerConfigMapper4ServerClientConfigOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateReadme) {
 		super(objKernel, objMain, fileTemplateReadme);		
 	}
 
@@ -45,11 +48,11 @@ public class ServerConfigMapper4ReadmeOVPN extends AbstractConfigMapper4ReadmeOV
 		    
 		
 			//Hole das Template für die Batch-Datei
-			File fileTemplateReadme = this.getFileTemplateReadmeUsed();
+			File fileTemplateServerClientConfig = this.getFileTemplateServerClientConfigUsed();
 			
 			//Lies das Template ein, jede Zeile 1 Eintrag in der HashMap (ist damit anders als beim OVPN-Template, bei dem alle Zeile gegen einen RegEx-Ausdruck geprüft werden.)
 			IKernelZZZ objKernel = this.getKernelObject();		
-			ConfigFileTemplateReadmeOVPN objBatchReader = new ConfigFileTemplateReadmeOVPN(objKernel, fileTemplateReadme, null);
+			ConfigFileTemplateServerClientConfigOVPN objBatchReader = new ConfigFileTemplateServerClientConfigOVPN(objKernel, fileTemplateServerClientConfig, null);
 			hmReturn = objBatchReader.getLinesAsHashMap_StringString();
 		}//END main
 		return hmReturn;
@@ -77,9 +80,16 @@ public class ServerConfigMapper4ReadmeOVPN extends AbstractConfigMapper4ReadmeOV
 				//Falls überhaupt nix zu ersetzen ist, die ganze Zeile übernehmen 
 				stemp = sLine;
 				
-				//Merke, die Variablen müssen noch definiert werden. Aber dafür gibt es z.B. das Main-Objekt.
-				//stemp = StringZZZ.replace(stemp, "%exeovpn%", sFileExeOvpn);				
-				//stemp = StringZZZ.replace(stemp, "%templateovpn%", sDirectoryTemplateOvpn + File.separator + sFileConfigOvpn);											
+				//Die verwendeten Variablen müssen aber noch errechnet werden.
+				//z.B. für die Zeile: ifconfig-push %VPN-IP_CLIENT% %VPN-IP_SERVER%
+				IApplicationOVPN objApplication = this.getMainObject().getApplicationObject();
+				
+				String sVpnIpClient = objApplication.getVpnIpRemote(); //"vpnipClient woher nehmen";//mainObject ist vorhanden!!!
+				String sVpnIpServer = objApplication.getVpnIpLocal(); //"vpnipServer woher nehmen";
+				
+				stemp = StringZZZ.replace(stemp, "%VPN-IP_CLIENT%", sVpnIpClient);				
+				stemp = StringZZZ.replace(stemp, "%VPN-IP_SERVER%", sVpnIpServer);
+												
 				hmReturn.put(sKey, stemp);
 			}
 			

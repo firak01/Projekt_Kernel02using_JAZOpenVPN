@@ -128,18 +128,20 @@ ClientConfigHostname=HANNIBALDEV04VM
 				String sReadmePath = this.computeServerClientConfigReadmePath();
 				
 				//1d. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)
-				//TODO GOON: Wenn man das Main Objekt übergibt... sollte dann nicht auch die Berechnung des Dateipfads, etc. im Creator stattfinden???
-				//TODO GOON: Wenn man die Berechnung des Dateipfads macht, dann kann man ja ggfs. auch das Löschen/Hinzufügen des Verzeichnisses dahin auslagern?
+				//Wenn man das Main Objekt übergibt... sollte dann nicht auch die Berechnung des Dateipfads, etc. im Creator stattfinden???
+				//NEIN: Die Berechnung des Dateipfads, etc. muss eh ausserhalb stattfinden, um den Ordner ! für mehrere Dateitypen ! zu löschen und wieder zu erstellen.
+				//Wenn man die Berechnung des Dateipfads macht, dann kann man ja ggfs. auch das Löschen/Hinzufügen des Verzeichnisses dahin auslagern?
+				//NEIN: s.o. , es sind halt mehrere Dateitypen 
 				FileCreatorReadmeOVPN objReadmeCreator = new FileCreatorReadmeOVPN(this.getKernelObject(), this.getMainObject(), objFileTemplateReadme, sReadmePath);
 				objReadmeCreator.createFile();												
 												
 				//#####################################
 				//+++ Erstelle mehrerer Konfigurationsdateien in dem neuen Verzeichnis			
-				TODOGOON;
+
 				//2b. Das Template für die ServerClientConfig Dateien holen
 				//Merke: Das wird nun per FileFilter gemacht. Alternativ dazu direktes Auslesen über einen Ini-Wert.
 				//String sFileTemplate = objKernel.getParameterByProgramAlias("OVPN","ProgConfigServerClientConfig","FileNameTemplate").getValue();
-				File objFileTemplateClientConfig = this.getFileServerClientConfigTemplate();
+				File objFileTemplateServerClientConfig = this.getFileServerClientConfigTemplate();
 				
 				//2c. Hole den Dateiname der ServerClientConfigDatei.
 				//Dieser ist nicht beliebig. Und entspricht dem konfiguriertem CN-Namen. Auszug aus der ini-Datei:
@@ -148,12 +150,9 @@ ClientConfigHostname=HANNIBALDEV04VM
 				for(String sClientConfig : saClientConfig) {
 					String sClientConfigPath = this.computeServerClientConfigPath(sClientConfig);
 					
-					//1d. Readme File neu erstellen (wg. ggfs. anderen/neuen Code)				
-//					FileTextWriterZZZ objClientConfig = new FileTextWriterZZZ(sClientConfigPath);	 				
-//					ArrayList<String> listaLineClientConfig = this.computeClientConfigLines(objFileTemplateClientConfig);
-//					for(String sLine : listaLineClientConfig){
-//						objReadme.writeLine(sLine);
-//					}
+					//1d. ServerConfig File neu erstellen (wg. ggfs. anderen/neuen Code)	
+					FileCreatorServerClientConfigOVPN objClientConfigCreator = new FileCreatorServerClientConfigOVPN(this.getKernelObject(), this.getMainObject(), objFileTemplateServerClientConfig, sClientConfigPath);
+					objClientConfigCreator.createFile();			
 				}
 				
 

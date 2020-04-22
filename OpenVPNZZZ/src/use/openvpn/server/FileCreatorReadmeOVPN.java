@@ -83,9 +83,9 @@ public class FileCreatorReadmeOVPN extends AbstractFileCreatorZZZ implements ICo
 	public IConfigMapper4ReadmeOVPN createConfigMapperObject() throws ExceptionZZZ {
 		IConfigMapper4ReadmeOVPN objReturn = null;
 		main:{
-			File fileConfigTemplateReadme = this.getTemplateFile();	
+			File fileConfigTemplate = this.getTemplateFile();	
 			IMainOVPN objMain = this.getMainObject();
-			objReturn = new ServerConfigMapper4ReadmeOVPN(this.getKernelObject(), objMain, fileConfigTemplateReadme);
+			objReturn = new ServerConfigMapper4ReadmeOVPN(this.getKernelObject(), objMain, fileConfigTemplate);
 		}//end main:
 		return objReturn;		
 	}

@@ -7,20 +7,22 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
 
 public abstract class AbstractConfigMapper4ReadmeOVPN  extends AbstractConfigMapperOVPN implements IConfigMapper4ReadmeOVPN{
-	private File fileTemplateUsedReadme = null;
+	private File fileTemplateUsed = null;
 	
-	public AbstractConfigMapper4ReadmeOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateReadme) {
+	public AbstractConfigMapper4ReadmeOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplate) {
 		super(objKernel, objMain);
-		this.setFileTemplateReadmeUsed(fileTemplateReadme);
+		this.setFileTemplateReadmeUsed(fileTemplate);
 	}
+	
+
 	
 	@Override
 	public File getFileTemplateReadmeUsed() {
-		return this.fileTemplateUsedReadme;
+		return this.fileTemplateUsed;
 	}
 	
 	@Override
-	public void setFileTemplateReadmeUsed(File fileTemplateReadme) {
-		this.fileTemplateUsedReadme = fileTemplateReadme;
+	public void setFileTemplateReadmeUsed(File fileTemplate) {
+		this.fileTemplateUsed = fileTemplate;
 	}
 }
