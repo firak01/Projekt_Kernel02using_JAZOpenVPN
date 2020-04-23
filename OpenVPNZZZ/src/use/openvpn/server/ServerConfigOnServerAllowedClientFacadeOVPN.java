@@ -32,7 +32,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
 
-public class ServerConfigClientConfigHandlerOVPN extends KernelUseObjectZZZ implements IMainUserOVPN{	
+public class ServerConfigOnServerAllowedClientFacadeOVPN extends KernelUseObjectZZZ implements IMainUserOVPN{	
 	
 	private IMainOVPN objMain=null;
 	
@@ -40,15 +40,15 @@ public class ServerConfigClientConfigHandlerOVPN extends KernelUseObjectZZZ impl
 	private File fileServerConfigClientReadmeTemplate = null;
 	private File fileServerConfigClientTemplate = null;
 	
-	public ServerConfigClientConfigHandlerOVPN() {
+	public ServerConfigOnServerAllowedClientFacadeOVPN() {
 		super();
 	}
-	public ServerConfigClientConfigHandlerOVPN(IKernelZZZ objKernel, IMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
+	public ServerConfigOnServerAllowedClientFacadeOVPN(IKernelZZZ objKernel, IMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, saFlagControl);
-		ServerConfigClientConfigHandler_(objMain, saFlagControl);
+		ServerConfigOnServerAllowedClientFacade_(objMain, saFlagControl);
 	}
 	
-	private boolean ServerConfigClientConfigHandler_(IMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ {
+	private boolean ServerConfigOnServerAllowedClientFacade_(IMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(objMain==null) {
