@@ -1,5 +1,5 @@
 # FGL: Template für die spezielle Konfiguration eines Clients. 
-# Der fertige Dateiname entspricht dem CN-Namen des Clients (ohne Dateiendung)
+# Der fertige Dateiname entspricht dem CN-Namen des Clients (ohne Dateiendung), z.B. HANNIBALDEV05VM_CLIENT
 # Abgelegt werden die Dateien in dem Verzeichnis gemäß OVPN-Konfiguration: client-config-dir
 # https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage
 # Konfiguation aus Sicht des Clients: lokal remote.
