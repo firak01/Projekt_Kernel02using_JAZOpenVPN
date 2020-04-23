@@ -2,5 +2,5 @@
 # Der fertige Dateiname entspricht dem CN-Namen des Clients (ohne Dateiendung)
 # Abgelegt werden die Dateien in dem Verzeichnis gemäß OVPN-Konfiguration: client-config-dir
 # https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage
-#Konfiguation aus Sicht des Clients: lokal remote.
+# Konfiguation aus Sicht des Clients: lokal remote.
 ifconfig-push %VPN-IP_CLIENT% %VPN-IP_SERVER%
