@@ -380,6 +380,10 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				}
 
 				objReturn = new File(sDirConfig);
+				if(objReturn==null){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Path '" + sDirConfig + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
 				if(objReturn.exists()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirConfig + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
@@ -404,11 +408,15 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 		main:{			
 				String sDirTemplate = this.readDirectoryTemplatePath();
 				if(sDirTemplate==null){
-					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive template directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive path for template directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
 
 				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate);
+				if(objReturn==null){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirTemplate + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
 				if(objReturn.exists()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + objReturn.getAbsolutePath() + "', does not exist (for '" + sDirTemplate + "').", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
