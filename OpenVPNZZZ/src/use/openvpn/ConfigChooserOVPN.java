@@ -154,6 +154,9 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				if(objDirectory.exists()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Directory '" + objDirectory.getPath() + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
+				}else if(FileEasyZZZ.isJar(objDirectory)) {
+					String sLog = "Directory for templates is in jar: '" + objDirectory.getAbsolutePath() + "'";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 				}else if(objDirectory.isDirectory()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + objDirectory.getPath() + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
@@ -161,10 +164,18 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			}//End check
 			
 			//##############################################################
-//			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
+//			//Alle Dateien auflisten, dazu aber einen FileFilter verwenden
+			//A) Normal
+			if(!FileEasyZZZ.isJar(objDirectory)) {
 			FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
 			objaReturn = objDirectory.listFiles(objFilterConfig);
-			
+			}else {
+			//B) IN JAR Datei
+			//https://www.javaworld.com/article/2077586/java-tip-83--use-filters-to-access-resources-in-java-archives.html
+			//TODO GOON
+				TODOGOON
+				
+			}
 		}//End main
 		return objaReturn;
 	}
@@ -412,7 +423,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 					throw ez;
 				}
 
-				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate);
+				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate,false); //true=ggfs. in einer Jar-Datei suchen.
 				if(objReturn==null){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirTemplate + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
@@ -420,6 +431,9 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				if(objReturn.exists()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + objReturn.getAbsolutePath() + "', does not exist (for '" + sDirTemplate + "').", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
+				}else if(FileEasyZZZ.isJar(objReturn)) {
+					String sLog = "Directory for '" + sDirTemplate + "'is in jar: '" + objReturn.getAbsolutePath() + "'";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 				}else if(objReturn.isDirectory()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The path '" + objReturn.getAbsolutePath() + "'(for '" + sDirTemplate + "'),  was expected to be a directory, not e.g. a file.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
