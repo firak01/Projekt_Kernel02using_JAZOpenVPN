@@ -2,21 +2,34 @@ package use.openvpn;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
 import org.jdesktop.jdic.filetypes.AssociationService;
 
 import use.openvpn.client.FileFilterConfigBatchTemplateOVPN;
+import use.openvpn.client.FileFilterConfigOvpnTemplateInJarOVPN;
 import use.openvpn.client.FileFilterConfigOvpnTemplateOVPN;
 import use.openvpn.client.FileFilterConfigOvpnUsedOVPN;
 import use.openvpn.server.FileFilterServerClientConfigReadmeTemplateOVPN;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
+import basic.zBasic.util.file.jar.JarInfo;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
@@ -166,17 +179,68 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			//##############################################################
 //			//Alle Dateien auflisten, dazu aber einen FileFilter verwenden
 			//A) Normal
-			if(!FileEasyZZZ.isJar(objDirectory)) {
-			FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
-			objaReturn = objDirectory.listFiles(objFilterConfig);
-			}else {
-			//B) IN JAR Datei
-			//https://www.javaworld.com/article/2077586/java-tip-83--use-filters-to-access-resources-in-java-archives.html
-			//TODO GOON
-				TODOGOON
+			
+//ZUM DEBUGGEN DES JAR INHALTS AUSKOMMENTIERT
+//			if(!FileEasyZZZ.isJar(objDirectory)) {
+//				FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
+//				objaReturn = objDirectory.listFiles(objFilterConfig);
+//			}else {
+				//B) IN JAR Datei
+				//https://www.javaworld.com/article/2077586/java-tip-83--use-filters-to-access-resources-in-java-archives.html
+				//String archiveName = objDirectory.getAbsolutePath();
+			
+				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfig = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());				
+				File objJarAsDirectoryMock = new File("C:\\1fgl\\client\\OVPN\\OpenVPNZZZ_V20200618.jar");
+				String archiveName = objJarAsDirectoryMock.getAbsolutePath();
+								
+				//TODO: Einschränken der Hashtable auf ein Verzeichnis
+				//NEUE KLASSE JarDirectoryInfoZZZ oder JarInfo um ein Array der zu holenden Verzeichnisse erweitern.
+				//            a) ohne Unterverzeichnisse
+				//            b) mit Unterverzeichnisse				
+				//Aus der ht die des gesuchten Verzeichnisses holen.
+				String sDirTemplate = this.readDirectoryTemplatePath();
+				//TODO: Falls noch nicht vorhanden, neu erstellen. Falls vorhanden, leer machen.
 				
-			}
-		}//End main
+				
+				JarInfo objJarInfo = new JarInfo( archiveName, objFilterConfig );
+				
+				//Hashtable in der Form ht(zipEntryName)=zipEntryObjekt.
+				Hashtable<String,ZipEntry> ht = objJarInfo.zipEntryTable();
+				Set<String> setEntryName = ht.keySet();
+				Iterator<String> itEntryName = setEntryName.iterator();
+				ArrayList<File>objaFileTemp = new ArrayList<File>();
+				try {
+					ZipFile zf = null;
+					while(itEntryName.hasNext()) {
+						String sKey = itEntryName.next();
+						ZipEntry zeTemp = (ZipEntry) ht.get(sKey);
+						
+						//Nun aus dem ZipEntry ein File Objekt machen (geht nur in einem anderen Verzeichnis, als Kopie)					
+							zf = objJarInfo.getZipFile();						
+							InputStream is = zf.getInputStream(zeTemp);
+							String sPath = "c:\\temp"+FileEasyZZZ.sDIRECTORY_SEPARATOR+sKey;
+							Files.copy(is, Paths.get(sPath));
+							File objFileTemp = new File(sPath);	
+							objaFileTemp.add(objFileTemp);
+					}
+					if(zf!=null) zf.close();
+					objaReturn = ArrayListZZZ.toFileArray(objaFileTemp);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+				
+				
+				
+				
+				
+				//Wie nun vom ht nach objaReturn ???
+				//objaReturn = objDirectory.listFiles(objFilterConfig);
+				//Es geht nur als temporäres Objekt, das man in ein temp-Verzeichnis ablegt.
+				
+				
+			//}
+		}//End main		 		
 		return objaReturn;
 	}
 	

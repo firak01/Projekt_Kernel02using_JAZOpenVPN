@@ -10,6 +10,7 @@ import basic.zBasic.util.file.FileFilterEndingZZZ;
 import basic.zBasic.util.file.FileFilterMiddleZZZ;
 import basic.zBasic.util.file.FileFilterPrefixZZZ;
 import basic.zBasic.util.file.FileFilterSuffixZZZ;
+import basic.zBasic.util.file.jar.AbstractFileFilterInJarZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
 public class FileFilterConfigOvpnTemplateOVPN extends AbstractFileFilterZZZ{
