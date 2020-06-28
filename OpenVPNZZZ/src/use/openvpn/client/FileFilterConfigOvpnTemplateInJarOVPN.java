@@ -14,6 +14,7 @@ import basic.zBasic.util.file.jar.AbstractFileFilterInJarZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
 public class FileFilterConfigOvpnTemplateInJarOVPN extends AbstractFileFilterInJarZZZ{
+	public static String sDIRECTORY_PATH="template";
 	public static String sPREFIX="template_";
 	public static String sMIDDLE="";
 	public static String sSUFFIX="";
@@ -36,11 +37,20 @@ public class FileFilterConfigOvpnTemplateInJarOVPN extends AbstractFileFilterInJ
 		OVPNFileFilterConfigOvpnTemplateNew_();
 	}
 	private void OVPNFileFilterConfigOvpnTemplateNew_() {
+		//Merke: Das Verzeichnis wird in einer "Nicht Jar Struktur nicht gebraucht"
 		this.setPrefix(ConfigFileTemplateOvpnOVPN.sFILE_TEMPLATE_PREFIX);
 		this.setMiddle(this.getOvpnContext());
 	}
 	
 	//##### GETTER / SETTER	
+	public void setDirectoryPath(String sDirectoyPath) {
+		if(StringZZZ.isEmpty(sDirectoyPath)) {
+			super.setDirectoryPath(FileFilterConfigOvpnTemplateInJarOVPN.sDIRECTORY_PATH);
+		}else {
+			super.setDirectoryPath(sDirectoyPath);
+		}
+	}
+	
 	public void setPrefix(String sPrefix) {
 		if(StringZZZ.isEmpty(sPrefix)) {
 			super.setPrefix(FileFilterConfigOvpnTemplateInJarOVPN.sPREFIX);

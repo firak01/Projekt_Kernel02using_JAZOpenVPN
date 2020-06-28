@@ -189,6 +189,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				//https://www.javaworld.com/article/2077586/java-tip-83--use-filters-to-access-resources-in-java-archives.html
 				//String archiveName = objDirectory.getAbsolutePath();
 			
+			
 				//TODO: Einschränken der Hashtable auf ein Verzeichnis
 				//NEUE KLASSE JarDirectoryInfoZZZ oder JarInfo um ein Array der zu holenden Verzeichnisse erweitern.
 				//            a) ohne Unterverzeichnisse
@@ -196,8 +197,8 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				//Aus der ht die des gesuchten Verzeichnisses holen.
 				String sDirTemplate = this.readDirectoryTemplatePath();
 			
-			
-				//TODO GGON: Das muss auf Dateien des Template Verzeichnis beschränkt sein.
+				TODOGOON;
+				//Das muss auf Dateien des Template Verzeichnis beschränkt sein.
 				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfig = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());				
 				File objJarAsDirectoryMock = new File("C:\\1fgl\\client\\OVPN\\OpenVPNZZZ_V20200618.jar");
 				String archiveName = objJarAsDirectoryMock.getAbsolutePath();
@@ -215,14 +216,14 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + "Keine Operation mit dem temporären Verzeichnis möglich '" + sDirTemplatePath + "'", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
-				TODOGOON
+				
 				JarInfo objJarInfo = new JarInfo( archiveName, objFilterConfig );
 				
 				//Hashtable in der Form ht(zipEntryName)=zipEntryObjekt.
 				Hashtable<String,ZipEntry> ht = objJarInfo.zipEntryTable();
 				Set<String> setEntryName = ht.keySet();
 				Iterator<String> itEntryName = setEntryName.iterator();
-				ArrayList<File>objaFileTemp = new ArrayList<File>();
+				ArrayList<File>objaFileTempInTemp = new ArrayList<File>();
 				try {
 					ZipFile zf = null;
 					while(itEntryName.hasNext()) {
@@ -234,11 +235,11 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 							InputStream is = zf.getInputStream(zeTemp);
 							String sPath = "c:\\temp"+FileEasyZZZ.sDIRECTORY_SEPARATOR+sKey;
 							Files.copy(is, Paths.get(sPath));
-							File objFileTemp = new File(sPath);	
-							objaFileTemp.add(objFileTemp);
+							File objFileTempInTemp = new File(sPath);	
+							objaFileTempInTemp.add(objFileTempInTemp);
 					}
 					if(zf!=null) zf.close();
-					objaReturn = ArrayListZZZ.toFileArray(objaFileTemp);
+					objaReturn = ArrayListZZZ.toFileArray(objaFileTempInTemp);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
