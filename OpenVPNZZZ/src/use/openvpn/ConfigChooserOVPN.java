@@ -189,19 +189,33 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				//https://www.javaworld.com/article/2077586/java-tip-83--use-filters-to-access-resources-in-java-archives.html
 				//String archiveName = objDirectory.getAbsolutePath();
 			
-				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfig = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());				
-				File objJarAsDirectoryMock = new File("C:\\1fgl\\client\\OVPN\\OpenVPNZZZ_V20200618.jar");
-				String archiveName = objJarAsDirectoryMock.getAbsolutePath();
-								
 				//TODO: Einschränken der Hashtable auf ein Verzeichnis
 				//NEUE KLASSE JarDirectoryInfoZZZ oder JarInfo um ein Array der zu holenden Verzeichnisse erweitern.
 				//            a) ohne Unterverzeichnisse
 				//            b) mit Unterverzeichnisse				
 				//Aus der ht die des gesuchten Verzeichnisses holen.
 				String sDirTemplate = this.readDirectoryTemplatePath();
-				//TODO: Falls noch nicht vorhanden, neu erstellen. Falls vorhanden, leer machen.
+			
+			
+				//TODO GGON: Das muss auf Dateien des Template Verzeichnis beschränkt sein.
+				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfig = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());				
+				File objJarAsDirectoryMock = new File("C:\\1fgl\\client\\OVPN\\OpenVPNZZZ_V20200618.jar");
+				String archiveName = objJarAsDirectoryMock.getAbsolutePath();
 				
-				
+				//Falls noch nicht vorhanden: Verzeichnis neu erstellen. Falls vorhanden, leer machen.
+				String sDirTemplatePath = "c:\\temp\\"+sDirTemplate;
+				File objFileTemp = new File(sDirTemplatePath);
+				boolean bSuccess = false;
+				if(!objFileTemp.exists()) {
+					bSuccess = FileEasyZZZ.createDirectory(sDirTemplatePath);
+				}else {
+					bSuccess = FileEasyZZZ.removeDirectoryContent(objFileTemp, true);
+				}
+				if(!bSuccess) {
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + "Keine Operation mit dem temporären Verzeichnis möglich '" + sDirTemplatePath + "'", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+				TODOGOON
 				JarInfo objJarInfo = new JarInfo( archiveName, objFilterConfig );
 				
 				//Hashtable in der Form ht(zipEntryName)=zipEntryObjekt.
