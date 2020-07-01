@@ -181,30 +181,30 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			//A) Normal
 			
 //ZUM DEBUGGEN DES JAR INHALTS AUSKOMMENTIERT
-//			if(!FileEasyZZZ.isJar(objDirectory)) {
-//				FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
-//				objaReturn = objDirectory.listFiles(objFilterConfig);
-//			}else {
+			if(!FileEasyZZZ.isJar(objDirectory)) {
+				FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
+				objaReturn = objDirectory.listFiles(objFilterConfig);
+			}else {
 				//B) IN JAR Datei
 				//https://www.javaworld.com/article/2077586/java-tip-83--use-filters-to-access-resources-in-java-archives.html
 				//String archiveName = objDirectory.getAbsolutePath();
 			
 			
-				//TODO: Einschränken der Hashtable auf ein Verzeichnis
+				//Einschränken der Hashtable auf ein Verzeichnis
 				//NEUE KLASSE JarDirectoryInfoZZZ oder JarInfo um ein Array der zu holenden Verzeichnisse erweitern.
 				//            a) ohne Unterverzeichnisse
 				//            b) mit Unterverzeichnisse				
 				//Aus der ht die des gesuchten Verzeichnisses holen.
 				String sDirTemplate = this.readDirectoryTemplatePath();
 			
-				TODOGOON;
+				//TODOGOON;
 				//Das muss auf Dateien des Template Verzeichnis beschränkt sein.
 				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfig = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());				
 				File objJarAsDirectoryMock = new File("C:\\1fgl\\client\\OVPN\\OpenVPNZZZ_V20200618.jar");
 				String archiveName = objJarAsDirectoryMock.getAbsolutePath();
 				
 				//Falls noch nicht vorhanden: Verzeichnis neu erstellen. Falls vorhanden, leer machen.
-				String sDirTemplatePath = "c:\\temp\\"+sDirTemplate;
+				String sDirTemplatePath = "c:\\temp"+ FileEasyZZZ.sDIRECTORY_SEPARATOR + this.getKernelObject().getApplicationKey()+ FileEasyZZZ.sDIRECTORY_SEPARATOR + sDirTemplate;
 				File objFileTemp = new File(sDirTemplatePath);
 				boolean bSuccess = false;
 				if(!objFileTemp.exists()) {
@@ -221,6 +221,10 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				
 				//Hashtable in der Form ht(zipEntryName)=zipEntryObjekt.
 				Hashtable<String,ZipEntry> ht = objJarInfo.zipEntryTable();
+				
+				//Wie nun vom ht nach objaReturn ???
+				//objaReturn = objDirectory.listFiles(objFilterConfig);
+				//Es geht nur als temporäres Objekt, das man in ein temp-Verzeichnis ablegt.								
 				Set<String> setEntryName = ht.keySet();
 				Iterator<String> itEntryName = setEntryName.iterator();
 				ArrayList<File>objaFileTempInTemp = new ArrayList<File>();
@@ -233,7 +237,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 						//Nun aus dem ZipEntry ein File Objekt machen (geht nur in einem anderen Verzeichnis, als Kopie)					
 							zf = objJarInfo.getZipFile();						
 							InputStream is = zf.getInputStream(zeTemp);
-							String sPath = "c:\\temp"+FileEasyZZZ.sDIRECTORY_SEPARATOR+sKey;
+							String sPath = "c:\\temp"+ FileEasyZZZ.sDIRECTORY_SEPARATOR + this.getKernelObject().getApplicationKey()+ FileEasyZZZ.sDIRECTORY_SEPARATOR+sKey;
 							Files.copy(is, Paths.get(sPath));
 							File objFileTempInTemp = new File(sPath);	
 							objaFileTempInTemp.add(objFileTempInTemp);
@@ -244,17 +248,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	
-				
-				
-				
-				
-				
-				//Wie nun vom ht nach objaReturn ???
-				//objaReturn = objDirectory.listFiles(objFilterConfig);
-				//Es geht nur als temporäres Objekt, das man in ein temp-Verzeichnis ablegt.
-				
-				
-			//}
+			}
 		}//End main		 		
 		return objaReturn;
 	}
