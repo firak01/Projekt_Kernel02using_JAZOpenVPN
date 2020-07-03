@@ -2,7 +2,7 @@ package use.openvpn;
 
 import basic.zBasic.ExceptionZZZ;
 
-public interface IApplicationOVPN {
+public interface IApplicationOVPN extends IMainUserOVPN{
 
 	String getProxyHost();
 

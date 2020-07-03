@@ -7,7 +7,7 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import use.openvpn.server.ServerMainZZZ;
 
-public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IApplicationOVPN, IMainUserOVPN{
+public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IApplicationOVPN{
 	private IMainOVPN objMain = null;
 	
 	private String sProxyHost = null;

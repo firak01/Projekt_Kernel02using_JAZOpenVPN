@@ -35,15 +35,17 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class ConfigChooserOVPN extends KernelUseObjectZZZ{
+public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicationUserOVPN{
+	private IApplicationOVPN objApplication = null;
 	private File objFileDirExe = null;
 	private File objFileDirExeRoot = null;
 	private File objFileDirTemplate = null;
 	private String sOvpnContextClientOrServer=null;
 	
-	public ConfigChooserOVPN(IKernelZZZ objKernel, String sOvpnContextClientOrServer){
+	public ConfigChooserOVPN(IKernelZZZ objKernel, String sOvpnContextClientOrServer, IApplicationOVPN objApplication){
 		super(objKernel);
 		this.setOvpnContextUsed(sOvpnContextClientOrServer);
+		this.setApplicationObject(objApplication);
 	}
 	
 	public File findDirectoryExe() throws ExceptionZZZ{
@@ -199,8 +201,11 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			
 				//TODOGOON;
 				//Das muss auf Dateien des Template Verzeichnis beschränkt sein.
-				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfig = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());				
-				File objJarAsDirectoryMock = new File("C:\\1fgl\\client\\OVPN\\OpenVPNZZZ_V20200618.jar");
+				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfig = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());
+				IApplicationOVPN objApplication = this.getApplicationObject();
+				IMainOVPN objMain = objApplication.getMainObject();
+				String sJarPath = objMain.getJarFilePathUsed();
+				File objJarAsDirectoryMock = new File(sJarPath);
 				String archiveName = objJarAsDirectoryMock.getAbsolutePath();
 				
 				//Falls noch nicht vorhanden: Verzeichnis neu erstellen. Falls vorhanden, leer machen.
@@ -559,6 +564,16 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	}
 	public void setOvpnContextUsed(String sOvpnContextClientOrServer) {
 		this.sOvpnContextClientOrServer = sOvpnContextClientOrServer;
+	}
+
+	@Override
+	public IApplicationOVPN getApplicationObject() {
+		return this.objApplication;
+	}
+
+	@Override
+	public void setApplicationObject(IApplicationOVPN objApplication) {
+		this.objApplication = objApplication;
 	}
 	
 }

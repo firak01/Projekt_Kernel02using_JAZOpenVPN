@@ -74,7 +74,7 @@ private boolean bFlagPortScanAllFinished = false;
 			ClientApplicationOVPN objApplication = new ClientApplicationOVPN(objKernel, this);
 			this.setApplicationObject(objApplication);
 			
-			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"client");
+			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"client",objApplication);
 			this.setConfigChooserObject(objChooser);
 						
 			//Die Konfigurations-Template Dateien finden		
