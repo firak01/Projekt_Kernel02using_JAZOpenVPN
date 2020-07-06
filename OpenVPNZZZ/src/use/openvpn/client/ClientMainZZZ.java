@@ -67,8 +67,7 @@ private boolean bFlagPortScanAllFinished = false;
 		boolean bReturn = false;
 		main:{
 			connmain:{
-			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 			
-			this.logStatusString("Searching for configuration template files 'Template*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 					
 			IKernelZZZ objKernel = this.getKernelObject();	
 			
 			ClientApplicationOVPN objApplication = new ClientApplicationOVPN(objKernel, this);
@@ -78,6 +77,7 @@ private boolean bFlagPortScanAllFinished = false;
 			this.setConfigChooserObject(objChooser);
 						
 			//Die Konfigurations-Template Dateien finden		
+			this.logStatusString("Searching for configuration template files 'Template*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			File[] objaFileConfigTemplate = objChooser.findFileConfigOvpnTemplates();
 			if(objaFileConfigTemplate==null){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
