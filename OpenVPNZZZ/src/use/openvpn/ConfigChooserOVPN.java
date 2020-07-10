@@ -450,8 +450,10 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive path for template directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
-
-				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate,false); //true=ggfs. in einer Jar-Datei suchen.
+				String sLogTEST = "TESETSTESSETSTSTESTSETSTETETSTT: sDirTemplate='" + sDirTemplate + "'";
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLogTEST);
+				
+				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate,true); //true=ggfs. in einer Jar-Datei suchen, falls vorher nicht gefunden.
 				if(objReturn==null){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirTemplate + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
