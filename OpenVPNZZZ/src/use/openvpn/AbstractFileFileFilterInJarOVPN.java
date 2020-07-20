@@ -9,7 +9,7 @@ import basic.zBasic.IFlagZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.file.jar.AbstractFileFilterInJarZZZ;
+import basic.zBasic.util.file.jar.AbstractFileFileFilterInJarZZZ;
 import basic.zBasic.util.file.zip.FilenamePartFilterEndingZipZZZ;
 import basic.zBasic.util.file.zip.FilenamePartFilterMiddleZipZZZ;
 import basic.zBasic.util.file.zip.FilenamePartFilterPathZipZZZ;
@@ -19,39 +19,27 @@ import basic.zBasic.util.file.zip.ZipEntryFilter;
 import basic.zUtil.io.IFileExpansionUserZZZ;
 import basic.zUtil.io.IFileExpansionZZZ;
 
-public abstract class AbstractFileFilterInJarOVPN extends AbstractFileFilterInJarZZZ implements ZipEntryFilter,IFileExpansionUserZZZ{
-//	protected FilenamePartFilterPathZipZZZ objFilterPath;
-//	protected FilenamePartFilterPrefixZipZZZ objFilterPrefix;
-//	protected FilenamePartFilterMiddleZipZZZ objFilterMiddle;
-//	protected FilenamePartFilterSuffixZipZZZ objFilterSuffix;	
-//	protected FilenamePartFilterEndingZipZZZ objFilterEnding;
-	
+public abstract class AbstractFileFileFilterInJarOVPN extends AbstractFileFileFilterInJarZZZ implements ZipEntryFilter,IFileExpansionUserZZZ{
 	protected String sOvpnContext="";
-	
-//	protected String sDirectoryPath="";
-//	protected String sPrefix="";
-//	protected String sMiddle="";
-//	protected String sSuffix="";
-//	protected String sEnding="";
 	
 	//wg. des Interfaces IFileExpansionUserZZZ
 	protected IFileExpansionZZZ objExpansion = null;
 	
 	
-	public AbstractFileFilterInJarOVPN() throws ExceptionZZZ {
+	public AbstractFileFileFilterInJarOVPN() throws ExceptionZZZ {
 		this("");
 	}		
-	public AbstractFileFilterInJarOVPN(String sOvpnContextServerOrClient) throws ExceptionZZZ {
+	public AbstractFileFileFilterInJarOVPN(String sOvpnContextServerOrClient) throws ExceptionZZZ {
 		super();
 		AbstractOVPNFileFilterInJarNew_(sOvpnContextServerOrClient, null);
 	} 
-	public AbstractFileFilterInJarOVPN(String sOvpnContextServerOrClient, String sFlagControlIn) throws ExceptionZZZ {
+	public AbstractFileFileFilterInJarOVPN(String sOvpnContextServerOrClient, String sFlagControlIn) throws ExceptionZZZ {
 		super();
 		String[] saFlagControl = new String[1];
 		saFlagControl[0] = sFlagControlIn;
 		AbstractOVPNFileFilterInJarNew_(sOvpnContextServerOrClient, saFlagControl);
 	}
-	public AbstractFileFilterInJarOVPN(String sOvpnContextServerOrClient, String[] saFlagControlIn) throws ExceptionZZZ {
+	public AbstractFileFileFilterInJarOVPN(String sOvpnContextServerOrClient, String[] saFlagControlIn) throws ExceptionZZZ {
 		super();
 		AbstractOVPNFileFilterInJarNew_(sOvpnContextServerOrClient, saFlagControlIn);
 	} 

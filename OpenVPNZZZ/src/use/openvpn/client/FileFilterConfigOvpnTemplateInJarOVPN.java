@@ -10,10 +10,11 @@ import basic.zBasic.util.file.FilenamePartFilterEndingZZZ;
 import basic.zBasic.util.file.FilenamePartFilterMiddleZZZ;
 import basic.zBasic.util.file.FilenamePartFilterPrefixZZZ;
 import basic.zBasic.util.file.FilenamePartFilterSuffixZZZ;
-import basic.zBasic.util.file.jar.AbstractFileFilterInJarZZZ;
+import basic.zBasic.util.file.jar.AbstractFileFileFilterInJarZZZ;
+import use.openvpn.AbstractFileFileFilterInJarOVPN;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
-public class FileFilterConfigOvpnTemplateInJarOVPN extends AbstractFileFilterInJarZZZ{
+public class FileFilterConfigOvpnTemplateInJarOVPN extends AbstractFileFileFilterInJarOVPN{
 	public static String sDIRECTORY_PATH="template";
 	public static String sPREFIX="template_";
 	public static String sMIDDLE="";
