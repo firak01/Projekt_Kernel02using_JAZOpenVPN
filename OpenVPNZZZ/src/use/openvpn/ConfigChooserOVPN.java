@@ -29,6 +29,7 @@ import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
+import basic.zBasic.util.file.JarEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.file.jar.JarInfo;
 import basic.zBasic.util.file.zip.ZipEntryFilter;
@@ -204,6 +205,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 				String sDirTemplate = this.readDirectoryTemplatePath();				
 				String sApplicationKey = this.getKernelObject().getApplicationKey();
 				objaReturn = ResourceEasyZZZ.findFileInJar(objDirectory, sDirTemplate, (ZipEntryFilter) objFilterConfigInJar, sApplicationKey);
+				//objaReturn = JarEasyZZZ.extractDirectoryToTemp(objDirectory, sDirTemplate, sTargetDirectoryFilepathIn, true)
 			}
 		}//End main		 		
 		return objaReturn;
