@@ -54,6 +54,9 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	
 	
 	//##### GETTER / SETTER
+	public String getJarFilePathUsed() {
+		return AbstractMainOVPN.sJAR_FILE_USED;
+	}
 	
 	/**This status is a type of "Log".
 	 * This is the last entry.

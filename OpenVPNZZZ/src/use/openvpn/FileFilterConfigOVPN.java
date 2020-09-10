@@ -3,14 +3,14 @@ package use.openvpn;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import basic.zBasic.util.file.FileFilterEndingZZZ;
-import basic.zBasic.util.file.FileFilterSuffixZZZ;
+import basic.zBasic.util.file.FilenamePartFilterEndingZZZ;
+import basic.zBasic.util.file.FilenamePartFilterSuffixZZZ;
 
 public class FileFilterConfigOVPN implements FilenameFilter {
-	FileFilterEndingZZZ objFilterEnding;
+	FilenamePartFilterEndingZZZ objFilterEnding;
 	
 	public FileFilterConfigOVPN(){
-		objFilterEnding = new FileFilterEndingZZZ("ovpn");
+		objFilterEnding = new FilenamePartFilterEndingZZZ("ovpn");
 	} 
 	/* (non-Javadoc)
 	 * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)

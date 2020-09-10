@@ -68,7 +68,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			ServerApplicationOVPN objApplication = new ServerApplicationOVPN(objKernel, this);
 			this.setApplicationObject(objApplication);
 			
-			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"server");
+			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"server", objApplication);
 			this.setConfigChooserObject(objChooser);
 			
 			//Die Konfigurations-Template Dateien finden

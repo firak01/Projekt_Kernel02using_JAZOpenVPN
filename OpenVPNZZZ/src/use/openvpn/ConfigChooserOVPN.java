@@ -2,35 +2,53 @@ package use.openvpn;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
 import org.jdesktop.jdic.filetypes.AssociationService;
 
 import use.openvpn.client.FileFilterConfigBatchTemplateOVPN;
+import use.openvpn.client.FileFilterConfigOvpnTemplateInJarOVPN;
 import use.openvpn.client.FileFilterConfigOvpnTemplateOVPN;
 import use.openvpn.client.FileFilterConfigOvpnUsedOVPN;
 import use.openvpn.server.FileFilterServerClientConfigReadmeTemplateOVPN;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
+import basic.zBasic.util.file.JarEasyZZZ;
+import basic.zBasic.util.file.ResourceEasyZZZ;
+import basic.zBasic.util.file.jar.JarInfo;
+import basic.zBasic.util.file.zip.ZipEntryFilter;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class ConfigChooserOVPN extends KernelUseObjectZZZ{
+public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicationUserOVPN{
+	private IApplicationOVPN objApplication = null;
 	private File objFileDirExe = null;
 	private File objFileDirExeRoot = null;
 	private File objFileDirTemplate = null;
 	private String sOvpnContextClientOrServer=null;
 	
-	public ConfigChooserOVPN(IKernelZZZ objKernel, String sOvpnContextClientOrServer){
+	public ConfigChooserOVPN(IKernelZZZ objKernel, String sOvpnContextClientOrServer, IApplicationOVPN objApplication){
 		super(objKernel);
 		this.setOvpnContextUsed(sOvpnContextClientOrServer);
+		this.setApplicationObject(objApplication);
 	}
 	
 	public File findDirectoryExe() throws ExceptionZZZ{
@@ -154,6 +172,9 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				if(objDirectory.exists()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Directory '" + objDirectory.getPath() + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
+				}else if(FileEasyZZZ.isJar(objDirectory)) {
+					String sLog = "Directory for templates is in jar: '" + objDirectory.getAbsolutePath() + "'";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 				}else if(objDirectory.isDirectory()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + objDirectory.getPath() + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
@@ -161,11 +182,32 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 			}//End check
 			
 			//##############################################################
-//			Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
-			objaReturn = objDirectory.listFiles(objFilterConfig);
+//			//Alle Dateien auflisten, dazu aber einen FileFilter verwenden
 			
-		}//End main
+			//START1: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL AUSKOMMENTIEREN UND IN ECLIPSE STARTEN (geschweifte Klammer untennicht vergessen)
+			if(!FileEasyZZZ.isJar(objDirectory)) {
+				//A) Normal				
+				FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
+				objaReturn = ResourceEasyZZZ.findFile(objDirectory, objFilterConfig);
+			}else {
+			//ENDE1: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL AUSKOMMENTIEREN UND IN ECLIPSE STARTEN
+			
+				//B) IN JAR Datei, das ist objDirectory
+				//START2: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL EINKOMMENTIEREN UND IN ECLIPSE STARTEN
+//				IApplicationOVPN objApplication = this.getApplicationObject();
+//				IMainOVPN objMain = objApplication.getMainObject();
+//				String sJarPath = objMain.getJarFilePathUsed();
+//				File objJarAsDirectoryMock = new File(sJarPath);
+//				objDirectory = objJarAsDirectoryMock;
+				//ENDE2: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL EINKOMMENTIEREN UND IN ECLIPSE STARTEN
+				
+				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfigInJar = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());
+				String sDirTemplate = this.readDirectoryTemplatePath();				
+				String sApplicationKey = this.getKernelObject().getApplicationKey();
+				objaReturn = ResourceEasyZZZ.findFileInJar(objDirectory, sDirTemplate, (ZipEntryFilter) objFilterConfigInJar, sApplicationKey);
+				//objaReturn = JarEasyZZZ.extractDirectoryToTemp(objDirectory, sDirTemplate, sTargetDirectoryFilepathIn, true)
+			}
+		}//End main		 		
 		return objaReturn;
 	}
 	
@@ -380,6 +422,10 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 				}
 
 				objReturn = new File(sDirConfig);
+				if(objReturn==null){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Path '" + sDirConfig + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
 				if(objReturn.exists()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirConfig + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
@@ -404,14 +450,23 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 		main:{			
 				String sDirTemplate = this.readDirectoryTemplatePath();
 				if(sDirTemplate==null){
-					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive template directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive path for template directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
-
-				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate);
+				String sLogTEST = "TESETSTESSETSTSTESTSETSTETETSTT: sDirTemplate='" + sDirTemplate + "'";
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLogTEST);
+				
+				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate,true); //true=ggfs. in einer Jar-Datei suchen, falls vorher nicht gefunden.
+				if(objReturn==null){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirTemplate + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
 				if(objReturn.exists()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + objReturn.getAbsolutePath() + "', does not exist (for '" + sDirTemplate + "').", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
+				}else if(FileEasyZZZ.isJar(objReturn)) {
+					String sLog = "Directory for '" + sDirTemplate + "'is in jar: '" + objReturn.getAbsolutePath() + "'";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 				}else if(objReturn.isDirectory()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The path '" + objReturn.getAbsolutePath() + "'(for '" + sDirTemplate + "'),  was expected to be a directory, not e.g. a file.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
@@ -464,6 +519,16 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ{
 	}
 	public void setOvpnContextUsed(String sOvpnContextClientOrServer) {
 		this.sOvpnContextClientOrServer = sOvpnContextClientOrServer;
+	}
+
+	@Override
+	public IApplicationOVPN getApplicationObject() {
+		return this.objApplication;
+	}
+
+	@Override
+	public void setApplicationObject(IApplicationOVPN objApplication) {
+		this.objApplication = objApplication;
 	}
 	
 }

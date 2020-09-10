@@ -229,6 +229,9 @@ ClientConfigHostname=HANNIBALDEV04VM
 					if(objDirectory.exists()==false){
 						ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Directory '" + objDirectory.getPath() + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 						throw ez;
+					}else if(FileEasyZZZ.isJar(objDirectory)) {
+						String sLog = "Directory for templates is in jar: '" + objDirectory.getAbsolutePath() + "'";
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 					}else if(objDirectory.isDirectory()==false){
 						ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + objDirectory.getPath() + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 						throw ez;
