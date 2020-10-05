@@ -173,11 +173,18 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Directory '" + objDirectory.getPath() + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}else if(FileEasyZZZ.isJar(objDirectory)) {
-					String sLog = "Directory for templates is in jar: '" + objDirectory.getAbsolutePath() + "'";
+					String sLog = "Directory for templates is a Jar file: '" + objDirectory.getAbsolutePath() + "'";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 				}else if(objDirectory.isDirectory()==false){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + objDirectory.getPath() + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
+				}else {				
+					//Man hat in einem JAR File das Verzeichnis auf Platte erstellt, aber ohne Inhalt.
+			         //D.h. wenn man in dem Verzeichnis sucht, dann wird nix gefunden.
+			         //Also: Die Verwendung des File Filters nicht von objDirectory abhängig machen, 
+			         //      sondern davon wo die Dateien wirklich stehen.
+					String sLog = "Directory for templates is not a Jar File: '" + objDirectory.getAbsolutePath() + "'";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 				}
 			}//End check
 			

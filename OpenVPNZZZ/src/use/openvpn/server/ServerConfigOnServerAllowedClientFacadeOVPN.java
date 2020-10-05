@@ -108,6 +108,8 @@ ClientConfigHostname=HANNIBALDEV04VM
 				if(fileDirectoryConfig==null) {
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + " unable to get template directory '", iERROR_RUNTIME, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
+				}else {
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Verzeichnis für Templatekonfiguration='" + fileDirectoryConfig.getAbsolutePath() + "'");
 				}
 				
 				//2. Oben gelöschtes Verzeichnis neu erstellen: Den Ordner der ClientConfigurationen (auf dem Server) erstellen.
