@@ -30,7 +30,7 @@ import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.JarEasyZZZ;
-import basic.zBasic.util.file.ResourceEasyZZZ;
+import basic.zBasic.util.file.JarEasyUtilZZZ;
 import basic.zBasic.util.file.jar.JarInfo;
 import basic.zBasic.util.file.zip.ZipEntryFilter;
 import basic.zBasic.ReflectCodeZZZ;
@@ -195,7 +195,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 			if(!FileEasyZZZ.isJar(objDirectory)) {
 				//A) Normal				
 				FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
-				objaReturn = ResourceEasyZZZ.findFile(objDirectory, objFilterConfig);
+				objaReturn = JarEasyUtilZZZ.findFile(objDirectory, objFilterConfig);
 			}else {
 			//ENDE1: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL AUSKOMMENTIEREN UND IN ECLIPSE STARTEN
 			
@@ -211,7 +211,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfigInJar = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());
 				String sDirTemplate = this.readDirectoryTemplatePath();				
 				String sApplicationKey = this.getKernelObject().getApplicationKey();
-				objaReturn = ResourceEasyZZZ.findFileInJar(objDirectory, sDirTemplate, (ZipEntryFilter) objFilterConfigInJar, sApplicationKey);
+				objaReturn = JarEasyUtilZZZ.findFileInJar(objDirectory, sDirTemplate, (ZipEntryFilter) objFilterConfigInJar, sApplicationKey);
 				//objaReturn = JarEasyZZZ.extractDirectoryToTemp(objDirectory, sDirTemplate, sTargetDirectoryFilepathIn, true)
 			}
 		}//End main		 		
