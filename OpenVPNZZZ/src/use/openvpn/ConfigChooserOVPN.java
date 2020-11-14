@@ -211,7 +211,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfigInJar = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());
 				String sDirTemplate = this.readDirectoryTemplatePath();				
 				String sApplicationKey = this.getKernelObject().getApplicationKey();
-				objaReturn = JarEasyUtilZZZ.findFileInJar(objDirectory, sDirTemplate, (ZipEntryFilter) objFilterConfigInJar, sApplicationKey);
+				objaReturn = JarEasyUtilZZZ.findFileInJar(objDirectory, (ZipEntryFilter) objFilterConfigInJar, sDirTemplate, sApplicationKey);
 				//objaReturn = JarEasyZZZ.extractDirectoryToTemp(objDirectory, sDirTemplate, sTargetDirectoryFilepathIn, true)
 			}
 		}//End main		 		
