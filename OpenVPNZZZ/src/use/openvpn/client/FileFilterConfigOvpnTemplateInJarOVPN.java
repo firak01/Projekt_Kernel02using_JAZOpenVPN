@@ -44,7 +44,7 @@ public class FileFilterConfigOvpnTemplateInJarOVPN extends AbstractFileFileFilte
 	}
 	
 	//##### GETTER / SETTER	
-	public void setDirectoryPath(String sDirectoyPath) {
+	public void setDirectoryPath(String sDirectoyPath) throws ExceptionZZZ {
 		if(StringZZZ.isEmpty(sDirectoyPath)) {
 			super.setDirectoryPath(FileFilterConfigOvpnTemplateInJarOVPN.sDIRECTORY_PATH);
 		}else {
