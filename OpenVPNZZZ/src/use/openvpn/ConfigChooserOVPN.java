@@ -463,6 +463,9 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 				String sLogTEST = "TESETSTESSETSTSTESTSETSTETETSTT: sDirTemplate='" + sDirTemplate + "'";
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLogTEST);
 				
+				//Suche erst auf dem Filesystem und danach in JarDatei (Wenn Code in Jar-Datei ausgeführt wird).
+				TODOGOON; //20201221 ResourceEasyZZZ.searchDirectory(sDirTemplate); 
+				//                    .... Die FileEasyZZZ.search wäre an dieser Stelle zu erstetzen.
 				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate,true); //true=ggfs. in einer Jar-Datei suchen, falls vorher nicht gefunden.
 				if(objReturn==null){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirTemplate + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
