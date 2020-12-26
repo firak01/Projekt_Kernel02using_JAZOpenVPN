@@ -436,14 +436,9 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive path for template directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
-				String sLogTEST = "TESETSTESSETSTSTESTSETSTETETSTT: sDirTemplate='" + sDirTemplate + "'";
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLogTEST);
 				
 				//Suche erst auf dem Filesystem und danach in JarDatei (Wenn Code in Jar-Datei ausgeführt wird).
-				//20201221 
-				objReturn = ResourceEasyZZZ.searchDirectory(sDirTemplate); 
-				//                    .... Die FileEasyZZZ.search wäre an dieser Stelle zu erstetzen.
-				//                         objReturn = FileEasyZZZ.searchDirectory(sDirTemplate,true); //true=ggfs. in einer Jar-Datei suchen, falls vorher nicht gefunden.
+				objReturn = ResourceEasyZZZ.searchDirectory(sDirTemplate); //Damit das "transparent" sowohl unter Eclipse als auch in einer JAR-Datei läuft. Die einfache FileEasyZZZ.search durch eine ResourceEasyZZZ.search ersetzt, die sofort die Dateien auch zurückliefert....
 				if(objReturn==null){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirTemplate + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
