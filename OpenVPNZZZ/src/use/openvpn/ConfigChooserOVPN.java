@@ -169,51 +169,27 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 					objDirectory = objDirectoryin;
 				}
 								
-				if(objDirectory.exists()==false){
+				if(!FileEasyZZZ.exists(objDirectory)){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The Directory '" + objDirectory.getPath() + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}else if(FileEasyZZZ.isJar(objDirectory)) {
 					String sLog = "Directory for templates is a Jar file: '" + objDirectory.getAbsolutePath() + "'";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-				}else if(objDirectory.isDirectory()==false){
+				}else if(!FileEasyZZZ.isDirectory(objDirectory)){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + objDirectory.getPath() + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}else {				
-					//Man hat in einem JAR File das Verzeichnis auf Platte erstellt, aber ohne Inhalt.
-			         //D.h. wenn man in dem Verzeichnis sucht, dann wird nix gefunden.
-			         //Also: Die Verwendung des File Filters nicht von objDirectory abhängig machen, 
-			         //      sondern davon wo die Dateien wirklich stehen.
-					String sLog = "Directory for templates is not a Jar File: '" + objDirectory.getAbsolutePath() + "'";
+					String sLog = "Directory for templates found: '" + objDirectory.getAbsolutePath() + "'";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 				}
 			}//End check
 			
 			//##############################################################
-//			//Alle Dateien auflisten, dazu aber einen FileFilter verwenden
-			
-			//START1: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL AUSKOMMENTIEREN UND IN ECLIPSE STARTEN (geschweifte Klammer untennicht vergessen)
-			if(!FileEasyZZZ.isJar(objDirectory)) {
-				//A) Normal				
-				FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
-				objaReturn = ResourceEasyZZZ.findFile(objDirectory, objFilterConfig);
-			}else {
-			//ENDE1: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL AUSKOMMENTIEREN UND IN ECLIPSE STARTEN
-			
-				//B) IN JAR Datei, das ist objDirectory
-				//START2: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL EINKOMMENTIEREN UND IN ECLIPSE STARTEN
-//				IApplicationOVPN objApplication = this.getApplicationObject();
-//				IMainOVPN objMain = objApplication.getMainObject();
-//				String sJarPath = objMain.getJarFilePathUsed();
-//				File objJarAsDirectoryMock = new File(sJarPath);
-//				objDirectory = objJarAsDirectoryMock;
-				//ENDE2: ZUM DEBUGGEN DES JAR INHALTS DEN NORMALFALL EINKOMMENTIEREN UND IN ECLIPSE STARTEN
-				
-				FileFilterConfigOvpnTemplateInJarOVPN objFilterConfigInJar = new FileFilterConfigOvpnTemplateInJarOVPN(this.getOvpnContextUsed());
-				String sDirTemplate = this.readDirectoryTemplatePath();				
-				String sApplicationKey = this.getKernelObject().getApplicationKey();
-				objaReturn = ResourceEasyZZZ.findFileInJar(objDirectory, sDirTemplate, (ZipEntryFilter) objFilterConfigInJar, sApplicationKey);
-				//objaReturn = JarEasyZZZ.extractDirectoryToTemp(objDirectory, sDirTemplate, sTargetDirectoryFilepathIn, true)
-			}
+			//Alle Dateien auflisten, dazu aber einen FileFilter verwenden			
+			//Merke: Ressourcen aus der Jar - Datei sollten beim Extrahieren in dem passenden Unterordner des TEMP - Verzeichnisses erstellt worden sein.
+			//       Darum kann man jetzt so weiterarbeiten als wäre das Verzeichnis eh schon auf der Festplatte.
+			FileFilterConfigOvpnTemplateOVPN objFilterConfig = new FileFilterConfigOvpnTemplateOVPN(this.getOvpnContextUsed(), "REGARD_FILE_EXPANSION_LAST");			
+			objaReturn = objDirectory.listFiles(objFilterConfig);
 		}//End main		 		
 		return objaReturn;
 	}
@@ -460,21 +436,20 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Unable to receive path for template directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
-				String sLogTEST = "TESETSTESSETSTSTESTSETSTETETSTT: sDirTemplate='" + sDirTemplate + "'";
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLogTEST);
 				
-				objReturn = FileEasyZZZ.searchDirectory(sDirTemplate,true); //true=ggfs. in einer Jar-Datei suchen, falls vorher nicht gefunden.
+				//Suche erst auf dem Filesystem und danach in JarDatei (Wenn Code in Jar-Datei ausgeführt wird).
+				objReturn = ResourceEasyZZZ.searchDirectory(sDirTemplate); //Damit das "transparent" sowohl unter Eclipse als auch in einer JAR-Datei läuft. Die einfache FileEasyZZZ.search durch eine ResourceEasyZZZ.search ersetzt, die sofort die Dateien auch zurückliefert....
 				if(objReturn==null){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + sDirTemplate + "', was not found (NULL was returned).", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
-				if(objReturn.exists()==false){
+				if(!FileEasyZZZ.exists(objReturn)){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The directory '" + objReturn.getAbsolutePath() + "', does not exist (for '" + sDirTemplate + "').", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}else if(FileEasyZZZ.isJar(objReturn)) {
 					String sLog = "Directory for '" + sDirTemplate + "'is in jar: '" + objReturn.getAbsolutePath() + "'";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-				}else if(objReturn.isDirectory()==false){
+				}else if(!FileEasyZZZ.isDirectory(objReturn)){
 					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The path '" + objReturn.getAbsolutePath() + "'(for '" + sDirTemplate + "'),  was expected to be a directory, not e.g. a file.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 					throw ez;
 				}
