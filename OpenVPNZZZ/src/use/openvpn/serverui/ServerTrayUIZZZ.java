@@ -21,9 +21,11 @@ import org.jdesktop.jdic.tray.TrayIcon;
 
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.server.ServerMainZZZ;
+import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
@@ -75,16 +77,21 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			
 			JPopupMenu menu = new JPopupMenu();
 			
-			JMenuItem menueeintrag2 = new JMenuItem("Starten");
+			JMenuItem menueeintrag2 = new JMenuItem(IConstantServerOVPN.sLABEL_START);
 			menu.add(menueeintrag2);
 			menueeintrag2.addActionListener(this);
 			
-			JMenuItem menueeintrag3 = new JMenuItem("Server Log ansehen");
+			JMenuItem menueeintrag3 = new JMenuItem(IConstantServerOVPN.sLABEL_LOG);
             menu.add(menueeintrag3);
 			menueeintrag3.addActionListener(this);
 			
+			
+			JMenuItem menueeintragFTP = new JMenuItem(IConstantServerOVPN.sLABEL_PAGE_IP_UPLOAD);
+            menu.add(menueeintragFTP);
+			menueeintragFTP.addActionListener(this);
+			
 			//??? Warum geht das auf meinem Desktop-Rechner nicht, auf dem Notebook aber ???			
-			JMenuItem menueeintrag = new JMenuItem("Beenden");	
+			JMenuItem menueeintrag = new JMenuItem(IConstantServerOVPN.sLABEL_END);	
 			menu.add(menueeintrag);		
 			menueeintrag.addActionListener(this);
 			
@@ -426,16 +433,30 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			try{
 				String sCommand = arg0.getActionCommand();
 				//System.out.println("Action to perform: " + sCommand);
-				if(sCommand.equals("Beenden")){
+				if(sCommand.equals(IConstantServerOVPN.sLABEL_END)){
 					this.unload();	
-				}else if(sCommand.equals("Starten")){
+				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_END)){
 					this.listen();
-				}else if(sCommand.equals("Server Log ansehen")){
+				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_LOG)){
 					//JOptionPane pane = new JOptionPane();
 					String stemp = this.readLogString();
 					//this.getTrayIconObject() ist keine Component ????
 					JOptionPane.showMessageDialog(null, stemp, "Log des OVPN Connection Listeners", JOptionPane.INFORMATION_MESSAGE );
-				}else if(sCommand.equals("PressAction")){			//DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein.		
+				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_PAGE_IP_UPLOAD)) {
+					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+					//Merke: Es gibt noch keine Flags, darum ist hmFlag = null;
+					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, null);
+					dlgIPExternal.setText4ButtonOk("USE VALUE");			
+					try {
+						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+						dlgIPExternal.showDialog(null, "Connection/IP External Current");
+						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'Connection/IP External Current'");
+					} catch (ExceptionZZZ ez) {					
+						System.out.println(ez.getDetailAllLast()+"\n");
+						ez.printStackTrace();
+						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
+					}
+				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_LOG)){			//DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein.		
 					String stemp = this.computeStatusDetailString();
 					if(stemp!= null){
 						if(objTrayIcon!=null) objTrayIcon.displayMessage("Status des OVPN Connection Listeners.", stemp, TrayIcon.INFO_MESSAGE_TYPE);

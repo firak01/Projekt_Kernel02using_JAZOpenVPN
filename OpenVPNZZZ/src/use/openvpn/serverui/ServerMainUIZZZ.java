@@ -9,7 +9,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
 
-public class ServerMainUIZZZ implements IConstantZZZ {
+public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 			private IKernelZZZ objKernel=null;
 			private ServerMainZZZ objServerMain = null;
 			private ServerTrayUIZZZ objServerTray=null;
