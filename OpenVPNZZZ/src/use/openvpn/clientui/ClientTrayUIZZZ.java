@@ -437,16 +437,16 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			try{
 				String sCommand = arg0.getActionCommand();
 				//System.out.println("Action to perform: " + sCommand);
-				if(sCommand.equals("Beenden")){
+				if(sCommand.equals(IConstantClientOVPN.sLABEL_END)){
 					this.unload();	
-				}else if(sCommand.equals("Verbinden")){
+				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_START)){
 					this.connect();
-				}else if(sCommand.equals("Client Log ansehen")){
+				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_LOG)){
 					//JOptionPane pane = new JOptionPane();
 					String stemp = this.readLogString();
 					//this.getTrayIconObject() ist keine Component ????
 					JOptionPane.showMessageDialog(null, stemp, "Log der Verbindung", JOptionPane.INFORMATION_MESSAGE );
-				}else if(sCommand.equals("PressAction")){			//DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein.		
+				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_DETAIL)){			//"PressAction": DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein für das Clicken AUF das Icon.		
 					String stemp = this.readStatusDetailString();
 					if(stemp!= null){
 						if(objTrayIcon!=null) objTrayIcon.displayMessage("Status der Verbindung.", stemp, TrayIcon.INFO_MESSAGE_TYPE);

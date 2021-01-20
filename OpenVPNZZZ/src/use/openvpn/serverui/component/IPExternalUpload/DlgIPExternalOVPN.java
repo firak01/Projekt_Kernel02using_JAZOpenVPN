@@ -45,7 +45,7 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 		return panelButton;
 	}
 	public KernelJPanelCascadedZZZ getPanelContent(){
-		PanelDlgIPExternalContentVIA panelContent = new PanelDlgIPExternalContentVIA(this.getKernelObject(), this);
+		PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
 		return panelContent;
 	}
 

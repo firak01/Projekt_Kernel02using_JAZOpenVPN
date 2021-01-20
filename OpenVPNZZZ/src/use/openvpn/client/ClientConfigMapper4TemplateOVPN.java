@@ -57,10 +57,10 @@ public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 		return hmReturn;
 	}
 	
-	/**TODO R�ckgabe des regul�ren Ausdrucks. TODOGOON: Dies sollte in Form einer HashMap passieren !!!
-	 *  TODO GOON Hashmap in der Form liste(ConfigAusdruck) = "^" + saConfig[icount] + " ";
-	 * @param sAlias
-	 * @return
+	/**@param sAlias Aliaswert der OVPN Konfiguration, 
+	 *               als Schlüssel für eine HashMap, mit der man an den regulären Ausdruck kommt, 
+	 *               der für das Finden der Zeile in der OVPN Konfigurationsdatei verwendet wird.
+	 * @return String-Wert des puren regulären Ausdrucks aus einer HashMap, in der Form liste(ConfigAusdruck) = "^" + saConfig[icount] + " ";  
 	 * @throws ExceptionZZZ, 
 	 *
 	 * @return String[]
@@ -75,7 +75,8 @@ public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 				if(sConfiguration.equals(""))break main;				
 			}
 		
-			//Hashmap erstellen. TODO GOON Dies an eine Stelle auslagern, so dass es nur einmal gemacht werden braucht.
+			//Hashmap erstellen.
+			//TODOGOON: Die Konfiguration der Hashmap an eine zentrale Stelle auslagern. Die Hashmap in einer Variablen speichern, so dass sie nur 1x erstellt werden muss.
 			HashMap hmConfig = new HashMap();
 			hmConfig.put("remote", "^remote ");
 			hmConfig.put("http-proxy", "^http-proxy ");

@@ -66,14 +66,16 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 				KernelJFrameCascadedZZZ frameParent = null;
 				if(dialog==null){
 					frameParent = panelCenter.getFrameParent();	
-					String sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
-					String sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent); 
+					//String sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
+					String sProgram = this.getProgramUsed(); //der Frame, in den dieses Panel eingebettet ist
+					//String sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent);
+					String sModule = this.getModuleUsed(); //KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent);
 					if(StringZZZ.isEmpty(sModule)){
 						ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program: '" +  sProgram + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 						throw ez;
 					}
-									
-//TODO GOON 20210119					objKernel.setParameterByProgramAlias(sModule, "IP_Context", "IPExternal", sIP);
+					
+					objKernel.setParameterByProgramAlias(sModule, "IP_Context", "IPExternal", sIP);
 					bReturn = true; //erst dann wird das PostCustom-ausgeführt				
 				}else{		
 					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");

@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-//TODO GOON 20200119 import use.via.client.module.ip.ProgramIPContentVIA;
+import use.openvpn.serverui.component.IPExternalUpload.ProgramIPContentOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -38,16 +38,16 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalContentVIA  extends KernelJPanelCascadedZZZ{	
+public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
 	 * lindhaueradmin, 23.07.2013
 	 */
-	public PanelDlgIPExternalContentVIA(){
+	public PanelDlgIPExternalContentOVPN(){
 		super();
 	}
-	public PanelDlgIPExternalContentVIA(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
+	public PanelDlgIPExternalContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
 		super(objKernel, dialogExtended);
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
@@ -74,38 +74,29 @@ public class PanelDlgIPExternalContentVIA  extends KernelJPanelCascadedZZZ{
 		KernelJFrameCascadedZZZ frameParent = null;
 		//Hier nicht, da die Dialogbox schon ein Flag bekommen hat. this.setFlagZ(KernelJPanelCascadedZZZ.FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);//Damit wird es zum PROGRAM
 		if(dialog==null){
-//TODO GOON 20210119
-//			frameParent = this.getFrameParent();									
-//			String sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
-//			String sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent); 
-//			if(StringZZZ.isEmpty(sModule)){
-//				ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program: '" +  sProgram + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//				throw ez;
-//			}		
-//			
-//			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.					
-//			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, "IP_Context", "IPExternal");
-//			sIp = objEntry.getValue();
+			frameParent = this.getFrameParent();									
+			String sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
+			String sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent); 
+			if(StringZZZ.isEmpty(sModule)){
+				ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program: '" +  sProgram + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}		
+			
+			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.					
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, "IP_Context", "IPExternal");
+			sIp = objEntry.getValue();
 		}else{
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");
-
-//TODO GOON 20210119
-//			String sProgram = "";
-//			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
-//			if(panelParent!=null){
-//				sProgram = KernelUIZZZ.getProgramName(panelParent);
-//			}else{
-//				sProgram = this.getClass().getName();
-//			}
-//						
-//			String sModule = dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt								 
-//			if(StringZZZ.isEmpty(sProgram)){
-//				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//				throw ez;
-//			}
-//			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
-//			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
-//			sIp = objEntry.getValue();
+		
+			String sProgram = this.getProgramName();
+			String sModule = this.getModuleName();//Ggfs. der Frame, über den diese Dialogbox liegt, oder der ApplicationKey.  								 
+			if(StringZZZ.isEmpty(sProgram)){
+				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
+			sIp = objEntry.getValue();
 		}		
 		
 		//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
@@ -127,7 +118,7 @@ public class PanelDlgIPExternalContentVIA  extends KernelJPanelCascadedZZZ{
 		
 		
 		JButton buttonReadIPExternal = new JButton("Refresh server ip from the web.");
-		ActionIPRefreshVIA actionIPRefresh = new ActionIPRefreshVIA(objKernel, this);
+		ActionIPRefreshOVPN actionIPRefresh = new ActionIPRefreshOVPN(objKernel, this);
 		buttonReadIPExternal.addActionListener(actionIPRefresh);
 		
 		this.add(buttonReadIPExternal, cc.xy(6,2));
@@ -149,8 +140,8 @@ public class PanelDlgIPExternalContentVIA  extends KernelJPanelCascadedZZZ{
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
-		class ActionIPRefreshVIA extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-			public ActionIPRefreshVIA(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+		class ActionIPRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+			public ActionIPRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 				super(objKernel, panelParent);			
 			}
 			
@@ -161,7 +152,7 @@ public class PanelDlgIPExternalContentVIA  extends KernelJPanelCascadedZZZ{
 				String[] saFlag = {"useProxy"};					
 				KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
 																		
-				SwingWorker4ProgramIPContentVIA worker = new SwingWorker4ProgramIPContentVIA(objKernel, panelParent, saFlag);
+				SwingWorker4ProgramIPContentOVPN worker = new SwingWorker4ProgramIPContentOVPN(objKernel, panelParent, saFlag);
 				worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
 				
 
@@ -180,7 +171,7 @@ public class PanelDlgIPExternalContentVIA  extends KernelJPanelCascadedZZZ{
 			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			}			 							
 			
-			class SwingWorker4ProgramIPContentVIA extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
+			class SwingWorker4ProgramIPContentOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
 				private IKernelZZZ objKernel;
 				private LogZZZ objLog;
 				private KernelJPanelCascadedZZZ panel;
@@ -192,7 +183,7 @@ public class PanelDlgIPExternalContentVIA  extends KernelJPanelCascadedZZZ{
 							
 				protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 				
-				public SwingWorker4ProgramIPContentVIA(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+				public SwingWorker4ProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
 					super();
 					this.objKernel = objKernel;
 					this.objLog = objKernel.getLogObject();
@@ -202,20 +193,20 @@ public class PanelDlgIPExternalContentVIA  extends KernelJPanelCascadedZZZ{
 				
 				//#### abstracte - Method aus SwingWorker
 				public Object construct() {
-//					try{
+					try{
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
 						updateTextField("Reading ...");
 						
 						//2. IP Auslesen von der Webseite
-//TODO GOON	20210119					ProgramIPContentVIA objProg =new ProgramIPContentVIA(objKernel, this.panel, this.saFlag4Program);					
-//						String sIp = objProg.getIpExternal();
+						ProgramIPContentOVPN objProg = new ProgramIPContentOVPN(objKernel, this.panel, this.saFlag4Program);					
+						String sIp = objProg.getIpExternal();
 						
 						//3. Diesen Wert wieder ins Label schreiben.
-//						updateTextField(sIp);
-//					}catch(ExceptionZZZ ez){
-//						System.out.println(ez.getDetailAllLast());
-//						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
-//					}
+						updateTextField(sIp);
+					}catch(ExceptionZZZ ez){
+						System.out.println(ez.getDetailAllLast());
+						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+					}
 					return "all done";
 				}
 				

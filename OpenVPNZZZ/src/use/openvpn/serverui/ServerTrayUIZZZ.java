@@ -456,7 +456,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						ez.printStackTrace();
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 					}
-				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_LOG)){			//DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein.		
+				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_DETAIL)){		
 					String stemp = this.computeStatusDetailString();
 					if(stemp!= null){
 						if(objTrayIcon!=null) objTrayIcon.displayMessage("Status des OVPN Connection Listeners.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
