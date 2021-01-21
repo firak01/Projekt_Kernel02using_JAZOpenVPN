@@ -1,4 +1,4 @@
-package use.openvpn.serverui.component.IPExternalUpload;
+package use.openvpn.clientui.component.IPExternalRead;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -21,8 +21,8 @@ import basic.zKernel.IKernelZZZ;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogButtonDefaultZZZ{
-	public PanelDlgIPExternalButtonAlternativeVIA(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable){
+public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialogButtonDefaultZZZ{
+	public PanelDlgIPExternalButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable){
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable);
 	}
 	
@@ -75,7 +75,7 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 						throw ez;
 					}
 					
-					objKernel.setParameterByProgramAlias(sModule, "IP_ServerContext", "IPExternal", sIP);
+					objKernel.setParameterByProgramAlias(sModule, "IP_ClientContext", "IPExternal", sIP);
 					bReturn = true; //erst dann wird das PostCustom-ausgeführt				
 				}else{		
 					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");

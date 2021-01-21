@@ -1,4 +1,4 @@
-package use.openvpn.serverui.component.IPExternalUpload;
+package use.openvpn.clientui.component.IPExternalRead;
 
 
 import java.util.ArrayList;

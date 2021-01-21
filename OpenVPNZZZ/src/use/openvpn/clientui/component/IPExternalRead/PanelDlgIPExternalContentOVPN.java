@@ -1,4 +1,4 @@
-package use.openvpn.serverui.component.IPExternalUpload;
+package use.openvpn.clientui.component.IPExternalRead;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import use.openvpn.serverui.component.IPExternalUpload.ProgramIPContentOVPN;
+import use.openvpn.clientui.component.IPExternalRead.ProgramIPContentOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -63,7 +63,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugwiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 		
-		JLabel label = new JLabel("Server IP:");
+		JLabel label = new JLabel("Server IP (from Configuration-Ini-File):");
 		this.add(label, cc.xy(2,2));
 			
 		//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
