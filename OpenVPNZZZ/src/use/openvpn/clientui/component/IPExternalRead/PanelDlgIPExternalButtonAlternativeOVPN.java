@@ -58,7 +58,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 				JTextField texttemp = (JTextField) panelCenter.getComponent("text1");
 				String sIP= texttemp.getText();	
 				
-				ReportLogZZZ.write(ReportLogZZZ.INFO, "IP/URL found for 'Export Data via Http': " + sIP);
+				ReportLogZZZ.write(ReportLogZZZ.INFO, "IP/URL found for use closing dialog 'TODOGOON hier den Namen des Buttons... Export Data via Http': " + sIP);
 				
 //				Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
 				IKernelZZZ objKernel = this.getKernelObject();
@@ -80,19 +80,30 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 				}else{		
 					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");
 					
-					String sProgram = "";
+					String sProgram = this.getProgramUsed();
+					String sModule = this.getModuleUsed();
+					
+					
 					KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
-					if(panelParent!=null){
-						sProgram = KernelUIZZZ.getProgramName(panelParent);
-					}else{
-						sProgram = this.getClass().getName();
-					}
-								
-					String sModule = dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt								 
-					if(StringZZZ.isEmpty(sProgram)){
-						ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-						throw ez;
-					}
+//					if(panelParent!=null){
+//						sProgram = KernelUIZZZ.getProgramName(panelParent);
+//					}else{
+//						sProgram = this.getClass().getName();
+//					}
+					
+//					String sProgram = "";
+//					KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
+//					if(panelParent!=null){
+//						sProgram = KernelUIZZZ.getProgramName(panelParent);
+//					}else{
+//						sProgram = this.getClass().getName();
+//					}
+//								
+//					String sModule = dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt								 
+//					if(StringZZZ.isEmpty(sProgram)){
+//						ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//						throw ez;
+//					}
 					
 					
 //					Frame frameParentDlg = dialog.getFrameParent();
@@ -101,7 +112,8 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 //					KernelJPanelCascadedZZZ panelParent = this.getPanelParent();					
 //					String sProgram = panelParent.getDialogParent().getClass().getName();           //Die Dialogbox selbst 
 					
-//TODO GOON 20210119					objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIP);
+//TODO GOON 20210119					
+					objKernel.setParameterByProgramAlias(sModule, "IP_ClientContext", "IPExternal", sIP);
 					bReturn = true; //erst dann wird das PostCustom-ausgeführt
 				}		
 							
