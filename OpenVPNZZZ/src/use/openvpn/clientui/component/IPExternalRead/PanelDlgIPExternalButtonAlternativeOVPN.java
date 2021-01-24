@@ -42,9 +42,9 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 			super(objKernel, panelParent);
 		}
 		
-		/**Durch überschreiben dieser Methoden können erbende Klassen noch anderen Code ausf�hren
+		/**Durch überschreiben dieser Methoden können erbende Klassen noch anderen Code ausfuehren
 		* @param ActionEvent
-		* @return true ==> es wird der weitere Code ausgef�hrt
+		* @return true ==> es wird der weitere Code ausgefuehrt
 		* 
 		* lindhaueradmin; 09.01.2007 09:03:32
 		 */		
@@ -84,7 +84,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 					String sModule = this.getModuleUsed();
 					
 					
-					KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
+//					KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
 //					if(panelParent!=null){
 //						sProgram = KernelUIZZZ.getProgramName(panelParent);
 //					}else{
@@ -113,7 +113,8 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 //					String sProgram = panelParent.getDialogParent().getClass().getName();           //Die Dialogbox selbst 
 					
 //TODO GOON 20210119					
-					objKernel.setParameterByProgramAlias(sModule, "IP_ClientContext", "IPExternal", sIP);
+					//objKernel.setParameterByProgramAlias(sModule, "IP_ClientContext", "IPExternal", sIP);
+					objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIP);
 					bReturn = true; //erst dann wird das PostCustom-ausgeführt
 				}		
 							
