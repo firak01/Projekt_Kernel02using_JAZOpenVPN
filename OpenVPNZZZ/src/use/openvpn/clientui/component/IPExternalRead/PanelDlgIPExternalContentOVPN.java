@@ -85,7 +85,6 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 			}		
 		}else{			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");
-			//TODOGOON 20210124 : Jetzt muss auf dem Dialog basierende das Modul und Program geholt werden, etc.
 			sModule = dialog.getModuleName();												  								 
 			if(StringZZZ.isEmpty(sModule)) {
 				sModule = this.getModuleName();

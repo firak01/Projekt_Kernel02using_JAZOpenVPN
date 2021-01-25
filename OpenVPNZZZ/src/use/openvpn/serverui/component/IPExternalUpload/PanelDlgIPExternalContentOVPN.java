@@ -63,7 +63,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugwiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 		
-		JLabel label = new JLabel("Server IP:");
+		JLabel label = new JLabel("Server IP (from Configuration-Ini-File):");
 		this.add(label, cc.xy(2,2));
 			
 		//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
@@ -73,31 +73,40 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		KernelJDialogExtendedZZZ dialog = this.getDialogParent();
 		KernelJFrameCascadedZZZ frameParent = null;
 		//Hier nicht, da die Dialogbox schon ein Flag bekommen hat. this.setFlagZ(KernelJPanelCascadedZZZ.FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);//Damit wird es zum PROGRAM
+		
+		String sProgram; String sModule;
 		if(dialog==null){
 			frameParent = this.getFrameParent();									
-			String sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
-			String sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent); 
+			sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
+			sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent); 
 			if(StringZZZ.isEmpty(sModule)){
 				ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program: '" +  sProgram + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}		
-			
-			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.					
-			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, "IP_ServerContext", "IPExternal");
-			sIp = objEntry.getValue();
 		}else{
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");
-		
-			String sProgram = this.getProgramName();
-			String sModule = this.getModuleName();//Ggfs. der Frame, über den diese Dialogbox liegt, oder der ApplicationKey.  								 
+			sModule = dialog.getModuleName();												  								 
+			if(StringZZZ.isEmpty(sModule)) {
+				sModule = this.getModuleName();
+			}
+			if(StringZZZ.isEmpty(sModule)){
+				ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			
+			sProgram = dialog.getProgramName();
+			if(StringZZZ.isEmpty(sProgram)){
+				sProgram = this.getProgramName();
+			}
 			if(StringZZZ.isEmpty(sProgram)){
 				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
-			}
-			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
-			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
-			sIp = objEntry.getValue();
-		}		
+			}							
+		}	
+		
+		//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
+		IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
+		sIp = objEntry.getValue();
 		
 		//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
 		if(StringZZZ.isEmpty(sIp)){
@@ -116,8 +125,10 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
 		this.setComponent("text1", textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
+		//Merke: Der Server baut die Internetseite.
+		//TODOGOON; //20210125 Jetzt nicht aus dem Internet refreshen, sondern vom Router.
 		
-		JButton buttonReadIPExternal = new JButton("Refresh server ip from the web.");
+		JButton buttonReadIPExternal = new JButton("Refresh server ip from the router.");
 		ActionIPRefreshOVPN actionIPRefresh = new ActionIPRefreshOVPN(objKernel, this);
 		buttonReadIPExternal.addActionListener(actionIPRefresh);
 		

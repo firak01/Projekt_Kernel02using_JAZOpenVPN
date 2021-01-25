@@ -64,12 +64,13 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 				IKernelZZZ objKernel = this.getKernelObject();
 				KernelJDialogExtendedZZZ dialog = panelCenter.getDialogParent();	
 				KernelJFrameCascadedZZZ frameParent = null;
+				String sProgram; String sModule;
 				if(dialog==null){
 					frameParent = panelCenter.getFrameParent();	
 					//String sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
-					String sProgram = this.getProgramUsed(); //der Frame, in den dieses Panel eingebettet ist
+					sProgram = this.getProgramUsed(); //der Frame, in den dieses Panel eingebettet ist
 					//String sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent);
-					String sModule = this.getModuleUsed(); //KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent);
+					sModule = this.getModuleUsed(); //KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent);
 					if(StringZZZ.isEmpty(sModule)){
 						ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program: '" +  sProgram + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 						throw ez;
@@ -80,36 +81,32 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 				}else{		
 					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");
 					
-					String sProgram = "";
-					KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
-					if(panelParent!=null){
-						sProgram = KernelUIZZZ.getProgramName(panelParent);
-					}else{
-						sProgram = this.getClass().getName();
+					sModule = dialog.getModuleName();												  								 
+					if(StringZZZ.isEmpty(sModule)) {
+						sModule = this.getModuleUsed();
 					}
-								
-					String sModule = dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt								 
-					if(StringZZZ.isEmpty(sProgram)){
-						ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+					if(StringZZZ.isEmpty(sModule)){
+						ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 						throw ez;
 					}
 					
-					
-//					Frame frameParentDlg = dialog.getFrameParent();
-//					
-//					String sModule = frameParentDlg.getClass().getName();  //der Frame, über den diese Dialogbox liegt	
-//					KernelJPanelCascadedZZZ panelParent = this.getPanelParent();					
-//					String sProgram = panelParent.getDialogParent().getClass().getName();           //Die Dialogbox selbst 
-					
-//TODO GOON 20210119					objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIP);
-					bReturn = true; //erst dann wird das PostCustom-ausgeführt
+					sProgram = dialog.getProgramName();
+					if(StringZZZ.isEmpty(sProgram)){
+						sProgram = this.getProgramUsed();
+					}
+					if(StringZZZ.isEmpty(sProgram)){
+						ExceptionZZZ ez = new ExceptionZZZ("No program configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+						throw ez;
+					}																					
 				}		
-							
+				objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIP);
+				bReturn = true; //erst dann wird das PostCustom-ausgeführt
+				
 				}//END main:
 			}catch(ExceptionZZZ ez){
 				System.out.println(ez.getDetailAllLast());
 				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
-			}
+			}			
 			return bReturn;
 		}
 
