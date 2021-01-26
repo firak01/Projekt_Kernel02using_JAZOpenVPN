@@ -95,6 +95,20 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			menu.add(menueeintrag);		
 			menueeintrag.addActionListener(this);
 			
+			//DUMMY Einträge, a: Server / Client
+			//DUMMY Einträge, damit der unterste Eintrag ggfs. nicht durch die Windows Taskleiste verdeckt wird
+			JMenuItem menueeintragLine = new JMenuItem("------------------");
+			menu.add(menueeintragLine);
+			//Kein actionListener für Dummy Eintrag
+						
+			JMenuItem menueeintragContext = new JMenuItem("RUNNING AS SERVER");
+			menu.add(menueeintragContext);
+			//Kein actionListener für Dummy Eintrag
+			
+			JMenuItem menueeintragDummy = new JMenuItem(" ");
+			menu.add(menueeintragDummy);
+			//Kein actionListener für Dummy Eintrag
+			
 			/* das scheint dann doch nicht notwendig zu sein !!!
 			menueeintrag.addMouseListener(new MouseAdapter(){
 				public void mouseReleased(MouseEvent me){

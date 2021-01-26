@@ -11,6 +11,5 @@
 	<classpathentry exported="true" kind="lib" path="/ZKernelFileCollection/jdom.jar"/>
 	<classpathentry exported="true" kind="lib" path="/ZKernelFileCollection/jacob.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JAZKernelUI"/>
-	<classpathentry kind="lib" path="/ZKernelFileCollection/jgoodies/forms-1.0.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
