@@ -52,30 +52,18 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
 		this.setFlagZ(KernelJPanelCascadedZZZ.FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);	
-			
-		//Diese einfache Maske besteht aus 3 Zeilen und 4 Spalten. 
-		//Es gibt außen einen Rand von jeweils einer Spalte/Zeile
-		//Merke: gibt man pref an, so bewirkt dies, das die Spalte beim ver�ndern der Fenstergröße nicht angepasst wird, auch wenn grow dahinter steht.
 		
-		//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
-		//zweiter Parameter sind die Zeilen/Rows (hier:  drei), Merke: Wenn eine feste L�nge k�rzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
-		FormLayout layout = new FormLayout(
-				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",         
-				"5dlu, center:10dlu, 5dlu"); 				 
-		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugwiesen werden BEVOR mit constraints die Componenten positioniert werden.
-		CellConstraints cc = new CellConstraints();
-		
-		JLabel label = new JLabel("Server IP (from Configuration-Ini-File):");
-		this.add(label, cc.xy(2,2));
-			
+		//#############################################################################################
+		//### Auslesen des bisher verwendeten ini-Eintrags. 
+		//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
 		//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
 		String sIp = "";
-		
-//		Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
+				
+		//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
 		KernelJDialogExtendedZZZ dialog = this.getDialogParent();
 		KernelJFrameCascadedZZZ frameParent = null;
 		//Hier nicht, da die Dialogbox schon ein Flag bekommen hat. this.setFlagZ(KernelJPanelCascadedZZZ.FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);//Damit wird es zum PROGRAM
-		
+				
 		String sProgram; String sModule;
 		if(dialog==null){
 			frameParent = this.getFrameParent();									
@@ -105,17 +93,50 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 				throw ez;
 			}							
 		}	
-		
+				
 		//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
 		IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
 		sIp = objEntry.getValue();
-		
+				
 		//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
 		if(StringZZZ.isEmpty(sIp)){
 			sIp = "Enter or refresh";
 		}
 		
-		JTextField textfieldIPExternal = new JTextField(sIp, 20);
+		//- - - - - 
+		String sIpRouter="";
+		if(StringZZZ.isEmpty(sIpRouter)){
+			sIpRouter = "Enter or refresh";
+		}
+		//#######################################
+		
+		
+		//##################################################################
+		//### Definition des Masken UIs
+		//###
+		//Diese einfache Maske besteht aus 3 Zeilen und 6 Spalten. 
+		//Es gibt außen einen Rand von jeweils einer Spalte/Zeile
+		//Merke: gibt man pref an, so bewirkt dies, das die Spalte beim veraendern der Fenstergröße nicht angepasst wird, auch wenn grow dahinter steht.
+		
+		//Maske für die Serverkonfiguration, unterscheidet sich von der Maske für die Clientkonfiguration.
+		//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
+		//zweiter Parameter sind die Zeilen/Rows (hier:  drei, immer mit "kleiner Zeile für zusätzlichen Abstand"), Merke: Wenn eine feste Laenge kuerzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
+		FormLayout layout = new FormLayout(
+				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",         
+				"5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu"); 				 
+		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
+		CellConstraints cc = new CellConstraints();
+		
+		JLabel labelRouter = new JLabel("Server IP (from the Web):");
+		this.add(labelRouter, cc.xy(2,2));
+		
+		JLabel labelIni = new JLabel("Server IP (from the Router):");
+		this.add(labelIni, cc.xy(2,4));
+			
+		
+		
+		//--------------------------------------------------------------------
+		JTextField textfieldIPExternal = new JTextField(sIp, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
 		textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
 		textfieldIPExternal.setCaretPosition(0);
 		//Dimension dim = new Dimension(10, 15);
@@ -127,14 +148,54 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
 		this.setComponent("text1", textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
-		//Merke: Der Server baut die Internetseite.
-		//TODOGOON; //20210125 Jetzt nicht aus dem Internet refreshen, sondern vom Router.
+		//- - - - - - - 
+		JTextField textfieldIPRouter = new JTextField(sIpRouter, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+		textfieldIPRouter.setHorizontalAlignment(JTextField.LEFT);
+		//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
+		//Dimension dim = new Dimension(10, 15);
+		//textfield.setPreferredSize(dim);
+		this.add(textfieldIPRouter, cc.xy(4,4));
 		
-		JButton buttonReadIPExternal = new JButton("Refresh server ip from the router.");
-		ActionIPRefreshOVPN actionIPRefresh = new ActionIPRefreshOVPN(objKernel, this);
-		buttonReadIPExternal.addActionListener(actionIPRefresh);
+		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
+		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
+		this.setComponent("textIpRouter", textfieldIPRouter);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
-		this.add(buttonReadIPExternal, cc.xy(6,2));
+		
+		
+		
+		
+		
+		//-------------------------------------------------------------------
+		//Merke: Der Server baut die Internetseite basierend auf dem Ini Eintrag.
+		//       Der letzte Eintrag kommt dann aus der aktuellen Web-Version.
+		JButton buttonReadIPWeb = new JButton("Refresh server ip from the web.");
+		ActionIPRefreshOVPN actionIPRefreshWeb = new ActionIPRefreshOVPN(objKernel, this);
+		buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
+		this.add(buttonReadIPWeb, cc.xy(6,2));
+		
+		JButton buttonReadIPRouter = new JButton("TODO; Refresh server ip from the router.");
+		ActionIPRefreshOVPN actionIPRefreshRouter = new ActionIPRefreshOVPN(objKernel, this);
+		buttonReadIPRouter.addActionListener(actionIPRefreshRouter);
+		this.add(buttonReadIPRouter, cc.xy(6,4));
+		
+		
+		JButton buttonWriteIPRouter = new JButton("TODO: Use Router Value.");
+		ActionIPRefreshOVPN actionWriteIPRouter = new ActionIPRefreshOVPN(objKernel, this);
+		buttonWriteIPRouter.addActionListener(actionWriteIPRouter);
+		this.add(buttonWriteIPRouter, cc.xy(6,6));
+		
+		
+		JButton buttonGenerateIPPage = new JButton("TODO: Generate lokal IP-Page.");
+		ActionIPRefreshOVPN actionGenerateIPPage = new ActionIPRefreshOVPN(objKernel, this);
+		buttonGenerateIPPage.addActionListener(actionGenerateIPPage);
+		this.add(buttonGenerateIPPage, cc.xy(6,8));
+
+		JButton buttonUploadIPPage = new JButton("TODO: Upload IP-Page.");
+		ActionIPRefreshOVPN actionUploadIPPage = new ActionIPRefreshOVPN(objKernel, this);
+		buttonUploadIPPage.addActionListener(actionUploadIPPage);
+		this.add(buttonUploadIPPage, cc.xy(6,10));
+		
 		
 		
 		/* Das funktioniert nicht. Funktionalit�t des JGoodies-Framework. Warum ???

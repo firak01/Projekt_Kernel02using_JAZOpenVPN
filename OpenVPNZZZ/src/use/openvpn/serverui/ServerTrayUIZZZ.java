@@ -95,7 +95,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			menu.add(menueeintrag);		
 			menueeintrag.addActionListener(this);
 			
-			//DUMMY Einträge, a: Server / Client
+			//DUMMY Einträge, sofort erkennen ob Server / Client
 			//DUMMY Einträge, damit der unterste Eintrag ggfs. nicht durch die Windows Taskleiste verdeckt wird
 			JMenuItem menueeintragLine = new JMenuItem("------------------");
 			menu.add(menueeintragLine);
@@ -460,11 +460,11 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
 					//Merke: Es gibt noch keine Flags, darum ist hmFlag = null;
 					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, null);
-					dlgIPExternal.setText4ButtonOk("USE VALUE");			
+					//dlgIPExternal.setText4ButtonOk("USE VALUE");			
 					try {
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-						dlgIPExternal.showDialog(null, "Connection/IP External Current");
-						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'Connection/IP External Current'");
+						dlgIPExternal.showDialog(null, "Build and Upload IP Page");
+						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'Build and Upload IP Page'");
 					} catch (ExceptionZZZ ez) {					
 						System.out.println(ez.getDetailAllLast()+"\n");
 						ez.printStackTrace();
