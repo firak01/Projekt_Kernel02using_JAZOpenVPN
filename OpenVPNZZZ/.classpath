@@ -10,6 +10,7 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZWin32"/>
 	<classpathentry exported="true" kind="lib" path="/ZKernelFileCollection/jdom.jar"/>
 	<classpathentry exported="true" kind="lib" path="/ZKernelFileCollection/jacob.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JAZKernelUI"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZKernelUI"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZWebFTP"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -191,8 +191,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		buttonGenerateIPPage.addActionListener(actionGenerateIPPage);
 		this.add(buttonGenerateIPPage, cc.xy(6,8));
 
-		JButton buttonUploadIPPage = new JButton("TODO: Upload IP-Page.");
-		ActionIPRefreshOVPN actionUploadIPPage = new ActionIPRefreshOVPN(objKernel, this);
+		JButton buttonUploadIPPage = new JButton("Upload IP-Page.");
+		ActionPageWebUploadOVPN actionUploadIPPage = new ActionPageWebUploadOVPN(objKernel, this);
 		buttonUploadIPPage.addActionListener(actionUploadIPPage);
 		this.add(buttonUploadIPPage, cc.xy(6,10));
 		
@@ -376,5 +376,172 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 			}
 			
 	}//End class ...KErnelActionCascaded....
+		
+		
+//		#######################################
+		//Innere Klassen, welche eine Action behandelt	
+		class ActionPageWebUploadOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+			public ActionPageWebUploadOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+				super(objKernel, panelParent);			
+			}
+			
+			public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
+//				try {
+				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'PageWeb-Upload'");
+													
+				String[] saFlag = {"useProxy"};					
+				KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
+																		
+				SwingWorker4ProgramPageWebUploadOVPN worker = new SwingWorker4ProgramPageWebUploadOVPN(objKernel, panelParent, saFlag);
+				worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
+				
+
+			/*} catch (ExceptionZZZ ez) {				
+				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+			}	*/
+				
+				return true;
+			}
+
+			public boolean actionPerformQueryCustom(ActionEvent ae) throws ExceptionZZZ {
+				return true;
+			}
+
+			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
+			}			 							
+			
+			class SwingWorker4ProgramPageWebUploadOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
+				private IKernelZZZ objKernel;
+				private LogZZZ objLog;
+				private KernelJPanelCascadedZZZ panel;
+				private String[] saFlag4Program;
+				
+				private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Jier als Variable, damit die intene Runner-Klasse darauf zugreifen kann.
+															// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
+				
+							
+				protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
+				
+				public SwingWorker4ProgramPageWebUploadOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+					super();
+					this.objKernel = objKernel;
+					this.objLog = objKernel.getLogObject();
+					this.panel = panel;
+					this.saFlag4Program = saFlag4Program;					
+				}
+				
+				//#### abstracte - Method aus SwingWorker
+				public Object construct() {
+					try{
+						//1. Ins Label schreiben, dass hier ein Update stattfindet
+						updateTextField("Uploading ...");
+						
+						//2. Hochladen der Webseite
+						ProgramPageWebUploadOVPN objProgWebPageUpload = new ProgramPageWebUploadOVPN(objKernel, this.panel, this.saFlag4Program);					
+						boolean bSuccessWebUpload = objProgWebPageUpload.uploadPageWeb();
+						
+						//3. Diesen Wert wieder ins Label schreiben.
+						updateTextField("Upload ended.");
+					}catch(ExceptionZZZ ez){
+						System.out.println(ez.getDetailAllLast());
+						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+					}
+					return "all done";
+				}
+				
+				/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
+				 *  Entspricht auch ProgramIPContext.updateLabel(..)
+				* @param stext
+				* 
+				* lindhaueradmin; 17.01.2007 12:09:17
+				 */
+				public void updateTextField(String stext){
+					this.sText2Update = stext;
+					
+//					Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+					Runnable runnerUpdateLabel= new Runnable(){
+
+						public void run(){
+//							In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'text1");				
+							JTextField textField = (JTextField) panel.getComponent("text1");					
+							textField.setText(sText2Update);
+							textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
+						}
+					};
+					
+					SwingUtilities.invokeLater(runnerUpdateLabel);	
+					
+//					In das Textfeld eintragen, das etwas passiert.								
+					//JTextField textField = (JTextField) panelParent.getComponent("text1");					
+					//textField.setText("Lese aktuellen Wert .....");
+					
+				}
+
+				public IKernelZZZ getKernelObject() {
+					return this.objKernel;
+				}
+
+				public void setKernelObject(IKernelZZZ objKernel) {
+					this.objKernel = objKernel;
+				}
+
+				public LogZZZ getLogObject() {
+					return this.objLog;
+				}
+
+				public void setLogObject(LogZZZ objLog) {
+					this.objLog = objLog;
+				}
+				
+				
+				
+				
+				/* (non-Javadoc)
+				 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
+				 */
+				public ExceptionZZZ getExceptionObject() {
+					return this.objException;
+				}
+				/* (non-Javadoc)
+				 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
+				 */
+				public void setExceptionObject(ExceptionZZZ objException) {
+					this.objException = objException;
+				}
+				
+				//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
+				@Override
+				public void logLineDate(String sLog) {
+					LogZZZ objLog = this.getLogObject();
+					if(objLog==null) {
+						String sTemp = KernelLogZZZ.computeLineDate(sLog);
+						System.out.println(sTemp);
+					}else {
+						objLog.WriteLineDate(sLog);
+					}		
+				}	
+				
+				
+				/**Overwritten and using an object of jakarta.commons.lang
+				 * to create this string using reflection. 
+				 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 
+				 */
+				public String toString(){
+					String sReturn = "";
+					sReturn = ReflectionToStringBuilder.toString(this);
+					return sReturn;
+				}
+
+			} //End Class MySwingWorker
+
+			public void actionPerformCustomOnError(ActionEvent ae, ExceptionZZZ ez) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+	}//End class ...KErnelActionCascaded....
+		
 }
 
