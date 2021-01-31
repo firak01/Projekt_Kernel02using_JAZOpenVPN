@@ -92,7 +92,7 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 			//TODOGOON; //20210128 Programname nicht aus dem Panel, sondern das Program selbst
 			          //Ggf. IKernelModuleUserZZZ implementieren
 			String sProgramName = ""; 
-			sProgramName = KernelUIZZZ.getProgramName(this);
+			sProgramName = KernelUIZZZ.getProgram(this);
 			
 			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
 			

@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
@@ -22,7 +23,7 @@ import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.clientui.IConstantClientOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import basic.zKernel.KernelZZZ;
-
+import basic.zKernel.module.IKernelModuleZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
@@ -469,8 +470,10 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					JOptionPane.showMessageDialog(null, stemp, "Log der Verbindung", JOptionPane.INFORMATION_MESSAGE );
 				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_PAGE_IP_READ)) {
 					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-					//Merke: Es gibt noch keine Flags, darum ist hmFlag = null;
-					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, null);
+					//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
+					HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+					hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
 					dlgIPExternal.setText4ButtonOk("USE VALUE");			
 					try {
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
