@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.util.zip.ZipEntry;
 
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.IFlagZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -16,6 +15,7 @@ import basic.zBasic.util.file.zip.FilenamePartFilterPathZipZZZ;
 import basic.zBasic.util.file.zip.FilenamePartFilterPrefixZipZZZ;
 import basic.zBasic.util.file.zip.FilenamePartFilterSuffixZipZZZ;
 import basic.zBasic.util.file.zip.ZipEntryFilter;
+import basic.zKernel.flag.IFlagZZZ;
 import basic.zUtil.io.IFileExpansionUserZZZ;
 import basic.zUtil.io.IFileExpansionZZZ;
 
