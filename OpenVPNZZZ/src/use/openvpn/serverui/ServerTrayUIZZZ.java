@@ -28,6 +28,8 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.module.IKernelModuleZZZ;
+import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
 public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListener {
@@ -457,9 +459,10 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					//this.getTrayIconObject() ist keine Component ????
 					JOptionPane.showMessageDialog(null, stemp, "Log des OVPN Connection Listeners", JOptionPane.INFORMATION_MESSAGE );
 				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_PAGE_IP_UPLOAD)) {
-					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-					//Merke: Es gibt noch keine Flags, darum ist hmFlag = null;
-					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, null);
+					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
+					HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+					hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
 					//dlgIPExternal.setText4ButtonOk("USE VALUE");			
 					try {
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
