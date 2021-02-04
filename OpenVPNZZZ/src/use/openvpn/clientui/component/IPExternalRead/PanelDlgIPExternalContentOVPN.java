@@ -77,34 +77,46 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		//Hier nicht, da die Dialogbox schon ein Flag bekommen hat. this.setFlagZ(KernelJPanelCascadedZZZ.FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);//Damit wird es zum PROGRAM
 		
 		String sProgram; String sModule;
-		if(dialog==null){
-			frameParent = this.getFrameParent();									
-			sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
-			sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent); 
-			if(StringZZZ.isEmpty(sModule)){
-				ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program: '" +  sProgram + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}		
-		}else{			
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");
-			sModule = dialog.getModuleName();												  								 
-			if(StringZZZ.isEmpty(sModule)) {
-				sModule = this.getModuleName();
-			}
-			if(StringZZZ.isEmpty(sModule)){
-				ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}
-			
-			sProgram = dialog.getProgramName();
-			if(StringZZZ.isEmpty(sProgram)){
-				sProgram = this.getProgramName();
-			}
-			if(StringZZZ.isEmpty(sProgram)){
-				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}									
+		sModule = this.getModuleName();
+		if(StringZZZ.isEmpty(sModule)){
+			ExceptionZZZ ez = new ExceptionZZZ("No module configured.", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}
+		
+		sProgram = this.getProgramName();
+		if(StringZZZ.isEmpty(sProgram)){
+			ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
 		}	
+			
+//		if(dialog==null){
+//			frameParent = this.getFrameParent();									
+//			sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
+//			sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent); 
+//			if(StringZZZ.isEmpty(sModule)){
+//				ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program: '" +  sProgram + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//			}		
+//		}else{			
+//			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");
+//			sModule = dialog.getModuleName();												  								 
+//			if(StringZZZ.isEmpty(sModule)) {
+//				sModule = this.getModuleName();
+//			}
+//			if(StringZZZ.isEmpty(sModule)){
+//				ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//			}
+//			
+//			sProgram = dialog.getProgramName();
+//			if(StringZZZ.isEmpty(sProgram)){
+//				sProgram = this.getProgramName();
+//			}
+//			if(StringZZZ.isEmpty(sProgram)){
+//				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//			}									
+//		}	
 		
 		//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.					
 		IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");

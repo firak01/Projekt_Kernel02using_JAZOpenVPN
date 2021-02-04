@@ -83,7 +83,7 @@ public class ProgramIPContentOVPN extends KernelUseObjectZZZ{
 			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
 			String sProgramName = ""; 
 			if(panelParent!=null){
-				sProgramName = KernelUIZZZ.getProgramName(panelParent);
+				sProgramName = KernelUIZZZ.getProgramUsedName(panelParent);
 			}else{
 				sProgramName = this.getClass().getName();
 			}

@@ -23,7 +23,7 @@ import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.clientui.IConstantClientOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import basic.zKernel.KernelZZZ;
-import basic.zKernel.module.IKernelModuleZZZ;
+import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;

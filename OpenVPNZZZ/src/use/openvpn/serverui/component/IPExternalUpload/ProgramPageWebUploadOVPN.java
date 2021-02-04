@@ -24,10 +24,10 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.component.AbstractKernelProgramZZZ;
 import basic.zKernel.html.TagInputZZZ;
 import basic.zKernel.html.TagTypeInputZZZ;
 import basic.zKernel.html.reader.KernelReaderHtmlZZZ;
-import basic.zKernel.module.AbstractKernelProgramZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.net.client.KernelReaderPageZZZ;
 import basic.zKernel.net.client.KernelReaderURLZZZ;
@@ -80,8 +80,9 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 			
 			this.setPanelParent(panel);
 			
+			TODOGOON; //HIER FEHLT NOCH DAS MODUL...
 			KernelJDialogExtendedZZZ dialog = this.getPanelParent().getDialogParent();  //this.getDialogParent();
-			String sModuleName = dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt	
+			String sModuleName = KernelUIZZZ.getModuleUsedName(this); //dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt	
 			if(StringZZZ.isEmpty(sModuleName)){
 				ExceptionZZZ ez = new ExceptionZZZ("ModuleName", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
@@ -89,15 +90,17 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 				this.setModuleName(sModuleName);
 			}
 			
+			
 			//TODOGOON; //20210128 Programname nicht aus dem Panel, sondern das Program selbst
 			          //Ggf. IKernelModuleUserZZZ implementieren
+			//ALSO den ISKERNELPROGRAM-FALG setzen !!!
 			String sProgramName = ""; 
-			sProgramName = KernelUIZZZ.getProgram(this);
+			sProgramName = this.getProgramName(); //KernelUIZZZ.getProgramUsedName(this);
 			
-			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
-			
+			//TODOGOON; // DAS WEG
+			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();			
 			if(panelParent!=null){
-				sProgramName = KernelUIZZZ.getProgramName(panelParent);
+				sProgramName = KernelUIZZZ.getProgramUsedName(panelParent);
 			}else{
 				sProgramName = this.getClass().getName();
 			}

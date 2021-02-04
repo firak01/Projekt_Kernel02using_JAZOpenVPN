@@ -28,7 +28,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
-import basic.zKernel.module.IKernelModuleZZZ;
+import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
