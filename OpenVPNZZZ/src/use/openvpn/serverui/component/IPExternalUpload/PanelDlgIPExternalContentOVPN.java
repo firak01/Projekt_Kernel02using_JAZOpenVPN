@@ -456,7 +456,11 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 						boolean bSuccessWebUpload = objProgWebPageUpload.uploadPageWeb();
 						
 						//3. Diesen Wert wieder ins Label schreiben.
-						updateTextField("Upload ended.");
+						if(bSuccessWebUpload) {
+							updateTextField("Upload ended with success.");
+						}else {
+							updateTextField("Upload not successful, details in log.");
+						}
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					

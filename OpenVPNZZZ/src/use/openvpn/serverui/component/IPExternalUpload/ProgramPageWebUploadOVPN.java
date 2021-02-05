@@ -41,9 +41,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
-	private String sModuleName=null;
-	
+public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{	
 	private String sTargetUrl=null;
 
 	private String sIPProxy = null;
@@ -80,51 +78,28 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 			
 			this.setPanelParent(panel);
 			
-			TODOGOON; //HIER FEHLT NOCH DAS MODUL...
-			KernelJDialogExtendedZZZ dialog = this.getPanelParent().getDialogParent();  //this.getDialogParent();
-			String sModuleName = KernelUIZZZ.getModuleUsedName(this); //dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt	
+			//TODOGOON 20210205; //HIER EINE SUCHE NACH DEM MODUL, d.h. nach dem Objekt, das das FLAG gesetzt hat.
+			//1. Frame oder Dialog, 2. davon PanelParent, etc...
+			//Das gefundene Objekt dann in .setModule setzen
+			KernelJDialogExtendedZZZ dialog = this.getPanelParent().getDialogParent();
+			this.setModule(dialog);
+			String sModuleName = KernelUIZZZ.getModuleUsedName(this);	
 			if(StringZZZ.isEmpty(sModuleName)){
 				ExceptionZZZ ez = new ExceptionZZZ("ModuleName", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
-			}else{
-				this.setModuleName(sModuleName);
 			}
-			
-			
-			//TODOGOON; //20210128 Programname nicht aus dem Panel, sondern das Program selbst
-			          //Ggf. IKernelModuleUserZZZ implementieren
-			//ALSO den ISKERNELPROGRAM-FALG setzen !!!
-			String sProgramName = ""; 
-			sProgramName = this.getProgramName(); //KernelUIZZZ.getProgramUsedName(this);
-			
-			//TODOGOON; // DAS WEG
-			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();			
-			if(panelParent!=null){
-				sProgramName = KernelUIZZZ.getProgramUsedName(panelParent);
-			}else{
-				sProgramName = this.getClass().getName();
-			}
-			if(StringZZZ.isEmpty(sProgramName)){
-				ExceptionZZZ ez = new ExceptionZZZ("ProgramName", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}else{
-				this.setProgramName(sProgramName);
-			}
-			
 			
 			//### Prüfen, ob das Modul konfiguriert ist
-//			boolean bIsConfigured = objKernel.proofModuleFileIsConfigured(sModuleAlias);
-//			if(bIsConfigured==false){
-//				ExceptionZZZ ez = new ExceptionZZZ("ModuleAlias='" + sModuleAlias + "' seems not to be configured for the Application '" + objKernel.getApplicationKey(), iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName());
-//				throw ez;
-//			}		
-//			boolean bExists = objKernel.proofModuleFileExists(sModuleAlias);
-//			if(bExists==false){
-//				ExceptionZZZ ez = new ExceptionZZZ("ModuleAlias='" + sModuleAlias + "' is configured, but the file does not exist for the Application '" + objKernel.getApplicationKey(), iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName());
-//				throw ez;
-//			}	
-			
-			
+			boolean bIsConfigured = objKernel.proofModuleFileIsConfigured(sModuleName);
+			if(bIsConfigured==false){
+				ExceptionZZZ ez = new ExceptionZZZ("ModuleName='" + sModuleName + "' seems not to be configured for the Application '" + objKernel.getApplicationKey(), iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}		
+			boolean bExists = objKernel.proofModuleFileExists(sModuleName);
+			if(bExists==false){
+				ExceptionZZZ ez = new ExceptionZZZ("ModuleName='" + sModuleName + "' is configured, but the file does not exist for the Application '" + objKernel.getApplicationKey(), iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}	
 		}//END main
 	}
 		
@@ -135,14 +110,6 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 	}
 	public void setPanelParent(KernelJPanelCascadedZZZ panel){
 		this.panel = panel;
-	}
-	
-	
-	public String getModuleName(){
-		return this.sModuleName;
-	}
-	public void setModuleName(String sModuleName){
-		this.sModuleName=sModuleName;
 	}
 	
 	public String getTargetUrl() throws ExceptionZZZ{
@@ -221,15 +188,18 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 		
 		//4. Konfiguration auslesen
 		//Hier werden Informationen ueber die IP-Adressdatei ausgelesen, etc.
-		FileIniZZZ objFileIniIPConfig = objKernel.getFileConfigIniByAlias("FTP");
-								
-		IKernelConfigSectionEntryZZZ entryServer = objKernel.getParameterByProgramAlias(objFileIniIPConfig, "FTP","Server");
+		String sModule = this.getModuleName();
+		FileIniZZZ objFileIniIPConfig = objKernel.getFileConfigIniByAlias(sModule);
+		
+		//Programname nicht aus dem Panel, sondern das Program selbst
+		String sProgram = this.getProgramName();		
+		IKernelConfigSectionEntryZZZ entryServer = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"Server");
 		String sServer = entryServer.getValue();
 		
-		IKernelConfigSectionEntryZZZ entryUser = objKernel.getParameterByProgramAlias(objFileIniIPConfig, "FTP","User");
+		IKernelConfigSectionEntryZZZ entryUser = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"User");
 		String sUser = entryUser.getValue();
 		
-		IKernelConfigSectionEntryZZZ entryPassword = objKernel.getParameterByProgramAlias(objFileIniIPConfig, "FTPModul","Password");
+		IKernelConfigSectionEntryZZZ entryPassword = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"Password");
 		String sPassword = entryPassword.getValue();
 		
 		System.out.println("Page Transfer - Login detail read from file: "+sServer + " ("+sUser+" - "+sPassword+")");
@@ -245,11 +215,11 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 			 * TargetDirectory=c:\temp
 TargetFile=testpage.html
 			 */
-		IKernelConfigSectionEntryZZZ entryDirSource=objKernel.getParameterByProgramAlias(objFileIniIPConfig, "FTPModul","SourceDirectory");
+		
+		IKernelConfigSectionEntryZZZ entryDirSource=objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"SourceDirectory");
 		String sDirSource = entryDirSource.getValue();
 		
-		//Also eigentlich objKernel.getParameterByProgramAlias(objFileIniIPConfgi, "ProgFTP","SourceDirectory");
-		IKernelConfigSectionEntryZZZ entryFile = objKernel.getParameterByProgramAlias(objFileIniIPConfig, "FTPModul","SourceFile");
+		IKernelConfigSectionEntryZZZ entryFile = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"SourceFile");
 		String sFile = entryFile.getValue();
 		
 		//Also eigentlich objKernel.getParameterByProgramAlias(objFileIniIPConfgi, "ProgFTP","SourceFile");
@@ -257,24 +227,25 @@ TargetFile=testpage.html
 		File objFile = new File(sFilePath);
 		if(!FileEasyZZZ.exists(objFile)){
 			System.out.println("File not found '"+sFilePath);
+			bReturn = false;
 		}else{
-			IKernelConfigSectionEntryZZZ entryDirTarget=objKernel.getParameterByProgramAlias(objFileIniIPConfig, "FTPModul","TargetDirectory");
+			IKernelConfigSectionEntryZZZ entryDirTarget=objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"TargetDirectory");
 			String sDirTarget = entryDirTarget.getValue();
 			StringZZZ.replace(sDirTarget, FileEasyZZZ.sDIRECTORY_SEPARATOR_WINDOWS, CharZZZ.toString(objFTP.getDirectorySeparatorRemote()));
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": DirTarget='"+sDirTarget+"'");
 			
 			//Dateiname bleibt gleich, also nicht extra auslesen.
-			//IKernelConfigSectionEntryZZZ entryFileTarget = objKernel.getParameterByProgramAlias(objFileIniIPConfig, "FTPModul","TargetFile");
+			//IKernelConfigSectionEntryZZZ entryFileTarget = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"TargetFile");
 			//String sFileTarget = entryFileTarget.getValue();				
 			String sFileTargetTotal = FileEasyZZZ.joinFilePathName(sDirTarget, sFile, objFTP.getDirectorySeparatorRemote(), true); //Merke: Bei dem Remote-Pfad soll sichergestellt sein, dass kein src-Root Ordner voranagestellt ist.
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FileTargetName: "+sFileTargetTotal);
 															
-			btemp = objFTP.uploadFile(objFile, sDirTarget);
+			bReturn = objFTP.uploadFile(objFile, sDirTarget);
 		}
 		
 		
 		//7. Verbindung schliessen
-		if (btemp==true){
+		if (bReturn==true){
 			System.out.println("Transfer - successfull, now disconnecting"); 
 		}else{
 			 System.out.println("Transfer - NOT successfull, now disconnecting");					
