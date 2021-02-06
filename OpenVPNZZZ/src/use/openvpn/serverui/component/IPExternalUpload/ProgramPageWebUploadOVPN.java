@@ -234,13 +234,12 @@ TargetFile=testpage.html
 			StringZZZ.replace(sDirTarget, FileEasyZZZ.sDIRECTORY_SEPARATOR_WINDOWS, CharZZZ.toString(objFTP.getDirectorySeparatorRemote()));
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": DirTarget='"+sDirTarget+"'");
 			
-			//Dateiname bleibt gleich, also nicht extra auslesen.
-			//IKernelConfigSectionEntryZZZ entryFileTarget = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"TargetFile");
-			//String sFileTarget = entryFileTarget.getValue();				
-			String sFileTargetTotal = FileEasyZZZ.joinFilePathName(sDirTarget, sFile, objFTP.getDirectorySeparatorRemote(), true); //Merke: Bei dem Remote-Pfad soll sichergestellt sein, dass kein src-Root Ordner voranagestellt ist.
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FileTargetName: "+sFileTargetTotal);
+			//Dateiname bleibt ggfs. nicht gleich, also extra auslesen.
+			IKernelConfigSectionEntryZZZ entryFileTarget = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"TargetFile");
+			String sFileTarget = entryFileTarget.getValue();
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FileTarget='"+sFileTarget+"'");
 															
-			bReturn = objFTP.uploadFile(objFile, sDirTarget);
+			bReturn = objFTP.uploadFile(objFile, sDirTarget, sFileTarget);
 		}
 		
 		
