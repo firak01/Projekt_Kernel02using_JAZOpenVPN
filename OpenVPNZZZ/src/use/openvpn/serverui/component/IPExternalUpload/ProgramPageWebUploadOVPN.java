@@ -202,10 +202,18 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 		IKernelConfigSectionEntryZZZ entryPassword = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"Password");
 		String sPassword = entryPassword.getValue();
 		
-		System.out.println("Page Transfer - Login detail read from file: "+sServer + " ("+sUser+" - "+sPassword+")");
-
+		IKernelConfigSectionEntryZZZ entryRoot = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"RootPath");
+		String sRootPath = entryRoot.getValue();
+		
+		
+		System.out.println("Page Transfer - Login detail read from file: "+sServer + " ("+sUser+" - "+sPassword+"), RootPath='" + sRootPath + "'" );
+		objFTP.setServer(sServer);
+		objFTP.setUser(sUser);
+		objFTP.setPassword(sPassword);
+		objFTP.setRootPath(sRootPath);
+		
 			//5. Login
-		btemp = objFTP.makeConnection(sServer, sUser, sPassword);
+		btemp = objFTP.makeConnection();
 		if (btemp==true) System.out.println("Connction - successfull, now transfering file");
 		
 		//6. Datei ermitteln und �bertragen
