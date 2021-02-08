@@ -21,6 +21,7 @@ import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelLogZZZ;
+import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
@@ -51,7 +52,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		super(objKernel, dialogExtended);
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
-		this.setFlagZ(KernelJPanelCascadedZZZ.FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);	
+		this.setFlagZ(IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name(), true);	
 		
 		//#############################################################################################
 		//### Auslesen des bisher verwendeten ini-Eintrags. 
