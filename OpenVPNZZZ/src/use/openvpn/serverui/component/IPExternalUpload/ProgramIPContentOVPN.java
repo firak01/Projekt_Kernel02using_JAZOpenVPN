@@ -431,8 +431,8 @@ public class ProgramIPContentOVPN extends KernelUseObjectZZZ{
 
 			public void run(){
 //				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'text1");				
-				JTextField textField = (JTextField) panel.getComponent("text1");					
+				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'textIpContent");				
+				JTextField textField = (JTextField) panel.getComponent("textIpContent");					
 				textField.setText(sText2Update);
 				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
 			}

@@ -55,7 +55,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 				//Hier erst einmal den Inhalt einer per Alias zugänglich gemachten Komponente (siehe KernelPanelCascadedZZZ) auslesen
 				KernelJPanelCascadedZZZ panelButton = (KernelJPanelCascadedZZZ) this.getPanelParent();
 				KernelJPanelCascadedZZZ panelCenter = (KernelJPanelCascadedZZZ) panelButton.getPanelNeighbour("CENTER");
-				JTextField texttemp = (JTextField) panelCenter.getComponent("text1");
+				JTextField texttemp = (JTextField) panelCenter.getComponent("textIpContent");
 				String sIP= texttemp.getText();	
 				
 				ReportLogZZZ.write(ReportLogZZZ.INFO, "IP/URL found for use closing dialog 'TODOGOON hier den Namen des Buttons... Export Data via Http': " + sIP);

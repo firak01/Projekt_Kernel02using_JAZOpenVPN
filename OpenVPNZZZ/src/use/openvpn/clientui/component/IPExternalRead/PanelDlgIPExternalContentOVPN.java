@@ -138,7 +138,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent("text1", textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		this.setComponent("textIpContent", textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		
 		JButton buttonReadIPExternal = new JButton("Refresh server ip from the web.");
@@ -248,8 +248,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 
 						public void run(){
 //							In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'text1");				
-							JTextField textField = (JTextField) panel.getComponent("text1");					
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'textIpContent");				
+							JTextField textField = (JTextField) panel.getComponent("textIpContent");					
 							textField.setText(sText2Update);
 							textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
 						}

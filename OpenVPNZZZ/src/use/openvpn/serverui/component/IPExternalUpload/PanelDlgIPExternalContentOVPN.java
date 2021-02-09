@@ -161,7 +161,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent("text1", textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		this.setComponent("textIpContent", textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		//- - - - - - - 
 		JTextField textfieldIPRouter = new JTextField(sIpRouter, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
@@ -177,6 +177,16 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		this.setComponent("textIpRouter", textfieldIPRouter);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		
+		
+		//- - - - - - - -
+		JTextField textfieldWebUpload = new JTextField("", 20);
+		textfieldWebUpload.setHorizontalAlignment(JTextField.LEFT);
+		this.add(textfieldWebUpload, cc.xy(4,10));
+		
+		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
+		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
+		this.setComponent("textWebUpload", textfieldWebUpload);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		
 		
@@ -313,8 +323,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 
 						public void run(){
 //							In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'text1");				
-							JTextField textField = (JTextField) panel.getComponent("text1");					
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'textIpContent");				
+							JTextField textField = (JTextField) panel.getComponent("textIpContent");					
 							textField.setText(sText2Update);
 							textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
 						}
@@ -483,8 +493,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 
 						public void run(){
 //							In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'text1");				
-							JTextField textField = (JTextField) panel.getComponent("text1");					
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'textWebUpload");				
+							JTextField textField = (JTextField) panel.getComponent("textWebUpload");					
 							textField.setText(sText2Update);
 							textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
 						}
