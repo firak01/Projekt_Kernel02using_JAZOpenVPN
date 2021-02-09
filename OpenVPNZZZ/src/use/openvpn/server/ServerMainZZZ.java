@@ -64,10 +64,8 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 			
 			this.logStatusString("Searching for configuration template files '*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			IKernelZZZ objKernel = this.getKernelObject();			
-			
-			ServerApplicationOVPN objApplication = new ServerApplicationOVPN(objKernel, this);
-			this.setApplicationObject(objApplication);
-			
+						
+			ServerApplicationOVPN objApplication = (ServerApplicationOVPN) this.getApplicationObject();//Im UI erzeugt und übergeben.
 			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"server", objApplication);
 			this.setConfigChooserObject(objChooser);
 			

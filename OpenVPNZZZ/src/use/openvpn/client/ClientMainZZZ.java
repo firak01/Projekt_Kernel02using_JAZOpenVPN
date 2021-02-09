@@ -51,7 +51,7 @@ private boolean bFlagPortScanAllFinished = false;
 
 	
 	public ClientMainZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel,saFlagControl);		
+		super(objKernel,saFlagControl);
 	}
 	
 	
@@ -70,9 +70,7 @@ private boolean bFlagPortScanAllFinished = false;
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 					
 			IKernelZZZ objKernel = this.getKernelObject();	
 			
-			ClientApplicationOVPN objApplication = new ClientApplicationOVPN(objKernel, this);
-			this.setApplicationObject(objApplication);
-			
+			ClientApplicationOVPN objApplication = (ClientApplicationOVPN) this.getApplicationObject();//Im UI erzeugt und übergeben.
 			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"client",objApplication);
 			this.setConfigChooserObject(objChooser);
 						

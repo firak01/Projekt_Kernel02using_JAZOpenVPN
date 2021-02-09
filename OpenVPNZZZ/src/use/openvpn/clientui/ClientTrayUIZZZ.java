@@ -313,12 +313,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			check:{
 				if (this.objClientMain == null){
 					sReturn = "Not yet tried to connect";
-						break main;
+					break main;
 				}
 			}//END check
 			
 		if(this.sStatusString==null){
-			sReturn = sReturn + "assssffffggg\n\n"; //DAS SOLL NICHT VORKOMMEN
+			sReturn = sReturn + "Not yet tried to connect\n\n";
 		}else{
 			//20200114: Erweiterung - Angabe des Rechnernamens
 			try {

@@ -1,5 +1,6 @@
 package use.openvpn.clientui;
 
+import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
@@ -33,6 +34,9 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 				
 				//NUN DAS BACKEND-Handlebar machen
 				this.objClientMain = new ClientMainZZZ(objKernel, null);
+				
+				ClientApplicationOVPN objApplication = new ClientApplicationOVPN(objKernel, this.objClientMain);
+				this.objClientMain.setApplicationObject(objApplication);
 				
 				//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
 				this.objClientTray = new ClientTrayUIZZZ(objKernel, this.objClientMain, (String[]) null);

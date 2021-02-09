@@ -284,10 +284,10 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				this.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTING);
 				
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
-				this.objServerBackend = new ServerMainZZZ(this.getKernelObject(), null);
+				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
 				
 				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
-				Thread objThreadConfig = new Thread(this.objServerBackend);
+				Thread objThreadConfig = new Thread(this.getServerBackendObject());
 				objThreadConfig.start();
 					
 				//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.
@@ -451,7 +451,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				//System.out.println("Action to perform: " + sCommand);
 				if(sCommand.equals(IConstantServerOVPN.sLABEL_END)){
 					this.unload();	
-				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_END)){
+				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_START)){
 					this.listen();
 				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_LOG)){
 					//JOptionPane pane = new JOptionPane();

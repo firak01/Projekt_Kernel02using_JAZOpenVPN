@@ -77,38 +77,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 					ExceptionZZZ ez = new ExceptionZZZ("No program configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
-					
-//				if(dialog==null){
-//					frameParent = panelCenter.getFrameParent();	
-//					//String sProgram = frameParent.getClass().getName(); //der Frame, in den dieses Panel eingebettet ist
-//					sProgram = this.getProgramUsed(); //der Frame, in den dieses Panel eingebettet ist
-//					//String sModule = KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent);
-//					sModule = this.getModuleUsed(); //KernelUIZZZ.searchModuleFirstConfiguredClassname(frameParent);
-//					if(StringZZZ.isEmpty(sModule)){
-//						ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program: '" +  sProgram + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//						throw ez;
-//					}				
-//				}else{		
-//					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# This is a dialog.....");
-//					
-//					sModule = dialog.getModuleName();
-//					if(StringZZZ.isEmpty(sModule)) {
-//						sModule = this.getModuleUsed();
-//					}
-//					if(StringZZZ.isEmpty(sModule)){
-//						ExceptionZZZ ez = new ExceptionZZZ("No module configured for the parent frame/program", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//						throw ez;
-//					}	
-//					
-//					sProgram = dialog.getProgramName();
-//					if(StringZZZ.isEmpty(sProgram)){
-//						sProgram = this.getProgramUsed();
-//					}
-//					if(StringZZZ.isEmpty(sProgram)){
-//						ExceptionZZZ ez = new ExceptionZZZ("No program configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//						throw ez;
-//					}
-//				}	
+						
 				objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIP);
 				bReturn = true; //erst dann wird das PostCustom-ausgeführt
 							
