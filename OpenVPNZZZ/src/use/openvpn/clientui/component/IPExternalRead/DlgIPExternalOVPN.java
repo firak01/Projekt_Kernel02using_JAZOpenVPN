@@ -26,7 +26,9 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	}
 	public boolean isCentered(){
 		return false;
-	}	
+	}
+	
+	
 
 	public boolean isJComponentSnappedToScreen(){
 		return true;
@@ -34,6 +36,9 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	public boolean isButtonCancelAvailable(){
 		return true;
 	}
+	public boolean isButtonCloseAvailable() {
+		return true;
+	}	
 	public boolean isButtonOKAvailable(){
 		return true;
 	}
@@ -41,7 +46,8 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 		return  "USE VALUE";
 	}
 	public KernelJPanelCascadedZZZ getPanelButton(){
-		PanelDlgIPExternalButtonAlternativeOVPN panelButton = new PanelDlgIPExternalButtonAlternativeOVPN(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable());
+		//PanelDlgIPExternalButtonAlternativeOVPN panelButton = new PanelDlgIPExternalButtonAlternativeOVPN(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable());
+		PanelDlgIPExternalButtonAlternativeOVPN panelButton = new PanelDlgIPExternalButtonAlternativeOVPN(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable(),this.isButtonCloseAvailable());
 		return panelButton;
 	}
 	public KernelJPanelCascadedZZZ getPanelContent(){

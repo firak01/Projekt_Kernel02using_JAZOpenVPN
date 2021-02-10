@@ -78,7 +78,7 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 			
 			this.setPanelParent(panel);
 			
-			//TODOGOON 20210205; //HIER EINE SUCHE NACH DEM MODUL, d.h. nach dem Objekt, das das FLAG gesetzt hat.
+			//HIER EINE SUCHE NACH DEM MODUL, d.h. nach dem Objekt, das das FLAG gesetzt hat.
 			//1. Frame oder Dialog, 2. davon PanelParent, etc...
 			//Das gefundene Objekt dann in .setModule setzen
 			KernelJDialogExtendedZZZ dialog = this.getPanelParent().getDialogParent();

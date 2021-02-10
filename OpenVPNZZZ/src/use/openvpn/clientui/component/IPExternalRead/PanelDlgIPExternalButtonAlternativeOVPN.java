@@ -25,6 +25,9 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 	public PanelDlgIPExternalButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable){
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable);
 	}
+	public PanelDlgIPExternalButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable, boolean bIsButtonCloseAvailable){
+		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable, bIsButtonCloseAvailable);
+	}
 	
 	//#######################################################
 	//### Zugriff auf den alternativen Button
@@ -78,7 +81,10 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 					throw ez;
 				}
 						
+				//Merke: Beim Setzen wird auch der KernelCache sofort wieder neu gesetzt.
 				objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIP);
+				
+				panelButton.getDialogParent().setDisposed();			
 				bReturn = true; //erst dann wird das PostCustom-ausgeführt
 							
 				}//END main:

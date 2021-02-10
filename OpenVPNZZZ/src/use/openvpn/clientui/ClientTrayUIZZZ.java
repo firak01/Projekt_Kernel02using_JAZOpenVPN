@@ -24,6 +24,7 @@ import use.openvpn.clientui.IConstantClientOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
+import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
@@ -43,6 +44,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	private SystemTray objTray = null;
 	private TrayIcon objTrayIcon = null;
 	private ClientMainZZZ objClientMain = null;
+	
+	//TODOGOON 20210210: Realisiere die Idee
+	//Idee: In ClientMainUI eine/verschiedene HashMaps anbieten, in die dann diese Container-Objekte kommen.
+	//      Dadurch muss man sie nicht als Variable deklarieren und kann dynamischer neue Dialogboxen, etc. hinzufügen.
+	//Ziel diese hier als Varible zu deklarieren ist: Die Dialogbox muss nicht immer wieder neu erstellt werden.
+	private KernelJDialogExtendedZZZ dlgIPExternal=null;
 	
 	
 	public ClientTrayUIZZZ(IKernelZZZ objKernel, ClientMainZZZ objClientMain, String[] saFlagControl) throws ExceptionZZZ{
@@ -469,12 +476,40 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					//this.getTrayIconObject() ist keine Component ????
 					JOptionPane.showMessageDialog(null, stemp, "Log der Verbindung", JOptionPane.INFORMATION_MESSAGE );
 				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_PAGE_IP_READ)) {
-					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-					//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
-					HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
-					hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
-					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
-					dlgIPExternal.setText4ButtonOk("USE VALUE");			
+					
+					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
+					//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
+					
+					 //Also In ClientMainUI
+					//HashMap<String, KernelJDialogExtendedZZZ> hmContainerDialog....
+					//
+					//Also ClientMainUIZZZ implements Interface IClientMainUIZZZ
+					//                                 mit der Methode HashMap<String, KernelJDialogExtendedZZZ> .getDialogs();
+					//                                 mit der Methode KernelJDialogExtendedZZZ .getDialogByAlias(....)
+				   
+					
+					//Also ClientTrayUIZZZ implements Interface IClientMainUIUserZZZ 
+					//                               mit der Methode .getClientMainUI();
+					//                                               .setClientMainUI(IClientMainUI objClientMain)
+					//objMainUI = this.getClientMainUI
+					//objMainUI.getDialogByAlias(....)
+					
+					//Bei CANCEL: Lösche diese Dialogbox, d.h. sie wird auch wieder komplett neu gemacht.
+					//Neuer Button CLOSE: D.h. die Dialogbox wird geschlossen, aber wenn sie wieder neu geöffnet wird, 
+					//                    dann sind ggfs. eingegebene Werte wieder da.
+					
+					if(this.dlgIPExternal==null || this.dlgIPExternal.isDisposed() ) {
+					
+						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+						//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
+						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+						hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+						DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
+						dlgIPExternal.setText4ButtonOk("USE VALUE");
+						
+						this.dlgIPExternal = dlgIPExternal;					
+					}
+										
 					try {
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
 						dlgIPExternal.showDialog(null, "Connection/IP External Current");
