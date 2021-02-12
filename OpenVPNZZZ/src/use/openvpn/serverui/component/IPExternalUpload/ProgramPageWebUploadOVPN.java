@@ -32,6 +32,7 @@ import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.net.client.KernelReaderPageZZZ;
 import basic.zKernel.net.client.KernelReaderURLZZZ;
 import basic.zKernelUI.KernelUIZZZ;
+import basic.zKernelUI.component.AbstractKernelProgramUIZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -41,7 +42,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{	
+public class ProgramPageWebUploadOVPN  extends AbstractKernelProgramUIZZZ{
 	private String sTargetUrl=null;
 
 	private String sIPProxy = null;
@@ -51,55 +52,12 @@ public class ProgramPageWebUploadOVPN extends AbstractKernelProgramZZZ{
 	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
 	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
 
-	
 	private boolean bFlagUseProxy = false;
 	
-	//public static final String PROGRAM_ALIAS = "IP_ServerContext";
-	
 	public ProgramPageWebUploadOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel);
-		main:{
-			check:{	 		
-				if(saFlagControl != null){
-					String stemp; boolean btemp;
-					for(int iCount = 0;iCount<=saFlagControl.length-1;iCount++){
-						stemp = saFlagControl[iCount];
-						btemp = setFlag(stemp, true);
-						if(btemp==false){ 								   
-							   ExceptionZZZ ez = new ExceptionZZZ(stemp, iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							
-							   throw ez;		 
-						}
-					}
-					if(this.getFlag("init")) break main;
-					
-					
-				}							
-			}//End check
-			
-			this.setPanelParent(panel);
-			
-			//HIER EINE SUCHE NACH DEM MODUL, d.h. nach dem Objekt, das das FLAG gesetzt hat.
-			//1. Frame oder Dialog, 2. davon PanelParent, etc...
-			//Das gefundene Objekt dann in .setModule setzen
-			KernelJDialogExtendedZZZ dialog = this.getPanelParent().getDialogParent();
-			this.setModule(dialog);
-			String sModuleName = KernelUIZZZ.getModuleUsedName(this);	
-			if(StringZZZ.isEmpty(sModuleName)){
-				ExceptionZZZ ez = new ExceptionZZZ("ModuleName", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}
-			
-			//### Prüfen, ob das Modul konfiguriert ist
-			boolean bIsConfigured = objKernel.proofModuleFileIsConfigured(sModuleName);
-			if(bIsConfigured==false){
-				ExceptionZZZ ez = new ExceptionZZZ("ModuleName='" + sModuleName + "' seems not to be configured for the Application '" + objKernel.getApplicationKey(), iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}		
-			boolean bExists = objKernel.proofModuleFileExists(sModuleName);
-			if(bExists==false){
-				ExceptionZZZ ez = new ExceptionZZZ("ModuleName='" + sModuleName + "' is configured, but the file does not exist for the Application '" + objKernel.getApplicationKey(), iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}	
+		super(objKernel, panel, saFlagControl);
+		main:{			
+			this.setPanelParent(panel);						
 		}//END main
 	}
 		
