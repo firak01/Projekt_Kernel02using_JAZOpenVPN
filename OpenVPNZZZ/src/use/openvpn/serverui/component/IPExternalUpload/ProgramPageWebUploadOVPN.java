@@ -464,12 +464,5 @@ TargetFile=testpage.html
 		//textField.setText("Lese aktuellen Wert .....");
 		
 	}
-
-
-	@Override
-	public String getProgramAlias() throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
 
