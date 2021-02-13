@@ -24,6 +24,7 @@ import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.net.client.KernelReaderPageZZZ;
 import basic.zKernel.net.client.KernelReaderURLZZZ;
 import basic.zKernelUI.KernelUIZZZ;
+import basic.zKernelUI.component.AbstractKernelProgramUIZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -33,7 +34,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramIPContentOVPN extends AbstractKernelProgramZZZ{
+public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ{
 	private String sURL2Read=null;
 	private String sIPExternal = null;
 	private String sIPProxy = null;
@@ -49,49 +50,31 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramZZZ{
 	//public static final String PROGRAM_ALIAS = "IP_ServerContext";
 	
 	public ProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel);
-		main:{
-			check:{	 		
-				if(saFlagControl != null){
-					String stemp; boolean btemp;
-					for(int iCount = 0;iCount<=saFlagControl.length-1;iCount++){
-						stemp = saFlagControl[iCount];
-						btemp = setFlag(stemp, true);
-						if(btemp==false){ 								   
-							   ExceptionZZZ ez = new ExceptionZZZ(stemp, iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							
-							   throw ez;		 
-						}
-					}
-					if(this.getFlag("init")) break main;
-					
-					
-				}							
-			}//End check
+		super(objKernel, panel, saFlagControl);
+		this.setPanelParent(panel);
 			
-			this.setPanelParent(panel);
-			
-			KernelJDialogExtendedZZZ dialog = this.getPanelParent().getDialogParent();  //this.getDialogParent();
-			String sModuleName = dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt	
-			if(StringZZZ.isEmpty(sModuleName)){
-				ExceptionZZZ ez = new ExceptionZZZ("ModuleName", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}else{
-				this.setModuleName(sModuleName);
-			}
-			
-			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
-			String sProgramName = ""; 
-			if(panelParent!=null){
-				sProgramName = KernelUIZZZ.getProgramUsedName(panelParent);
-			}else{
-				sProgramName = this.getClass().getName();
-			}
-			if(StringZZZ.isEmpty(sProgramName)){
-				ExceptionZZZ ez = new ExceptionZZZ("ProgramName", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}else{
-				this.setProgramName(sProgramName);
-			}
+//			KernelJDialogExtendedZZZ dialog = this.getPanelParent().getDialogParent();  //this.getDialogParent();
+//			String sModuleName = dialog.getClass().getName();  //der Frame, über den diese Dialogbox liegt	
+//			if(StringZZZ.isEmpty(sModuleName)){
+//				ExceptionZZZ ez = new ExceptionZZZ("ModuleName", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//			}else{
+//				this.setModuleName(sModuleName);
+//			}
+//			
+//			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
+//			String sProgramName = ""; 
+//			if(panelParent!=null){
+//				sProgramName = KernelUIZZZ.getProgramUsedName(panelParent);
+//			}else{
+//				sProgramName = this.getClass().getName();
+//			}
+//			if(StringZZZ.isEmpty(sProgramName)){
+//				ExceptionZZZ ez = new ExceptionZZZ("ProgramName", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//			}else{
+//				this.setProgramName(sProgramName);
+//			}
 			
 			
 			//### Prüfen, ob das Modul konfiguriert ist
@@ -107,7 +90,7 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramZZZ{
 //			}	
 			
 			
-		}//END main
+//		}//END main
 	}
 		
 	
