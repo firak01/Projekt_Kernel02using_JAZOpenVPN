@@ -39,7 +39,7 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{	
+public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ implements IConstantProgramIpRouterOVPN, IConstantProgramIpWebOVPN{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -126,7 +126,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent("textIpContent", textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		this.setComponent(sCOMPONENT_TEXTFIELD_IPWEB, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		//- - - - - - - 
 		JTextField textfieldIPRouter = new JTextField(sIpRouter, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
@@ -139,9 +139,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent("textIpRouter", textfieldIPRouter);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		
-		
+		this.setComponent(sCOMPONENT_TEXTFIELD_IPROUTER, textfieldIPRouter);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		//- - - - - - - -
 		JTextField textfieldWebUpload = new JTextField("", 20);
@@ -152,30 +150,34 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
 		this.setComponent("textWebUpload", textfieldWebUpload);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		
+												
 		//-------------------------------------------------------------------
-		JButton buttonIpWeb2ini = new JButton("to ini");
+		JButton buttonIpWeb2ini = new JButton(sLABEL_BUTTON_IPWEB_TOINI);
 		ActionIpWeb2iniOVPN actionIpWeb2iniOVPN = new ActionIpWeb2iniOVPN(objKernel, this);
 		buttonIpWeb2ini.addActionListener(actionIpWeb2iniOVPN);
 		this.add(buttonIpWeb2ini, cc.xy(6,2));
 		
-		
-		
+		//-------------------------------------------------------------------
+		JButton buttonIpRouter2ini = new JButton(sLABEL_BUTTON_IPROUTER_TOINI);
+		ActionIpRouter2iniOVPN actionIpRouter2iniOVPN = new ActionIpRouter2iniOVPN(objKernel, this);
+		buttonIpRouter2ini.addActionListener(actionIpRouter2iniOVPN);
+		this.add(buttonIpRouter2ini, cc.xy(6,4));
+
 		//-------------------------------------------------------------------
 		//Merke: Der Server baut die Internetseite basierend auf dem Ini Eintrag.
 		//       Der letzte Eintrag kommt dann aus der aktuellen Web-Version.
-		JButton buttonReadIPWeb = new JButton("Refresh server ip from the web.");
+		JButton buttonReadIPWeb = new JButton(sLABEL_BUTTON_IPWEB_REFRESH);
 		ActionIPRefreshOVPN actionIPRefreshWeb = new ActionIPRefreshOVPN(objKernel, this);
 		buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
 		this.add(buttonReadIPWeb, cc.xy(8,2));
 		
-		JButton buttonReadIPRouter = new JButton("TODO; Refresh server ip from the router.");
+		JButton buttonReadIPRouter = new JButton(sLABEL_BUTTON_IPROUTER_REFRESH);
 		ActionIPRefreshOVPN actionIPRefreshRouter = new ActionIPRefreshOVPN(objKernel, this);
 		buttonReadIPRouter.addActionListener(actionIPRefreshRouter);
 		this.add(buttonReadIPRouter, cc.xy(8,4));
 		
 		
-		JButton buttonWriteIPRouter = new JButton("TODO: Use Router Value.");
+		JButton buttonWriteIPRouter = new JButton("xxx");
 		ActionIPRefreshOVPN actionWriteIPRouter = new ActionIPRefreshOVPN(objKernel, this);
 		buttonWriteIPRouter.addActionListener(actionWriteIPRouter);
 		this.add(buttonWriteIPRouter, cc.xy(8,6));
@@ -244,11 +246,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 			private LogZZZ objLog;
 			private KernelJPanelCascadedZZZ panel;
 			private String[] saFlag4Program;
-			
-			private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Jier als Variable, damit die intene Runner-Klasse darauf zugreifen kann.
-														// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
-			
-						
+									
 			protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 			
 			public SwingWorker4ProgramIpWeb2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
@@ -267,12 +265,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 					objProg.reset();
 					String sIp = objProg.getIpFromUi();
 					
-					updateTextField("writing...");
+					updateTextField(objProg, "writing...");
 					boolean bErg = objProg.writeIpToIni(sIp);
 					
 					
 					//3. Diesen Wert wieder ins Label schreiben.
-					updateTextField(sIp);
+					updateTextField(objProg, sIp);
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
@@ -286,18 +284,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 			* 
 			* lindhaueradmin; 17.01.2007 12:09:17
 			 */
-			public void updateTextField(String stext){
-				this.sText2Update = stext;
-				
+			public void updateTextField(final ProgramIpWeb2iniOVPN objProg, final String stext){
+								
 //				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
 				Runnable runnerUpdateLabel= new Runnable(){
 
 					public void run(){
-//						In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'textIpContent");				
-						JTextField textField = (JTextField) panel.getComponent("textIpContent");					
-						textField.setText(sText2Update);
-						textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
+						//Den gewünschten Wert in das Textfeld eintragen lassen.
+						objProg.updateLabel(stext);
 					}
 				};
 				
@@ -373,6 +367,164 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		
 }//End class ...KErnelActionCascaded....
 	
+	
+	
+//	#######################################
+	//Innere Klassen, welche eine Action behandelt	
+class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+	public ActionIpRouter2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+		super(objKernel, panelParent);			
+	}
+	
+	public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
+//		try {
+		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IpWeb2ini'");
+											
+		String[] saFlag = null; //{"useProxy"};					
+		KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
+																
+		SwingWorker4ProgramIpRouter2iniOVPN worker = new SwingWorker4ProgramIpRouter2iniOVPN(objKernel, panelParent, saFlag);
+		worker.start();  
+		
+	/*} catch (ExceptionZZZ ez) {				
+		this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+		ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+	}	*/
+		
+		return true;
+	}
+
+	public boolean actionPerformQueryCustom(ActionEvent ae) throws ExceptionZZZ {
+		return true;
+	}
+
+	public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
+	}			 							
+	
+	class SwingWorker4ProgramIpRouter2iniOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
+		private IKernelZZZ objKernel;
+		private LogZZZ objLog;
+		private KernelJPanelCascadedZZZ panel;
+		private String[] saFlag4Program;
+						
+		protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
+		
+		public SwingWorker4ProgramIpRouter2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+			super();
+			this.objKernel = objKernel;
+			this.objLog = objKernel.getLogObject();
+			this.panel = panel;
+			this.saFlag4Program = saFlag4Program;					
+		}
+		
+		//#### abstracte - Method aus SwingWorker
+		public Object construct() {
+			try{
+				//1. IP Auslesen von der Webseite
+				ProgramIpRouter2iniOVPN objProg = new ProgramIpRouter2iniOVPN(objKernel, this.panel, this.saFlag4Program);
+				objProg.reset();
+				String sIp = objProg.getIpFromUi();
+				updateTextField(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
+				
+				//2. Schreibe in die ini-Datei
+				boolean bErg = objProg.writeIpToIni(sIp);
+								
+				//3. Diesen Wert wieder ins Label zurückschreiben.
+				updateTextField(objProg, sIp);
+			}catch(ExceptionZZZ ez){
+				System.out.println(ez.getDetailAllLast());
+				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+			}
+			return "all done";
+		}
+		
+		/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
+		 *  Entspricht auch ProgramIPContext.updateLabel(..)
+		* @param stext
+		* 
+		* lindhaueradmin; 17.01.2007 12:09:17
+		 */
+		public void updateTextField(final ProgramIpRouter2iniOVPN objProg, final String stext){
+						
+//			Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+			Runnable runnerUpdateLabel= new Runnable(){
+
+				public void run(){
+//					In das Textfeld den gewuenschten Wert eintragen.
+					objProg.updateLabel(stext);					 
+				}
+			};
+			
+			SwingUtilities.invokeLater(runnerUpdateLabel);			
+		}
+
+		public IKernelZZZ getKernelObject() {
+			return this.objKernel;
+		}
+
+		public void setKernelObject(IKernelZZZ objKernel) {
+			this.objKernel = objKernel;
+		}
+
+		public LogZZZ getLogObject() {
+			return this.objLog;
+		}
+
+		public void setLogObject(LogZZZ objLog) {
+			this.objLog = objLog;
+		}
+		
+		
+		
+		
+		/* (non-Javadoc)
+		 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
+		 */
+		public ExceptionZZZ getExceptionObject() {
+			return this.objException;
+		}
+		/* (non-Javadoc)
+		 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
+		 */
+		public void setExceptionObject(ExceptionZZZ objException) {
+			this.objException = objException;
+		}
+		
+		//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
+		@Override
+		public void logLineDate(String sLog) {
+			LogZZZ objLog = this.getLogObject();
+			if(objLog==null) {
+				String sTemp = KernelLogZZZ.computeLineDate(sLog);
+				System.out.println(sTemp);
+			}else {
+				objLog.WriteLineDate(sLog);
+			}		
+		}	
+		
+		
+		/**Overwritten and using an object of jakarta.commons.lang
+		 * to create this string using reflection. 
+		 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 
+		 */
+		public String toString(){
+			String sReturn = "";
+			sReturn = ReflectionToStringBuilder.toString(this);
+			return sReturn;
+		}
+
+	} //End Class MySwingWorker
+
+	public void actionPerformCustomOnError(ActionEvent ae, ExceptionZZZ ez) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+}//End class ...KErnelActionCascaded....
+
+	
+	
+	
 //	#######################################
 	//Innere Klassen, welche eine Action behandelt
 		class ActionIPRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
@@ -410,11 +562,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 				private IKernelZZZ objKernel;
 				private LogZZZ objLog;
 				private KernelJPanelCascadedZZZ panel;
-				private String[] saFlag4Program;
-				
-				private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Jier als Variable, damit die intene Runner-Klasse darauf zugreifen kann.
-															// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
-				
+				private String[] saFlag4Program;			
 							
 				protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 				
@@ -430,14 +578,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 				public Object construct() {
 					try{
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
-						updateTextField("Reading ...");
+						ProgramIPContentOVPN objProg = new ProgramIPContentOVPN(objKernel, this.panel, this.saFlag4Program);						
+						updateTextField(objProg,"Reading ...");
 						
-						//2. IP Auslesen von der Webseite
-						ProgramIPContentOVPN objProg = new ProgramIPContentOVPN(objKernel, this.panel, this.saFlag4Program);					
+						//2. IP Auslesen von der Webseite										
 						String sIp = objProg.getIpExternal();
-						
+												
 						//3. Diesen Wert wieder ins Label schreiben.
-						updateTextField(sIp);
+						updateTextField(objProg, sIp);
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
@@ -451,18 +599,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 				* 
 				* lindhaueradmin; 17.01.2007 12:09:17
 				 */
-				public void updateTextField(String stext){
-					this.sText2Update = stext;
+				public void updateTextField(final ProgramIPContentOVPN objProg, final String stext){					
 					
 //					Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
 					Runnable runnerUpdateLabel= new Runnable(){
 
 						public void run(){
-//							In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'textIpContent");				
-							JTextField textField = (JTextField) panel.getComponent("textIpContent");					
-							textField.setText(sText2Update);
-							textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
+//							In das Textfeld den gewuenschten Wert eintragen.
+							objProg.updateLabel(stext);					 
 						}
 					};
 					

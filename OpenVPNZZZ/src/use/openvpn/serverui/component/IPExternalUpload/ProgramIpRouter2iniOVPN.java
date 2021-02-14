@@ -34,7 +34,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramIpWeb2iniOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpWebOVPN{
+public class ProgramIpRouter2iniOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpRouterOVPN{
 	private String sIpFromUi=null;
 	
 	private KernelJPanelCascadedZZZ panel = null;
@@ -45,7 +45,7 @@ public class ProgramIpWeb2iniOVPN extends AbstractKernelProgramUIZZZ implements 
 	//private boolean bFlagUseProxy = false;
 
 	
-	public ProgramIpWeb2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
+	public ProgramIpRouter2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,panel,saFlagControl);
 		main:{			
 			this.setPanelParent(panel);			
@@ -73,7 +73,7 @@ public class ProgramIpWeb2iniOVPN extends AbstractKernelProgramUIZZZ implements 
 		String sReturn = null;
 		main:{
 			KernelJPanelCascadedZZZ panel = this.getPanelParent();
-			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD_IPWEB);					
+			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD_IPROUTER);					
 			sReturn = textField.getText();
 		}
 		return sReturn;
@@ -194,8 +194,8 @@ public class ProgramIpWeb2iniOVPN extends AbstractKernelProgramUIZZZ implements 
 
 			public void run(){
 //				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '"+sCOMPONENT_TEXTFIELD_IPWEB+"'");				
-				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD_IPWEB);					
+				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD_IPROUTER + "'");				
+				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD_IPROUTER);					
 				textField.setText(sText2Update);
 				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
 			}
