@@ -34,7 +34,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ{
+public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpWebOVPN{
 	private String sURL2Read=null;
 	private String sIPExternal = null;
 	private String sIPProxy = null;
@@ -343,8 +343,8 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ{
 
 			public void run(){
 //				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'textIpContent");				
-				JTextField textField = (JTextField) panel.getComponent("textIpContent");					
+				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '"+sCOMPONENT_TEXTFIELD+"'");				
+				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
 				textField.setText(sText2Update);
 				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
 			}

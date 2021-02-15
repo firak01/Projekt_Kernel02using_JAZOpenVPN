@@ -73,7 +73,7 @@ public class ProgramIpRouter2iniOVPN extends AbstractKernelProgramUIZZZ implemen
 		String sReturn = null;
 		main:{
 			KernelJPanelCascadedZZZ panel = this.getPanelParent();
-			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD_IPROUTER);					
+			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
 			sReturn = textField.getText();
 		}
 		return sReturn;
@@ -194,8 +194,8 @@ public class ProgramIpRouter2iniOVPN extends AbstractKernelProgramUIZZZ implemen
 
 			public void run(){
 //				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD_IPROUTER + "'");				
-				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD_IPROUTER);					
+				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD + "'");				
+				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
 				textField.setText(sText2Update);
 				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
 			}

@@ -39,7 +39,7 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ implements IConstantProgramIpRouterOVPN, IConstantProgramIpWebOVPN{	
+public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -107,10 +107,10 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 		
-		JLabel labelRouter = new JLabel("Server IP (from the Web):");
+		JLabel labelRouter = new JLabel(IConstantProgramIpWebOVPN.sLABEL_TEXTFIELD);
 		this.add(labelRouter, cc.xy(2,2));
 		
-		JLabel labelIni = new JLabel("Server IP (from the Router):");
+		JLabel labelIni = new JLabel(IConstantProgramIpRouterOVPN.sLABEL_TEXTFIELD);
 		this.add(labelIni, cc.xy(2,4));
 			
 		
@@ -126,7 +126,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent(sCOMPONENT_TEXTFIELD_IPWEB, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		this.setComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		//- - - - - - - 
 		JTextField textfieldIPRouter = new JTextField(sIpRouter, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
@@ -139,26 +139,26 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent(sCOMPONENT_TEXTFIELD_IPROUTER, textfieldIPRouter);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		this.setComponent(IConstantProgramIpRouterOVPN.sCOMPONENT_TEXTFIELD, textfieldIPRouter);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		//- - - - - - - -
 		JTextField textfieldWebUpload = new JTextField("", 20);
 		textfieldWebUpload.setHorizontalAlignment(JTextField.LEFT);
-		this.add(textfieldWebUpload, cc.xy(4,10));
+		this.add(textfieldWebUpload, cc.xyw(4,10,3)); //Mehrere Spalten umfassend
 		
 		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent("textWebUpload", textfieldWebUpload);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		this.setComponent(IConstantProgramPageWebUploadOVPN.sCOMPONENT_TEXTFIELD, textfieldWebUpload);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 												
 		//-------------------------------------------------------------------
-		JButton buttonIpWeb2ini = new JButton(sLABEL_BUTTON_IPWEB_TOINI);
+		JButton buttonIpWeb2ini = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON_TO_INI);
 		ActionIpWeb2iniOVPN actionIpWeb2iniOVPN = new ActionIpWeb2iniOVPN(objKernel, this);
 		buttonIpWeb2ini.addActionListener(actionIpWeb2iniOVPN);
 		this.add(buttonIpWeb2ini, cc.xy(6,2));
 		
 		//-------------------------------------------------------------------
-		JButton buttonIpRouter2ini = new JButton(sLABEL_BUTTON_IPROUTER_TOINI);
+		JButton buttonIpRouter2ini = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON_TO_INI);
 		ActionIpRouter2iniOVPN actionIpRouter2iniOVPN = new ActionIpRouter2iniOVPN(objKernel, this);
 		buttonIpRouter2ini.addActionListener(actionIpRouter2iniOVPN);
 		this.add(buttonIpRouter2ini, cc.xy(6,4));
@@ -166,12 +166,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		//-------------------------------------------------------------------
 		//Merke: Der Server baut die Internetseite basierend auf dem Ini Eintrag.
 		//       Der letzte Eintrag kommt dann aus der aktuellen Web-Version.
-		JButton buttonReadIPWeb = new JButton(sLABEL_BUTTON_IPWEB_REFRESH);
+		JButton buttonReadIPWeb = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
 		ActionIPRefreshOVPN actionIPRefreshWeb = new ActionIPRefreshOVPN(objKernel, this);
 		buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
 		this.add(buttonReadIPWeb, cc.xy(8,2));
 		
-		JButton buttonReadIPRouter = new JButton(sLABEL_BUTTON_IPROUTER_REFRESH);
+		JButton buttonReadIPRouter = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON);
 		ActionIPRefreshOVPN actionIPRefreshRouter = new ActionIPRefreshOVPN(objKernel, this);
 		buttonReadIPRouter.addActionListener(actionIPRefreshRouter);
 		this.add(buttonReadIPRouter, cc.xy(8,4));
@@ -188,7 +188,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		buttonGenerateIPPage.addActionListener(actionGenerateIPPage);
 		this.add(buttonGenerateIPPage, cc.xy(8,8));
 
-		JButton buttonUploadIPPage = new JButton("Upload IP-Page.");
+		JButton buttonUploadIPPage = new JButton(IConstantProgramPageWebUploadOVPN.sLABEL_BUTTON);
 		ActionPageWebUploadOVPN actionUploadIPPage = new ActionPageWebUploadOVPN(objKernel, this);
 		buttonUploadIPPage.addActionListener(actionUploadIPPage);
 		this.add(buttonUploadIPPage, cc.xy(8,10));
@@ -290,17 +290,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 				Runnable runnerUpdateLabel= new Runnable(){
 
 					public void run(){
-						//Den gewünschten Wert in das Textfeld eintragen lassen.
+//						In das Textfeld eintragen, das etwas passiert.	
 						objProg.updateLabel(stext);
 					}
 				};
 				
-				SwingUtilities.invokeLater(runnerUpdateLabel);	
-				
-//				In das Textfeld eintragen, das etwas passiert.								
-				//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-				//textField.setText("Lese aktuellen Wert .....");
-				
+				SwingUtilities.invokeLater(runnerUpdateLabel);					
 			}
 
 			public IKernelZZZ getKernelObject() {
@@ -446,11 +441,11 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 		 */
 		public void updateTextField(final ProgramIpRouter2iniOVPN objProg, final String stext){
 						
-//			Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+//			Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
 			Runnable runnerUpdateLabel= new Runnable(){
 
 				public void run(){
-//					In das Textfeld den gewuenschten Wert eintragen.
+//					In das Textfeld eintragen, das etwas passiert.	
 					objProg.updateLabel(stext);					 
 				}
 			};
@@ -601,21 +596,16 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 				 */
 				public void updateTextField(final ProgramIPContentOVPN objProg, final String stext){					
 					
-//					Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+//					Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
 					Runnable runnerUpdateLabel= new Runnable(){
 
 						public void run(){
-//							In das Textfeld den gewuenschten Wert eintragen.
+//							In das Textfeld eintragen, das etwas passiert.	
 							objProg.updateLabel(stext);					 
 						}
 					};
 					
-					SwingUtilities.invokeLater(runnerUpdateLabel);	
-					
-//					In das Textfeld eintragen, das etwas passiert.								
-					//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-					//textField.setText("Lese aktuellen Wert .....");
-					
+					SwingUtilities.invokeLater(runnerUpdateLabel);				
 				}
 
 				public IKernelZZZ getKernelObject() {
@@ -739,18 +729,19 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 				//#### abstracte - Method aus SwingWorker
 				public Object construct() {
 					try{
-						//1. Ins Label schreiben, dass hier ein Update stattfindet
-						updateTextField("Uploading ...");
+						ProgramPageWebUploadOVPN objProgWebPageUpload = new ProgramPageWebUploadOVPN(objKernel, this.panel, this.saFlag4Program);
 						
-						//2. Hochladen der Webseite
-						ProgramPageWebUploadOVPN objProgWebPageUpload = new ProgramPageWebUploadOVPN(objKernel, this.panel, this.saFlag4Program);					
+						//1. Ins Label schreiben, dass hier ein Update stattfindet
+						updateTextField(objProgWebPageUpload, "Uploading ...");
+						
+						//2. Hochladen der Webseite										
 						boolean bSuccessWebUpload = objProgWebPageUpload.uploadPageWeb();
 						
 						//3. Diesen Wert wieder ins Label schreiben.
 						if(bSuccessWebUpload) {
-							updateTextField("Upload ended with success.");
+							updateTextField(objProgWebPageUpload,"Upload ended with success.");
 						}else {
-							updateTextField("Upload not successful, details in log.");
+							updateTextField(objProgWebPageUpload,"Upload not successful, details in log.");
 						}
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
@@ -765,27 +756,18 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 				* 
 				* lindhaueradmin; 17.01.2007 12:09:17
 				 */
-				public void updateTextField(String stext){
-					this.sText2Update = stext;
-					
+				public void updateTextField(final ProgramPageWebUploadOVPN objProg, final String stext){
+									
 //					Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
 					Runnable runnerUpdateLabel= new Runnable(){
 
 						public void run(){
-//							In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'textWebUpload");				
-							JTextField textField = (JTextField) panel.getComponent("textWebUpload");					
-							textField.setText(sText2Update);
-							textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
+//							In das Textfeld eintragen, das etwas passiert.	
+							objProg.updateLabel(stext);
 						}
 					};
 					
 					SwingUtilities.invokeLater(runnerUpdateLabel);	
-					
-//					In das Textfeld eintragen, das etwas passiert.								
-					//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-					//textField.setText("Lese aktuellen Wert .....");
-					
 				}
 
 				public IKernelZZZ getKernelObject() {
