@@ -2,6 +2,9 @@ package use.openvpn.serverui.component.IPExternalUpload;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
@@ -28,6 +31,7 @@ import basic.zKernelUI.component.AbstractKernelProgramUIZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+
 
 /**Vereinfacht den Zugriff auf die HTML-Seite, in der die externe IPAdresse des Servers bekannt gemacht wird. 
  * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwentet.
@@ -88,6 +92,21 @@ public class ProgramIpRouter2iniOVPN extends AbstractKernelProgramUIZZZ implemen
 			IKernelZZZ objKernel = this.getKernelObject();
 			objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIp);
 						
+			long lTime = System.currentTimeMillis();
+			Date objDate = new Date(lTime);
+			
+			 GregorianCalendar d = new GregorianCalendar();
+			 Integer iDateYear = new Integer(d.get(Calendar.YEAR));
+			 Integer iDateMonth = new Integer(d.get(Calendar.MONTH) + 1);
+			 Integer iDateDay = new Integer(d.get(Calendar.DAY_OF_MONTH));
+			 Integer iTimeHour = new Integer(d.get(Calendar.HOUR_OF_DAY));
+			 Integer iTimeMinute = new Integer(d.get(Calendar.MINUTE)); 			
+				
+			 String sNowDate = iDateYear.toString() + "-" + iDateMonth.toString() + "-" + iDateDay.toString();
+			 String sNowTime = iTimeHour.toString() + ":" + iTimeMinute.toString(); 		     			
+			 objKernel.setParameterByProgramAlias(sModule, sProgram, "IPDate", sNowDate);		
+			 objKernel.setParameterByProgramAlias(sModule, sProgram, "IPTime", sNowTime);
+			
 			bReturn = true;
 		}
 		return bReturn;
