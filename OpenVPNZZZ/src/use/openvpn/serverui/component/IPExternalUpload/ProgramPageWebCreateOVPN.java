@@ -4,6 +4,8 @@ package use.openvpn.serverui.component.IPExternalUpload;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
@@ -11,6 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import custom.zKernel.file.ini.FileIniZZZ;
+import custom.zKernel.html.writer.WriterHtmlZZZ;
+import custom.zKernel.markup.content.ContentPageIPZZZ;
 import custom.zKernel.net.ftp.FTPSZZZ;
 import custom.zKernel.net.ftp.SFTPZZZ;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
@@ -79,9 +83,6 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 		
 		//2. Protokoll
 		IKernelLogZZZ objLog = objKernel.getLogObject();
-
-//		//3. FTPZZZ-Objekt, als Wrapper um jakarta.commons.net.ftpclient
-//		objFTP = new SFTPZZZ(objKernel, objLog, (String[]) null);
 //		
 //		//4. Konfiguration auslesen
 //		//Hier werden Informationen ueber die IP-Adressdatei ausgelesen, etc.
@@ -91,11 +92,10 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 //		//Programname nicht aus dem Panel, sondern das Program selbst
 		String sProgram = this.getProgramName();
 		
-		TODOGOON; //20210216: Hier wird allerdings ein ggfs. gecachter Wert geholt. 
-		          //          Dadurch wird sich nie eine Änderung ergeben.
-		          //          Merke: Wenn der erste Cache - Zugriff abgestellt wird,
-		          //                 dann sollte ggfs. der zweite Cache - Zugriff (halt über die Formel) durchaus erlaubt sein.		
-		IKernelConfigSectionEntryZZZ entryServer = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternal");
+		//20210216: Hier wird normalerweise ein ggfs. gecachter Wert geholt. 
+		//          Dadurch wird sich nie eine Änderung ergeben, die ja durch ein anderes Program erzeugt wurde.
+		//          Diesen Cache Zugriff kann man nun abstellen.
+		IKernelConfigSectionEntryZZZ entryServer = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternal", false);
 		String sIP = entryServer.getValue();
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": sIP='"+sIP+"'");
 		
@@ -106,19 +106,63 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 		String sIPTime = entryTime.getValue();
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Page Generator - IP Detail read from file: "+sIP + " ("+sIPDate+" - "+sIPTime+")");
 
-		IKernelConfigSectionEntryZZZ entryServerPrevious = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternalPrevious");
-		String sIPPrevious = entryServer.getValue();
+		IKernelConfigSectionEntryZZZ entryServerPrevious = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternalPrevious", false);
+		String sIPPrevious = entryServerPrevious.getValue();
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": sIPPrevious='"+sIPPrevious+"'");
 		
-		if(sIP.equals(sIPPrevious)==false){
-			System.out.println("PageGenerator - neuer Wert fuer die IP-Adresse. Erstelle neue HTML-Datei.");
-			//this.sIPNrPrevious=sIPNr;
+		if(!sIP.equals(sIPPrevious)){
+			System.out.println("PageGenerator - geaenderter Wert fuer die IP-Adresse. Erstelle neue HTML-Datei.");
 			
-			bReturn = true;
+			//Nur eine neue Datei erzeugen, wenn es auch eine neue IPNr gibt
+			//Create a Content Store object, here: pass the IP Details as Variable 
+			ContentPageIPZZZ objPageStorage = new ContentPageIPZZZ(objKernel, (String[]) null);
+		   
+		   
+			//Diese Variablen werden nun in das Storage-Objekt �bertragen	
+		   objPageStorage.setVar("IPNr",sIP);
+		   
+		   
+		   //FGL Nun den aktuellen Datums- und Zeitwert eintragen
+		   //TODO Komfortklasse entwickeln, die haeuufig verwendete Zeit-Datumsformate anbietet.
+		 GregorianCalendar d = new GregorianCalendar();
+		 Integer iDateYear = new Integer(d.get(Calendar.YEAR));
+		 Integer iDateMonth = new Integer(d.get(Calendar.MONTH) + 1);
+		 Integer iDateDay = new Integer(d.get(Calendar.DAY_OF_MONTH));
+		 Integer iTimeHour = new Integer(d.get(Calendar.HOUR_OF_DAY));
+		 Integer iTimeMinute = new Integer(d.get(Calendar.MINUTE)); 			
+
+		String sDate = iDateYear.toString() + "-" + iDateMonth.toString() + "-" + iDateDay.toString();
+		String sTime = iTimeHour.toString() + ":" + iTimeMinute.toString(); 
+
+		objPageStorage.setVar("IPDate",sDate);
+		objPageStorage.setVar("IPTime", sTime);
+		   
+		//Erstellen einer Hashmap, die auf Jakarta-ECS basierende Elemente enth�lt 
+		//Dabei werden auch die Variablen ausgelesen und in die ECS-Elemente die entsprechenden Werte eingetragen
+		objPageStorage.compute();
+		   					   
+		   WriterHtmlZZZ objPageWriter = new WriterHtmlZZZ(objKernel, (String[]) null);
+		   btemp = objPageWriter.replaceContent(objPageStorage);
+		   if(btemp==true){
+			   objKernel.setParameterByProgramAlias(objFileIniIPConfig, sProgram, "PageDate",sDate, false);
+			   objKernel.setParameterByProgramAlias(objFileIniIPConfig, sProgram, "PageTime",sTime, true); //aus Performancegruenden nun erst speichern, also nur einmal am Schluss speichern
+			   
+			   IKernelConfigSectionEntryZZZ objEntryDirectory = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram, "CreationDirectory");
+			   String sDirectory = objEntryDirectory.getValue();
+			   
+			   IKernelConfigSectionEntryZZZ objEntryFile = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram, "CreationFile");
+			   String sFile = objEntryFile.getValue();
+			   
+			   String sFilePath = FileEasyZZZ.joinFilePathName(sDirectory, sFile);
+			   objPageWriter.toFile(sFilePath);
+			   bReturn = true;		
+		   }else {
+			   bReturn = false;
+		   }
 		}else {
 			System.out.println("PageGenerator - unveraenderter Wert fuer die IP-Adresse. Erstelle keine neue HTML-Datei.");		
 			bReturn = false;
-		}
+		}//end if( !sIP.equals(sIPPrevious)){
 			
 		
 //		IKernelConfigSectionEntryZZZ entryUser = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"User");
