@@ -162,8 +162,11 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 			//Nun alle input-Elemente holen und nach dem Namen "IPNr" suchen.
 			TagTypeInputZZZ objTagTypeInput = new TagTypeInputZZZ(objKernel);			
 			TagInputZZZ objTag = (TagInputZZZ) objReaderHTML.readTagFirstZZZ(objTagTypeInput, "IPNr");
-			sReturn = objTag.readValue();  //Merke: Das Eintragen des Wertes wird der �bergeordneten Methode �berlassen. 
-						
+			if(objTag!=null) {
+				sReturn = objTag.readValue();  //Merke: Das Eintragen des Wertes wird der �bergeordneten Methode �berlassen. 
+			}else {
+				this.updateLabel("No Tag found in Page: IPNr");
+			}
 		}//end main:
 		this.sIPExternal = sReturn;
 		return sIPExternal;
