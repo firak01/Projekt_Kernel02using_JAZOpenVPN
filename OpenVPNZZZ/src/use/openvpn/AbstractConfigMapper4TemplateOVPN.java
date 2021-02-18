@@ -22,14 +22,11 @@ public abstract class AbstractConfigMapper4TemplateOVPN extends AbstractConfigMa
 		this.setFileTemplateOvpnUsed(fileTemplateOvpn);
 	}
 		
-	/**TODO R�ckgabe des regul�ren Ausdrucks. TODOGOON: Dies sollte in Form einer HashMap passieren !!!
-	 *  TODO GOON Hashmap in der Form liste(ConfigAusdruck) = "^" + saConfig[icount] + " ";
-	 * @param sAlias
-	 * @return
+	/**@param sAlias Aliaswert der OVPN Konfiguration, 
+	 *               als Schlüssel für eine HashMap, mit der man an den regulären Ausdruck kommt, 
+	 *               der für das Finden der Zeile in der OVPN Konfigurationsdatei verwendet wird.
+	 * @return String-Wert des puren regulären Ausdrucks aus einer HashMap, in der Form liste(ConfigAusdruck) = "^" + saConfig[icount] + " ";  	
 	 * @throws ExceptionZZZ, 
-	 *
-	 * @return String[]
-	 *
 	 * javadoc created by: 0823, 05.07.2006 - 08:31:35
 	 */
 	public abstract String getConfigRegExp(String sConfiguration) throws ExceptionZZZ;

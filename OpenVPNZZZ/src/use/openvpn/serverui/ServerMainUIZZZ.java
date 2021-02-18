@@ -1,6 +1,8 @@
 package use.openvpn.serverui;
 
+import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.server.ServerApplicationOVPN;
 import use.openvpn.server.ServerMainZZZ;
 import use.openvpn.serverui.ConfigOVPN;
 import basic.zBasic.ExceptionZZZ;
@@ -9,7 +11,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
 
-public class ServerMainUIZZZ implements IConstantZZZ {
+public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 			private IKernelZZZ objKernel=null;
 			private ServerMainZZZ objServerMain = null;
 			private ServerTrayUIZZZ objServerTray=null;
@@ -36,8 +38,12 @@ public class ServerMainUIZZZ implements IConstantZZZ {
 						//NUN DAS BACKEND-Handlebar machen
 						this.objServerMain = new ServerMainZZZ(objKernel, null);
 						
+						ServerApplicationOVPN objApplication = new ServerApplicationOVPN(objKernel, this.objServerMain);
+						this.objServerMain.setApplicationObject(objApplication);
+						
 						//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
 						this.objServerTray = new ServerTrayUIZZZ(objKernel, (String[]) null);
+						this.objServerTray.setServerBackendObject(this.objServerMain);
 						bReturn = objServerTray.load();
 						
 						//Konfigurierbar: Beim Starten schon connecten

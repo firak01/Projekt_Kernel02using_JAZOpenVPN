@@ -34,6 +34,7 @@ import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.file.jar.JarInfo;
 import basic.zBasic.util.file.zip.ZipEntryFilter;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
@@ -55,7 +56,8 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 		File objReturn = null;
 		main:{
 			//+++ Prüfen, ob nicht ein anderes Verzeichnis konfiguriert ist
-			String sFile = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","LocalMachineDirectoryRoot").getValue();
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","LocalMachineDirectoryRoot");
+			String sFile = objEntry.getValue();
 			boolean bUseSearch = false;
 			if(sFile==null){
 				bUseSearch = true;
@@ -74,10 +76,10 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 			//++++++++++++  Das Verzeichnis �berr�fen			
 		
 			if(objFileExe.exists()==false){
-				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + sFile + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file defined as EXE for OVPN '" + sFile + "', does not exist.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}else if(objFileExe.isFile()==false){
-				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file '" + sFile + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "The file defined as EXE for OVPN '" + sFile + "', was expected to be a file, not e.g. a directory.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}
 			

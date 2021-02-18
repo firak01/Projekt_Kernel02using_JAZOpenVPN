@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
@@ -19,11 +20,14 @@ import org.jdesktop.jdic.tray.TrayIcon;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainZZZ;
-
+import use.openvpn.clientui.IConstantClientOVPN;
+import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import basic.zKernel.KernelZZZ;
-
+import basic.zKernel.component.IKernelModuleZZZ;
+import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
@@ -40,6 +44,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	private SystemTray objTray = null;
 	private TrayIcon objTrayIcon = null;
 	private ClientMainZZZ objClientMain = null;
+	
+	//TODOGOON 20210210: Realisiere die Idee
+	//Idee: In ClientMainUI eine/verschiedene HashMaps anbieten, in die dann diese Container-Objekte kommen.
+	//      Dadurch muss man sie nicht als Variable deklarieren und kann dynamischer neue Dialogboxen, etc. hinzufügen.
+	//Ziel diese hier als Varible zu deklarieren ist: Die Dialogbox muss nicht immer wieder neu erstellt werden.
+	private KernelJDialogExtendedZZZ dlgIPExternal=null;
 	
 	
 	public ClientTrayUIZZZ(IKernelZZZ objKernel, ClientMainZZZ objClientMain, String[] saFlagControl) throws ExceptionZZZ{
@@ -79,18 +89,37 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			
 			JPopupMenu menu = new JPopupMenu();
 			
-			JMenuItem menueeintrag2 = new JMenuItem("Verbinden");
+			JMenuItem menueeintrag2 = new JMenuItem(IConstantClientOVPN.sLABEL_START);
 			menu.add(menueeintrag2);
 			menueeintrag2.addActionListener(this);
 			
-			JMenuItem menueeintrag3 = new JMenuItem("Client Log ansehen");
+			JMenuItem menueeintrag3 = new JMenuItem(IConstantClientOVPN.sLABEL_LOG);
             menu.add(menueeintrag3);
 			menueeintrag3.addActionListener(this);
 			
+			JMenuItem menueeintragFTP = new JMenuItem(IConstantClientOVPN.sLABEL_PAGE_IP_READ);
+            menu.add(menueeintragFTP);
+			menueeintragFTP.addActionListener(this);
+			
 			//??? Warum geht das auf meinem Desktop-Rechner nicht, auf dem Notebook aber ???			
-			JMenuItem menueeintrag = new JMenuItem("Beenden");	
+			JMenuItem menueeintrag = new JMenuItem(IConstantClientOVPN.sLABEL_END);	
 			menu.add(menueeintrag);		
 			menueeintrag.addActionListener(this);
+			
+			//DUMMY Einträge, a: Server / Client
+			//DUMMY Einträge, damit der unterste Eintrag ggfs. nicht durch die Windows Taskleiste verdeckt wird
+			JMenuItem menueeintragLine = new JMenuItem("------------------");
+			menu.add(menueeintragLine);
+			//Kein actionListener für Dummy Eintrag
+			
+			JMenuItem menueeintragContext = new JMenuItem("RUNNING AS CLIENT");
+			menu.add(menueeintragContext);
+			//Kein actionListener für Dummy Eintrag
+			
+			JMenuItem menueeintragDummy = new JMenuItem(" ");
+			menu.add(menueeintragDummy);
+			//Kein actionListener für Dummy Eintrag
+			
 			
 			/* das scheint dann doch nicht notwendig zu sein !!!
 			menueeintrag.addMouseListener(new MouseAdapter(){
@@ -291,12 +320,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			check:{
 				if (this.objClientMain == null){
 					sReturn = "Not yet tried to connect";
-						break main;
+					break main;
 				}
 			}//END check
 			
 		if(this.sStatusString==null){
-			sReturn = sReturn + "assssffffggg\n\n"; //DAS SOLL NICHT VORKOMMEN
+			sReturn = sReturn + "Not yet tried to connect\n\n";
 		}else{
 			//20200114: Erweiterung - Angabe des Rechnernamens
 			try {
@@ -437,16 +466,60 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			try{
 				String sCommand = arg0.getActionCommand();
 				//System.out.println("Action to perform: " + sCommand);
-				if(sCommand.equals("Beenden")){
+				if(sCommand.equals(IConstantClientOVPN.sLABEL_END)){
 					this.unload();	
-				}else if(sCommand.equals("Verbinden")){
+				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_START)){
 					this.connect();
-				}else if(sCommand.equals("Client Log ansehen")){
+				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_LOG)){
 					//JOptionPane pane = new JOptionPane();
 					String stemp = this.readLogString();
 					//this.getTrayIconObject() ist keine Component ????
 					JOptionPane.showMessageDialog(null, stemp, "Log der Verbindung", JOptionPane.INFORMATION_MESSAGE );
-				}else if(sCommand.equals("PressAction")){			//DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein.		
+				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_PAGE_IP_READ)) {
+					
+					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
+					//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
+					
+					 //Also In ClientMainUI
+					//HashMap<String, KernelJDialogExtendedZZZ> hmContainerDialog....
+					//
+					//Also ClientMainUIZZZ implements Interface IClientMainUIZZZ
+					//                                 mit der Methode HashMap<String, KernelJDialogExtendedZZZ> .getDialogs();
+					//                                 mit der Methode KernelJDialogExtendedZZZ .getDialogByAlias(....)
+				   
+					
+					//Also ClientTrayUIZZZ implements Interface IClientMainUIUserZZZ 
+					//                               mit der Methode .getClientMainUI();
+					//                                               .setClientMainUI(IClientMainUI objClientMain)
+					//objMainUI = this.getClientMainUI
+					//objMainUI.getDialogByAlias(....)
+					
+					//Bei CANCEL: Lösche diese Dialogbox, d.h. sie wird auch wieder komplett neu gemacht.
+					//Neuer Button CLOSE: D.h. die Dialogbox wird geschlossen, aber wenn sie wieder neu geöffnet wird, 
+					//                    dann sind ggfs. eingegebene Werte wieder da.
+					
+					if(this.dlgIPExternal==null || this.dlgIPExternal.isDisposed() ) {
+					
+						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+						//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
+						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+						hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+						DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
+						dlgIPExternal.setText4ButtonOk("USE VALUE");
+						
+						this.dlgIPExternal = dlgIPExternal;					
+					}
+										
+					try {
+						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+						dlgIPExternal.showDialog(null, "Connection/IP External Current");
+						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'Connection/IP External Current'");
+					} catch (ExceptionZZZ ez) {					
+						System.out.println(ez.getDetailAllLast()+"\n");
+						ez.printStackTrace();
+						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
+					}
+				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_DETAIL)){			//"PressAction": DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein für das Clicken AUF das Icon.		
 					String stemp = this.readStatusDetailString();
 					if(stemp!= null){
 						if(objTrayIcon!=null) objTrayIcon.displayMessage("Status der Verbindung.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
