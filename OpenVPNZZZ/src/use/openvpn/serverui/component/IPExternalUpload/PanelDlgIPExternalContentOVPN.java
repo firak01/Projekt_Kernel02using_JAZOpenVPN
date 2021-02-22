@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import use.openvpn.serverui.component.IPExternalUpload.ProgramIPContentOVPN;
+import use.openvpn.serverui.component.IPExternalUpload.ProgramIPContentWebOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -210,17 +210,17 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 		//Merke: Der Server baut die Internetseite basierend auf dem Ini Eintrag.
 		//       Der letzte Eintrag kommt dann aus der aktuellen Web-Version.
 		JButton buttonReadIPWeb = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
-		ActionIPRefreshOVPN actionIPRefreshWeb = new ActionIPRefreshOVPN(objKernel, this);
+		ActionIPWebRefreshOVPN actionIPRefreshWeb = new ActionIPWebRefreshOVPN(objKernel, this);
 		buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
 		this.add(buttonReadIPWeb, cc.xy(8,2));
 						
 		JButton buttonReadIPLocal = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON);
-		ActionIPRefreshOVPN actionIpRefreshLocal = new ActionIPRefreshOVPN(objKernel, this);
+		ActionIPLocalRefreshOVPN actionIpRefreshLocal = new ActionIPLocalRefreshOVPN(objKernel, this);
 		buttonReadIPLocal.addActionListener(actionIpRefreshLocal);
 		this.add(buttonReadIPLocal, cc.xy(8,4));
 		
 		JButton buttonReadIPRouter = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON);
-		ActionIPRefreshOVPN actionIPRefreshRouter = new ActionIPRefreshOVPN(objKernel, this);
+		ActionIPWebRefreshOVPN actionIPRefreshRouter = new ActionIPWebRefreshOVPN(objKernel, this);
 		buttonReadIPRouter.addActionListener(actionIPRefreshRouter);
 		this.add(buttonReadIPRouter, cc.xy(8,6));
 				
@@ -717,8 +717,8 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 	
 //	#######################################
 	//Innere Klassen, welche eine Action behandelt
-		class ActionIPRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-			public ActionIPRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+		class ActionIPWebRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+			public ActionIPWebRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 				super(objKernel, panelParent);			
 			}
 			
@@ -768,7 +768,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				public Object construct() {
 					try{
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
-						ProgramIPContentOVPN objProg = new ProgramIPContentOVPN(objKernel, this.panel, this.saFlag4Program);						
+						ProgramIPContentWebOVPN objProg = new ProgramIPContentWebOVPN(objKernel, this.panel, this.saFlag4Program);						
 						updateTextField(objProg,"Reading ...");
 						
 						//2. IP Auslesen von der Webseite										
@@ -789,7 +789,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				* 
 				* lindhaueradmin; 17.01.2007 12:09:17
 				 */
-				public void updateTextField(final ProgramIPContentOVPN objProg, final String stext){					
+				public void updateTextField(final ProgramIPContentWebOVPN objProg, final String stext){					
 					
 //					Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
 					Runnable runnerUpdateLabel= new Runnable(){
@@ -867,6 +867,158 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 			
 	}//End class ...KErnelActionCascaded....
 		
+//		#######################################
+		//Innere Klassen, welche eine Action behandelt
+			class ActionIPLocalRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+				public ActionIPLocalRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+					super(objKernel, panelParent);			
+				}
+				
+				public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
+//					try {
+					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IP-Refresh'");
+														
+					String[] saFlag = {"useProxy"};					
+					KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
+																			
+					SwingWorker4ProgramIPContentOVPN worker = new SwingWorker4ProgramIPContentOVPN(objKernel, panelParent, saFlag);
+					worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
+					
+
+				/*} catch (ExceptionZZZ ez) {				
+					this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+				}	*/
+					
+					return true;
+				}
+
+				public boolean actionPerformQueryCustom(ActionEvent ae) throws ExceptionZZZ {
+					return true;
+				}
+
+				public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
+				}			 							
+				
+				class SwingWorker4ProgramIPContentOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
+					private IKernelZZZ objKernel;
+					private LogZZZ objLog;
+					private KernelJPanelCascadedZZZ panel;
+					private String[] saFlag4Program;			
+								
+					protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
+					
+					public SwingWorker4ProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+						super();
+						this.objKernel = objKernel;
+						this.objLog = objKernel.getLogObject();
+						this.panel = panel;
+						this.saFlag4Program = saFlag4Program;					
+					}
+					
+					//#### abstracte - Method aus SwingWorker
+					public Object construct() {
+						try{
+							//1. Ins Label schreiben, dass hier ein Update stattfindet
+							ProgramIPContentLocalOVPN objProg = new ProgramIPContentLocalOVPN(objKernel, this.panel, this.saFlag4Program);						
+							updateTextField(objProg,"Reading ...");
+							
+							//2. IP Auslesen von der Webseite										
+							String sIp = objProg.getIpExternal();
+													
+							//3. Diesen Wert wieder ins Label schreiben.
+							updateTextField(objProg, sIp);
+						}catch(ExceptionZZZ ez){
+							System.out.println(ez.getDetailAllLast());
+							ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+						}
+						return "all done";
+					}
+					
+					/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
+					 *  Entspricht auch ProgramIPContext.updateLabel(..)
+					* @param stext
+					* 
+					* lindhaueradmin; 17.01.2007 12:09:17
+					 */
+					public void updateTextField(final ProgramIPContentLocalOVPN objProg, final String stext){					
+						
+//						Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
+						Runnable runnerUpdateLabel= new Runnable(){
+
+							public void run(){
+//								In das Textfeld eintragen, das etwas passiert.	
+								objProg.updateLabel(stext);					 
+							}
+						};
+						
+						SwingUtilities.invokeLater(runnerUpdateLabel);				
+					}
+
+					public IKernelZZZ getKernelObject() {
+						return this.objKernel;
+					}
+
+					public void setKernelObject(IKernelZZZ objKernel) {
+						this.objKernel = objKernel;
+					}
+
+					public LogZZZ getLogObject() {
+						return this.objLog;
+					}
+
+					public void setLogObject(LogZZZ objLog) {
+						this.objLog = objLog;
+					}
+					
+					
+					
+					
+					/* (non-Javadoc)
+					 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
+					 */
+					public ExceptionZZZ getExceptionObject() {
+						return this.objException;
+					}
+					/* (non-Javadoc)
+					 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
+					 */
+					public void setExceptionObject(ExceptionZZZ objException) {
+						this.objException = objException;
+					}
+					
+					//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
+					@Override
+					public void logLineDate(String sLog) {
+						LogZZZ objLog = this.getLogObject();
+						if(objLog==null) {
+							String sTemp = KernelLogZZZ.computeLineDate(sLog);
+							System.out.println(sTemp);
+						}else {
+							objLog.WriteLineDate(sLog);
+						}		
+					}	
+					
+					
+					/**Overwritten and using an object of jakarta.commons.lang
+					 * to create this string using reflection. 
+					 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 
+					 */
+					public String toString(){
+						String sReturn = "";
+						sReturn = ReflectionToStringBuilder.toString(this);
+						return sReturn;
+					}
+
+				} //End Class MySwingWorker
+
+				public void actionPerformCustomOnError(ActionEvent ae, ExceptionZZZ ez) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+		}//End class ...KErnelActionCascaded....
+			
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	

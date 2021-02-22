@@ -1,4 +1,4 @@
-package use.openvpn.serverui.component.IPExternalUpload;
+package use.openvpn.serverui.common.component;
 
 
 import java.util.ArrayList;
@@ -30,19 +30,20 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
 /**Vereinfacht den Zugriff auf die HTML-Seite, in der die externe IPAdresse des Servers bekannt gemacht wird. 
- * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwentet.
+ * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwendet.
  * @author 0823
  *
  */
-TODOGOON; //20210222 Mache dies abstrakt, Package use.openvpn.common
+//20210222 Mache dies abstrakt, Package use.openvpn.common
 //                   Mache dann ProgramIPContentWebOVPN, ProgramIPConententLocalOVPN extends AbstractProgramIPContenOVPN
-public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpWebOVPN{
+public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgramUIZZZ{
 	private String sURL2Read=null;
 	private String sIPExternal = null;
 	private String sIPProxy = null;
 	private String sPortProxy = null;
 	
 	private KernelJPanelCascadedZZZ panel = null;
+	private String sTextfield4Update;
 	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
 	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
 
@@ -51,7 +52,7 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 	
 	//public static final String PROGRAM_ALIAS = "IP_ServerContext";
 	
-	public ProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,panel,saFlagControl);
 		main:{
 			this.setPanelParent(panel);			
@@ -125,6 +126,9 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 		return sReturn;		
 	}
 	
+	public void setIpExternal(String sIPExternal) {
+		this.sIPExternal = sIPExternal;
+	}
 	public String getIpExternal() throws ExceptionZZZ{
 		if(StringZZZ.isEmpty(this.sIPExternal)){
 			String sIP = this.readIpExternal();
@@ -132,47 +136,7 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 		}
 		return this.sIPExternal;
 	}
-	public String readIpExternal() throws ExceptionZZZ{
-		String sReturn = null;
-		main:{
-			String sURL = this.getUrl2Read();
-			if(StringZZZ.isEmpty(sURL)){
-				ExceptionZZZ ez = new ExceptionZZZ("URL to read Ip from", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}
-			
-			String[] satemp = {"UseStream"};
-			KernelReaderURLZZZ objReaderURL = new KernelReaderURLZZZ(objKernel, sURL,satemp, "");			
-			if(this.getFlag("useProxy")==true){
-				this.updateLabel("Proxy: Connecting ...");
-				boolean btemp = this.readProxyEnabled();
-				if(btemp){
-					String sProxyHost = this.getIpProxy();
-					String sProxyPort = this.getPortProxy();
-					objReaderURL.setProxyEnabled(sProxyHost, sProxyPort);
-					this.updateLabel("Proxy: Continue ...");
-				}else{
-					this.updateLabel("No proxy: Continue ...");
-				}
-			}
-						
-			//+++ Nachdem nun ggf. der Proxy aktiviert wurde, die Web-Seite versuchen auszulesen				
-			//+++ Den IP-Wert holen aus dem HTML-Code der konfigurierten URL
-			KernelReaderPageZZZ objReaderPage = objReaderURL.getReaderPage();
-			KernelReaderHtmlZZZ objReaderHTML = objReaderPage.getReaderHTML();
-			 
-			//Nun alle input-Elemente holen und nach dem Namen "IPNr" suchen.
-			TagTypeInputZZZ objTagTypeInput = new TagTypeInputZZZ(objKernel);			
-			TagInputZZZ objTag = (TagInputZZZ) objReaderHTML.readTagFirstZZZ(objTagTypeInput, "IPNr");
-			if(objTag!=null) {
-				sReturn = objTag.readValue();  //Merke: Das Eintragen des Wertes wird der �bergeordneten Methode �berlassen. 
-			}else {
-				this.updateLabel("No Tag found in Page: IPNr");
-			}
-		}//end main:
-		this.sIPExternal = sReturn;
-		return sIPExternal;
-	}	
+	public abstract String readIpExternal() throws ExceptionZZZ;
 	
 	
 	/**Read from the configuration file a proxy which might be necessary to use AND enables the proxy for this application.
@@ -302,7 +266,8 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 	* 
 	* lindhaueradmin; 17.01.2007 12:09:17
 	 */
-	public void updateLabel(String stext){
+	public void updateLabel(String sComponentName, String stext){
+		this.sTextfield4Update = sComponentName;
 		this.sText2Update = stext;
 		
 //		Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
@@ -310,19 +275,14 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 
 			public void run(){
 //				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD + "'");				
-				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
+				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sTextfield4Update + "'");				
+				JTextField textField = (JTextField) getPanelParent().getComponent(sTextfield4Update);					
 				textField.setText(sText2Update);
 				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
 			}
 		};
 		
-		SwingUtilities.invokeLater(runnerUpdateLabel);	
-		
-//		In das Textfeld eintragen, das etwas passiert.								
-		//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-		//textField.setText("Lese aktuellen Wert .....");
-		
+		SwingUtilities.invokeLater(runnerUpdateLabel);				
 	}
 }
 
