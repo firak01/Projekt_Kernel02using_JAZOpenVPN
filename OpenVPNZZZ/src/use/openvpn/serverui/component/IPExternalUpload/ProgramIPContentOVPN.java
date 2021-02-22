@@ -34,6 +34,8 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
+TODOGOON; //20210222 Mache dies abstrakt, Package use.openvpn.common
+//                   Mache dann ProgramIPContentWebOVPN, ProgramIPConententLocalOVPN extends AbstractProgramIPContenOVPN
 public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpWebOVPN{
 	private String sURL2Read=null;
 	private String sIPExternal = null;
