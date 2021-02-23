@@ -136,7 +136,52 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 		}
 		return this.sIPExternal;
 	}
-	public abstract String readIpExternal() throws ExceptionZZZ;
+	
+	
+	//#### METHIDEN ###############################################
+	public abstract void updateLabel(String stext);
+	
+	public String readIpExternal() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			String sURL = this.getUrl2Read();
+			if(StringZZZ.isEmpty(sURL)){
+				ExceptionZZZ ez = new ExceptionZZZ("URL to read Ip from", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			
+			String[] satemp = {"UseStream"};
+			KernelReaderURLZZZ objReaderURL = new KernelReaderURLZZZ(objKernel, sURL,satemp, "");			
+			if(this.getFlag("useProxy")==true){
+				this.updateLabel("Proxy: Connecting ...");
+				boolean btemp = this.readProxyEnabled();
+				if(btemp){
+					String sProxyHost = this.getIpProxy();
+					String sProxyPort = this.getPortProxy();
+					objReaderURL.setProxyEnabled(sProxyHost, sProxyPort);
+					this.updateLabel("Proxy: Continue ...");
+				}else{
+					this.updateLabel("No proxy: Continue ...");
+				}
+			}
+						
+			//+++ Nachdem nun ggf. der Proxy aktiviert wurde, die Web-Seite versuchen auszulesen				
+			//+++ Den IP-Wert holen aus dem HTML-Code der konfigurierten URL
+			KernelReaderPageZZZ objReaderPage = objReaderURL.getReaderPage();
+			KernelReaderHtmlZZZ objReaderHTML = objReaderPage.getReaderHTML();
+			 
+			//Nun alle input-Elemente holen und nach dem Namen "IPNr" suchen.
+			TagTypeInputZZZ objTagTypeInput = new TagTypeInputZZZ(objKernel);			
+			TagInputZZZ objTag = (TagInputZZZ) objReaderHTML.readTagFirstZZZ(objTagTypeInput, "IPNr");
+			if(objTag!=null) {
+				sReturn = objTag.readValue();  //Merke: Das Eintragen des Wertes wird der uebergeordneten Methode ueberlassen. 
+			}else {
+				this.updateLabel("No Tag found in Page: IPNr");
+			}					
+		}//end main:
+		this.setIpExternal(sReturn);
+		return sReturn;
+	}	
 	
 	
 	/**Read from the configuration file a proxy which might be necessary to use AND enables the proxy for this application.
