@@ -35,14 +35,11 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-//20210222 Mache dies abstrakt, Package use.openvpn.common
-//                   Mache dann ProgramIPContentWebOVPN, ProgramIPConententLocalOVPN extends AbstractProgramIPContenOVPN
+//20210222 Nutze abstrakt, Package use.openvpn.common
+//         Mache dann ProgramIPContentWebOVPN und ProgramIPConententLocalOVPN extends AbstractProgramIPContenOVPN
 public class ProgramIPContentLocalOVPN extends AbstractProgramIPContentOVPN implements IConstantProgramIpLocalOVPN{		
 	public ProgramIPContentLocalOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,panel,saFlagControl);
-		main:{
-			this.setPanelParent(panel);			
-		}//END main
 	}
 		
 	
@@ -81,7 +78,7 @@ public class ProgramIPContentLocalOVPN extends AbstractProgramIPContentOVPN impl
 			TagTypeInputZZZ objTagTypeInput = new TagTypeInputZZZ(objKernel);			
 			TagInputZZZ objTag = (TagInputZZZ) objReaderHTML.readTagFirstZZZ(objTagTypeInput, "IPNr");
 			if(objTag!=null) {
-				sReturn = objTag.readValue();  //Merke: Das Eintragen des Wertes wird der �bergeordneten Methode �berlassen. 
+				sReturn = objTag.readValue();  //Merke: Das Eintragen des Wertes wird der uebergeordneten Methode ueberlassen. 
 			}else {
 				this.updateLabel("No Tag found in Page: IPNr");
 			}
@@ -142,7 +139,6 @@ public class ProgramIPContentLocalOVPN extends AbstractProgramIPContentOVPN impl
 	 */
 	public void updateLabel(String stext){
 		super.updateLabel(sCOMPONENT_TEXTFIELD, stext);
-	}
-	
+	}	
 }
 

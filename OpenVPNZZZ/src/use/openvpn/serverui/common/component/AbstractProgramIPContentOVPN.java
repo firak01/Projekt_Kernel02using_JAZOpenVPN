@@ -55,7 +55,7 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 	public AbstractProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,panel,saFlagControl);
 		main:{
-			this.setPanelParent(panel);			
+			this.setPanelParent(panel);										
 		}//END main
 	}
 		
