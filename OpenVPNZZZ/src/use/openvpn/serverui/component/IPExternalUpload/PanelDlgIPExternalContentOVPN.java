@@ -84,6 +84,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 		}
 		
 		
+		
 		//- - - - - 
 		String sIpLocal="";
 		if(StringZZZ.isEmpty(sIpLocal)){
@@ -96,6 +97,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 		if(StringZZZ.isEmpty(sIpRouter)){
 			sIpRouter = "Enter or refresh";
 		}
+		
+				
 		//#######################################
 		
 		
@@ -114,127 +117,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 				"5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu"); 				 
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
-		
-		JLabel labelRouter = new JLabel(IConstantProgramIpWebOVPN.sLABEL_TEXTFIELD);
-		this.add(labelRouter, cc.xy(2,2));
-		
-		JLabel labelLocal = new JLabel(IConstantProgramIpLocalOVPN.sLABEL_TEXTFIELD);
-		this.add(labelLocal, cc.xy(2,4));
-		
-		JLabel labelIni = new JLabel(IConstantProgramIpRouterOVPN.sLABEL_TEXTFIELD);
-		this.add(labelIni, cc.xy(2,6));
-			
-		
-		
-		//--------------------------------------------------------------------
-		JTextField textfieldIPExternal = new JTextField(sIp, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
-		textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
-		textfieldIPExternal.setCaretPosition(0);
-		//Dimension dim = new Dimension(10, 15);
-		//textfield.setPreferredSize(dim);
-		this.add(textfieldIPExternal, cc.xy(4,2));
-		
-		// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
-		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
-		//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		
-		//- - - - - - - 
-		JTextField textfieldIPLocal = new JTextField(sIpLocal, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
-		textfieldIPLocal.setHorizontalAlignment(JTextField.LEFT);
-		//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
-		//Dimension dim = new Dimension(10, 15);
-		//textfield.setPreferredSize(dim);
-		this.add(textfieldIPLocal, cc.xy(4,4));
-		
-		// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
-		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
-		//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, textfieldIPLocal);  
 				
-		
-		//- - - - - - - 
-		JTextField textfieldIPRouter = new JTextField(sIpRouter, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
-		textfieldIPRouter.setHorizontalAlignment(JTextField.LEFT);
-		//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
-		//Dimension dim = new Dimension(10, 15);
-		//textfield.setPreferredSize(dim);
-		this.add(textfieldIPRouter, cc.xy(4,6));
-		
-		// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
-		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
-		//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent(IConstantProgramIpRouterOVPN.sCOMPONENT_TEXTFIELD, textfieldIPRouter);  
-		
-		//- - - - - - - -
-		JTextField textfieldWebCreate = new JTextField("", 20);
-		textfieldWebCreate.setHorizontalAlignment(JTextField.LEFT);
-		this.add(textfieldWebCreate, cc.xyw(4,8,3)); //Mehrere Spalten umfassend
-		
-		// Dieses Feld soll einer ggfs. Aktion in der Buttonleiste zur Verfügung stehen.
-		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
-		//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent(IConstantProgramPageWebCreateOVPN.sCOMPONENT_TEXTFIELD, textfieldWebCreate);      
-		
-		
-		
-		//- - - - - - - -
-		JTextField textfieldWebUpload = new JTextField("", 20);
-		textfieldWebUpload.setHorizontalAlignment(JTextField.LEFT);
-		this.add(textfieldWebUpload, cc.xyw(4,10,3)); //Mehrere Spalten umfassend
-		
-		// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
-		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
-		//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent(IConstantProgramPageWebUploadOVPN.sCOMPONENT_TEXTFIELD, textfieldWebUpload);  
-												
-		//-------------------------------------------------------------------
-		JButton buttonIpWeb2ini = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON_TO_INI);
-		ActionIpWeb2iniOVPN actionIpWeb2iniOVPN = new ActionIpWeb2iniOVPN(objKernel, this);
-		buttonIpWeb2ini.addActionListener(actionIpWeb2iniOVPN);
-		this.add(buttonIpWeb2ini, cc.xy(6,2));
-		
-		//-------------------------------------------------------------------
-		JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
-		ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
-		buttonIpLocal2ini.addActionListener(actionIpLocal2iniOVPN);
-		this.add(buttonIpLocal2ini, cc.xy(6,4));
-		
-		//-------------------------------------------------------------------
-		JButton buttonIpRouter2ini = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON_TO_INI);
-		ActionIpRouter2iniOVPN actionIpRouter2iniOVPN = new ActionIpRouter2iniOVPN(objKernel, this);
-		buttonIpRouter2ini.addActionListener(actionIpRouter2iniOVPN);
-		this.add(buttonIpRouter2ini, cc.xy(6,6));
+		this.createRowIpRouter(this, cc, 1, sIpRouter);							
+		this.createRowGeneratePage(this, cc, 2, "Generate page");
+		this.createRowIpLocal(this, cc, 3, sIpLocal);
+		this.createRowUploadPage(this, cc, 4, "Upload generated page");
+		this.createRowIpWeb(this, cc, 5, sIp);
 
-		//-------------------------------------------------------------------
-		//Merke: Der Server baut die Internetseite basierend auf dem Ini Eintrag.
-		//       Der letzte Eintrag kommt dann aus der aktuellen Web-Version.
-		JButton buttonReadIPWeb = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
-		ActionIPWebRefreshOVPN actionIPRefreshWeb = new ActionIPWebRefreshOVPN(objKernel, this);
-		buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
-		this.add(buttonReadIPWeb, cc.xy(8,2));
-						
-		JButton buttonReadIPLocal = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON);
-		ActionIPLocalRefreshOVPN actionIpRefreshLocal = new ActionIPLocalRefreshOVPN(objKernel, this);
-		buttonReadIPLocal.addActionListener(actionIpRefreshLocal);
-		this.add(buttonReadIPLocal, cc.xy(8,4));
-		
-		JButton buttonReadIPRouter = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON);
-		ActionIPWebRefreshOVPN actionIPRefreshRouter = new ActionIPWebRefreshOVPN(objKernel, this);
-		buttonReadIPRouter.addActionListener(actionIPRefreshRouter);
-		this.add(buttonReadIPRouter, cc.xy(8,6));
-				
-		JButton buttonGenerateIPPage = new JButton(IConstantProgramPageWebCreateOVPN.sLABEL_BUTTON);
-		ActionPageWebCreateOVPN actionGenerateIPPage = new ActionPageWebCreateOVPN(objKernel, this);
-		buttonGenerateIPPage.addActionListener(actionGenerateIPPage);
-		this.add(buttonGenerateIPPage, cc.xy(8,8));
-
-		JButton buttonUploadIPPage = new JButton(IConstantProgramPageWebUploadOVPN.sLABEL_BUTTON);
-		ActionPageWebUploadOVPN actionUploadIPPage = new ActionPageWebUploadOVPN(objKernel, this);
-		buttonUploadIPPage.addActionListener(actionUploadIPPage);
-		this.add(buttonUploadIPPage, cc.xy(8,10));
-		
-		
+	
 		
 		/* Das funktioniert nicht. Funktionalit�t des JGoodies-Framework. Warum ???
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -249,6 +139,166 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 		}
 	}//END Konstruktor
+	
+	private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+		boolean bReturn = false;
+		main:{
+			
+			JLabel labelRouter = new JLabel(IConstantProgramIpWebOVPN.sLABEL_TEXTFIELD);
+			panel.add(labelRouter, cc.xy(2,iRow*2));
+			
+			JTextField textfieldIPExternal = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
+			textfieldIPExternal.setCaretPosition(0);
+			//Dimension dim = new Dimension(10, 15);
+			//textfield.setPreferredSize(dim);
+			panel.add(textfieldIPExternal, cc.xy(4,iRow*2));
+			
+			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
+			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
+			panel.setComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			
+			JButton buttonIpWeb2ini = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON_TO_INI);
+			ActionIpWeb2iniOVPN actionIpWeb2iniOVPN = new ActionIpWeb2iniOVPN(objKernel, this);
+			buttonIpWeb2ini.addActionListener(actionIpWeb2iniOVPN);
+			panel.add(buttonIpWeb2ini, cc.xy(6,iRow*2));
+				
+			//Merke: Der Server baut die Internetseite basierend auf dem Ini Eintrag.
+			//       Der letzte Eintrag kommt dann aus der aktuellen Web-Version.
+			JButton buttonReadIPWeb = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
+			ActionIPWebRefreshOVPN actionIPRefreshWeb = new ActionIPWebRefreshOVPN(objKernel, this);
+			buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
+			panel.add(buttonReadIPWeb, cc.xy(8,iRow*2));
+			
+		}//end main;
+		return bReturn;
+	}
+	
+	
+	private boolean createRowUploadPage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+		boolean bReturn = false;
+		main:{
+			
+			
+			//- - - - - - - -
+			JTextField textfieldWebUpload = new JTextField(sDefaultValue, 20);
+			textfieldWebUpload.setHorizontalAlignment(JTextField.LEFT);
+			panel.add(textfieldWebUpload, cc.xyw(4,iRow*2,3)); //Mehrere Spalten umfassend
+			
+			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
+			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
+			panel.setComponent(IConstantProgramPageWebUploadOVPN.sCOMPONENT_TEXTFIELD, textfieldWebUpload);  
+													
+			
+			
+			JButton buttonUploadIPPage = new JButton(IConstantProgramPageWebUploadOVPN.sLABEL_BUTTON);
+			ActionPageWebUploadOVPN actionUploadIPPage = new ActionPageWebUploadOVPN(objKernel, this);
+			buttonUploadIPPage.addActionListener(actionUploadIPPage);
+			panel.add(buttonUploadIPPage, cc.xy(8,iRow*2));						
+			
+		}//end main;
+		return bReturn;
+	}
+	
+	private boolean createRowIpLocal(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+		boolean bReturn = false;
+		main:{
+			
+			JLabel labelLocal = new JLabel(IConstantProgramIpLocalOVPN.sLABEL_TEXTFIELD);
+			this.add(labelLocal, cc.xy(2,iRow*2));			
+			
+			JTextField textfieldIPLocal = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			textfieldIPLocal.setHorizontalAlignment(JTextField.LEFT);
+			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
+			//Dimension dim = new Dimension(10, 15);
+			//textfield.setPreferredSize(dim);
+			panel.add(textfieldIPLocal, cc.xy(4,iRow*2));
+			
+			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
+			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
+			panel.setComponent(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, textfieldIPLocal);  
+				
+			
+			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
+			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
+			buttonIpLocal2ini.addActionListener(actionIpLocal2iniOVPN);
+			this.add(buttonIpLocal2ini, cc.xy(6,iRow*2));
+			
+			JButton buttonReadIPLocal = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON);
+			ActionIPLocalRefreshOVPN actionIpRefreshLocal = new ActionIPLocalRefreshOVPN(objKernel, this);
+			buttonReadIPLocal.addActionListener(actionIpRefreshLocal);
+			panel.add(buttonReadIPLocal, cc.xy(8,iRow*2));
+			
+		}//end main;
+		return bReturn;
+	}
+	
+	
+	private boolean createRowGeneratePage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+		boolean bReturn = false;
+		main:{
+			
+			
+			JTextField textfieldWebCreate = new JTextField("", 20);
+			textfieldWebCreate.setHorizontalAlignment(JTextField.LEFT);
+			panel.add(textfieldWebCreate, cc.xyw(4,iRow*2,3)); //Mehrere Spalten umfassend
+			
+			// Dieses Feld soll einer ggfs. Aktion in der Buttonleiste zur Verfügung stehen.
+			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
+			panel.setComponent(IConstantProgramPageWebCreateOVPN.sCOMPONENT_TEXTFIELD, textfieldWebCreate);      
+			
+			
+			
+			JButton buttonGenerateIPPage = new JButton(IConstantProgramPageWebCreateOVPN.sLABEL_BUTTON);
+			ActionPageWebCreateOVPN actionGenerateIPPage = new ActionPageWebCreateOVPN(objKernel, this);
+			buttonGenerateIPPage.addActionListener(actionGenerateIPPage);
+			panel.add(buttonGenerateIPPage, cc.xy(8,iRow*2));
+			
+		}//end main;
+		return bReturn;
+	}
+	
+	private boolean createRowIpRouter(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+		boolean bReturn = false;
+		main:{
+			
+			JLabel labelRouter = new JLabel(IConstantProgramIpRouterOVPN.sLABEL_TEXTFIELD);
+			panel.add(labelRouter, cc.xy(2,iRow*2));
+			
+			JTextField textfieldIPRouter = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			textfieldIPRouter.setHorizontalAlignment(JTextField.LEFT);
+			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
+			//Dimension dim = new Dimension(10, 15);
+			//textfield.setPreferredSize(dim);
+			panel.add(textfieldIPRouter, cc.xy(4,iRow*2));
+			
+			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
+			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
+			panel.setComponent(IConstantProgramIpRouterOVPN.sCOMPONENT_TEXTFIELD, textfieldIPRouter);  
+			
+			
+			JButton buttonIpRouter2ini = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON_TO_INI);
+			ActionIpRouter2iniOVPN actionIpRouter2iniOVPN = new ActionIpRouter2iniOVPN(objKernel, this);
+			buttonIpRouter2ini.addActionListener(actionIpRouter2iniOVPN);
+			panel.add(buttonIpRouter2ini, cc.xy(6,iRow*2));
+			
+			JButton buttonReadIPRouter = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON);
+			ActionIPWebRefreshOVPN actionIPRefreshRouter = new ActionIPWebRefreshOVPN(objKernel, this);
+			buttonReadIPRouter.addActionListener(actionIPRefreshRouter);
+			panel.add(buttonReadIPRouter, cc.xy(8,iRow*2));
+			
+			
+			
+		}//end main;
+		return bReturn;
+	}
+	
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
@@ -1343,6 +1393,6 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 			}
 			
 	}//End class ...KErnelActionCascaded....
-		
+				
 }
 

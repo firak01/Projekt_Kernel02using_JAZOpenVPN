@@ -38,7 +38,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramIpLocal2iniOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpRouterOVPN{
+public class ProgramIpLocal2iniOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpLocalOVPN{
 	private String sIpFromUi=null;
 	
 	private KernelJPanelCascadedZZZ panel = null;
