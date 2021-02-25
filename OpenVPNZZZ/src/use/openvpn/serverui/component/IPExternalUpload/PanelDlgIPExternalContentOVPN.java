@@ -83,14 +83,11 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 			sIp = "Enter or refresh";
 		}
 		
-		
-		
 		//- - - - - 
 		String sIpLocal="";
 		if(StringZZZ.isEmpty(sIpLocal)){
 			sIpLocal = "Enter or refresh";
 		}
-		
 		
 		//- - - - - 
 		String sIpRouter="";
@@ -98,14 +95,10 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 			sIpRouter = "Enter or refresh";
 		}
 		
-				
-		//#######################################
-		
-		
 		//##################################################################
 		//### Definition des Masken UIs
 		//###
-		//Diese einfache Maske besteht aus 3 Zeilen und 6 Spalten. 
+		//Diese einfache Maske besteht aus 5 Zeilen und 6 Spalten. 
 		//Es gibt außen einen Rand von jeweils einer Spalte/Zeile
 		//Merke: gibt man pref an, so bewirkt dies, das die Spalte beim veraendern der Fenstergröße nicht angepasst wird, auch wenn grow dahinter steht.
 		
