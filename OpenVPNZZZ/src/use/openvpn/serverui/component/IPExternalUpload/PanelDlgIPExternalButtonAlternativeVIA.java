@@ -148,12 +148,13 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 					objProg.reset();
 					String sIp = objProg.getIpFromUi();
 					
+					//2. Schreiben des Werts in die Ini Datei
 					updateTextField(objProg, "writing...");
 					boolean bErg = objProg.writeIpToIni(sIp);
-					
-					
+										
 					//3. Diesen Wert wieder ins Label schreiben.
 					updateTextField(objProg, sIp);
+										
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
