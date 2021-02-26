@@ -1,4 +1,4 @@
-package use.openvpn.serverui.common.component;
+package use.openvpn.component;
 
 
 import java.util.ArrayList;
@@ -42,16 +42,10 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 	private String sIPProxy = null;
 	private String sPortProxy = null;
 	
-	private KernelJPanelCascadedZZZ panel = null;
-	private String sTextfield4Update;
-	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
-	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
-
+	
 	
 	private boolean bFlagUseProxy = false;
-	
-	//public static final String PROGRAM_ALIAS = "IP_ServerContext";
-	
+
 	public AbstractProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,panel,saFlagControl);
 		main:{
@@ -61,13 +55,6 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 		
 	
 	//### Getter / Setter
-	public KernelJPanelCascadedZZZ getPanelParent(){
-		return this.panel;
-	}
-	public void setPanelParent(KernelJPanelCascadedZZZ panel){
-		this.panel = panel;
-	}
-	
 	public String getUrl2Read() throws ExceptionZZZ{
 		if(StringZZZ.isEmpty(this.sURL2Read)){
 			String stemp = this.readUrl2Read();
@@ -138,9 +125,7 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 	}
 	
 	
-	//#### METHIDEN ###############################################
-	public abstract void updateLabel(String stext);
-	
+	//#### METHIDEN ###############################################	
 	public String readIpExternal() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
@@ -302,32 +287,6 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 		}
 		}//end main:
 		return bFunction;
-	}
-	
-	
-	
-	/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-	* @param stext
-	* 
-	* lindhaueradmin; 17.01.2007 12:09:17
-	 */
-	public void updateLabel(String sComponentName, String stext){
-		this.sTextfield4Update = sComponentName;
-		this.sText2Update = stext;
-		
-//		Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-		Runnable runnerUpdateLabel= new Runnable(){
-
-			public void run(){
-//				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sTextfield4Update + "'");				
-				JTextField textField = (JTextField) getPanelParent().getComponent(sTextfield4Update);					
-				textField.setText(sText2Update);
-				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
-			}
-		};
-		
-		SwingUtilities.invokeLater(runnerUpdateLabel);				
 	}
 }
 

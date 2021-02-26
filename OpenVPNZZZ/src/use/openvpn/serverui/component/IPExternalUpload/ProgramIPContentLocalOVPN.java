@@ -9,7 +9,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import custom.zKernel.file.ini.FileIniZZZ;
-import use.openvpn.serverui.common.component.AbstractProgramIPContentOVPN;
+import use.openvpn.component.AbstractProgramIPContentOVPN;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zBasic.ExceptionZZZ;

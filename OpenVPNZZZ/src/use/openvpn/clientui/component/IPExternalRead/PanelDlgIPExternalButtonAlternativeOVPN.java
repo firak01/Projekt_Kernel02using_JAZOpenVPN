@@ -144,63 +144,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 				this.panel = panel;
 				this.saFlag4Program = saFlag4Program;					
 			}
-			
-//			//#### abstracte - Method aus SwingWorker
-//			public Object construct() {
-//				try{
-//					//1. IP Auslesen von der Webseite
-//					//TODOGOON;//20210225 DAS CLIENTSEITIG ODER COMMON
-//					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
-//					objProg.reset();
-//					String sIP = objProg.getIpFromUi();
-//					
-//					//Hier erst einmal den Inhalt einer per Alias zugänglich gemachten Komponente (siehe KernelPanelCascadedZZZ) auslesen
-//					KernelJPanelCascadedZZZ panelButton = (KernelJPanelCascadedZZZ) this.panel; //this.getPanelParent();
-//					KernelJPanelCascadedZZZ panelCenter = (KernelJPanelCascadedZZZ) panelButton.getPanelNeighbour("CENTER");
-//					JTextField texttemp = (JTextField) panelCenter.getComponent("textIpContent");
-//					//String sIP= texttemp.getText();	
-//					
-//					ReportLogZZZ.write(ReportLogZZZ.INFO, "IP/URL found for use closing dialog 'TODOGOON hier den Namen des Buttons... Export Data via Http': " + sIP);
-//					
-////					Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
-//					IKernelZZZ objKernel = this.getKernelObject();
-//					KernelJDialogExtendedZZZ dialog = panelCenter.getDialogParent();	
-//					KernelJFrameCascadedZZZ frameParent = null;
-//					
-//					String sProgram; String sModule;
-//					sModule = this.getModuleUsed();
-//					if(StringZZZ.isEmpty(sModule)){
-//						ExceptionZZZ ez = new ExceptionZZZ("No module configured.", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//						throw ez;
-//					}	
-//					
-//					sProgram = this.getProgramUsed();
-//					if(StringZZZ.isEmpty(sProgram)){
-//						ExceptionZZZ ez = new ExceptionZZZ("No program configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//						throw ez;
-//					}
-//							
-//					//Merke: Beim Setzen wird auch der KernelCache sofort wieder neu gesetzt.
-//					objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIP);
-//					
-//					panelButton.getDialogParent().setDisposed();			
-//					bReturn = true; //erst dann wird das PostCustom-ausgeführt
-//					
-//					
-//					
-//					updateTextField(objProg, "writing...");
-//					boolean bErg = objProg.writeIpToIni(sIp);
-//					
-//					
-//					//3. Diesen Wert wieder ins Label schreiben.
-//					updateTextField(objProg, sIp);
-//				}catch(ExceptionZZZ ez){
-//					System.out.println(ez.getDetailAllLast());
-//					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
-//				}
-//				return "all done";
-//			}
-			
+						
 			//#### abstracte - Method aus SwingWorker
 			public Object construct() {
 				try{

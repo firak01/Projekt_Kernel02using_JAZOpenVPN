@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import custom.zKernel.file.ini.FileIniZZZ;
+import use.openvpn.component.AbstractProgram2iniOVPN;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -38,12 +39,8 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramIpLocal2iniOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpLocalOVPN{
+public class ProgramIpLocal2iniOVPN extends AbstractProgram2iniOVPN implements IConstantProgramIpLocalOVPN{
 	private String sIpFromUi=null;
-	
-	private KernelJPanelCascadedZZZ panel = null;
-	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
-	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
 
 	//Keine Flags gesetzt
 	//private boolean bFlagUseProxy = false;
@@ -58,13 +55,6 @@ public class ProgramIpLocal2iniOVPN extends AbstractKernelProgramUIZZZ implement
 		
 	
 	//### Getter / Setter
-	public KernelJPanelCascadedZZZ getPanelParent(){
-		return this.panel;
-	}
-	public void setPanelParent(KernelJPanelCascadedZZZ panel){
-		this.panel = panel;
-	}
-	
 	public String getIpFromUi() throws ExceptionZZZ{
 		if(StringZZZ.isEmpty(this.sIpFromUi)){
 			String stemp = this.readIpFromUi();
@@ -196,36 +186,13 @@ public class ProgramIpLocal2iniOVPN extends AbstractKernelProgramUIZZZ implement
 	}
 	
 	public void reset() {
-		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.	
-		this.sText2Update = ""; 
+		super.reset();
+		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.			
 	}
 	
-	/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-	* @param stext
-	* 
-	* lindhaueradmin; 17.01.2007 12:09:17
-	 */
-	public void updateLabel(String stext){
-		this.sText2Update = stext;
-		
-//		Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-		Runnable runnerUpdateLabel= new Runnable(){
-
-			public void run(){
-//				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD + "'");				
-				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
-				textField.setText(sText2Update);
-				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
-			}
-		};
-		
-		SwingUtilities.invokeLater(runnerUpdateLabel);	
-		
-//		In das Textfeld eintragen, das etwas passiert.								
-		//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-		//textField.setText("Lese aktuellen Wert .....");
-		
+	@Override
+	public void updateLabel(String stext) {
+		updateLabel(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, stext);
 	}
 }
 
