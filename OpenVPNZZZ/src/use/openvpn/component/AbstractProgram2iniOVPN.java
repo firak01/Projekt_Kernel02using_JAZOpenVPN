@@ -1,4 +1,4 @@
-package use.openvpn.serverui.component.IPExternalUpload;
+package use.openvpn.component;
 
 
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import custom.zKernel.file.ini.FileIniZZZ;
-import use.openvpn.component.AbstractProgram2iniOVPN;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -31,60 +30,24 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
 /**Vereinfacht den Zugriff auf die HTML-Seite, in der die externe IPAdresse des Servers bekannt gemacht wird. 
- * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwentet.
+ * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwendet.
  * @author 0823
  *
  */
-public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements IConstantProgramIpWebOVPN{
-	private String sIpFromUi=null;
-	
-	//Keine Flags gesetzt
-	//private boolean bFlagUseProxy = false;
-
-	
-	public ProgramIpWeb2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
+//20210222 Mache dies abstrakt, Package use.openvpn.common
+//                   Mache dann ProgramIPContentWebOVPN, ProgramIPConententLocalOVPN extends AbstractProgramIPContenOVPN
+public abstract class AbstractProgram2iniOVPN extends AbstractKernelProgramUIZZZ{		
+	public AbstractProgram2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,panel,saFlagControl);
-		main:{			
-			this.setPanelParent(panel);			
-		}//END main
-	}
-		
-	
-	//### Getter / Setter	
-	public String getIpFromUi() throws ExceptionZZZ{
-		if(StringZZZ.isEmpty(this.sIpFromUi)){
-			String stemp = this.readIpFromUi();
-			this.sIpFromUi = stemp;
-		}
-		return this.sIpFromUi;
-	}
-	
-	public String readIpFromUi() throws ExceptionZZZ{
-		String sReturn = null;
 		main:{
-			KernelJPanelCascadedZZZ panel = this.getPanelParent();
-			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
-			sReturn = textField.getText();
-		}
-		return sReturn;
-	}
+			this.setPanelParent(panel);										
+		}//END main
+	}			
+	//### Getter / Setter
 	
-	public boolean writeIpToIni(String sIp) throws ExceptionZZZ{
-		boolean bReturn = false;
-		main:{			
-			String sModule = this.getModuleName();
-			String sProgram = this.getProgramName();
-			
-			IKernelZZZ objKernel = this.getKernelObject();
-			objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIp);
-						
-			bReturn = true;
-		}
-		return bReturn;
-		
-	}
-	
-	
+
+	//#### METHIDEN ###############################################
+	public abstract void updateLabel(String stext);
 	
 //	######### GetFlags - Handled ##############################################
 	/** (non-Javadoc)
@@ -100,13 +63,13 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 			if(StringZZZ.isEmpty(sFlagName)) break main;
 			bFunction = super.getFlag(sFlagName);
 			if(bFunction==true) break main;
-							
+			
+			/*
 			//getting the flags of this object
 			String stemp = sFlagName.toLowerCase();
-			/*
 			if(stemp.equals("useproxy")){
 				bFunction = bFlagUseProxy;
-				break main;						
+				break main;							
 			}else if(stemp.equals("isconnected")){
 				bFunction = bFlagIsConnected;
 				break main;
@@ -139,11 +102,11 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
 			bFunction = super.setFlag(sFlagName, bFlagValue);
-			if(bFunction==true) break main;
+		if(bFunction==true) break main;
 	
+		/*
 		//setting the flags of this object
 		String stemp = sFlagName.toLowerCase();
-		/*
 		if(stemp.equals("useproxy")){
 			bFlagUseProxy = bFlagValue;
 			bFunction = true;			
@@ -164,16 +127,6 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 		*/
 		}//end main:
 		return bFunction;
-	}
-	
-	public void reset() {
-		super.reset();
-		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.			
-	}
-	
-	@Override
-	public void updateLabel(String stext) {
-		updateLabel(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);
-	}
+	}				
 }
 

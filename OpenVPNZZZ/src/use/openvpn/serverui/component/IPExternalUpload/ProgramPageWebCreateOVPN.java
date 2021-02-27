@@ -106,12 +106,14 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 		String sIPTime = entryTime.getValue();
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Page Generator - IP Detail read from file: "+sIP + " ("+sIPDate+" - "+sIPTime+")");
 
-		IKernelConfigSectionEntryZZZ entryServerPrevious = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternalPrevious", false);
-		String sIPPrevious = entryServerPrevious.getValue();
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": sIPPrevious='"+sIPPrevious+"'");
+		//Den alten IP Wert aus der Ini-Datei holen
+		//IKernelConfigSectionEntryZZZ entryServerPrevious = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternalPrevious", false);
+		//String sIPPrevious = entryServerPrevious.getValue();
+		//System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": sIPPrevious='"+sIPPrevious+"'");
 		
-		if(!sIP.equals(sIPPrevious)){
-			System.out.println("PageGenerator - geaenderter Wert fuer die IP-Adresse. Erstelle neue HTML-Datei.");
+		//if(!sIP.equals(sIPPrevious)){
+			//System.out.println("PageGenerator - geaenderter Wert fuer die IP-Adresse. Erstelle neue HTML-Datei.");
+		System.out.println("PageGenerator - Unabhängig von bisheriger IP-Adresse. Erstelle neue HTML-Datei.");
 			
 			//Nur eine neue Datei erzeugen, wenn es auch eine neue IPNr gibt
 			//Create a Content Store object, here: pass the IP Details as Variable 
@@ -154,80 +156,15 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 			   String sFile = objEntryFile.getValue();
 			   
 			   String sFilePath = FileEasyZZZ.joinFilePathName(sDirectory, sFile);
-			   objPageWriter.toFile(sFilePath);
-			   bReturn = true;		
+			   bReturn = objPageWriter.toFile(sFilePath);			   	
 		   }else {
 			   bReturn = false;
 		   }
-		}else {
-			System.out.println("PageGenerator - unveraenderter Wert fuer die IP-Adresse. Erstelle keine neue HTML-Datei.");		
-			bReturn = false;
-		}//end if( !sIP.equals(sIPPrevious)){
-			
-		
-//		IKernelConfigSectionEntryZZZ entryUser = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"User");
-//		String sUser = entryUser.getValue();
-//		
-//		IKernelConfigSectionEntryZZZ entryPassword = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"Password");
-//		String sPassword = entryPassword.getValue();
-//		
-//		IKernelConfigSectionEntryZZZ entryRoot = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"RootPath");
-//		String sRootPath = entryRoot.getValue();
-//		
-//		
-//		System.out.println("Page Transfer - Login detail read from file: "+sServer + " ("+sUser+" - "+sPassword+"), RootPath='" + sRootPath + "'" );
-//		objFTP.setServer(sServer);
-//		objFTP.setUser(sUser);
-//		objFTP.setPassword(sPassword);
-//		objFTP.setRootPath(sRootPath);
-//		
-//			//5. Login
-//		btemp = objFTP.makeConnection();
-//		if (btemp==true) System.out.println("Connction - successfull, now transfering file");
-//		
-//		//6. Datei ermitteln und �bertragen
-//		//TODO Mit eine @Z-Formel in der Konfiguration DIESES Programms auslesen, die auf den wert in der konfiguration eines anderen Programms hinweist.
-//		//Hier die Konfiguration direkt auslesen
-//		/*
-//			 * TargetDirectory=c:\temp
-//TargetFile=testpage.html
-//			 */
-//		
-//		IKernelConfigSectionEntryZZZ entryDirSource=objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"SourceDirectory");
-//		String sDirSource = entryDirSource.getValue();
-//		
-//		IKernelConfigSectionEntryZZZ entryFile = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"SourceFile");
-//		String sFile = entryFile.getValue();
-//		
-//		//Also eigentlich objKernel.getParameterByProgramAlias(objFileIniIPConfgi, "ProgFTP","SourceFile");
-//		String sFilePath = FileEasyZZZ.joinFilePathName(sDirSource, sFile);
-//		File objFile = new File(sFilePath);
-//		if(!FileEasyZZZ.exists(objFile)){
-//			System.out.println("File not found '"+sFilePath);
+//		}else {
+//			System.out.println("PageGenerator - unveraenderter Wert fuer die IP-Adresse. Erstelle keine neue HTML-Datei.");		
 //			bReturn = false;
-//		}else{
-//			IKernelConfigSectionEntryZZZ entryDirTarget=objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"TargetDirectory");
-//			String sDirTarget = entryDirTarget.getValue();
-//			StringZZZ.replace(sDirTarget, FileEasyZZZ.sDIRECTORY_SEPARATOR_WINDOWS, CharZZZ.toString(objFTP.getDirectorySeparatorRemote()));
-//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": DirTarget='"+sDirTarget+"'");
-//			
-//			//Dateiname bleibt ggfs. nicht gleich, also extra auslesen.
-//			IKernelConfigSectionEntryZZZ entryFileTarget = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"TargetFile");
-//			String sFileTarget = entryFileTarget.getValue();
-//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FileTarget='"+sFileTarget+"'");
-//															
-//			bReturn = objFTP.uploadFile(objFile, sDirTarget, sFileTarget);
-//		}
-//		
-//		
-//		//7. Verbindung schliessen
-//		if (bReturn==true){
-//			System.out.println("Transfer - successfull, now disconnecting"); 
-//		}else{
-//			 System.out.println("Transfer - NOT successfull, now disconnecting");					
-//		}
-//		objFTP.closeConnection();
-//
+//		}//end if( !sIP.equals(sIPPrevious)){
+			
 		} catch (ExceptionZZZ ez) {
 				System.out.println(ez.getDetailAllLast());
 		} 

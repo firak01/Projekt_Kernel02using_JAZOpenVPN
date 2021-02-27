@@ -1,4 +1,4 @@
-package use.openvpn.serverui.component.IPExternalUpload;
+package use.openvpn.clientui.component.IPExternalRead;
 
 
 import java.util.ArrayList;
@@ -37,11 +37,10 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  */
 public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements IConstantProgramIpWebOVPN{
 	private String sIpFromUi=null;
-	
+
 	//Keine Flags gesetzt
 	//private boolean bFlagUseProxy = false;
 
-	
 	public ProgramIpWeb2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,panel,saFlagControl);
 		main:{			
@@ -50,7 +49,7 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 	}
 		
 	
-	//### Getter / Setter	
+	//### Getter / Setter
 	public String getIpFromUi() throws ExceptionZZZ{
 		if(StringZZZ.isEmpty(this.sIpFromUi)){
 			String stemp = this.readIpFromUi();
@@ -63,8 +62,11 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 		String sReturn = null;
 		main:{
 			KernelJPanelCascadedZZZ panel = this.getPanelParent();
-			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
-			sReturn = textField.getText();
+			KernelJPanelCascadedZZZ panelCenter = (KernelJPanelCascadedZZZ) panel.getPanelNeighbour("CENTER");
+			JTextField textField = (JTextField) panelCenter.getComponent(sCOMPONENT_TEXTFIELD);
+			if(textField!=null) {
+				sReturn = textField.getText();
+			}
 		}
 		return sReturn;
 	}
@@ -166,14 +168,17 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 		return bFunction;
 	}
 	
-	public void reset() {
-		super.reset();
-		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.			
-	}
 	
+	//### Aus Interfaces und abstrakten Klassen
 	@Override
 	public void updateLabel(String stext) {
 		updateLabel(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);
+	}
+	
+	
+	public void reset() {
+		super.reset();
+		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.			
 	}
 }
 

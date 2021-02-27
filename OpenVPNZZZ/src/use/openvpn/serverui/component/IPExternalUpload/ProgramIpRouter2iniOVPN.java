@@ -12,6 +12,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import custom.zKernel.file.ini.FileIniZZZ;
+import use.openvpn.clientui.component.IPExternalRead.IConstantProgramIpWebOVPN;
+import use.openvpn.component.AbstractProgram2iniOVPN;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -38,13 +40,9 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramIpRouter2iniOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpRouterOVPN{
+public class ProgramIpRouter2iniOVPN  extends AbstractProgram2iniOVPN implements IConstantProgramIpRouterOVPN{
 	private String sIpFromUi=null;
 	
-	private KernelJPanelCascadedZZZ panel = null;
-	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
-	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
-
 	//Keine Flags gesetzt
 	//private boolean bFlagUseProxy = false;
 
@@ -57,14 +55,7 @@ public class ProgramIpRouter2iniOVPN extends AbstractKernelProgramUIZZZ implemen
 	}
 		
 	
-	//### Getter / Setter
-	public KernelJPanelCascadedZZZ getPanelParent(){
-		return this.panel;
-	}
-	public void setPanelParent(KernelJPanelCascadedZZZ panel){
-		this.panel = panel;
-	}
-	
+	//### Getter / Setter	
 	public String getIpFromUi() throws ExceptionZZZ{
 		if(StringZZZ.isEmpty(this.sIpFromUi)){
 			String stemp = this.readIpFromUi();
@@ -196,36 +187,16 @@ public class ProgramIpRouter2iniOVPN extends AbstractKernelProgramUIZZZ implemen
 	}
 	
 	public void reset() {
+		super.reset();
 		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.	
-		this.sText2Update = ""; 
+	}
+
+
+	@Override
+	public void updateLabel(String stext) {
+		updateLabel(IConstantProgramIpRouterOVPN.sCOMPONENT_TEXTFIELD, stext);
 	}
 	
-	/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-	* @param stext
-	* 
-	* lindhaueradmin; 17.01.2007 12:09:17
-	 */
-	public void updateLabel(String stext){
-		this.sText2Update = stext;
-		
-//		Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-		Runnable runnerUpdateLabel= new Runnable(){
-
-			public void run(){
-//				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD + "'");				
-				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
-				textField.setText(sText2Update);
-				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
-			}
-		};
-		
-		SwingUtilities.invokeLater(runnerUpdateLabel);	
-		
-//		In das Textfeld eintragen, das etwas passiert.								
-		//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-		//textField.setText("Lese aktuellen Wert .....");
-		
-	}
+	
 }
 

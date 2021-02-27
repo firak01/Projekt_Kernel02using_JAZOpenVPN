@@ -1,4 +1,4 @@
-package use.openvpn.clientui.component.IPExternalRead;
+package use.openvpn.serverui.component.IPExternalUpload;
 
 
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 
 import custom.zKernel.file.ini.FileIniZZZ;
 import use.openvpn.component.AbstractProgramIPContentOVPN;
-import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpLocalOVPN;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -36,21 +35,20 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-//20210222 Nutze abstrakt, Package use.openvpn.common
-//         Nutze dadurch den gleichen Code wie für die Server-Dialogbox.
-public class ProgramIPContentOVPN extends AbstractProgramIPContentOVPN implements IConstantProgramIpWebOVPN{	
-	public ProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel, panel, saFlagControl);					
+//20210222 Mache dies abstrakt, Package use.openvpn.common
+//                   Mache dann ProgramIPContentWebOVPN, ProgramIPConententLocalOVPN extends AbstractProgramIPContenOVPN
+public class ProgramIPContentWebOVPN extends AbstractProgramIPContentOVPN implements IConstantProgramIpWebOVPN{		
+	public ProgramIPContentWebOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel,panel,saFlagControl);		
 	}
-		
-	
-//### Getter / Setter
 			
-//######### GetFlags - Handled ##############################################
-
-//### METHODEN
+	//### Getter / Setter
 	
-// ######### Auftruf abstrakter Methoden ######################################	
+	//######### GetFlags - Handled ##############################################
+
+	//### METHODEN
+		
+	// ######### Auftruf abstrakter Methoden ######################################	
 	/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
 	* @param stext
 	* 
@@ -59,5 +57,6 @@ public class ProgramIPContentOVPN extends AbstractProgramIPContentOVPN implement
 	public void updateLabel(String stext){
 		super.updateLabel(sCOMPONENT_TEXTFIELD, stext);
 	}
+	
 }
 

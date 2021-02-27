@@ -54,7 +54,39 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
 		this.setFlagZ(IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name(), true);	
 			
-		//Diese einfache Maske besteht aus 3 Zeilen und 4 Spalten. 
+		//#############################################################################################
+		//### Auslesen des bisher verwendeten ini-Eintrags. 
+		//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
+		//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
+		String sIp = "";
+				
+		//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
+		String sProgram; String sModule;
+		sModule = this.getModuleName();
+		if(StringZZZ.isEmpty(sModule)){
+			ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}
+		
+		sProgram = this.getProgramName();
+		if(StringZZZ.isEmpty(sProgram)){
+			ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}
+
+		//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
+		IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
+		sIp = objEntry.getValue();
+				
+		//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
+		if(StringZZZ.isEmpty(sIp)){
+			sIp = "Enter or refresh";
+		}
+				
+		//##################################################################
+		//### Definition des Masken UIs
+		//###
+		//Diese einfache Maske besteht nur aus 1 Zeile und 4 Spalten. 
 		//Es gibt außen einen Rand von jeweils einer Spalte/Zeile
 		//Merke: gibt man pref an, so bewirkt dies, das die Spalte beim ver�ndern der Fenstergröße nicht angepasst wird, auch wenn grow dahinter steht.
 		
@@ -66,77 +98,64 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugwiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 		
-		JLabel label = new JLabel(ProgramIPContentOVPN.sLABEL_TEXTFIELD);
-		this.add(label, cc.xy(2,2));
-			
-		//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
-		String sIp = "";
+		this.createRowIpWeb(this, cc, 1, sIp);
 		
-//		Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
-		KernelJDialogExtendedZZZ dialog = this.getDialogParent();
-		KernelJFrameCascadedZZZ frameParent = null;
-		//Hier nicht, da die Dialogbox schon ein Flag bekommen hat. this.setFlagZ(KernelJPanelCascadedZZZ.FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);//Damit wird es zum PROGRAM
-		
-		String sProgram; String sModule;
-		sModule = this.getModuleName();
-		if(StringZZZ.isEmpty(sModule)){
-			ExceptionZZZ ez = new ExceptionZZZ("No module configured.", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		
-		sProgram = this.getProgramName();
-		if(StringZZZ.isEmpty(sProgram)){
-			ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}	
-					
-		//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.					
-		IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
-		sIp = objEntry.getValue();
-		
-		//TODOGOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
-		if(StringZZZ.isEmpty(sIp)){
-			sIp = "Enter or refresh";
-		}
-		
-		JTextField textfieldIPExternal = new JTextField(sIp, 20);
-		textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
-		textfieldIPExternal.setCaretPosition(0);
-		//Dimension dim = new Dimension(10, 15);
-		//textfield.setPreferredSize(dim);
-		this.add(textfieldIPExternal, cc.xy(4,2));
-		
-		// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
-		//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
-		//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-		this.setComponent(ProgramIPContentOVPN.sCOMPONENT_TEXTFIELD, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		
-		
-		JButton buttonReadIPExternal = new JButton(ProgramIPContentOVPN.sLABEL_BUTTON);
-		ActionIPRefreshOVPN actionIPRefresh = new ActionIPRefreshOVPN(objKernel, this);
-		buttonReadIPExternal.addActionListener(actionIPRefresh);
-		
-		this.add(buttonReadIPExternal, cc.xy(6,2));
-		
-		
-		/* Das funktioniert nicht. Funktionalit�t des JGoodies-Framework. Warum ???
-		PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
-		builder.addLabel("Externe IP Adresse des Servers");
-		JTextField textfield = new JTextField("noch automatisch zu f�llen");
-		builder.add(textfield, cc.xy(3,2));
-		*/	
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
 			ez.printStackTrace();
 			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 		}
 	}//END Konstruktor
+	
+	private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+		boolean bReturn = false;
+		main:{
+				
+			//Beim Schliessen der Dialogbox soll ggfs. der Wert übernommen werden, also kein extra Button.
+//			JButton buttonIpWeb2ini = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON_TO_INI);
+//			ActionIpWeb2iniOVPN actionIpWeb2iniOVPN = new ActionIpWeb2iniOVPN(objKernel, this);
+//			buttonIpWeb2ini.addActionListener(actionIpWeb2iniOVPN);
+//			panel.add(buttonIpWeb2ini, cc.xy(6,iRow*2));
+			
+			//#########	
+			JLabel label = new JLabel(IConstantProgramIpWebOVPN.sLABEL_TEXTFIELD);
+			panel.add(label, cc.xy(2,iRow*2));
+														
+			JTextField textfieldIPExternal = new JTextField(sDefaultValue, 20);
+			textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
+			textfieldIPExternal.setCaretPosition(0);
+			//Dimension dim = new Dimension(10, 15);
+			//textfield.setPreferredSize(dim);
+			panel.add(textfieldIPExternal, cc.xy(4,iRow*2));
+			
+			// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
+			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+			//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
+			panel.setComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			
+			JButton buttonReadIPExternal = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
+			ActionIPWebRefreshOVPN actionIPRefresh = new ActionIPWebRefreshOVPN(objKernel, this);
+			buttonReadIPExternal.addActionListener(actionIPRefresh);			
+			panel.add(buttonReadIPExternal, cc.xy(6,iRow*2));
+			
+			
+			/* Das funktioniert nicht. Funktionalit�t des JGoodies-Framework. Warum ???
+			PanelBuilder builder = new PanelBuilder(layout);
+			builder.setDefaultDialogBorder();
+			builder.addLabel("Externe IP Adresse des Servers");
+			JTextField textfield = new JTextField("noch automatisch zu f�llen");
+			builder.add(textfield, cc.xy(3,2));
+			*/	
+			
+		}//end main;
+		return bReturn;
+	}
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
-		class ActionIPRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-			public ActionIPRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+		class ActionIPWebRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+			public ActionIPWebRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 				super(objKernel, panelParent);			
 			}
 			

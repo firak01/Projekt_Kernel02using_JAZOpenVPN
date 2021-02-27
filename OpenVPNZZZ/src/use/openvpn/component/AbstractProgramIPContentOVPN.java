@@ -1,4 +1,4 @@
-package use.openvpn.serverui.component.IPExternalUpload;
+package use.openvpn.component;
 
 
 import java.util.ArrayList;
@@ -30,41 +30,31 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
 /**Vereinfacht den Zugriff auf die HTML-Seite, in der die externe IPAdresse des Servers bekannt gemacht wird. 
- * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwentet.
+ * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwendet.
  * @author 0823
  *
  */
-public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements IConstantProgramIpWebOVPN{
+//20210222 Mache dies abstrakt, Package use.openvpn.common
+//                   Mache dann ProgramIPContentWebOVPN, ProgramIPConententLocalOVPN extends AbstractProgramIPContenOVPN
+public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgramUIZZZ{
 	private String sURL2Read=null;
 	private String sIPExternal = null;
 	private String sIPProxy = null;
 	private String sPortProxy = null;
 	
-	private KernelJPanelCascadedZZZ panel = null;
-	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
-	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
-
+	
 	
 	private boolean bFlagUseProxy = false;
-	
-	//public static final String PROGRAM_ALIAS = "IP_ServerContext";
-	
-	public ProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
+
+	public AbstractProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,panel,saFlagControl);
 		main:{
-			this.setPanelParent(panel);			
+			this.setPanelParent(panel);										
 		}//END main
 	}
 		
 	
 	//### Getter / Setter
-	public KernelJPanelCascadedZZZ getPanelParent(){
-		return this.panel;
-	}
-	public void setPanelParent(KernelJPanelCascadedZZZ panel){
-		this.panel = panel;
-	}
-	
 	public String getUrl2Read() throws ExceptionZZZ{
 		if(StringZZZ.isEmpty(this.sURL2Read)){
 			String stemp = this.readUrl2Read();
@@ -123,6 +113,9 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 		return sReturn;		
 	}
 	
+	public void setIpExternal(String sIPExternal) {
+		this.sIPExternal = sIPExternal;
+	}
 	public String getIpExternal() throws ExceptionZZZ{
 		if(StringZZZ.isEmpty(this.sIPExternal)){
 			String sIP = this.readIpExternal();
@@ -130,6 +123,9 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 		}
 		return this.sIPExternal;
 	}
+	
+	
+	//#### METHIDEN ###############################################	
 	public String readIpExternal() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
@@ -163,13 +159,13 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 			TagTypeInputZZZ objTagTypeInput = new TagTypeInputZZZ(objKernel);			
 			TagInputZZZ objTag = (TagInputZZZ) objReaderHTML.readTagFirstZZZ(objTagTypeInput, "IPNr");
 			if(objTag!=null) {
-				sReturn = objTag.readValue();  //Merke: Das Eintragen des Wertes wird der �bergeordneten Methode �berlassen. 
+				sReturn = objTag.readValue();  //Merke: Das Eintragen des Wertes wird der uebergeordneten Methode ueberlassen. 
 			}else {
 				this.updateLabel("No Tag found in Page: IPNr");
-			}
+			}					
 		}//end main:
-		this.sIPExternal = sReturn;
-		return sIPExternal;
+		this.setIpExternal(sReturn);
+		return sReturn;
 	}	
 	
 	
@@ -291,36 +287,6 @@ public class ProgramIPContentOVPN extends AbstractKernelProgramUIZZZ implements 
 		}
 		}//end main:
 		return bFunction;
-	}
-	
-	
-	
-	/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-	* @param stext
-	* 
-	* lindhaueradmin; 17.01.2007 12:09:17
-	 */
-	public void updateLabel(String stext){
-		this.sText2Update = stext;
-		
-//		Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-		Runnable runnerUpdateLabel= new Runnable(){
-
-			public void run(){
-//				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD + "'");				
-				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
-				textField.setText(sText2Update);
-				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
-			}
-		};
-		
-		SwingUtilities.invokeLater(runnerUpdateLabel);	
-		
-//		In das Textfeld eintragen, das etwas passiert.								
-		//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-		//textField.setText("Lese aktuellen Wert .....");
-		
 	}
 }
 
