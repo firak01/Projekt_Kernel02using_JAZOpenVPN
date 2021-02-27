@@ -140,16 +140,28 @@ public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 			String sKeyLine=null; String sFileKey=null;
 			String sCertifierLine=null; String sFileCertifier=null;
 			if(!this.getFlag("useCertifierKeyGlobal")) {
-				String sHostname = EnvironmentZZZ.getHostName();
 				sCertifierLine = (String)hmPattern.get("cert");				
-				if(sCertifierLine!=null) {					
-					sFileCertifier = sHostname.toUpperCase() + "_CLIENT.crt";									
+				if(sCertifierLine!=null) {
+					//Hole den Wert aus der ini-Datei
+					sFileCertifier = this.getApplicationObject().getCertifierConfiguredFilename();
+									   					
+					//Alternativ: Nimm einen Standardnamen
+					if(StringZZZ.isEmpty(sFileCertifier)) {
+						String sHostname = EnvironmentZZZ.getHostName();				
+						sFileCertifier = sHostname.toUpperCase() + "_CLIENT.crt";														
+					}
 				}
-				
 				//+++++++++++++
 				sKeyLine = (String)hmPattern.get("key");
 				if(sKeyLine!=null) {
-					sFileKey = sHostname.toUpperCase() + "_CLIENT.key";
+					//Hole den Wert aus der ini-Datei
+					sFileKey = this.getApplicationObject().getKeyConfiguredFilename();
+					
+					//Alternativ: Nimm einen Standardnamen
+					if(StringZZZ.isEmpty(sFileKey)) {
+						String sHostname = EnvironmentZZZ.getHostName();
+						sFileKey = sHostname.toUpperCase() + "_CLIENT.key";
+					}
 				}
 			}else { //###################################################
 				sCertifierLine = (String)hmPattern.get("cert");				
