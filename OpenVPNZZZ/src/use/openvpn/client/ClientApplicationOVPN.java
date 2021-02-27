@@ -16,6 +16,11 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.IMainUserOVPN;
 
 public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
+	
+	private String sCertifierConfiguredFilename=null;	
+	private String sKeyConfiguredFilename=null;
+	
+	
 	private String sURL = null;	
 	private String sIPRemote = null;
 
@@ -30,6 +35,37 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 		super(objKernel, objClient);		
 	}
 	
+	/**Read from the configured certifier filename.
+	 * Remark: If this is empty a default filename containing the Hostname will be expected. E.g. HANNIBALDEV04VM_CLIENT.crt
+	 * The file is to be expected in the OpenVPN Configuration directory: E.g. C:\Programme\OpenVPN\config
+	 * @throws ExceptionZZZ, 
+	 *
+	 * @return String
+	 */
+	public String readCertifierConfiguredFilename() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigValues","CertifierFilename").getValue();		
+		}//END main:
+		return sReturn;
+	}
+	
+	/**Read from the configured key filename.
+	 * Remark: If this is empty a default filename containing the Hostname will be expected. E.g. HANNIBALDEV04VM_CLIENT.key
+	 * The file is to be expected in the OpenVPN Configuration directory: E.g. C:\Programme\OpenVPN\config
+	 * @throws ExceptionZZZ, 
+	 *
+	 * @return String
+	 */
+	public String readKeyConfiguredFilename() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigValues","KeyFilename").getValue();		
+		}//END main:		
+		return sReturn;
+	}
 	
 	/**Reads a port from the configuration-file. Default: Port 80.
 	 * This port is used to check the connection. 
@@ -89,7 +125,6 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 			IKernelZZZ objKernel = this.getKernelObject();
 			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgIPReader","URL2Read").getValue();		
 		}//END main:
-		this.sURL = sReturn;
 		return sReturn;
 	}
 	
@@ -122,7 +157,6 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 			TagInputZZZ objTag = (TagInputZZZ) objReaderHTML.readTagFirstZZZ(objTagTypeInput, "IPNr");
 			sReturn = objTag.readValue();
 		}//END main
-		this.sIPRemote = sReturn;
 		return sReturn;
 	}
 	
@@ -133,6 +167,20 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	}
 	public void setClientObject(ClientMainZZZ objClient) {
 		this.setMainObject((IMainOVPN) objClient);
+	}
+	
+	public String getCertifierConfiguredFilename() throws ExceptionZZZ{
+		if(this.sCertifierConfiguredFilename==null) {
+			this.sCertifierConfiguredFilename = this.readCertifierConfiguredFilename();
+		}
+		return this.sCertifierConfiguredFilename;
+	}
+	
+	public String getKeyConfiguredFilename() throws ExceptionZZZ{
+		if(this.sKeyConfiguredFilename==null) {
+			this.sKeyConfiguredFilename = this.readKeyConfiguredFilename();
+		}
+		return this.sKeyConfiguredFilename;
 	}
 		
 	public String getURL2Parse() throws ExceptionZZZ{
