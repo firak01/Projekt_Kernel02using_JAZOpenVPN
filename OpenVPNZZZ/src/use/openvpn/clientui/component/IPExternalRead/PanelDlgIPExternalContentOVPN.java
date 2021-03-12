@@ -21,6 +21,7 @@ import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelLogZZZ;
+import basic.zKernel.component.IKernelModuleUserZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernelUI.KernelUIZZZ;
@@ -40,7 +41,7 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{	
+public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ implements IKernelProgramZZZ{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -63,7 +64,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ{
 				
 		//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
 		String sProgram; String sModule;
-		sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleZZZ) this);
+		sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleUserZZZ) this);
 		if(StringZZZ.isEmpty(sModule)){
 			ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
