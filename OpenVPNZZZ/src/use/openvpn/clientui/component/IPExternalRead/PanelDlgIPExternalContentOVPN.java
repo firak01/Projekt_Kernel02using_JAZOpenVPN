@@ -52,9 +52,15 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 	}
 	public PanelDlgIPExternalContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
 		super(objKernel, dialogExtended);
+		String stemp; boolean btemp;
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
-		this.setFlagZ(IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name(), true);	
+			stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
+			btemp = this.setFlagZ(stemp, true);
+			if(btemp==false){
+				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+				throw ez;		 
+			}
 			
 		//#############################################################################################
 		//### Auslesen des bisher verwendeten ini-Eintrags. 

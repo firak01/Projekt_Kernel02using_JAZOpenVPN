@@ -24,6 +24,7 @@ import basic.zKernel.KernelLogZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernelUI.KernelUIZZZ;
+import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -40,7 +41,7 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {	
+public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ implements IKernelModuleZZZ, IKernelProgramZZZ{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -51,9 +52,15 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 	}
 	public PanelDlgIPExternalContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
 		super(objKernel, dialogExtended);
+		String stemp; boolean btemp;
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
-		this.setFlagZ(IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name(), true);	
+		stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
+		btemp = this.setFlagZ(stemp, true);
+		if(!btemp) {
+			ExceptionZZZ ez = new ExceptionZZZ("Flag is not available '" + stemp + "'. Maybe an interface for this flag is not implemented", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}
 		
 		//#############################################################################################
 		//### Auslesen des bisher verwendeten ini-Eintrags. 
@@ -69,7 +76,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 			throw ez;
 		}
 		
-		sProgram = this.getProgramName();
+		sProgram = this.getProgramName(); //Das sollte der Name des Panels selbst sein!!!
 		if(StringZZZ.isEmpty(sProgram)){
 			ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
@@ -292,6 +299,11 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ {
 		}//end main;
 		return bReturn;
 	}
+	
+	@Override
+	public String getModuleName() throws ExceptionZZZ {
+		return KernelUIZZZ.getModuleUsedName((IPanelCascadedZZZ)this);
+	}	
 	
 		
 //		#######################################
@@ -1386,7 +1398,6 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				
 			}
 			
-	}//End class ...KErnelActionCascaded....
-				
+	}//End class ...KErnelActionCascaded....			
 }
 
