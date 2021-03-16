@@ -50,6 +50,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	//      Dadurch muss man sie nicht als Variable deklarieren und kann dynamischer neue Dialogboxen, etc. hinzufügen.
 	//Ziel diese hier als Varible zu deklarieren ist: Die Dialogbox muss nicht immer wieder neu erstellt werden.
 	private KernelJDialogExtendedZZZ dlgIPExternal=null;
+	private KernelJDialogExtendedZZZ dlgAdjustment=null;
 	
 	
 	public ClientTrayUIZZZ(IKernelZZZ objKernel, ClientMainZZZ objClientMain, String[] saFlagControl) throws ExceptionZZZ{
@@ -96,6 +97,10 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			JMenuItem menueeintrag3 = new JMenuItem(IConstantClientOVPN.sLABEL_LOG);
             menu.add(menueeintrag3);
 			menueeintrag3.addActionListener(this);
+			
+			JMenuItem menueeintrag4 = new JMenuItem(IConstantClientOVPN.sLABEL_ADJUSTMENT);
+			menu.add(menueeintrag4);
+			menueeintrag4.addActionListener(this);
 			
 			JMenuItem menueeintragFTP = new JMenuItem(IConstantClientOVPN.sLABEL_PAGE_IP_READ);
             menu.add(menueeintragFTP);
@@ -475,6 +480,50 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					String stemp = this.readLogString();
 					//this.getTrayIconObject() ist keine Component ????
 					JOptionPane.showMessageDialog(null, stemp, "Log der Verbindung", JOptionPane.INFORMATION_MESSAGE );
+				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_ADJUSTMENT)) {
+					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
+					//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
+					
+					 //Also In ClientMainUI
+					//HashMap<String, KernelJDialogExtendedZZZ> hmContainerDialog....
+					//
+					//Also ClientMainUIZZZ implements Interface IClientMainUIZZZ
+					//                                 mit der Methode HashMap<String, KernelJDialogExtendedZZZ> .getDialogs();
+					//                                 mit der Methode KernelJDialogExtendedZZZ .getDialogByAlias(....)
+				   
+					
+					//Also ClientTrayUIZZZ implements Interface IClientMainUIUserZZZ 
+					//                               mit der Methode .getClientMainUI();
+					//                                               .setClientMainUI(IClientMainUI objClientMain)
+					//objMainUI = this.getClientMainUI
+					//objMainUI.getDialogByAlias(....)
+					
+					//Bei CANCEL: Lösche diese Dialogbox, d.h. sie wird auch wieder komplett neu gemacht.
+					//Neuer Button CLOSE: D.h. die Dialogbox wird geschlossen, aber wenn sie wieder neu geöffnet wird, 
+					//                    dann sind ggfs. eingegebene Werte wieder da.
+					
+					if(this.dlgAdjustment==null || this.dlgAdjustment.isDisposed() ) {
+					
+						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+						//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
+						//       Sie ermöglicht die Konfiguration der anderen Module.
+						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+						hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+						DlgAdjustmentOVPN dlgAdjustment = new DlgAdjustmentOVPN(this.getKernelObject(), null, hmFlag);
+						dlgAdjustment.setText4ButtonOk("USE VALUE");
+						
+						this.dlgAdjustment = dlgAdjustment;					
+					}
+										
+					try {
+						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+						dlgAdjustment.showDialog(null, "Connection/IP External Current");
+						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: Dialog 'Adjustment'");
+					} catch (ExceptionZZZ ez) {					
+						System.out.println(ez.getDetailAllLast()+"\n");
+						ez.printStackTrace();
+						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
+					}				
 				}else if(sCommand.equals(IConstantClientOVPN.sLABEL_PAGE_IP_READ)) {
 					
 					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
@@ -512,8 +561,8 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 										
 					try {
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-						dlgIPExternal.showDialog(null, "Connection/IP External Current");
-						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'Connection/IP External Current'");
+						dlgIPExternal.showDialog(null, "Read IP External/Build Page");
+						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: Dialog 'Read IP External/Build Page'");
 					} catch (ExceptionZZZ ez) {					
 						System.out.println(ez.getDetailAllLast()+"\n");
 						ez.printStackTrace();
