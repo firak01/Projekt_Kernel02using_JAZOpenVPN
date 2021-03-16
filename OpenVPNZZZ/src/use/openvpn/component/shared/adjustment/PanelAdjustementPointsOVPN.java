@@ -1,4 +1,4 @@
-package use.openvpn.component.shared;
+package use.openvpn.component.shared.adjustment;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -41,16 +41,16 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ implements IKernelProgramZZZ{	
+public class PanelAdjustementPointsOVPN  extends KernelJPanelCascadedZZZ {
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
 	 * lindhaueradmin, 23.07.2013
 	 */
-	public PanelDlgAdjustmentContentOVPN(){
+	public PanelAdjustementPointsOVPN(){
 		super();
 	}
-	public PanelDlgAdjustmentContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
+	public PanelAdjustementPointsOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
 		super(objKernel, dialogExtended);
 		String stemp; boolean btemp;
 		try{
@@ -63,33 +63,27 @@ public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impl
 			}
 			
 		//#############################################################################################
-		//### Auslesen des bisher verwendeten ini-Eintrags. 
-		//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
-		//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
-		String sIp = "";
-				
+		//### Auslesen des bisher verwendeten ini-Eintrags. 					
 		//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
-		String sProgram; String sModule;
-		sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleUserZZZ) this);
-		if(StringZZZ.isEmpty(sModule)){
-			ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		
-		sProgram = this.getProgramName();
-		if(StringZZZ.isEmpty(sProgram)){
-			ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
+//		String sProgram; String sModule;
+//		sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleUserZZZ) this);
+//		if(StringZZZ.isEmpty(sModule)){
+//			ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//			throw ez;
+//		}
+//		
+//		//Das Program 
+//		sProgram = this.getProgramName();
+//		if(StringZZZ.isEmpty(sProgram)){
+//			ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//			throw ez;
+//		}
 
 		//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
-		IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
-		sIp = objEntry.getValue();
+//		IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
+//		sIp = objEntry.getValue();
 				
-		//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
-		if(StringZZZ.isEmpty(sIp)){
-			sIp = "Enter or refresh";
-		}
+		
 				
 		//##################################################################
 		//### Definition des Masken UIs
@@ -100,14 +94,14 @@ public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impl
 		
 		//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
 		//zweiter Parameter sind die Zeilen/Rows (hier:  drei), Merke: Wenn eine feste L�nge k�rzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
-		FormLayout layout = new FormLayout(
-				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
-				"5dlu, center:10dlu, 5dlu"); 				 
-		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugwiesen werden BEVOR mit constraints die Componenten positioniert werden.
-		CellConstraints cc = new CellConstraints();
-		
-		this.createRowIpWeb(this, cc, 1, sIp);
-		
+//		FormLayout layout = new FormLayout(
+//				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
+//				"5dlu, center:10dlu, 5dlu"); 				 
+//		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugwiesen werden BEVOR mit constraints die Componenten positioniert werden.
+//		CellConstraints cc = new CellConstraints();
+//		
+//		this.createRowIpWeb(this, cc, 1, sIp);
+//		
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
 			ez.printStackTrace();
