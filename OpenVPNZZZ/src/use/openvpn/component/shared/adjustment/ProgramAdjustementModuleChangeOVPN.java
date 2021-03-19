@@ -1,4 +1,4 @@
-package use.openvpn.component.shared.adjusment;
+package use.openvpn.component.shared.adjustment;
 
 
 import java.io.File;
