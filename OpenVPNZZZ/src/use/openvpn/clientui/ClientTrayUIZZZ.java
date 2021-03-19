@@ -22,6 +22,7 @@ import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.clientui.IConstantClientOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
+import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;

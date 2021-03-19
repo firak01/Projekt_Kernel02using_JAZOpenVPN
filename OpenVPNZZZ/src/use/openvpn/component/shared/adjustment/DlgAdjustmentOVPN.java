@@ -1,5 +1,6 @@
-package use.openvpn.component.shared;
+package use.openvpn.component.shared.adjustment;
 
+import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.util.HashMap;
 
@@ -33,8 +34,6 @@ public class DlgAdjustmentOVPN extends KernelJDialogExtendedZZZ {
 		return false;
 	}
 	
-	
-
 	public boolean isJComponentSnappedToScreen(){
 		return true;
 	}
@@ -50,12 +49,12 @@ public class DlgAdjustmentOVPN extends KernelJDialogExtendedZZZ {
 	public String getText4ButtonOk(){
 		return  "USE VALUE";
 	}
-	public KernelJPanelCascadedZZZ getPanelButton(){
-		PanelDlgAdjustmentButtonAlternativeOVPN panelButton = new PanelDlgAdjustmentButtonAlternativeOVPN(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable(),this.isButtonCloseAvailable());
-		return panelButton;
+	public KernelJPanelCascadedZZZ getPanelButton(){		
+		PanelDlgEmptyZZZ panelEmpty = new PanelDlgEmptyZZZ(this.getKernelObject(), this);			
+		return panelEmpty;
 	}
 	public KernelJPanelCascadedZZZ getPanelContent(){
-		PanelDlgAdjustmentContentOVPN panelContent = new PanelDlgAdjustmentContentOVPN(this.getKernelObject(), this);
+		PanelDlgAdjustmentOVPN panelContent = new PanelDlgAdjustmentOVPN(this.getKernelObject(), this);
 		return panelContent;
 	}
 

@@ -1,4 +1,4 @@
-package use.openvpn.component.shared;
+package use.openvpn.component.shared.adjustment;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -30,11 +30,11 @@ import basic.zKernel.KernelLogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgAdjustmentButtonAlternativeOVPN  extends KernelJPanelDialogButtonDefaultZZZ{
-	public PanelDlgAdjustmentButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable){
+public class PanelAdjustmentButtonOVPN  extends KernelJPanelDialogButtonDefaultZZZ{
+	public PanelAdjustmentButtonOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable){
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable);
 	}
-	public PanelDlgAdjustmentButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable, boolean bIsButtonCloseAvailable){
+	public PanelAdjustmentButtonOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable, boolean bIsButtonCloseAvailable){
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable, bIsButtonCloseAvailable);
 	}
 	
@@ -147,28 +147,28 @@ public class PanelDlgAdjustmentButtonAlternativeOVPN  extends KernelJPanelDialog
 						
 			//#### abstracte - Method aus SwingWorker
 			public Object construct() {
-				try{
-					//1. IP Auslesen von der Webseite
-//					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
-//					objProg.reset();
-//					String sIp = objProg.getIpFromUi();
+//				//try{
+//					//1. IP Auslesen von der Webseite
+////					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
+////					objProg.reset();
+////					String sIp = objProg.getIpFromUi();
+////					
+////					updateTextField(objProg, "writing...");
+////					boolean bErg = objProg.writeIpToIni(sIp);
+////										
+////					//3. Diesen Wert wieder ins Label schreiben.
+////					updateTextField(objProg, sIp);
+////					
+//	
+//					//Den Dialog schliessen
+//					//TODOGOON; //20210316: Program, mit dem die Werte des ausgewählten Moduls zurückgeschrieben werden.
+//					//updateTextField(objProg, "closing dialog...");
+//					this.panel.getDialogParent().setDisposed();
 //					
-//					updateTextField(objProg, "writing...");
-//					boolean bErg = objProg.writeIpToIni(sIp);
-//										
-//					//3. Diesen Wert wieder ins Label schreiben.
-//					updateTextField(objProg, sIp);
-//					
-	
-					//Den Dialog schliessen
-					TODOGOON; //20210316: Program, mit dem die Werte des ausgewählten Moduls zurückgeschrieben werden.
-					updateTextField(objProg, "closing dialog...");
-					this.panel.getDialogParent().setDisposed();
-					
-				}catch(ExceptionZZZ ez){
-					System.out.println(ez.getDetailAllLast());
-					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
-				}
+//				}catch(ExceptionZZZ ez){
+//					System.out.println(ez.getDetailAllLast());
+//					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+//				}
 				return "all done";
 			}
 			
