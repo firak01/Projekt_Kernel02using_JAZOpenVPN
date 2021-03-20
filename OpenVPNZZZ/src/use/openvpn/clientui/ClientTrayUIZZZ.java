@@ -518,7 +518,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 										
 					try {
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-						dlgAdjustment.showDialog(null, "Connection/IP External Current");
+						dlgAdjustment.showDialog(null, "Adjustments for available Modules");
 						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: Dialog 'Adjustment'");
 					} catch (ExceptionZZZ ez) {					
 						System.out.println(ez.getDetailAllLast()+"\n");
