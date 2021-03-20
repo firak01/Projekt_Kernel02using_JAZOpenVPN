@@ -25,6 +25,7 @@ import basic.zKernel.component.IKernelModuleUserZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernelUI.KernelUIZZZ;
+import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -41,7 +42,7 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ implements IKernelProgramZZZ{	
+public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ implements IKernelProgramZZZ, IKernelModuleZZZ{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -56,6 +57,13 @@ public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impl
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
 			stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
+			btemp = this.setFlagZ(stemp, true);
+			if(btemp==false){
+				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+				throw ez;		 
+			}
+			
+			stemp = IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name();
 			btemp = this.setFlagZ(stemp, true);
 			if(btemp==false){
 				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
@@ -86,6 +94,6 @@ public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impl
 			ez.printStackTrace();
 			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 		}
-	}//END Konstruktor
+	}//END Konstruktor		
 }
 

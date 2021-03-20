@@ -40,20 +40,13 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	public boolean isButtonOKAvailable(){
 		return true;
 	}
-//	public String getText4ButtonOk(){
-//		return  "Alternativer Text";
-//	}
 	
-	
+	@Override
 	public KernelJPanelCascadedZZZ getPanelButton(){
-//		if(this.panelButton==null) {
-//			PanelDlgIPExternalButtonAlternativeVIA panelButton = new PanelDlgIPExternalButtonAlternativeVIA(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable());
-//			this.panelButton = panelButton;
-//		}
-//		return this.panelButton;
 		return null; //Damit gibt es im Dialog nur die Standardbuttons.
 	}
 	
+	@Override
 	public KernelJPanelCascadedZZZ getPanelContent(){
 		if(this.panelContent==null) {
 			PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
@@ -61,5 +54,12 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 		}
 		return this.panelContent;
 	}
+	
+	@Override
+	public KernelJPanelCascadedZZZ getPanelNavigator(){
+		return null;
+	}
+	
+	
 }
 

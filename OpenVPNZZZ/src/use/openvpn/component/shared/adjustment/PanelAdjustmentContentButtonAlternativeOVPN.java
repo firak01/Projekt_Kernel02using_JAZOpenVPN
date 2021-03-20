@@ -161,8 +161,9 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 //					
 	
 					//Den Dialog schliessen
-					TODOGOON; //20210316: Program, mit dem die Werte des ausgewählten Moduls zurückgeschrieben werden.
-					updateTextField(objProg, "closing dialog...");
+					//TODOGOON; //20210316: Program, mit dem die Werte des ausgewählten Moduls zurückgeschrieben werden.
+					//updateTextField(objProg, "closing dialog...");
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Im Speichern der Werte ins ini.");
 					this.panel.getDialogParent().setDisposed();
 					
 				}catch(ExceptionZZZ ez){

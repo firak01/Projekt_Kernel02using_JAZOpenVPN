@@ -126,7 +126,7 @@ public class PanelAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impleme
 //			panel.add(buttonIpWeb2ini, cc.xy(6,iRow*2));
 			
 			//#########	
-			JLabel label = new JLabel(IConstantProgramAdjustmentOVPN.sLABEL_TEXTFIELD);
+			JLabel label = new JLabel(IConstantProgramAdjustmentContentOVPN.sLABEL_TEXTFIELD);
 			panel.add(label, cc.xy(2,iRow*2));
 														
 			JTextField textfieldAdjustment = new JTextField(sDefaultValue, 20);
@@ -139,7 +139,7 @@ public class PanelAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impleme
 			// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-			panel.setComponent(IConstantProgramAdjustmentOVPN.sCOMPONENT_TEXTFIELD, textfieldAdjustment);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			panel.setComponent(IConstantProgramAdjustmentContentOVPN.sCOMPONENT_TEXTFIELD, textfieldAdjustment);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			
 			
 			

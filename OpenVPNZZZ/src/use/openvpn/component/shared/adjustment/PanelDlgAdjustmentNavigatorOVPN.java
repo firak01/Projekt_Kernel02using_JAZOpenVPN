@@ -41,7 +41,7 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ implements IKernelProgramZZZ{	
+public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ implements IKernelProgramZZZ, IKernelModuleZZZ{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -56,6 +56,13 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
 			stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
+			btemp = this.setFlagZ(stemp, true);
+			if(btemp==false){
+				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+				throw ez;		 
+			}
+			
+			stemp = IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name();
 			btemp = this.setFlagZ(stemp, true);
 			if(btemp==false){
 				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
@@ -124,8 +131,8 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
-		class ActionMaduleChangeOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-			public ActionMaduleChangeOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+		class ActionModuleChangeOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+			public ActionModuleChangeOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 				super(objKernel, panelParent);			
 			}
 			

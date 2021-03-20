@@ -8,6 +8,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import custom.zKernelUI.component.PanelDialogContentEmptyZZZ;
 import custom.zKernelUI.module.config.DLG.DLGBOX4INIZZZ;
 
 /**Dialogbox zum Verändern der Einstellungswerte eines Moduls (also z.B. einer anderen Dialogbox)
@@ -50,13 +51,23 @@ public class DlgAdjustmentOVPN extends KernelJDialogExtendedZZZ {
 	public String getText4ButtonOk(){
 		return  "USE VALUE";
 	}
+	
+	@Override
 	public KernelJPanelCascadedZZZ getPanelButton(){
-		PanelDlgEmptyZZZ panelButton = new PanelDlgEmptyZZZ(this.getKernelObject(), this);
+		PanelDialogContentEmptyZZZ panelButton = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
 		return panelButton;
 	}
+	
+	@Override
 	public KernelJPanelCascadedZZZ getPanelContent(){
 		PanelDlgAdjustmentContentOVPN panelContent = new PanelDlgAdjustmentContentOVPN(this.getKernelObject(), this);
 		return panelContent;
+	}
+	
+	@Override
+	public KernelJPanelCascadedZZZ getPanelNavigator() {
+		PanelDlgAdjustmentNavigatorOVPN panelNavigator = new PanelDlgAdjustmentNavigatorOVPN(this.getKernelObject(), this);
+		return panelNavigator;
 	}
 
 }

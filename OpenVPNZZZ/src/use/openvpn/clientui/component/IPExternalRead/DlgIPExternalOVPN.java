@@ -8,6 +8,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import custom.zKernelUI.component.PanelDialogContentEmptyZZZ;
 
 /**
  * @author 0823
@@ -45,15 +46,27 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	public String getText4ButtonOk(){
 		return  "USE VALUE";
 	}
+	
+	@Override
 	public KernelJPanelCascadedZZZ getPanelButton(){
 		//PanelDlgIPExternalButtonAlternativeOVPN panelButton = new PanelDlgIPExternalButtonAlternativeOVPN(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable());
 		PanelDlgIPExternalButtonAlternativeOVPN panelButton = new PanelDlgIPExternalButtonAlternativeOVPN(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable(),this.isButtonCloseAvailable());
 		return panelButton;
 	}
+	
+	@Override
 	public KernelJPanelCascadedZZZ getPanelContent(){
 		PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
 		return panelContent;
 	}
+	
+	@Override
+	public KernelJPanelCascadedZZZ getPanelNavigator() {
+		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
+		return panelNavigator;
+	}
+	
+	
 
 }
 

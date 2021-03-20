@@ -299,12 +299,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		}//end main;
 		return bReturn;
 	}
-	
-	@Override
-	public String getModuleName() throws ExceptionZZZ {
-		return KernelUIZZZ.getModuleUsedName((IPanelCascadedZZZ)this);
-	}	
-	
+		
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
