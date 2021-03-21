@@ -106,7 +106,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugwiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 		
-		String sValue = "TEST"; //TODO GOON: DAs soll ein auszuwählendes Modul sein
+		String sValue = "TEST"; //TODO GOON: Das soll ein auszuwählendes Modul sein
 		this.createRowNavigator(this, cc, 1, sValue);
 		
 		} catch (ExceptionZZZ ez) {					

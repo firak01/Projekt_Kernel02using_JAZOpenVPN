@@ -28,8 +28,6 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	public boolean isCentered(){
 		return false;
 	}
-	
-	
 
 	public boolean isJComponentSnappedToScreen(){
 		return true;
