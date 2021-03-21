@@ -29,6 +29,7 @@ import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -162,18 +163,12 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			}			 							
 			
-			class SwingWorker4ProgramModuleChangeOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-				private IKernelZZZ objKernel;
-				private LogZZZ objLog;
+			class SwingWorker4ProgramModuleChangeOVPN extends KernelSwingWorkerZZZ{				
 				private KernelJPanelCascadedZZZ panel;
 				private String[] saFlag4Program;
-											
-				protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 				
 				public SwingWorker4ProgramModuleChangeOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
-					super();
-					this.objKernel = objKernel;
-					this.objLog = objKernel.getLogObject();
+					super(objKernel);
 					this.panel = panel;
 					this.saFlag4Program = saFlag4Program;					
 				}
@@ -184,7 +179,10 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 						ProgramAdjustementModuleChangeOVPN objProg = new ProgramAdjustementModuleChangeOVPN(objKernel, this.panel, this.saFlag4Program);
 						
 						//1. Ins Label schreiben, dass dies hier ausgewählt worden ist
+						logLineDate("Clicked ..... TODOGOON");
+						
 						updateLabel(objProg,"*");
+						
 						
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
@@ -206,6 +204,8 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
+							logLineDate("label updatede ..... TODOGOON '" + stext + "'");
+							
 							objProg.updateLabel(stext);  
 							
 							//TODOGOON; //20210319 Nun das Modul in dem Nachbarpanel neu laden.
@@ -214,52 +214,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 					
 					SwingUtilities.invokeLater(runnerUpdateLabel);						
 				}
-
-				public IKernelZZZ getKernelObject() {
-					return this.objKernel;
-				}
-
-				public void setKernelObject(IKernelZZZ objKernel) {
-					this.objKernel = objKernel;
-				}
-
-				public LogZZZ getLogObject() {
-					return this.objLog;
-				}
-
-				public void setLogObject(LogZZZ objLog) {
-					this.objLog = objLog;
-				}
-				
-				
-				
-				
-				/* (non-Javadoc)
-				 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-				 */
-				public ExceptionZZZ getExceptionObject() {
-					return this.objException;
-				}
-				/* (non-Javadoc)
-				 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-				 */
-				public void setExceptionObject(ExceptionZZZ objException) {
-					this.objException = objException;
-				}
-				
-				//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-				@Override
-				public void logLineDate(String sLog) {
-					LogZZZ objLog = this.getLogObject();
-					if(objLog==null) {
-						String sTemp = KernelLogZZZ.computeLineDate(sLog);
-						System.out.println(sTemp);
-					}else {
-						objLog.WriteLineDate(sLog);
-					}		
-				}	
-				
-				
+												
 				/**Overwritten and using an object of jakarta.commons.lang
 				 * to create this string using reflection. 
 				 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 

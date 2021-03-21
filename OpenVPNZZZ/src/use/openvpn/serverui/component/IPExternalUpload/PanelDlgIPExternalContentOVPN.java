@@ -29,6 +29,7 @@ import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -333,18 +334,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 		}			 							
 		
-		class SwingWorker4ProgramIpWeb2iniOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-			private IKernelZZZ objKernel;
-			private LogZZZ objLog;
+		class SwingWorker4ProgramIpWeb2iniOVPN extends KernelSwingWorkerZZZ{
 			private KernelJPanelCascadedZZZ panel;
 			private String[] saFlag4Program;
-									
-			protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 			
 			public SwingWorker4ProgramIpWeb2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
-				super();
-				this.objKernel = objKernel;
-				this.objLog = objKernel.getLogObject();
+				super(objKernel);
 				this.panel = panel;
 				this.saFlag4Program = saFlag4Program;					
 			}
@@ -356,7 +351,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					objProg.reset();
 					String sIp = objProg.getIpFromUi();
-					
+					logLineDate("Ip from Program Web2ini'" + sIp + "'");
+										
 					updateTextField(objProg, "writing...");
 					boolean bErg = objProg.writeIpToIni(sIp);
 					
@@ -383,57 +379,13 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 
 					public void run(){
 //						In das Textfeld eintragen, das etwas passiert.	
+						logLineDate("Textfield updated with'" + stext + "'");						
 						objProg.updateLabel(stext);
 					}
 				};
 				
 				SwingUtilities.invokeLater(runnerUpdateLabel);					
 			}
-
-			public IKernelZZZ getKernelObject() {
-				return this.objKernel;
-			}
-
-			public void setKernelObject(IKernelZZZ objKernel) {
-				this.objKernel = objKernel;
-			}
-
-			public LogZZZ getLogObject() {
-				return this.objLog;
-			}
-
-			public void setLogObject(LogZZZ objLog) {
-				this.objLog = objLog;
-			}
-			
-			
-			
-			
-			/* (non-Javadoc)
-			 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-			 */
-			public ExceptionZZZ getExceptionObject() {
-				return this.objException;
-			}
-			/* (non-Javadoc)
-			 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-			 */
-			public void setExceptionObject(ExceptionZZZ objException) {
-				this.objException = objException;
-			}
-			
-			//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-			@Override
-			public void logLineDate(String sLog) {
-				LogZZZ objLog = this.getLogObject();
-				if(objLog==null) {
-					String sTemp = KernelLogZZZ.computeLineDate(sLog);
-					System.out.println(sTemp);
-				}else {
-					objLog.WriteLineDate(sLog);
-				}		
-			}	
-			
 			
 			/**Overwritten and using an object of jakarta.commons.lang
 			 * to create this string using reflection. 
@@ -487,18 +439,14 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 	public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 	}			 							
 	
-	class SwingWorker4ProgramIpRouter2iniOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-		private IKernelZZZ objKernel;
-		private LogZZZ objLog;
+	class SwingWorker4ProgramIpRouter2iniOVPN extends KernelSwingWorkerZZZ{
 		private KernelJPanelCascadedZZZ panel;
 		private String[] saFlag4Program;
 						
 		protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 		
 		public SwingWorker4ProgramIpRouter2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
-			super();
-			this.objKernel = objKernel;
-			this.objLog = objKernel.getLogObject();
+			super(objKernel);
 			this.panel = panel;
 			this.saFlag4Program = saFlag4Program;					
 		}
@@ -510,6 +458,8 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 				ProgramIpRouter2iniOVPN objProg = new ProgramIpRouter2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 				objProg.reset();
 				String sIp = objProg.getIpFromUi();
+				logLineDate("Ip from Program Router2ini'" + sIp + "'");
+								
 				updateTextField(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
 				
 				//2. Schreibe in die ini-Datei
@@ -536,58 +486,14 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 			Runnable runnerUpdateLabel= new Runnable(){
 
 				public void run(){
-//					In das Textfeld eintragen, das etwas passiert.	
+//					In das Textfeld eintragen, das etwas passiert.
+					logLineDate("Textfield updated with '" + stext + "'");					
 					objProg.updateLabel(stext);					 
 				}
 			};
 			
 			SwingUtilities.invokeLater(runnerUpdateLabel);			
-		}
-
-		public IKernelZZZ getKernelObject() {
-			return this.objKernel;
-		}
-
-		public void setKernelObject(IKernelZZZ objKernel) {
-			this.objKernel = objKernel;
-		}
-
-		public LogZZZ getLogObject() {
-			return this.objLog;
-		}
-
-		public void setLogObject(LogZZZ objLog) {
-			this.objLog = objLog;
-		}
-		
-		
-		
-		
-		/* (non-Javadoc)
-		 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-		 */
-		public ExceptionZZZ getExceptionObject() {
-			return this.objException;
-		}
-		/* (non-Javadoc)
-		 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-		 */
-		public void setExceptionObject(ExceptionZZZ objException) {
-			this.objException = objException;
-		}
-		
-		//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-		@Override
-		public void logLineDate(String sLog) {
-			LogZZZ objLog = this.getLogObject();
-			if(objLog==null) {
-				String sTemp = KernelLogZZZ.computeLineDate(sLog);
-				System.out.println(sTemp);
-			}else {
-				objLog.WriteLineDate(sLog);
-			}		
-		}	
-		
+		}		
 		
 		/**Overwritten and using an object of jakarta.commons.lang
 		 * to create this string using reflection. 
@@ -642,18 +548,12 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 	public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 	}			 							
 	
-	class SwingWorker4ProgramIpLocal2iniOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-		private IKernelZZZ objKernel;
-		private LogZZZ objLog;
+	class SwingWorker4ProgramIpLocal2iniOVPN extends KernelSwingWorkerZZZ{		
 		private KernelJPanelCascadedZZZ panel;
 		private String[] saFlag4Program;
-						
-		protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 		
 		public SwingWorker4ProgramIpLocal2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
-			super();
-			this.objKernel = objKernel;
-			this.objLog = objKernel.getLogObject();
+			super(objKernel);
 			this.panel = panel;
 			this.saFlag4Program = saFlag4Program;					
 		}
@@ -665,6 +565,8 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				ProgramIpLocal2iniOVPN objProg = new ProgramIpLocal2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 				objProg.reset();
 				String sIp = objProg.getIpFromUi();
+				logLineDate("Ip from Local2ini'" + sIp + "'");
+				
 				updateTextField(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
 				
 				//2. Schreibe in die ini-Datei
@@ -691,59 +593,15 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 			Runnable runnerUpdateLabel= new Runnable(){
 
 				public void run(){
-//					In das Textfeld eintragen, das etwas passiert.	
+//					In das Textfeld eintragen, das etwas passiert.
+					logLineDate("Textfield updated with '" + stext + "'");					
 					objProg.updateLabel(stext);					 
 				}
 			};
 			
 			SwingUtilities.invokeLater(runnerUpdateLabel);			
 		}
-
-		public IKernelZZZ getKernelObject() {
-			return this.objKernel;
-		}
-
-		public void setKernelObject(IKernelZZZ objKernel) {
-			this.objKernel = objKernel;
-		}
-
-		public LogZZZ getLogObject() {
-			return this.objLog;
-		}
-
-		public void setLogObject(LogZZZ objLog) {
-			this.objLog = objLog;
-		}
-		
-		
-		
-		
-		/* (non-Javadoc)
-		 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-		 */
-		public ExceptionZZZ getExceptionObject() {
-			return this.objException;
-		}
-		/* (non-Javadoc)
-		 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-		 */
-		public void setExceptionObject(ExceptionZZZ objException) {
-			this.objException = objException;
-		}
-		
-		//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-		@Override
-		public void logLineDate(String sLog) {
-			LogZZZ objLog = this.getLogObject();
-			if(objLog==null) {
-				String sTemp = KernelLogZZZ.computeLineDate(sLog);
-				System.out.println(sTemp);
-			}else {
-				objLog.WriteLineDate(sLog);
-			}		
-		}	
-		
-		
+				
 		/**Overwritten and using an object of jakarta.commons.lang
 		 * to create this string using reflection. 
 		 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 
@@ -799,18 +657,14 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			}			 							
 			
-			class SwingWorker4ProgramIPContentOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-				private IKernelZZZ objKernel;
-				private LogZZZ objLog;
+			class SwingWorker4ProgramIPContentOVPN extends KernelSwingWorkerZZZ{				
 				private KernelJPanelCascadedZZZ panel;
 				private String[] saFlag4Program;			
 							
 				protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 				
 				public SwingWorker4ProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
-					super();
-					this.objKernel = objKernel;
-					this.objLog = objKernel.getLogObject();
+					super(objKernel);
 					this.panel = panel;
 					this.saFlag4Program = saFlag4Program;					
 				}
@@ -824,6 +678,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 						
 						//2. IP Auslesen von der Webseite										
 						String sIp = objProg.getIpExternal();
+						logLineDate("Ip from Program ContentWeb '" + sIp + "'");						
 												
 						//3. Diesen Wert wieder ins Label schreiben.
 						updateTextField(objProg, sIp);
@@ -847,57 +702,13 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
+							logLineDate("Textfield updated with '" + stext + "'");							
 							objProg.updateLabel(stext);					 
 						}
 					};
 					
 					SwingUtilities.invokeLater(runnerUpdateLabel);				
-				}
-
-				public IKernelZZZ getKernelObject() {
-					return this.objKernel;
-				}
-
-				public void setKernelObject(IKernelZZZ objKernel) {
-					this.objKernel = objKernel;
-				}
-
-				public LogZZZ getLogObject() {
-					return this.objLog;
-				}
-
-				public void setLogObject(LogZZZ objLog) {
-					this.objLog = objLog;
-				}
-				
-				
-				
-				
-				/* (non-Javadoc)
-				 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-				 */
-				public ExceptionZZZ getExceptionObject() {
-					return this.objException;
-				}
-				/* (non-Javadoc)
-				 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-				 */
-				public void setExceptionObject(ExceptionZZZ objException) {
-					this.objException = objException;
-				}
-				
-				//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-				@Override
-				public void logLineDate(String sLog) {
-					LogZZZ objLog = this.getLogObject();
-					if(objLog==null) {
-						String sTemp = KernelLogZZZ.computeLineDate(sLog);
-						System.out.println(sTemp);
-					}else {
-						objLog.WriteLineDate(sLog);
-					}		
-				}	
-				
+				}				
 				
 				/**Overwritten and using an object of jakarta.commons.lang
 				 * to create this string using reflection. 
@@ -951,18 +762,12 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 				}			 							
 				
-				class SwingWorker4ProgramIPContentOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-					private IKernelZZZ objKernel;
-					private LogZZZ objLog;
+				class SwingWorker4ProgramIPContentOVPN extends KernelSwingWorkerZZZ {					
 					private KernelJPanelCascadedZZZ panel;
 					private String[] saFlag4Program;			
-								
-					protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 					
 					public SwingWorker4ProgramIPContentOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
-						super();
-						this.objKernel = objKernel;
-						this.objLog = objKernel.getLogObject();
+						super(objKernel);						
 						this.panel = panel;
 						this.saFlag4Program = saFlag4Program;					
 					}
@@ -976,6 +781,8 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 							
 							//2. IP Auslesen von der Webseite										
 							String sIp = objProg.getIpExternal();
+							logLineDate("Ip from Program IPContentLocal '" + sIp + "'");
+							
 													
 							//3. Diesen Wert wieder ins Label schreiben.
 							updateTextField(objProg, sIp);
@@ -998,59 +805,15 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 						Runnable runnerUpdateLabel= new Runnable(){
 
 							public void run(){
-//								In das Textfeld eintragen, das etwas passiert.	
+//								In das Textfeld eintragen, das etwas passiert.
+								logLineDate("Textfield updated with '" + stext + "'");								
 								objProg.updateLabel(stext);					 
 							}
 						};
 						
 						SwingUtilities.invokeLater(runnerUpdateLabel);				
 					}
-
-					public IKernelZZZ getKernelObject() {
-						return this.objKernel;
-					}
-
-					public void setKernelObject(IKernelZZZ objKernel) {
-						this.objKernel = objKernel;
-					}
-
-					public LogZZZ getLogObject() {
-						return this.objLog;
-					}
-
-					public void setLogObject(LogZZZ objLog) {
-						this.objLog = objLog;
-					}
-					
-					
-					
-					
-					/* (non-Javadoc)
-					 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-					 */
-					public ExceptionZZZ getExceptionObject() {
-						return this.objException;
-					}
-					/* (non-Javadoc)
-					 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-					 */
-					public void setExceptionObject(ExceptionZZZ objException) {
-						this.objException = objException;
-					}
-					
-					//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-					@Override
-					public void logLineDate(String sLog) {
-						LogZZZ objLog = this.getLogObject();
-						if(objLog==null) {
-							String sTemp = KernelLogZZZ.computeLineDate(sLog);
-							System.out.println(sTemp);
-						}else {
-							objLog.WriteLineDate(sLog);
-						}		
-					}	
-					
-					
+													
 					/**Overwritten and using an object of jakarta.commons.lang
 					 * to create this string using reflection. 
 					 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 
@@ -1104,22 +867,14 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			}			 							
 			
-			class SwingWorker4ProgramPageWebCreateOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-				private IKernelZZZ objKernel;
-				private LogZZZ objLog;
+			class SwingWorker4ProgramPageWebCreateOVPN extends KernelSwingWorkerZZZ implements IObjectZZZ, IKernelUserZZZ{
 				private KernelJPanelCascadedZZZ panel;
-				private String[] saFlag4Program;
-				
+				private String[] saFlag4Program;				
 				private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Jier als Variable, damit die intene Runner-Klasse darauf zugreifen kann.
 															// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
 				
-							
-				protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
-				
 				public SwingWorker4ProgramPageWebCreateOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
-					super();
-					this.objKernel = objKernel;
-					this.objLog = objKernel.getLogObject();
+					super(objKernel);
 					this.panel = panel;
 					this.saFlag4Program = saFlag4Program;					
 				}
@@ -1132,11 +887,12 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
 						updateTextField(objProgWebPageCreate, "Creating ...");
 						
-						//2. Hochladen der Webseite										
-						boolean bSuccessWebUpload = objProgWebPageCreate.createPageWeb();
+						//2. Hochladen der Webseite									
+						logLineDate("Creating PageWeb.");						
+						boolean bSuccessWebCreated = objProgWebPageCreate.createPageWeb();
 						
 						//3. Diesen Wert wieder ins Label schreiben.
-						if(bSuccessWebUpload) {
+						if(bSuccessWebCreated) {
 							updateTextField(objProgWebPageCreate,"Creation ended with success.");
 						}else {
 							updateTextField(objProgWebPageCreate,"Creation not successful, details in log.");
@@ -1161,57 +917,13 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
+							logLineDate("Textfield updated with '" + stext + "'");							
 							objProg.updateLabel(stext);
 						}
 					};
 					
 					SwingUtilities.invokeLater(runnerUpdateLabel);	
 				}
-
-				public IKernelZZZ getKernelObject() {
-					return this.objKernel;
-				}
-
-				public void setKernelObject(IKernelZZZ objKernel) {
-					this.objKernel = objKernel;
-				}
-
-				public LogZZZ getLogObject() {
-					return this.objLog;
-				}
-
-				public void setLogObject(LogZZZ objLog) {
-					this.objLog = objLog;
-				}
-				
-				
-				
-				
-				/* (non-Javadoc)
-				 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-				 */
-				public ExceptionZZZ getExceptionObject() {
-					return this.objException;
-				}
-				/* (non-Javadoc)
-				 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-				 */
-				public void setExceptionObject(ExceptionZZZ objException) {
-					this.objException = objException;
-				}
-				
-				//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-				@Override
-				public void logLineDate(String sLog) {
-					LogZZZ objLog = this.getLogObject();
-					if(objLog==null) {
-						String sTemp = KernelLogZZZ.computeLineDate(sLog);
-						System.out.println(sTemp);
-					}else {
-						objLog.WriteLineDate(sLog);
-					}		
-				}	
-				
 				
 				/**Overwritten and using an object of jakarta.commons.lang
 				 * to create this string using reflection. 
@@ -1267,22 +979,14 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			}			 							
 			
-			class SwingWorker4ProgramPageWebUploadOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-				private IKernelZZZ objKernel;
-				private LogZZZ objLog;
+			class SwingWorker4ProgramPageWebUploadOVPN extends KernelSwingWorkerZZZ {
 				private KernelJPanelCascadedZZZ panel;
-				private String[] saFlag4Program;
-				
+				private String[] saFlag4Program;				
 				private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Jier als Variable, damit die intene Runner-Klasse darauf zugreifen kann.
 															// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
 				
-							
-				protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
-				
 				public SwingWorker4ProgramPageWebUploadOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
-					super();
-					this.objKernel = objKernel;
-					this.objLog = objKernel.getLogObject();
+					super(objKernel);
 					this.panel = panel;
 					this.saFlag4Program = saFlag4Program;					
 				}
@@ -1295,8 +999,10 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
 						updateTextField(objProgWebPageUpload, "Uploading ...");
 						
-						//2. Hochladen der Webseite										
+						//2. Hochladen der Webseite						
+						logLineDate("Uploading WebPage.");						
 						boolean bSuccessWebUpload = objProgWebPageUpload.uploadPageWeb();
+						
 						
 						//3. Diesen Wert wieder ins Label schreiben.
 						if(bSuccessWebUpload) {
@@ -1324,58 +1030,14 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
+							logLineDate("Textfield updated with '" + stext + "'");							
 							objProg.updateLabel(stext);
 						}
 					};
 					
 					SwingUtilities.invokeLater(runnerUpdateLabel);	
 				}
-
-				public IKernelZZZ getKernelObject() {
-					return this.objKernel;
-				}
-
-				public void setKernelObject(IKernelZZZ objKernel) {
-					this.objKernel = objKernel;
-				}
-
-				public LogZZZ getLogObject() {
-					return this.objLog;
-				}
-
-				public void setLogObject(LogZZZ objLog) {
-					this.objLog = objLog;
-				}
-				
-				
-				
-				
-				/* (non-Javadoc)
-				 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-				 */
-				public ExceptionZZZ getExceptionObject() {
-					return this.objException;
-				}
-				/* (non-Javadoc)
-				 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-				 */
-				public void setExceptionObject(ExceptionZZZ objException) {
-					this.objException = objException;
-				}
-				
-				//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-				@Override
-				public void logLineDate(String sLog) {
-					LogZZZ objLog = this.getLogObject();
-					if(objLog==null) {
-						String sTemp = KernelLogZZZ.computeLineDate(sLog);
-						System.out.println(sTemp);
-					}else {
-						objLog.WriteLineDate(sLog);
-					}		
-				}	
-				
-				
+			
 				/**Overwritten and using an object of jakarta.commons.lang
 				 * to create this string using reflection. 
 				 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 

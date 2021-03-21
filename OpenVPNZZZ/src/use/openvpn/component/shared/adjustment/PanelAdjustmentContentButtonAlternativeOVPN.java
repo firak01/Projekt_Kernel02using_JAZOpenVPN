@@ -20,6 +20,7 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
+import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import custom.zKernel.LogZZZ;
 import use.openvpn.clientui.component.IPExternalRead.ProgramIpWeb2iniOVPN;
 import basic.zKernel.IKernelUserZZZ;
@@ -129,14 +130,10 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 		public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 		}			 							
 		
-		class SwingWorker4ProgramAdjustment2iniOVPN extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-			private IKernelZZZ objKernel;
-			private LogZZZ objLog;
+		class SwingWorker4ProgramAdjustment2iniOVPN extends KernelSwingWorkerZZZ{			
 			private KernelJPanelCascadedZZZ panel;
 			private String[] saFlag4Program;
-									
-			protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
-			
+												
 			public SwingWorker4ProgramAdjustment2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
 				super();
 				this.objKernel = objKernel;
@@ -192,38 +189,6 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 				
 				SwingUtilities.invokeLater(runnerUpdateLabel);					
 			}
-
-			public IKernelZZZ getKernelObject() {
-				return this.objKernel;
-			}
-
-			public void setKernelObject(IKernelZZZ objKernel) {
-				this.objKernel = objKernel;
-			}
-
-			public LogZZZ getLogObject() {
-				return this.objLog;
-			}
-
-			public void setLogObject(LogZZZ objLog) {
-				this.objLog = objLog;
-			}
-			
-			
-			
-			
-			/* (non-Javadoc)
-			 * @see zzzKernel.basic.KernelAssetObjectZZZ#getExceptionObject()
-			 */
-			public ExceptionZZZ getExceptionObject() {
-				return this.objException;
-			}
-			/* (non-Javadoc)
-			 * @see zzzKernel.basic.KernelAssetObjectZZZ#setExceptionObject(zzzKernel.custom.ExceptionZZZ)
-			 */
-			public void setExceptionObject(ExceptionZZZ objException) {
-				this.objException = objException;
-			}
 			
 			//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
 			@Override
@@ -246,7 +211,7 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 				String sReturn = "";
 				sReturn = ReflectionToStringBuilder.toString(this);
 				return sReturn;
-			}
+			}			
 
 		} //End Class MySwingWorker
 
