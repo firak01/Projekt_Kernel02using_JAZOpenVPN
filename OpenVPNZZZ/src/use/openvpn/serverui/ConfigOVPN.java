@@ -27,11 +27,7 @@ public class ConfigOVPN  extends KernelConfigZZZ{
 
 	public String getConfigFileNameDefault() {
 		return "ZKernelConfig_OVPNServer.ini";
-	}
-
-	public String getPatternStringDefault() {
-		return "k:s:d:f:";
-	}
+	}	
 
 	public String getSystemNumberDefault() {
 		return "02";
