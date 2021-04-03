@@ -151,7 +151,7 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 	}
 	
 	@Override
-	public IConfigMapper4BatchOVPN getConfigMapperObject() {
+	public IConfigMapper4BatchOVPN getConfigMapperObject() throws ExceptionZZZ {
 		IConfigMapper4BatchOVPN objReturn = null;
 		if(this.objMapper4Batch==null) {			
 			objReturn = this.createConfigMapperObject();
@@ -160,7 +160,7 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 		return this.objMapper4Batch;	
 	}
 	
-	public abstract IConfigMapper4BatchOVPN createConfigMapperObject();
+	public abstract IConfigMapper4BatchOVPN createConfigMapperObject() throws ExceptionZZZ;
 		
 	
 	@Override

@@ -22,7 +22,7 @@ public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IAppl
 	
 	
 	
-	public AbstractApplicationOVPN(IKernelZZZ objKernel, IMainOVPN objMain) {
+	public AbstractApplicationOVPN(IKernelZZZ objKernel, IMainOVPN objMain) throws ExceptionZZZ {
 		super(objKernel);
 		this.setMainObject(objMain);
 	}

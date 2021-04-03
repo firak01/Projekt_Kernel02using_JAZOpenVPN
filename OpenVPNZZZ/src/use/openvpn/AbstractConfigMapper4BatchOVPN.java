@@ -10,7 +10,7 @@ public abstract class AbstractConfigMapper4BatchOVPN  extends AbstractConfigMapp
 	private File fileTemplateUsedBatch = null;
 	private File fileConfigUsedOvpn = null;
 	
-	public AbstractConfigMapper4BatchOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateBatch, File fileConfigOvpn) {
+	public AbstractConfigMapper4BatchOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateBatch, File fileConfigOvpn) throws ExceptionZZZ {
 		super(objKernel, objMain);
 		this.setFileTemplateBatchUsed(fileTemplateBatch);
 		this.setFileConfigOvpnUsed(fileConfigOvpn);

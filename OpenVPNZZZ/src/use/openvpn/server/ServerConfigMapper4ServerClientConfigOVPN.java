@@ -32,7 +32,7 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainZZZ;
 
 public class ServerConfigMapper4ServerClientConfigOVPN extends AbstractConfigMapper4ServerClientConfigOVPN{	
-	public ServerConfigMapper4ServerClientConfigOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateReadme) {
+	public ServerConfigMapper4ServerClientConfigOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateReadme) throws ExceptionZZZ {
 		super(objKernel, objMain, fileTemplateReadme);		
 	}
 

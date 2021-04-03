@@ -10,7 +10,7 @@ import basic.zKernel.KernelUseObjectZZZ;
 public abstract class AbstractConfigMapperOVPN extends KernelUseObjectZZZ implements IConfigMapperOVPN, IMainUserOVPN{
 	private IMainOVPN objMain = null;
 		
-	public AbstractConfigMapperOVPN(IKernelZZZ objKernel, IMainOVPN objMain) {
+	public AbstractConfigMapperOVPN(IKernelZZZ objKernel, IMainOVPN objMain) throws ExceptionZZZ {
 		super(objKernel);
 		this.setMainObject(objMain);
 	}

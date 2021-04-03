@@ -55,29 +55,15 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	
 	
 	public ClientTrayUIZZZ(IKernelZZZ objKernel, ClientMainZZZ objClientMain, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel);
-		ClientTrayUINew_(objClientMain, saFlagControl);
+		super(objKernel,saFlagControl);//20210402: Die direkten Flags werden nun in der Elternklasse verarbeitet
+		ClientTrayUINew_(objClientMain);
 	}
 	
-	private void ClientTrayUINew_(ClientMainZZZ objClientMain, String[] saFlagControl) throws ExceptionZZZ{
-		main:{
-		
+	private void ClientTrayUINew_(ClientMainZZZ objClientMain) throws ExceptionZZZ{
+		main:{		
 			//try{		
 			check:{
-		 		
-				if(saFlagControl != null){
-					String stemp; boolean btemp;
-					for(int iCount = 0;iCount<=saFlagControl.length-1;iCount++){
-						stemp = saFlagControl[iCount];
-						btemp = setFlag(stemp, true);
-						if(btemp==false){ 								   
-							   ExceptionZZZ ez = new ExceptionZZZ( stemp, iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
-							   throw ez;		 
-						}
-					}
-					if(this.getFlag("init")) break main;
-				}	
-	
+				if(this.getFlag("init")) break main;
 				if(objClientMain==null){
 						ExceptionZZZ ez = new ExceptionZZZ("ClientMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
 					   throw ez;		 

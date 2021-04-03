@@ -142,7 +142,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		}
 	}//END Konstruktor
 	
-	private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+	private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			
@@ -179,7 +179,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 	}
 	
 	
-	private boolean createRowUploadPage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+	private boolean createRowUploadPage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			
@@ -205,7 +205,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		return bReturn;
 	}
 	
-	private boolean createRowIpLocal(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+	private boolean createRowIpLocal(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			
@@ -240,7 +240,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 	}
 	
 	
-	private boolean createRowGeneratePage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+	private boolean createRowGeneratePage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			
@@ -265,7 +265,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		return bReturn;
 	}
 	
-	private boolean createRowIpRouter(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+	private boolean createRowIpRouter(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			
@@ -305,7 +305,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
 	class ActionIpWeb2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-		public ActionIpWeb2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+		public ActionIpWeb2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 			super(objKernel, panelParent);			
 		}
 		
@@ -410,7 +410,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 //	#######################################
 	//Innere Klassen, welche eine Action behandelt	
 class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-	public ActionIpRouter2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+	public ActionIpRouter2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 		super(objKernel, panelParent);			
 	}
 	
@@ -519,7 +519,7 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 //	#######################################
 	//Innere Klassen, welche eine Action behandelt	
 class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-	public ActionIpLocal2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+	public ActionIpLocal2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 		super(objKernel, panelParent);			
 	}
 	
@@ -627,7 +627,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 //	#######################################
 	//Innere Klassen, welche eine Action behandelt
 		class ActionIPWebRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-			public ActionIPWebRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+			public ActionIPWebRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 				super(objKernel, panelParent);			
 			}
 			
@@ -732,7 +732,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt
 			class ActionIPLocalRefreshOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-				public ActionIPLocalRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+				public ActionIPLocalRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 					super(objKernel, panelParent);			
 				}
 				
@@ -837,7 +837,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
 		class ActionPageWebCreateOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-			public ActionPageWebCreateOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+			public ActionPageWebCreateOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 				super(objKernel, panelParent);			
 			}
 			
@@ -949,7 +949,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
 		class ActionPageWebUploadOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-			public ActionPageWebUploadOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+			public ActionPageWebUploadOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 				super(objKernel, panelParent);			
 			}
 			

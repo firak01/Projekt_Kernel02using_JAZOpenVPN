@@ -39,8 +39,14 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 		
 	//#### Interfaces ##############################
 	//### Zugriff auf den alternativen Button
-	public KernelActionCascadedZZZ getActionListenerButtonOk(KernelJPanelCascadedZZZ panelButton){
-		return new ActionListenerDlgIPExternalButtonOk(this.getKernelObject(), panelButton);
+	public KernelActionCascadedZZZ getActionListenerButtonOk(KernelJPanelCascadedZZZ panelButton){		
+		KernelActionCascadedZZZ objReturn = null;
+		try {
+			objReturn = new ActionListenerDlgIPExternalButtonOk(this.getKernelObject(), panelButton);
+		}catch(ExceptionZZZ ez) {
+			ez.printStackTrace();
+		}
+		return objReturn;
 	}
 	
 	
@@ -49,8 +55,9 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 		* lindhaueradmin; 17.01.2007 10:10:21
 		 * @param objKernel
 		 * @param panelParent
+		 * @throws ExceptionZZZ 
 		 */
-		public ActionListenerDlgIPExternalButtonOk(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) {
+		public ActionListenerDlgIPExternalButtonOk(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ {
 			super(objKernel, panelParent);
 		}
 		

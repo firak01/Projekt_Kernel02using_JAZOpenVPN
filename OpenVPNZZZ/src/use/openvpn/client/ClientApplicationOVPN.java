@@ -29,7 +29,7 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	private String sIPVPN = null;
 	
 	
-	public ClientApplicationOVPN(IKernelZZZ objKernel, ClientMainZZZ objClient) {
+	public ClientApplicationOVPN(IKernelZZZ objKernel, ClientMainZZZ objClient) throws ExceptionZZZ {
 		super(objKernel, objClient);		
 	}
 	

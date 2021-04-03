@@ -9,7 +9,7 @@ import basic.zKernel.IKernelZZZ;
 public abstract class AbstractConfigMapper4ReadmeOVPN  extends AbstractConfigMapperOVPN implements IConfigMapper4ReadmeOVPN{
 	private File fileTemplateUsed = null;
 	
-	public AbstractConfigMapper4ReadmeOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplate) {
+	public AbstractConfigMapper4ReadmeOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplate) throws ExceptionZZZ {
 		super(objKernel, objMain);
 		this.setFileTemplateReadmeUsed(fileTemplate);
 	}

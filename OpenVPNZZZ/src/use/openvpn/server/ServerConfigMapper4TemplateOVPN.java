@@ -14,7 +14,7 @@ import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
 
 public class ServerConfigMapper4TemplateOVPN extends AbstractConfigMapper4TemplateOVPN{	
-	public ServerConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain, File fileConfigTemplateOvpn) {
+	public ServerConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain, File fileConfigTemplateOvpn) throws ExceptionZZZ {
 		super(objKernel, (IMainOVPN) objServerMain, fileConfigTemplateOvpn);		
 	}
 	

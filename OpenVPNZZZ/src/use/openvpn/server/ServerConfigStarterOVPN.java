@@ -183,18 +183,18 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 		this.setMainObject((IMainOVPN) objServer);
 	}
 	
-	public ServerConfigMapper4BatchOVPN getServerConfigMapper4BatchObject() {
+	public ServerConfigMapper4BatchOVPN getServerConfigMapper4BatchObject() throws ExceptionZZZ {
 		return (ServerConfigMapper4BatchOVPN) this.getConfigMapperObject();		
 	}
 	public void setServerConfigMapper4BatchObject(ServerConfigMapper4BatchOVPN objConfigMapper) {
 		this.setConfigMapperObject(objConfigMapper);
 	}
-	public IConfigMapper4BatchOVPN createConfigMapperObject() {
+	public IConfigMapper4BatchOVPN createConfigMapperObject() throws ExceptionZZZ {
 		IConfigMapper4BatchOVPN objReturn = null;
 		main:{
 			File fileConfigTemplateBatch = this.getFileTemplateBatch();
-			File fileConfigOvpn = this.getFileConfigOvpn();
-			objReturn = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch, fileConfigOvpn);
+			File fileConfigOvpn = this.getFileConfigOvpn();			
+			objReturn = new ServerConfigMapper4BatchOVPN(this.getKernelObject(), this.getServerObject(), fileConfigTemplateBatch, fileConfigOvpn);			
 		}//end main:
 		return objReturn;		
 	}

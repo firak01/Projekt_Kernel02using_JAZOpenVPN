@@ -20,6 +20,7 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
+import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ.ActionListenerButtonOkDefaultZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import custom.zKernel.LogZZZ;
 import use.openvpn.clientui.component.IPExternalRead.ProgramIpWeb2iniOVPN;
@@ -41,8 +42,14 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 	
 	//#######################################################
 	//### Zugriff auf den alternativen Button
-	public KernelActionCascadedZZZ getActionListenerButtonOk(KernelJPanelCascadedZZZ panelButton){
-		return new ActionListenerDlgAdjustmentButtonOk(this.getKernelObject(), panelButton);
+	public KernelActionCascadedZZZ getActionListenerButtonOk(KernelJPanelCascadedZZZ panelButton) {
+		KernelActionCascadedZZZ objReturn = null;
+		try {
+			objReturn = new ActionListenerDlgAdjustmentButtonOk(this.getKernelObject(), panelButton);
+		}catch(ExceptionZZZ ez) {
+			ez.printStackTrace();
+		}
+		return objReturn;
 	}	
 	
 	class ActionListenerDlgAdjustmentButtonOk extends  ActionListenerButtonOkDefaultZZZ {
@@ -50,8 +57,9 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 		* lindhaueradmin; 17.01.2007 10:10:21
 		 * @param objKernel
 		 * @param panelParent
+		 * @throws ExceptionZZZ 
 		 */
-		public ActionListenerDlgAdjustmentButtonOk(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) {
+		public ActionListenerDlgAdjustmentButtonOk(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ {
 			super(objKernel, panelParent);
 		}
 		

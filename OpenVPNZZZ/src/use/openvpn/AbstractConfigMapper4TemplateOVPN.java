@@ -17,7 +17,7 @@ public abstract class AbstractConfigMapper4TemplateOVPN extends AbstractConfigMa
 	private File fileTemplateUsedOvpn = null;
 	
 		
-	public AbstractConfigMapper4TemplateOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateOvpn) {
+	public AbstractConfigMapper4TemplateOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateOvpn) throws ExceptionZZZ {
 		super(objKernel, objMain);			
 		this.setFileTemplateOvpnUsed(fileTemplateOvpn);
 	}

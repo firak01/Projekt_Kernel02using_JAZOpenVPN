@@ -46,7 +46,7 @@ public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicatio
 	private File objFileDirTemplate = null;
 	private String sOvpnContextClientOrServer=null;
 	
-	public ConfigChooserOVPN(IKernelZZZ objKernel, String sOvpnContextClientOrServer, IApplicationOVPN objApplication){
+	public ConfigChooserOVPN(IKernelZZZ objKernel, String sOvpnContextClientOrServer, IApplicationOVPN objApplication) throws ExceptionZZZ{
 		super(objKernel);
 		this.setOvpnContextUsed(sOvpnContextClientOrServer);
 		this.setApplicationObject(objApplication);
