@@ -3,6 +3,7 @@ package use.openvpn.component.shared.adjustment;
 import java.awt.Frame;
 import java.util.HashMap;
 
+import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
 
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
@@ -27,7 +28,7 @@ public class DlgAdjustmentOVPN extends KernelJDialogExtendedZZZ {
 	 * @param bSnappedToScreen
 	 * @param panelCenter
 	 */
-	public DlgAdjustmentOVPN(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner, HashMap<String, Boolean> hmFlag) {		
+	public DlgAdjustmentOVPN(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner, HashMap<String, Boolean> hmFlag) throws ExceptionZZZ {		
 		super(objKernel, frameOwner, false, hmFlag);  //true, d.h. modal, geht leider nur im Konstruktor zu �bergeben, weil JDialog diesen Parameter im Konstruktor braucht und Super(...) kann keinen Code beinhalten, der auf eigene Properties etc. zugreift.
 	}
 	public boolean isCentered(){
@@ -53,19 +54,19 @@ public class DlgAdjustmentOVPN extends KernelJDialogExtendedZZZ {
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelButton(){
+	public KernelJPanelCascadedZZZ getPanelButton() throws ExceptionZZZ{
 		PanelDialogContentEmptyZZZ panelButton = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
 		return panelButton;
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelContent(){
+	public KernelJPanelCascadedZZZ getPanelContent() throws ExceptionZZZ{
 		PanelDlgAdjustmentContentOVPN panelContent = new PanelDlgAdjustmentContentOVPN(this.getKernelObject(), this);
 		return panelContent;
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelNavigator() {
+	public KernelJPanelCascadedZZZ getPanelNavigator() throws ExceptionZZZ {
 		PanelDlgAdjustmentNavigatorOVPN panelNavigator = new PanelDlgAdjustmentNavigatorOVPN(this.getKernelObject(), this);
 		return panelNavigator;
 	}

@@ -33,7 +33,7 @@ import basic.zKernel.KernelLogZZZ;
  *
  */
 public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogButtonDefaultZZZ{
-	public PanelDlgIPExternalButtonAlternativeVIA(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable){
+	public PanelDlgIPExternalButtonAlternativeVIA(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable) throws ExceptionZZZ{
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable);
 	}
 		

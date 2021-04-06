@@ -51,7 +51,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 	public PanelDlgAdjustmentNavigatorOVPN(){
 		super();
 	}
-	public PanelDlgAdjustmentNavigatorOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
+	public PanelDlgAdjustmentNavigatorOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) throws ExceptionZZZ {
 		super(objKernel, dialogExtended);
 		String stemp; boolean btemp;
 		try{

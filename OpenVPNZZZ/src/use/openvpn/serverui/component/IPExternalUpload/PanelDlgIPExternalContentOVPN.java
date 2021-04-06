@@ -51,7 +51,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 	public PanelDlgIPExternalContentOVPN(){
 		super();
 	}
-	public PanelDlgIPExternalContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
+	public PanelDlgIPExternalContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) throws ExceptionZZZ {
 		super(objKernel, dialogExtended);
 		String stemp; boolean btemp;
 		try{

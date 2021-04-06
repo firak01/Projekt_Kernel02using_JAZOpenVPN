@@ -24,7 +24,7 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	 * @param bSnappedToScreen
 	 * @param panelCenter
 	 */
-	public DlgIPExternalOVPN(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner, HashMap<String, Boolean> hmFlag) {		
+	public DlgIPExternalOVPN(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner, HashMap<String, Boolean> hmFlag) throws ExceptionZZZ {		
 		super(objKernel, frameOwner, false, hmFlag);  //true, d.h. modal, geht leider nur im Konstruktor zu �bergeben, weil JDialog diesen Parameter im Konstruktor braucht und Super(...) kann keinen Code beinhalten, der auf eigene Properties etc. zugreift.
 	}
 	public boolean isCentered(){
@@ -47,7 +47,7 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelContent(){
+	public KernelJPanelCascadedZZZ getPanelContent() throws ExceptionZZZ{
 		if(this.panelContent==null) {
 			PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
 			this.panelContent=panelContent;

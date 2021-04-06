@@ -92,8 +92,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			JMenuItem menueeintragFTP = new JMenuItem(IConstantClientOVPN.sLABEL_PAGE_IP_READ);
             menu.add(menueeintragFTP);
 			menueeintragFTP.addActionListener(this);
-			
-			//??? Warum geht das auf meinem Desktop-Rechner nicht, auf dem Notebook aber ???			
+						
 			JMenuItem menueeintrag = new JMenuItem(IConstantClientOVPN.sLABEL_END);	
 			menu.add(menueeintrag);		
 			menueeintrag.addActionListener(this);

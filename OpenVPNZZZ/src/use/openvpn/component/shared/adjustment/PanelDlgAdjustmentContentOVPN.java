@@ -51,7 +51,7 @@ public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impl
 	public PanelDlgAdjustmentContentOVPN(){
 		super();
 	}
-	public PanelDlgAdjustmentContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
+	public PanelDlgAdjustmentContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) throws ExceptionZZZ {
 		super(objKernel, dialogExtended);
 		String stemp; boolean btemp;
 		try{
