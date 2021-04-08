@@ -25,6 +25,7 @@ import basic.zKernel.component.IKernelModuleUserZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernelUI.KernelUIZZZ;
+import basic.zKernelUI.component.IComponentCascadedUserZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -33,6 +34,8 @@ import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.Sizes;
 
 import custom.zKernel.LogZZZ;
 
@@ -102,12 +105,29 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		//zweiter Parameter sind die Zeilen/Rows (hier:  drei), Merke: Wenn eine feste L�nge k�rzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
 		FormLayout layout = new FormLayout(
 				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
-				"5dlu, center:10dlu, 5dlu"); 				 
-		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugwiesen werden BEVOR mit constraints die Componenten positioniert werden.
+				"5dlu, center:10dlu, 5dlu"); 		
+		
+		//TESTTEST TODOGOON
+				RowSpec rs = new RowSpec(Sizes.dluX(14));
+//				 new RowSpec(RowSpec.CENTER, Sizes.dluX(14), 0.0);
+//				 new RowSpec(RowSpec.CENTER, Sizes.dluX(14), RowSpec.NO_GROW);
+//				 RowSpec.parse("14dlu");
+//				 RowSpec.parse("14dlu:0");
+//				 RowSpec.parse("center:14dlu:0");
+		layout.insertRow(1, rs);//RowIndex beginnt mit 1
+		
+				
+		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 		
 		String sValue = "TEST"; //TODO GOON: Das soll ein auszuwählendes Modul sein
-		this.createRowNavigator(this, cc, 1, sValue);
+		this.fillRowNavigator(this, cc, 1, sValue);
+		
+		this.fillRowDebug(this,cc);
+		
+		
+		
+		
 		
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
@@ -116,13 +136,32 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		}
 	}//END Konstruktor
 	
-	private boolean createRowNavigator(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+	private boolean fillRowNavigator(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
 		boolean bReturn = false;
 		main:{
-															
+			int iRowOffset=0;
+			if(this.getFlag(IComponentCascadedUserZZZ.FLAGZ.DEBUGUI_PANELLABEL_ON.name())) {
+				iRowOffset=1;
+			}
+			
 			JLabel label = new JLabel(sDefaultValue);
 			label.setHorizontalAlignment(JTextField.LEFT);
-			panel.add(label, cc.xy(2,iRow*2));
+			panel.add(label, cc.xy(2,(iRow+iRowOffset)*2));
+			
+			
+			
+		}//end main;
+		return bReturn;
+	}
+	
+	private boolean fillRowDebug(KernelJPanelCascadedZZZ panel, CellConstraints cc) {
+		boolean bReturn = false;
+		main:{			
+			int iRow = 1; //Die Debugzeile ist immer oben
+			
+			JLabel label = new JLabel(this.getClass().getName());
+			label.setHorizontalAlignment(JTextField.LEFT);
+			panel.add(label, cc.xy(2,iRow * 2));
 			
 			
 			
