@@ -2,6 +2,7 @@ package use.openvpn.component.shared.adjustment;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -33,6 +34,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Sizes;
@@ -103,32 +105,25 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		
 		//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
 		//zweiter Parameter sind die Zeilen/Rows (hier:  drei), Merke: Wenn eine feste L�nge k�rzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
-		FormLayout layout = new FormLayout(
-				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
-				"5dlu, center:10dlu, 5dlu"); 		
-		
-		//TESTTEST TODOGOON
-				RowSpec rs = new RowSpec(Sizes.dluX(14));
-//				 new RowSpec(RowSpec.CENTER, Sizes.dluX(14), 0.0);
-//				 new RowSpec(RowSpec.CENTER, Sizes.dluX(14), RowSpec.NO_GROW);
-//				 RowSpec.parse("14dlu");
-//				 RowSpec.parse("14dlu:0");
-//				 RowSpec.parse("center:14dlu:0");
-		layout.insertRow(1, rs);//RowIndex beginnt mit 1
-		
-				
+//		FormLayout layout = new FormLayout(
+//				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
+//				"5dlu, center:10dlu, 5dlu"); 		
+//		
+//		//TESTTEST TODOGOON
+//				RowSpec rs = new RowSpec(Sizes.dluX(14));
+////				 new RowSpec(RowSpec.CENTER, Sizes.dluX(14), 0.0);
+////				 new RowSpec(RowSpec.CENTER, Sizes.dluX(14), RowSpec.NO_GROW);
+////				 RowSpec.parse("14dlu");
+////				 RowSpec.parse("14dlu:0");
+////				 RowSpec.parse("center:14dlu:0");
+//		layout.insertRow(1, rs);//RowIndex beginnt mit 1
+		FormLayout layout = this.getFormLayoutUsed();			
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
-		
-		String sValue = "TEST"; //TODO GOON: Das soll ein auszuwählendes Modul sein
-		this.fillRowNavigator(this, cc, 1, sValue);
-		
 		this.fillRowDebug(this,cc);
 		
-		
-		
-		
-		
+		String sValue = "TEST"; //TODO GOON: Das soll ein auszuwählendes Modul sein
+		this.fillRowNavigator(this, cc, 1, sValue);		
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
 			ez.printStackTrace();
@@ -159,12 +154,9 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		main:{			
 			int iRow = 1; //Die Debugzeile ist immer oben
 			
-			JLabel label = new JLabel(this.getClass().getName());
+			JLabel label = new JLabel(this.getClass().getSimpleName());
 			label.setHorizontalAlignment(JTextField.LEFT);
-			panel.add(label, cc.xy(2,iRow * 2));
-			
-			
-			
+			panel.add(label, cc.xy(2,iRow * 2));									
 		}//end main;
 		return bReturn;
 	}
@@ -272,5 +264,65 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 			}
 			
 	}//End class ...KErnelActionCascaded....
+		
+		@Override
+		public RowSpec buildRowSpecDebug() {
+			RowSpec rs = new RowSpec(Sizes.dluX(14));
+			return rs;
+		}
+		
+		@Override 
+		public RowSpec buildRowSpecGap() {
+			RowSpec rs = new RowSpec(Sizes.dluX(5));
+			return rs;
+		}
+		
+		
+		@Override
+		public ArrayList<RowSpec> buildRowSpecs() {
+			ArrayList<RowSpec>listReturn=new ArrayList<RowSpec>();
+			main:{
+				//geht nicht RowSpec rs = RowSpec.decode("5dlu, center:10dlu, 5dlu");
+				RowSpec rsGap = this.buildRowSpecGap();
+				listReturn.add(rsGap);
+				
+				RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(5),0.5);
+				listReturn.add(rs1);
+				listReturn.add(rsGap);				
+			}//end main:
+			return listReturn;
+		}
+		
+		@Override
+		public ArrayList<ColumnSpec> buildColumnSpecs() {
+			ArrayList<ColumnSpec>listReturn=new ArrayList<ColumnSpec>();
+			main:{
+				//ColumnSpec cs = ColumnSpec.decode("5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu");
+				ColumnSpec csGap = this.buildColumnSpecGap();
+				listReturn.add(csGap);
+				
+//				ColumnSpec cs1 = new ColumnSpec(ColumnSpec.RIGHT, Sizes.dluX(5), 0.5 );
+//				listReturn.add(cs1);
+//								
+//				ColumnSpec cs2 = new ColumnSpec(ColumnSpec.DEFAULT, Sizes.dluX(5), 0.5);
+//				listReturn.add(cs2);
+				
+				ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5 );
+				listReturn.add(cs3);
+				listReturn.add(csGap);
+				
+				ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(5), 0.5 );
+				listReturn.add(cs3);
+				listReturn.add(csGap);
+				
+			}//end main
+			return listReturn;			
+		}
+		
+		@Override 
+		public ColumnSpec buildColumnSpecGap() {
+			ColumnSpec cs = new ColumnSpec(Sizes.dluX(5));
+			return cs;
+		}
 }
 
