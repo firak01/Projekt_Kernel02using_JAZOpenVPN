@@ -120,10 +120,8 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		FormLayout layout = this.getFormLayoutUsed();			
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
-		this.fillRowDebug(this,cc);
-		
-		String sValue = "TEST"; //TODO GOON: Das soll ein auszuwählendes Modul sein
-		this.fillRowNavigator(this, cc, 1, sValue);		
+		this.fillRowDebug(cc);
+		this.fillRow(cc, 1);		
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
 			ez.printStackTrace();
@@ -131,7 +129,24 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		}
 	}//END Konstruktor
 	
-	private boolean fillRowNavigator(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) {
+			
+	//###################################################	
+	//Interface IFormLayoutUserZZZ
+	@Override
+	public boolean fillRowDebug(CellConstraints cc) {
+		boolean bReturn = false;
+		main:{			
+			int iRow = 1; //Die Debugzeile ist immer oben
+			
+			JLabel label = new JLabel(this.getClass().getSimpleName());
+			label.setHorizontalAlignment(JTextField.LEFT);
+			this.add(label, cc.xy(2,iRow * 2));									
+		}//end main;
+		return bReturn;
+	}
+	
+	@Override
+	public boolean fillRow(CellConstraints cc, int iRow) {
 		boolean bReturn = false;
 		main:{
 			int iRowOffset=0;
@@ -139,26 +154,72 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 				iRowOffset=1;
 			}
 			
-			JLabel label = new JLabel(sDefaultValue);
+			//TODOGOON; //20210412: Der Wert soll ein Modulname sein, aus einem Array.
+			JLabel label = new JLabel("TESTDEFAULTVALUE");
 			label.setHorizontalAlignment(JTextField.LEFT);
-			panel.add(label, cc.xy(2,(iRow+iRowOffset)*2));
-			
-			
-			
+			this.add(label, cc.xy(2,(iRow+iRowOffset)*2));			
 		}//end main;
 		return bReturn;
 	}
 	
-	private boolean fillRowDebug(KernelJPanelCascadedZZZ panel, CellConstraints cc) {
-		boolean bReturn = false;
-		main:{			
-			int iRow = 1; //Die Debugzeile ist immer oben
+	@Override
+	public RowSpec buildRowSpecDebug() {
+		RowSpec rs = new RowSpec(Sizes.dluX(14));
+		return rs;
+	}
+	
+	@Override 
+	public RowSpec buildRowSpecGap() {
+		RowSpec rs = new RowSpec(Sizes.dluX(5));
+		return rs;
+	}
+	
+	
+	@Override
+	public ArrayList<RowSpec> buildRowSpecs() {
+		ArrayList<RowSpec>listReturn=new ArrayList<RowSpec>();
+		main:{
+			//geht nicht RowSpec rs = RowSpec.decode("5dlu, center:10dlu, 5dlu");
+			RowSpec rsGap = this.buildRowSpecGap();
+			listReturn.add(rsGap);
 			
-			JLabel label = new JLabel(this.getClass().getSimpleName());
-			label.setHorizontalAlignment(JTextField.LEFT);
-			panel.add(label, cc.xy(2,iRow * 2));									
-		}//end main;
-		return bReturn;
+			RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(5),0.5);
+			listReturn.add(rs1);
+			listReturn.add(rsGap);				
+		}//end main:
+		return listReturn;
+	}
+	
+	@Override
+	public ArrayList<ColumnSpec> buildColumnSpecs() {
+		ArrayList<ColumnSpec>listReturn=new ArrayList<ColumnSpec>();
+		main:{
+			//ColumnSpec cs = ColumnSpec.decode("5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu");
+			ColumnSpec csGap = this.buildColumnSpecGap();
+			listReturn.add(csGap);
+			
+//			ColumnSpec cs1 = new ColumnSpec(ColumnSpec.RIGHT, Sizes.dluX(5), 0.5 );
+//			listReturn.add(cs1);
+//							
+//			ColumnSpec cs2 = new ColumnSpec(ColumnSpec.DEFAULT, Sizes.dluX(5), 0.5);
+//			listReturn.add(cs2);
+			
+			ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5 );
+			listReturn.add(cs3);
+			listReturn.add(csGap);
+			
+			ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(5), 0.5 );
+			listReturn.add(cs3);
+			listReturn.add(csGap);
+			
+		}//end main
+		return listReturn;			
+	}
+	
+	@Override 
+	public ColumnSpec buildColumnSpecGap() {
+		ColumnSpec cs = new ColumnSpec(Sizes.dluX(5));
+		return cs;
 	}
 		
 //		#######################################
@@ -264,65 +325,5 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 			}
 			
 	}//End class ...KErnelActionCascaded....
-		
-		@Override
-		public RowSpec buildRowSpecDebug() {
-			RowSpec rs = new RowSpec(Sizes.dluX(14));
-			return rs;
-		}
-		
-		@Override 
-		public RowSpec buildRowSpecGap() {
-			RowSpec rs = new RowSpec(Sizes.dluX(5));
-			return rs;
-		}
-		
-		
-		@Override
-		public ArrayList<RowSpec> buildRowSpecs() {
-			ArrayList<RowSpec>listReturn=new ArrayList<RowSpec>();
-			main:{
-				//geht nicht RowSpec rs = RowSpec.decode("5dlu, center:10dlu, 5dlu");
-				RowSpec rsGap = this.buildRowSpecGap();
-				listReturn.add(rsGap);
-				
-				RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(5),0.5);
-				listReturn.add(rs1);
-				listReturn.add(rsGap);				
-			}//end main:
-			return listReturn;
-		}
-		
-		@Override
-		public ArrayList<ColumnSpec> buildColumnSpecs() {
-			ArrayList<ColumnSpec>listReturn=new ArrayList<ColumnSpec>();
-			main:{
-				//ColumnSpec cs = ColumnSpec.decode("5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu");
-				ColumnSpec csGap = this.buildColumnSpecGap();
-				listReturn.add(csGap);
-				
-//				ColumnSpec cs1 = new ColumnSpec(ColumnSpec.RIGHT, Sizes.dluX(5), 0.5 );
-//				listReturn.add(cs1);
-//								
-//				ColumnSpec cs2 = new ColumnSpec(ColumnSpec.DEFAULT, Sizes.dluX(5), 0.5);
-//				listReturn.add(cs2);
-				
-				ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5 );
-				listReturn.add(cs3);
-				listReturn.add(csGap);
-				
-				ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(5), 0.5 );
-				listReturn.add(cs3);
-				listReturn.add(csGap);
-				
-			}//end main
-			return listReturn;			
-		}
-		
-		@Override 
-		public ColumnSpec buildColumnSpecGap() {
-			ColumnSpec cs = new ColumnSpec(Sizes.dluX(5));
-			return cs;
-		}
 }
 

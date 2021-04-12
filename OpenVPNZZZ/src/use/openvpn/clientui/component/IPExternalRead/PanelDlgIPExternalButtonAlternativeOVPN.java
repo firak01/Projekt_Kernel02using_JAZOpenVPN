@@ -2,11 +2,15 @@ package use.openvpn.clientui.component.IPExternalRead;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
@@ -38,6 +42,36 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 	public PanelDlgIPExternalButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable, boolean bIsButtonCloseAvailable) throws ExceptionZZZ{
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable, bIsButtonCloseAvailable);
 	}
+	
+	//######################################################
+	//Interface IComponentCascadedUserZZZ - Zum Definieren des FormLayouts und ggfs. der DebugUI-Zeile
+	
+	
+	//TODOGOON; //20210412 Diese Methoden überschreiben
+	@Override
+	public RowSpec buildRowSpecDebug() {
+		return null; //falls keine Debugzeile implementiert wird
+	}
+	@Override
+	public ArrayList<RowSpec> buildRowSpecs() {
+		return null; //Falls das FormLayout nicht genutzt wird, oder direkt implementiert wird.
+	}
+	
+	@Override
+	public ArrayList<ColumnSpec> buildColumnSpecs() {
+		return null; //Falls das FormLayout nicht genutzt wird, oder direkt implementiert wird.
+	}
+	
+	@Override
+	public RowSpec buildRowSpecGap() {		
+		return null; //Falls das FormLayout nicht genutzt wird, oder direkt implementiert wird.
+	}
+	
+	@Override
+	public ColumnSpec buildColumnSpecGap() {		
+		return null; //Falls das FormLayout nicht genutzt wird, oder direkt implementiert wird.
+	}
+	
 	
 	//#######################################################
 	//### Zugriff auf den alternativen Button
@@ -209,8 +243,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 		public void actionPerformCustomOnError(ActionEvent ae, ExceptionZZZ ez) {
 			// TODO Auto-generated method stub
 			
-		}
-
+		}				
 	}//END class actionListenerButtonCancelDefault
 }
 
