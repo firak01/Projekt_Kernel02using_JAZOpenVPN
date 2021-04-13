@@ -117,11 +117,9 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 ////				 RowSpec.parse("14dlu:0");
 ////				 RowSpec.parse("center:14dlu:0");
 //		layout.insertRow(1, rs);//RowIndex beginnt mit 1
-		FormLayout layout = this.getFormLayoutUsed();			
-		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
-		CellConstraints cc = new CellConstraints();
-		this.fillRowDebug(cc);
-		this.fillRow(cc, 1);		
+		
+			this.initFormLayout();	
+			
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
 			ez.printStackTrace();
@@ -140,7 +138,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 			
 			JLabel label = new JLabel(this.getClass().getSimpleName());
 			label.setHorizontalAlignment(JTextField.LEFT);
-			this.add(label, cc.xy(2,iRow * 2));									
+			this.add(label, cc.xy(2,iRow));									
 		}//end main;
 		return bReturn;
 	}
@@ -157,7 +155,12 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 			//TODOGOON; //20210412: Der Wert soll ein Modulname sein, aus einem Array.
 			JLabel label = new JLabel("TESTDEFAULTVALUE");
 			label.setHorizontalAlignment(JTextField.LEFT);
-			this.add(label, cc.xy(2,(iRow+iRowOffset)*2));			
+			if(iRow==1) {
+				this.add(label, cc.xy(2,(iRow+iRowOffset)));
+			}else {
+				this.add(label, cc.xy(2,iRowOffset+(iRow*2)));//*2 wg. der Gap-Zeile
+			}
+			
 		}//end main;
 		return bReturn;
 	}
