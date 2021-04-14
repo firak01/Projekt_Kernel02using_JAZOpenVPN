@@ -117,24 +117,13 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			label.setHorizontalAlignment(JTextField.LEFT);
 			
 			iRow=iRow*2;//wg. der Gap-Zeile
-			int iRowUsed = this.computeContentRowNumberUsed(iRow);
-//			if(iRow==1) {
-//				this.add(label, cc.xy(2,(iRow+iRowOffset)));
-//			}else {
-//				this.add(label, cc.xy(2,iRowOffset+(iRow*2)));//*2 wg. der Gap-Zeile
-//			}
-			
+			int iRowUsed = this.computeContentRowNumberUsed(iRow);			
 			this.add(label, cc.xy(2,iRowUsed));
 			
 		}//end main;
 		return bReturn;
 	}
-	
-	public RowSpec buildRowSpecGap() {
-		RowSpec rs = new RowSpec(Sizes.dluX(5));
-		return rs;
-	}
-	
+
 	@Override
 	public ArrayList<RowSpec> buildRowSpecs() {
 		ArrayList<RowSpec>listReturn=new ArrayList<RowSpec>();
@@ -174,6 +163,11 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			
 		}//end main
 		return listReturn;			
+	}
+	
+	public RowSpec buildRowSpecGap() {
+		RowSpec rs = new RowSpec(Sizes.dluX(5));
+		return rs;
 	}
 	
 	public ColumnSpec buildColumnSpecGap() {
