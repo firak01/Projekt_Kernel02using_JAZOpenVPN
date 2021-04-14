@@ -43,36 +43,6 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable, bIsButtonCloseAvailable);
 	}
 	
-	//######################################################
-	//Interface IComponentCascadedUserZZZ - Zum Definieren des FormLayouts und ggfs. der DebugUI-Zeile
-	
-	
-	//TODOGOON; //20210412 Diese Methoden überschreiben
-	@Override
-	public RowSpec buildRowSpecDebug() {
-		return null; //falls keine Debugzeile implementiert wird
-	}
-	@Override
-	public ArrayList<RowSpec> buildRowSpecs() {
-		return null; //Falls das FormLayout nicht genutzt wird, oder direkt implementiert wird.
-	}
-	
-	@Override
-	public ArrayList<ColumnSpec> buildColumnSpecs() {
-		return null; //Falls das FormLayout nicht genutzt wird, oder direkt implementiert wird.
-	}
-	
-	@Override
-	public RowSpec buildRowSpecGap() {		
-		return null; //Falls das FormLayout nicht genutzt wird, oder direkt implementiert wird.
-	}
-	
-	@Override
-	public ColumnSpec buildColumnSpecGap() {		
-		return null; //Falls das FormLayout nicht genutzt wird, oder direkt implementiert wird.
-	}
-	
-	
 	//#######################################################
 	//### Zugriff auf den alternativen Button
 	public KernelActionCascadedZZZ getActionListenerButtonOk(KernelJPanelCascadedZZZ panelButton) {

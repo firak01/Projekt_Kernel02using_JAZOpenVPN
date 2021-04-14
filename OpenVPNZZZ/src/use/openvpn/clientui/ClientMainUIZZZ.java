@@ -39,7 +39,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 				this.objClientMain.setApplicationObject(objApplication);
 				
 				
-				//20210402: Hier soll auch im Log die Verarbeitung des 'vererbbenden' Kommandozeilenparameters -z ersichtlich sein.
+				//20210402: Hier soll auch im Log die Verarbeitung des 'vererbenden' Kommandozeilenparameters -z ersichtlich sein.
 				//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
 				this.objClientTray = new ClientTrayUIZZZ(objKernel, this.objClientMain, (String[]) null);
 

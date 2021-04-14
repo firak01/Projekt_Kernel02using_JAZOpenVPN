@@ -31,6 +31,7 @@ import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import basic.zKernelUI.component.KernelJPanelFormLayoutedZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -47,7 +48,7 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ implements IKernelProgramZZZ, IKernelModuleZZZ{	
+public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZZ implements IKernelProgramZZZ, IKernelModuleZZZ{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -75,50 +76,27 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 				throw ez;		 
 			}
 			
-		//#############################################################################################
-		//### Auslesen des bisher verwendeten ini-Eintrags. 
-		//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
-		//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
-		String sIp = "";
-				
-		//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
-		String sProgram; String sModule;
-		sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleUserZZZ) this);
-		if(StringZZZ.isEmpty(sModule)){
-			ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		
-		sProgram = this.getProgramName();
-		if(StringZZZ.isEmpty(sProgram)){
-			ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-
-						
-		//##################################################################
-		//### Definition des Masken UIs
-		//###
-		//Diese einfache Maske besteht nur aus 1 Zeile und 4 Spalten. 
-		//Es gibt außen einen Rand von jeweils einer Spalte/Zeile
-		//Merke: gibt man pref an, so bewirkt dies, das die Spalte beim ver�ndern der Fenstergröße nicht angepasst wird, auch wenn grow dahinter steht.
-		
-		//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
-		//zweiter Parameter sind die Zeilen/Rows (hier:  drei), Merke: Wenn eine feste L�nge k�rzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
-//		FormLayout layout = new FormLayout(
-//				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
-//				"5dlu, center:10dlu, 5dlu"); 		
-//		
-//		//TESTTEST TODOGOON
-//				RowSpec rs = new RowSpec(Sizes.dluX(14));
-////				 new RowSpec(RowSpec.CENTER, Sizes.dluX(14), 0.0);
-////				 new RowSpec(RowSpec.CENTER, Sizes.dluX(14), RowSpec.NO_GROW);
-////				 RowSpec.parse("14dlu");
-////				 RowSpec.parse("14dlu:0");
-////				 RowSpec.parse("center:14dlu:0");
-//		layout.insertRow(1, rs);//RowIndex beginnt mit 1
-		
-			this.initFormLayout();	
+			//#############################################################################################
+			//### Auslesen des bisher verwendeten ini-Eintrags. 
+			//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
+			//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
+			String sIp = "";
+					
+			//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
+			String sProgram; String sModule;
+			sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleUserZZZ) this);
+			if(StringZZZ.isEmpty(sModule)){
+				ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			
+			sProgram = this.getProgramName();
+			if(StringZZZ.isEmpty(sProgram)){
+				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			
+			this.initFormLayoutContent();
 			
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
@@ -129,54 +107,33 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 	
 			
 	//###################################################	
-	//Interface IFormLayoutUserZZZ
+	//Interface IFormLayoutUserZZZ		
 	@Override
-	public boolean fillRowDebug(CellConstraints cc) {
+	public boolean fillRowContent(CellConstraints cc, int iRow) {
 		boolean bReturn = false;
 		main:{			
-			int iRow = 1; //Die Debugzeile ist immer oben
-			
-			JLabel label = new JLabel(this.getClass().getSimpleName());
-			label.setHorizontalAlignment(JTextField.LEFT);
-			this.add(label, cc.xy(2,iRow));									
-		}//end main;
-		return bReturn;
-	}
-	
-	@Override
-	public boolean fillRow(CellConstraints cc, int iRow) {
-		boolean bReturn = false;
-		main:{
-			int iRowOffset=0;
-			if(this.getFlag(IComponentCascadedUserZZZ.FLAGZ.DEBUGUI_PANELLABEL_ON.name())) {
-				iRowOffset=1;
-			}
-			
 			//TODOGOON; //20210412: Der Wert soll ein Modulname sein, aus einem Array.
 			JLabel label = new JLabel("TESTDEFAULTVALUE");
 			label.setHorizontalAlignment(JTextField.LEFT);
-			if(iRow==1) {
-				this.add(label, cc.xy(2,(iRow+iRowOffset)));
-			}else {
-				this.add(label, cc.xy(2,iRowOffset+(iRow*2)));//*2 wg. der Gap-Zeile
-			}
+			
+			iRow=iRow*2;//wg. der Gap-Zeile
+			int iRowUsed = this.computeContentRowNumberUsed(iRow);
+//			if(iRow==1) {
+//				this.add(label, cc.xy(2,(iRow+iRowOffset)));
+//			}else {
+//				this.add(label, cc.xy(2,iRowOffset+(iRow*2)));//*2 wg. der Gap-Zeile
+//			}
+			
+			this.add(label, cc.xy(2,iRowUsed));
 			
 		}//end main;
 		return bReturn;
 	}
 	
-	@Override
-	public RowSpec buildRowSpecDebug() {
-		RowSpec rs = new RowSpec(Sizes.dluX(14));
-		return rs;
-	}
-	
-	@Override 
 	public RowSpec buildRowSpecGap() {
 		RowSpec rs = new RowSpec(Sizes.dluX(5));
 		return rs;
 	}
-	
 	
 	@Override
 	public ArrayList<RowSpec> buildRowSpecs() {
@@ -219,7 +176,6 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 		return listReturn;			
 	}
 	
-	@Override 
 	public ColumnSpec buildColumnSpecGap() {
 		ColumnSpec cs = new ColumnSpec(Sizes.dluX(5));
 		return cs;
@@ -327,6 +283,6 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelCascadedZZZ im
 				
 			}
 			
-	}//End class ...KErnelActionCascaded....
+	}//End class ...KErnelActionCascaded....		
 }
 

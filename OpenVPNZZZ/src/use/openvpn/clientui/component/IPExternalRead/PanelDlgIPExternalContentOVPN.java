@@ -31,6 +31,7 @@ import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import basic.zKernelUI.component.KernelJPanelFormLayoutedZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -47,7 +48,7 @@ import custom.zKernel.LogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ implements IKernelProgramZZZ{	
+public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ implements IKernelProgramZZZ{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -60,15 +61,16 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		super(objKernel, dialogExtended);
 		String stemp; boolean btemp;
 		try{
-		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
+			//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
 			stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
 			btemp = this.setFlagZ(stemp, true);
 			if(btemp==false){
 				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
-			}
+			}	
 			
-			this.initFormLayout();
+			//Hiermit dann erst die Werte füllen.
+			this.initFormLayoutContent();
 			
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
@@ -78,22 +80,9 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 	}//END Konstruktor
 	
 	//###################################################	
-		//Interface IFormLayoutUserZZZ
+		//Interface IFormLayoutUserZZZ					
 		@Override
-		public boolean fillRowDebug(CellConstraints cc) {
-			boolean bReturn = false;
-			main:{			
-				int iRow = 1; //Die Debugzeile ist immer oben
-				
-				JLabel label = new JLabel(this.getClass().getSimpleName());
-				label.setHorizontalAlignment(JTextField.LEFT);
-				this.add(label, cc.xy(2,iRow));									
-			}//end main;
-			return bReturn;
-		}
-		
-		@Override
-		public boolean fillRow(CellConstraints cc, int iRow) throws ExceptionZZZ {
+		public boolean fillRowContent(CellConstraints cc, int iRow) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				
@@ -128,11 +117,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 				
 				
 				//############################################
-				int iRowOffset=0;
-				if(this.getFlag(IComponentCascadedUserZZZ.FLAGZ.DEBUGUI_PANELLABEL_ON.name())) {
-					iRowOffset=1;
-				}
-													
+				int iRowUsed = this.computeContentRowNumberUsed(iRow); //Darin wird dann die RowNumber unter Berücksichtigung "DebugZeile" Verwenden oder nicht errechnet.
+																	
 				///#####################################						
 			    //Beim Schliessen der Dialogbox soll ggfs. der Wert übernommen werden, also kein extra Button.
 //					JButton buttonIpWeb2ini = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON_TO_INI);
@@ -143,14 +129,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 					//#########	
 					JLabel label = new JLabel(IConstantProgramIpWebOVPN.sLABEL_TEXTFIELD);
 					//label.setHorizontalAlignment(JTextField.LEFT);
-					this.add(label, cc.xy(2,iRowOffset+iRow));
+					this.add(label, cc.xy(2,iRowUsed));
 																
 					JTextField textfieldIPExternal = new JTextField(sIp, 20);
 					textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
 					textfieldIPExternal.setCaretPosition(0);
 					//Dimension dim = new Dimension(10, 15);
-					//textfield.setPreferredSize(dim);
-					this.add(textfieldIPExternal, cc.xy(4,iRowOffset+iRow));
+					//textfield.setPreferredSize(dim);					
+					this.add(textfieldIPExternal, cc.xy(4,iRowUsed));
 					
 					// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
 					//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
@@ -161,23 +147,10 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 					JButton buttonReadIPExternal = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
 					ActionIPWebRefreshOVPN actionIPRefresh = new ActionIPWebRefreshOVPN(objKernel, this);
 					buttonReadIPExternal.addActionListener(actionIPRefresh);			
-					this.add(buttonReadIPExternal, cc.xy(6,iRowOffset+iRow));				
+					this.add(buttonReadIPExternal, cc.xy(6,iRowUsed));				
 			}//end main;
 			return bReturn;
 		}
-		
-		@Override
-		public RowSpec buildRowSpecDebug() {
-			RowSpec rs = new RowSpec(Sizes.dluX(14));
-			return rs;
-		}
-		
-		@Override 
-		public RowSpec buildRowSpecGap() {
-			RowSpec rs = new RowSpec(Sizes.dluX(5));
-			return rs;
-		}
-		
 		
 		@Override
 		public ArrayList<RowSpec> buildRowSpecs() {
@@ -251,60 +224,17 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 			return listReturn;			
 		}
 		
-		@Override 
+
 		public ColumnSpec buildColumnSpecGap() {
 			ColumnSpec cs = new ColumnSpec(Sizes.dluX(5));
 			return cs;
 		}
 	
+		public RowSpec buildRowSpecGap() {
+			RowSpec rs = new RowSpec(Sizes.dluX(5));
+			return rs;
+		}
 	
-		/*
-		 * LÖSCHEN
-		 */		
-	private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
-		boolean bReturn = false;
-		main:{
-				
-			//Beim Schliessen der Dialogbox soll ggfs. der Wert übernommen werden, also kein extra Button.
-//			JButton buttonIpWeb2ini = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON_TO_INI);
-//			ActionIpWeb2iniOVPN actionIpWeb2iniOVPN = new ActionIpWeb2iniOVPN(objKernel, this);
-//			buttonIpWeb2ini.addActionListener(actionIpWeb2iniOVPN);
-//			panel.add(buttonIpWeb2ini, cc.xy(6,iRow*2));
-			
-			//#########	
-			JLabel label = new JLabel(IConstantProgramIpWebOVPN.sLABEL_TEXTFIELD);
-			panel.add(label, cc.xy(2,iRow*2));
-														
-			JTextField textfieldIPExternal = new JTextField(sDefaultValue, 20);
-			textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
-			textfieldIPExternal.setCaretPosition(0);
-			//Dimension dim = new Dimension(10, 15);
-			//textfield.setPreferredSize(dim);
-			panel.add(textfieldIPExternal, cc.xy(4,iRow*2));
-			
-			// Dieses Feld soll einer Aktion in der Buttonleiste zur Verfügung stehen.
-			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
-			//Der Inhalt des Textfelds soll dann beim O.K. Button in die ini-Datei gepackt werden.
-			panel.setComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			
-			
-			JButton buttonReadIPExternal = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
-			ActionIPWebRefreshOVPN actionIPRefresh = new ActionIPWebRefreshOVPN(objKernel, this);
-			buttonReadIPExternal.addActionListener(actionIPRefresh);			
-			panel.add(buttonReadIPExternal, cc.xy(6,iRow*2));
-			
-			
-			/* Das funktioniert nicht. Funktionalit�t des JGoodies-Framework. Warum ???
-			PanelBuilder builder = new PanelBuilder(layout);
-			builder.setDefaultDialogBorder();
-			builder.addLabel("Externe IP Adresse des Servers");
-			JTextField textfield = new JTextField("noch automatisch zu f�llen");
-			builder.add(textfield, cc.xy(3,2));
-			*/	
-			
-		}//end main;
-		return bReturn;
-	}
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
