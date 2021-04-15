@@ -280,7 +280,9 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		main:{
 			try{
 				check:{
+				if(this.objClientMain==null)break main;
 				}
+			
 				this.switchStatus(iSTATUS_CONNECTING);
 											
 				//DIES �ber einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
@@ -309,19 +311,19 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		main:{
 			String stemp = null;
 			check:{
-				if (this.objClientMain == null){
-					sReturn = "Not yet tried to connect";
-					break main;
-				}
+//				if (this.objClientMain == null || this.objClientMain.getConfigChooserObject()==null || this.objClientMain.getApplicationObject()==null){
+//					sReturn = "Not yet tried to connect";
+//					break main;
+//				}
 			}//END check
 			
 		if(this.sStatusString==null){
 			sReturn = sReturn + "Not yet tried to connect\n\n";
 		}else{
 			//20200114: Erweiterung - Angabe des Rechnernamens
-			try {
-				String sServerOrClient = this.objClientMain.getConfigChooserObject().getOvpnContextUsed();
-				sReturn = sReturn + sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
+			try {				
+					String sServerOrClient = this.objClientMain.getConfigChooserObject().getOvpnContextUsed();
+					sReturn = sReturn + sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
 			} catch (UnknownHostException e) {				
 				e.printStackTrace();
 				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
@@ -360,9 +362,6 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				sReturn = sReturn + "Remote Port(s):" + stemp+"\n";
 			}
 		}
-		
-		
-		
 		
 		//VPNIP
 		stemp = ((ClientApplicationOVPN)this.objClientMain.getApplicationObject()).getVpnIpEstablished();
