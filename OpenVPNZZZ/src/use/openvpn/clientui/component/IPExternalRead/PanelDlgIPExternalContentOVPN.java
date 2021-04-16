@@ -33,6 +33,7 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelFormLayoutedZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
+import basic.zKernelUI.util.JTextFieldHelperZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -133,7 +134,9 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 																
 					JTextField textfieldIPExternal = new JTextField(sIp, 20);
 					textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
-					textfieldIPExternal.setCaretPosition(0);
+										
+					JTextFieldHelperZZZ.markAndFocus(textfieldIPExternal); //Damit werden die Cursorpostionen wieder verändert.
+					
 					//Dimension dim = new Dimension(10, 15);
 					//textfield.setPreferredSize(dim);					
 					this.add(textfieldIPExternal, cc.xy(4,iRowUsed));

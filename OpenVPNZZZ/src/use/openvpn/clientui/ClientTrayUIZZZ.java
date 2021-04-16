@@ -311,10 +311,10 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		main:{
 			String stemp = null;
 			check:{
-//				if (this.objClientMain == null || this.objClientMain.getConfigChooserObject()==null || this.objClientMain.getApplicationObject()==null){
-//					sReturn = "Not yet tried to connect";
-//					break main;
-//				}
+				if (this.objClientMain == null || this.objClientMain.getConfigChooserObject()==null || this.objClientMain.getApplicationObject()==null){
+					sReturn = "Not yet tried to connect";
+					break main;
+				}
 			}//END check
 			
 		if(this.sStatusString==null){
