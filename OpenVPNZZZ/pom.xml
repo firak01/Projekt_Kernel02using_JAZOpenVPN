@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>openvpnzzz</groupId>
+  <artifactId>OpenVPNZZZ</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>OpenVPNZZZ</name>
+  <description>Applikation zum Steuern von OpenVPN (einrichten, verbinden, etc.)</description>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>test</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+     <dependency>
+   		<groupId>com.jcraft</groupId>
+   		 <artifactId>jsch</artifactId>
+   		 <version>0.1.55</version>
+<!-- <		 <scope>provided</scope> -->
+		 <!-- Merke: compile ist default, provided wird nicht für runtime verwendet -->
+		 <scope>runtime</scope> 
+	</dependency>
+     
+  	<dependency>
+  		<!-- FGL 20210204: java.lang.NoClassDefFoundError wenn man dies aus einem anderem Projekt ausführt
+  		     scope provided weglassen soll es richten.
+  		     https://stackoverflow.com/questions/12811392/java-classnotfoundexception-with-maven-dependency
+  		 -->
+<!--   		<scope>provided</scope>  	 -->
+		<!--  Merke: java.lang.NoClassDefFoundError deutet darauf hin, dass die Klasse zur Laufzeit nicht gefunden wird.
+		      Dies lässt sich dadurch beheben, dass im Eclipse Projekt die Reihenfolge stimmt,
+		      d.h. in diesem konkreten Fall muss das JAZWebFTP Projekt VOR dem JAZKernelUI Projekt stehen,
+		      damit die Klassen in einem "Button click" zur Verfügung stehen -->
+  		<groupId>com.hierynomus</groupId>
+  		<artifactId>sshj</artifactId>
+  		<version>0.30.0</version>
+  	</dependency>
+  	
+  	<dependency>
+  	  	<!-- FGL 20210204: java.lang.NoClassDefFoundError wenn man dies aus einem anderem Projekt ausführt
+  		     scope provided weglassen soll es richten.
+  		     https://stackoverflow.com/questions/12811392/java-classnotfoundexception-with-maven-dependency
+  		 -->
+<!--   		<scope>provided</scope>  		 -->
+		<!--  Merke: java.lang.NoClassDefFoundError deutet darauf hin, dass die Klasse zur Laufzeit nicht gefunden wird.
+		      Dies lässt sich dadurch beheben, dass im Eclipse Projekt die Reihenfolge stimmt,
+		      d.h. in diesem konkreten Fall muss das JAZWebFTP Projekt VOR dem JAZKernelUI Projekt stehen,
+		      damit die Klassen in einem "Button click" zur Verfügung stehen -->
+  		<groupId>com.jcraft</groupId>
+    	<artifactId>jsch</artifactId>
+    	<version>0.1.55</version>
+  	</dependency>
+  </dependencies>
+</project>

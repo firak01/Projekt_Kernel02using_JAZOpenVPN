@@ -37,6 +37,10 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
+//Das hat hier eigentlich nichts zu suchen. TODOGOON: Auch wenn das klappt, eine andere Projektstruktur anbieten.
+//wg Fehler: import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.JSchException;
+
 /**Vereinfacht den Zugriff auf die HTML-Seite, in der die externe IPAdresse des Servers bekannt gemacht wird. 
  * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwentet.
  * @author 0823
@@ -132,7 +136,7 @@ public class ProgramPageWebUploadOVPN  extends AbstractKernelProgramUIZZZ implem
 		boolean bReturn = false;
 		System.out.println("Start");
 		main:{
-			boolean btemp; SFTPZZZ objFTP=null;
+			boolean btemp; 
 			try {
 
 		//1. Erstellen das Z-Kernel Objekt							
@@ -141,8 +145,8 @@ public class ProgramPageWebUploadOVPN  extends AbstractKernelProgramUIZZZ implem
 		//2. Protokoll
 		IKernelLogZZZ objLog = objKernel.getLogObject();
 
-		//3. FTPZZZ-Objekt, als Wrapper um jakarta.commons.net.ftpclient
-		objFTP = new SFTPZZZ(objKernel, objLog, (String[]) null);
+		//3. FTPZZZ-Objekt, als Wrapper um den passenden FTP-Client
+		SFTPZZZ objFTP = new SFTPZZZ(objKernel, objLog, (String[]) null);
 		
 		//4. Konfiguration auslesen
 		//Hier werden Informationen ueber die IP-Adressdatei ausgelesen, etc.
@@ -220,6 +224,9 @@ TargetFile=testpage.html
 		} catch (ExceptionZZZ ez) {
 				System.out.println(ez.getDetailAllLast());
 		} 
+			catch (JSchException jsche) {
+			System.out.println(jsche.getMessage());
+		}
 		System.out.println("Ende");
 	}//end main:
 		return bReturn;

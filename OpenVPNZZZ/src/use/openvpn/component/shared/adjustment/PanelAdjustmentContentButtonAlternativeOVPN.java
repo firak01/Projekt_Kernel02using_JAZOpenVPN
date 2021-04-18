@@ -121,7 +121,7 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 			KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
 			
 			SwingWorker4ProgramAdjustment2iniOVPN worker = new SwingWorker4ProgramAdjustment2iniOVPN(objKernel, panelParent, saFlag);
-			worker.start();  
+			worker.start();  			
 			
 		/*} catch (ExceptionZZZ ez) {				
 			this.getLogObject().WriteLineDate(ez.getDetailAllLast());
@@ -219,7 +219,9 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 				String sReturn = "";
 				sReturn = ReflectionToStringBuilder.toString(this);
 				return sReturn;
-			}			
+			}
+
+					
 
 		} //End Class MySwingWorker
 

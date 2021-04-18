@@ -36,6 +36,10 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import custom.zKernel.LogZZZ;
 
+//Das hat hier eigentlich nichts zu suchen. TODOGOON: Auch wenn das klappt, eine andere Projektstruktur anbieten.
+//wg Fehler: import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.JSchException;
+
 /**Das Panel, was im "BorderLayout.CENTER" des entprechenden Dialogs angezeigt werden soll.
  * Merke: Die Buttons OK / Cancel werden durch die DialogBox-Extended-Klasse in den BorderLayout.SOUTH der Dialogbox gesetzt.
  * 
@@ -992,7 +996,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				}
 				
 				//#### abstracte - Method aus SwingWorker
-				public Object construct() {
+				public Object construct(){
 					try{
 						ProgramPageWebUploadOVPN objProgWebPageUpload = new ProgramPageWebUploadOVPN(objKernel, this.panel, this.saFlag4Program);
 						
@@ -1014,6 +1018,9 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 						System.out.println(ez.getDetailAllLast());
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
 					}
+//					catch (JSchException jsche) {
+//						System.out.println(jsche.getMessage());
+//					}
 					return "all done";
 				}
 				
