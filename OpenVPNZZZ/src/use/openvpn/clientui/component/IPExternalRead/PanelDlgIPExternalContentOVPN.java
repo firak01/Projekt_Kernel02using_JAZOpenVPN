@@ -174,7 +174,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 				//FormLayout layout = new FormLayout(
 				//		"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
 				//		"5dlu, center:10dlu, 5dlu"); 
-												
+				//this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
+				//CellConstraints cc = new CellConstraints();
+				//...		
+				//this.createRowIpRouter(this, cc, 1, sIpRouter);							
+				//...
+				
 				RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
 				listReturn.add(rs1);
 				

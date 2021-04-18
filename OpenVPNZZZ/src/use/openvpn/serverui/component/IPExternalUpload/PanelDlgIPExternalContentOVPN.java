@@ -2,6 +2,8 @@ package use.openvpn.serverui.component.IPExternalUpload;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,16 +25,21 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelLogZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
+import basic.zKernel.flag.IFlagUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import basic.zKernelUI.component.KernelJPanelFormLayoutedZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.Sizes;
 
 import custom.zKernel.LogZZZ;
 
@@ -46,7 +53,7 @@ import com.jcraft.jsch.JSchException;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ implements IKernelModuleZZZ, IKernelProgramZZZ{	
+public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ implements IKernelProgramZZZ{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -124,6 +131,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 				
+		TODOGOON; //20210419 Übertrage das nach public ArrayList<RowSpec> buildRowSpecs() {
 		this.createRowIpRouter(this, cc, 1, sIpRouter);							
 		this.createRowGeneratePage(this, cc, 2, "Generate page");
 		this.createRowIpLocal(this, cc, 3, sIpLocal);
@@ -304,6 +312,36 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelCascadedZZZ impl
 		}//end main;
 		return bReturn;
 	}
+	
+	
+	//#### Interface IFormLayoutUserZZZ
+	public ColumnSpec buildColumnSpecGap() {
+		ColumnSpec cs = new ColumnSpec(Sizes.dluX(5));
+		return cs;
+	}
+
+	public RowSpec buildRowSpecGap() {
+		RowSpec rs = new RowSpec(Sizes.dluX(5));
+		return rs;
+	}
+
+
+	@Override
+	public ArrayList<RowSpec> buildRowSpecs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public ArrayList<ColumnSpec> buildColumnSpecs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean fillRowContent(CellConstraints cc, int iRow) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 		
 		
 //		#######################################
@@ -1062,6 +1100,6 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				
 			}
 			
-	}//End class ...KErnelActionCascaded....			
+	}//End class ...KErnelActionCascaded....											
 }
 
