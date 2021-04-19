@@ -131,7 +131,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 				
-		TODOGOON; //20210419 Übertrage das nach public ArrayList<RowSpec> buildRowSpecs() {
+		//TODOGOON; //20210419 Übertrage das nach public ArrayList<RowSpec> buildRowSpecs() {
 		this.createRowIpRouter(this, cc, 1, sIpRouter);							
 		this.createRowGeneratePage(this, cc, 2, "Generate page");
 		this.createRowIpLocal(this, cc, 3, sIpLocal);
