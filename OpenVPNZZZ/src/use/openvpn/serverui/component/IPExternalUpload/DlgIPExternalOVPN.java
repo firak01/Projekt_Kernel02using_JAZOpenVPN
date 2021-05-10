@@ -9,6 +9,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import custom.zKernelUI.component.PanelDialogContentEmptyZZZ;
 
 /**
  * @author 0823
@@ -56,8 +57,9 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelNavigator(){
-		return null;
+	public KernelJPanelCascadedZZZ getPanelNavigator() throws ExceptionZZZ{
+		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
+		return panelNavigator;
 	}
 	
 	

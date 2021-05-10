@@ -60,7 +60,7 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelNavigator() throws ExceptionZZZ {
+	public KernelJPanelCascadedZZZ getPanelNavigator() throws ExceptionZZZ {					
 		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
 		return panelNavigator;
 	}
