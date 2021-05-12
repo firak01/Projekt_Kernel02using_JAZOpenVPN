@@ -47,8 +47,7 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelButton() throws ExceptionZZZ{
-		//PanelDlgIPExternalButtonAlternativeOVPN panelButton = new PanelDlgIPExternalButtonAlternativeOVPN(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable());
+	public KernelJPanelCascadedZZZ getPanelButton() throws ExceptionZZZ{		
 		PanelDlgIPExternalButtonAlternativeOVPN panelButton = new PanelDlgIPExternalButtonAlternativeOVPN(this.getKernelObject(), this, this.isButtonOKAvailable(), this.isButtonCancelAvailable(),this.isButtonCloseAvailable());
 		return panelButton;
 	}

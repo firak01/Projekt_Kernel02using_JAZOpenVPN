@@ -15,9 +15,7 @@ import custom.zKernelUI.component.PanelDialogContentEmptyZZZ;
  * @author 0823
  *
  */
-public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
-	PanelDlgIPExternalContentOVPN panelContent = null;
-	PanelDlgIPExternalButtonAlternativeVIA panelButton = null;
+public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {	
 	
 	/**
 	 * @param owner
@@ -27,7 +25,21 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	 */
 	public DlgIPExternalOVPN(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner, HashMap<String, Boolean> hmFlag) throws ExceptionZZZ {		
 		super(objKernel, frameOwner, false, hmFlag);  //true, d.h. modal, geht leider nur im Konstruktor zu �bergeben, weil JDialog diesen Parameter im Konstruktor braucht und Super(...) kann keinen Code beinhalten, der auf eigene Properties etc. zugreift.
+		DlgIPExternalOVPN_();		
 	}
+	
+	private boolean DlgIPExternalOVPN_() throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			
+			PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
+			this.setPanelContent(panelContent);
+			
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
+	
 	public boolean isCentered(){
 		return false;
 	}	
@@ -47,18 +59,20 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 		return null; //Damit gibt es im Dialog nur die Standardbuttons.
 	}
 	
+	/* (non-Javadoc)
+	 * @see basic.zKernelUI.component.KernelJDialogExtendedZZZ#getPanelContent()
+	 */
 	@Override
-	public KernelJPanelCascadedZZZ getPanelContent() throws ExceptionZZZ{
-		if(this.panelContent==null) {
-			PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
-			this.panelContent=panelContent;
-		}
-		return this.panelContent;
+	public KernelJPanelCascadedZZZ getPanelContent() throws ExceptionZZZ{				
+		PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
+		this.setPanelContent(panelContent);		
+		return panelContent;
 	}
 	
 	@Override
 	public KernelJPanelCascadedZZZ getPanelNavigator() throws ExceptionZZZ{
 		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
+		this.setPanelNavigator(panelNavigator);
 		return panelNavigator;
 	}
 	
