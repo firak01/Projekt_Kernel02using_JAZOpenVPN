@@ -117,6 +117,10 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		
 		//##################################################################
 		//### Definition des Masken UIs
+		
+		//Hiermit dann erst die Werte füllen.
+		this.initFormLayoutContent();
+		
 		//###
 		//Diese einfache Maske besteht aus 5 Zeilen und 6 Spalten. 
 		//Es gibt außen einen Rand von jeweils einer Spalte/Zeile
@@ -331,11 +335,54 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		// TODO Auto-generated method stub
 		return null;
 	}
+//	@Override
+//	public ArrayList<ColumnSpec> buildColumnSpecs() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	@Override
 	public ArrayList<ColumnSpec> buildColumnSpecs() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<ColumnSpec>listReturn=new ArrayList<ColumnSpec>();
+		main:{
+			//ColumnSpec cs = ColumnSpec.decode("5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu");
+			
+			//##################################################################
+			//### Definition des Masken UIs
+			//###
+			//Diese einfache Maske besteht nur aus 1 Zeile und 4 Spalten. 
+			//Es gibt außen einen Rand von jeweils einer Spalte/Zeile
+			//Merke: gibt man pref an, so bewirkt dies, das die Spalte beim ver�ndern der Fenstergröße nicht angepasst wird, auch wenn grow dahinter steht.
+			
+			//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
+			//zweiter Parameter sind die Zeilen/Rows (hier:  drei), Merke: Wenn eine feste L�nge k�rzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
+			//FormLayout layout = new FormLayout(
+			//		"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
+			//		"5dlu, center:10dlu, 5dlu"); 
+			
+			ColumnSpec csGap = this.buildColumnSpecGap();
+			listReturn.add(csGap);
+			
+			ColumnSpec cs1 = new ColumnSpec(ColumnSpec.RIGHT, Sizes.dluX(100), 0.5 );
+			listReturn.add(cs1);
+			listReturn.add(csGap);
+							
+			ColumnSpec cs2 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5);
+			listReturn.add(cs2);
+			
+			listReturn.add(csGap);
+			
+			ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(100), 0.5 );
+			listReturn.add(cs3);
+			listReturn.add(csGap);
+			
+//			ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(30), 0.5 );
+//			listReturn.add(cs4);				
+//			listReturn.add(csGap);
+			
+		}//end main
+		return listReturn;			
 	}
+	
 	@Override
 	public boolean fillRowContent(CellConstraints cc, int iRow) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
