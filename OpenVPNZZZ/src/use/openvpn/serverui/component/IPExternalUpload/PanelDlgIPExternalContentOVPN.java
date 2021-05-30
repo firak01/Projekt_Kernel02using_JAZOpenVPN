@@ -118,6 +118,11 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		//##################################################################
 		//### Definition des Masken UIs
 		
+		TODOGOON; //20210529: .fillRowContent() aufbauen wie im Client.
+		          //Dazu untenstehnden Constraint - String implemnetieren in 
+					//public ArrayList<RowSpec> buildRowSpecs() {		
+					//public ArrayList<ColumnSpec> buildColumnSpecs() {
+		
 		//Hiermit dann erst die Werte füllen.
 		this.initFormLayoutContent();
 		
@@ -135,7 +140,6 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
 		CellConstraints cc = new CellConstraints();
 				
-		//TODOGOON; //20210419 Übertrage das nach public ArrayList<RowSpec> buildRowSpecs() {
 		this.createRowIpRouter(this, cc, 1, sIpRouter);							
 		this.createRowGeneratePage(this, cc, 2, "Generate page");
 		this.createRowIpLocal(this, cc, 3, sIpLocal);
@@ -329,17 +333,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		return rs;
 	}
 
-
 	@Override
 	public ArrayList<RowSpec> buildRowSpecs() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-//	@Override
-//	public ArrayList<ColumnSpec> buildColumnSpecs() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+
 	@Override
 	public ArrayList<ColumnSpec> buildColumnSpecs() {
 		ArrayList<ColumnSpec>listReturn=new ArrayList<ColumnSpec>();

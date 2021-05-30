@@ -32,8 +32,8 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 		boolean bReturn = false;
 		main:{
 			
-			PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
-			this.setPanelContent(panelContent);
+			//PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
+			//this.setPanelContent(panelContent);
 			
 			bReturn = true;
 		}//end main:
@@ -55,7 +55,7 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelButton(){
+	public KernelJPanelCascadedZZZ createPanelButton(){
 		return null; //Damit gibt es im Dialog nur die Standardbuttons.
 	}
 	
@@ -63,16 +63,14 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	 * @see basic.zKernelUI.component.KernelJDialogExtendedZZZ#getPanelContent()
 	 */
 	@Override
-	public KernelJPanelCascadedZZZ getPanelContent() throws ExceptionZZZ{				
-		PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
-		this.setPanelContent(panelContent);		
+	public KernelJPanelCascadedZZZ createPanelContent() throws ExceptionZZZ{				
+		PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);			
 		return panelContent;
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelNavigator() throws ExceptionZZZ{
-		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
-		this.setPanelNavigator(panelNavigator);
+	public KernelJPanelCascadedZZZ createPanelNavigator() throws ExceptionZZZ{
+		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);		
 		return panelNavigator;
 	}
 	

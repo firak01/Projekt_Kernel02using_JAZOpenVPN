@@ -54,19 +54,19 @@ public class DlgAdjustmentOVPN extends KernelJDialogExtendedZZZ {
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelButton() throws ExceptionZZZ{
+	public KernelJPanelCascadedZZZ createPanelButton() throws ExceptionZZZ{
 		PanelDialogContentEmptyZZZ panelButton = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
 		return panelButton;
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelContent() throws ExceptionZZZ{
+	public KernelJPanelCascadedZZZ createPanelContent() throws ExceptionZZZ{
 		PanelDlgAdjustmentContentOVPN panelContent = new PanelDlgAdjustmentContentOVPN(this.getKernelObject(), this);
 		return panelContent;
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ getPanelNavigator() throws ExceptionZZZ {
+	public KernelJPanelCascadedZZZ createPanelNavigator() throws ExceptionZZZ {
 		PanelDlgAdjustmentNavigatorOVPN panelNavigator = new PanelDlgAdjustmentNavigatorOVPN(this.getKernelObject(), this);
 		return panelNavigator;
 	}

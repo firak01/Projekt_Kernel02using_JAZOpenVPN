@@ -72,7 +72,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			
 			//Hiermit dann erst die Werte füllen.
 			this.initFormLayoutContent();
-			
+						
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
 			ez.printStackTrace();
