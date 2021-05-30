@@ -73,80 +73,10 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			ExceptionZZZ ez = new ExceptionZZZ("Flag is not available '" + stemp + "'. Maybe an interface for this flag is not implemented", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
 		}
-		
-		//#############################################################################################
-		//### Auslesen des bisher verwendeten ini-Eintrags. 
-		//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
-		//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
-		String sIp = "";
-				
-		//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
-		String sProgram; String sModule;
-		sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleZZZ)this);
-		if(StringZZZ.isEmpty(sModule)){
-			ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		
-		sProgram = this.getProgramName(); //Das sollte der Name des Panels selbst sein!!!
-		if(StringZZZ.isEmpty(sProgram)){
-			ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-
-		//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
-		IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
-		sIp = objEntry.getValue();
-				
-		//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
-		if(StringZZZ.isEmpty(sIp)){
-			sIp = "Enter or refresh";
-		}
-		
-		//- - - - - 
-		String sIpLocal="";
-		if(StringZZZ.isEmpty(sIpLocal)){
-			sIpLocal = "Enter or refresh";
-		}
-		
-		//- - - - - 
-		String sIpRouter="";
-		if(StringZZZ.isEmpty(sIpRouter)){
-			sIpRouter = "Enter or refresh";
-		}
-		
+						
 		//##################################################################
-		//### Definition des Masken UIs
-		
-		TODOGOON; //20210529: .fillRowContent() aufbauen wie im Client.
-		          //Dazu untenstehnden Constraint - String implemnetieren in 
-					//public ArrayList<RowSpec> buildRowSpecs() {		
-					//public ArrayList<ColumnSpec> buildColumnSpecs() {
-		
-		//Hiermit dann erst die Werte füllen.
-		this.initFormLayoutContent();
-		
-		//###
-		//Diese einfache Maske besteht aus 5 Zeilen und 6 Spalten. 
-		//Es gibt außen einen Rand von jeweils einer Spalte/Zeile
-		//Merke: gibt man pref an, so bewirkt dies, das die Spalte beim veraendern der Fenstergröße nicht angepasst wird, auch wenn grow dahinter steht.
-		
-		//Maske für die Serverkonfiguration, unterscheidet sich von der Maske für die Clientkonfiguration.
-		//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
-		//zweiter Parameter sind die Zeilen/Rows (hier:  drei, immer mit "kleiner Zeile für zusätzlichen Abstand"), Merke: Wenn eine feste Laenge kuerzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
-		FormLayout layout = new FormLayout(
-				"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu, center:pref:grow(0.5),5dlu",         
-				"5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu"); 				 
-		this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
-		CellConstraints cc = new CellConstraints();
-				
-		this.createRowIpRouter(this, cc, 1, sIpRouter);							
-		this.createRowGeneratePage(this, cc, 2, "Generate page");
-		this.createRowIpLocal(this, cc, 3, sIpLocal);
-		this.createRowUploadPage(this, cc, 4, "Upload generated page");
-		this.createRowIpWeb(this, cc, 5, sIp);
-
-	
+		//### Definition des Masken UIs	
+		this.initFormLayoutContent(); 		//Hiermit dann erst die Werte füllen.
 		
 		/* Das funktioniert nicht. Funktionalit�t des JGoodies-Framework. Warum ???
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -334,9 +264,88 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	}
 
 	@Override
-	public ArrayList<RowSpec> buildRowSpecs() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<RowSpec> buildRowSpecs() {		
+		//"5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu"
+		ArrayList<RowSpec>listReturn=new ArrayList<RowSpec>();
+		main:{
+			//geht nicht RowSpec rs = RowSpec.decode("5dlu, center:10dlu, 5dlu");
+			
+			
+			//##################################################################
+			//### Definition des Masken UIs			
+			//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
+			//zweiter Parameter sind die Zeilen/Rows (hier:  7), Merke: Wenn eine feste L�nge k�rzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
+			//FormLayout layout = new FormLayout(
+			//		"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu, center:pref:grow(0.5),5dlu",         
+			//		"5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu"); 				 			
+			//this.setLayout(layout);              //!!! wichtig: Das layout muss dem Panel zugewiesen werden BEVOR mit constraints die Componenten positioniert werden.
+			//CellConstraints cc = new CellConstraints();
+			//...		
+			//this.createRowIpRouter(this, cc, 1, sIpRouter);							
+			//...
+			
+			RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			listReturn.add(rs1);
+			
+			RowSpec rsGap1 = this.buildRowSpecGap();
+			listReturn.add(rsGap1);	
+			
+			//++++++++++
+			RowSpec rs2 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			listReturn.add(rs2);
+			
+			RowSpec rsGap2 = this.buildRowSpecGap();
+			listReturn.add(rsGap2);
+			
+			
+			//++++++++++
+			RowSpec rs3 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			listReturn.add(rs3);
+			
+			RowSpec rsGap3 = this.buildRowSpecGap();
+			listReturn.add(rsGap3);
+			
+			
+			//++++++++++
+			RowSpec rs4 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			listReturn.add(rs4);
+			
+			RowSpec rsGap4 = this.buildRowSpecGap();
+			listReturn.add(rsGap4);
+			
+			//++++++++++
+			RowSpec rs5 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			listReturn.add(rs5);
+			
+			RowSpec rsGap5 = this.buildRowSpecGap();
+			listReturn.add(rsGap5);
+			
+			//++++++++++
+//			RowSpec rs6 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+//			listReturn.add(rs6);
+//			
+//			RowSpec rsGap6 = this.buildRowSpecGap();
+//			listReturn.add(rsGap6);
+//			
+//			
+//			//++++++++++
+//			RowSpec rs7 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+//			listReturn.add(rs7);
+//			
+//			RowSpec rsGap7 = this.buildRowSpecGap();
+//			listReturn.add(rsGap7);
+//			
+//			//++++++++++
+//			RowSpec rs8 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+//			listReturn.add(rs8);
+//			
+//			RowSpec rsGap8 = this.buildRowSpecGap();
+//			listReturn.add(rsGap8);
+			
+			
+		}//end main:
+		return listReturn;
+		
 	}
 
 	@Override
@@ -355,8 +364,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			//erster Parameter sind die Spalten/Columns (hier: vier 5dlu), als Komma getrennte Eintraege. .
 			//zweiter Parameter sind die Zeilen/Rows (hier:  drei), Merke: Wenn eine feste L�nge k�rzer ist als der Inhalt, dann wird der Inhalt als "..." dargestellt
 			//FormLayout layout = new FormLayout(
-			//		"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu",  
-			//		"5dlu, center:10dlu, 5dlu"); 
+			//		"5dlu, right:pref:grow(0.5), 5dlu:grow(0.5), left:50dlu:grow(0.5), 5dlu, center:pref:grow(0.5),5dlu, center:pref:grow(0.5),5dlu",         
+			//		"5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu"); 				 			
 			
 			ColumnSpec csGap = this.buildColumnSpecGap();
 			listReturn.add(csGap);
@@ -374,9 +383,9 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			listReturn.add(cs3);
 			listReturn.add(csGap);
 			
-//			ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(30), 0.5 );
-//			listReturn.add(cs4);				
-//			listReturn.add(csGap);
+			ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(30), 0.5 );
+			listReturn.add(cs4);				
+			listReturn.add(csGap);
 			
 		}//end main
 		return listReturn;			
@@ -384,8 +393,84 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	
 	@Override
 	public boolean fillRowContent(CellConstraints cc, int iRow) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
+		boolean bReturn = false;
+		main:{
+			
+			//#############################################################################################
+			//### Auslesen des bisher verwendeten ini-Eintrags. 
+			//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
+			//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
+			String sIp = "";
+					
+			//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
+			String sProgram; String sModule;
+			sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleZZZ)this);
+			if(StringZZZ.isEmpty(sModule)){
+				ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			
+			sProgram = this.getProgramName(); //Das sollte der Name des Panels selbst sein!!!
+			if(StringZZZ.isEmpty(sProgram)){
+				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+
+			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
+			sIp = objEntry.getValue();
+					
+			//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
+			if(StringZZZ.isEmpty(sIp)){
+				sIp = "Enter or refresh";
+			}
+			
+			//- - - - - 
+			String sIpLocal="";
+			if(StringZZZ.isEmpty(sIpLocal)){
+				sIpLocal = "Enter or refresh";
+			}
+			
+			//- - - - - 
+			String sIpRouter="";
+			if(StringZZZ.isEmpty(sIpRouter)){
+				sIpRouter = "Enter or refresh";
+			}
+			
+		
+			switch(iRow) {
+			case 1:
+				this.createRowIpRouter(this, cc, 1, sIpRouter);			
+				break;
+			case 2:
+				this.createRowGeneratePage(this, cc, 2, "Generate page");			
+				break;
+			case 3:
+				this.createRowIpLocal(this, cc, 3, sIpLocal);			
+				break;
+			case 4:
+				this.createRowUploadPage(this, cc, 4, "Upload generated page");			
+				break;
+			case 5:
+				this.createRowIpWeb(this, cc, 5, sIp);
+				break;	
+			default:
+				//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
+				//Rückgabewert false ist dann der Abbruch der Schleife
+				
+//				ExceptionZZZ ez = new ExceptionZZZ("Row not defined for " + iRow + "'", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+				
+				bReturn = false;
+				break main;
+			}
+			
+			bReturn = true;
+		}
+		return bReturn;
+
+
+
 	}
 	
 		
@@ -397,6 +482,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			super(objKernel, panelParent);			
 		}
 		
+		@Override
 		public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 //			try {
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IpWeb2ini'");
@@ -415,10 +501,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			return true;
 		}
 
+		@Override
 		public boolean actionPerformQueryCustom(ActionEvent ae) throws ExceptionZZZ {
 			return true;
 		}
 
+		@Override
 		public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 		}			 							
 		
@@ -487,8 +575,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 
 		} //End Class MySwingWorker
 
+		@Override
 		public void actionPerformCustomOnError(ActionEvent ae, ExceptionZZZ ez) {
-			// TODO Auto-generated method stub
 			
 		}
 		
@@ -502,6 +590,7 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 		super(objKernel, panelParent);			
 	}
 	
+	@Override
 	public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 //		try {
 		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IpWeb2ini'");
@@ -520,10 +609,12 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 		return true;
 	}
 
+	@Override
 	public boolean actionPerformQueryCustom(ActionEvent ae) throws ExceptionZZZ {
 		return true;
 	}
 
+	@Override
 	public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 	}			 							
 	
@@ -595,8 +686,8 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 
 	} //End Class MySwingWorker
 
+	@Override
 	public void actionPerformCustomOnError(ActionEvent ae, ExceptionZZZ ez) {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -611,6 +702,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 		super(objKernel, panelParent);			
 	}
 	
+	@Override
 	public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 //		try {
 		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IpLocal2ini'");
@@ -629,10 +721,12 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 		return true;
 	}
 
+	@Override
 	public boolean actionPerformQueryCustom(ActionEvent ae) throws ExceptionZZZ {
 		return true;
 	}
 
+	@Override
 	public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 	}			 							
 	
@@ -702,8 +796,8 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 
 	} //End Class MySwingWorker
 
+	@Override
 	public void actionPerformCustomOnError(ActionEvent ae, ExceptionZZZ ez) {
-		// TODO Auto-generated method stub
 		
 	}
 	

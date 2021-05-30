@@ -150,7 +150,9 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 					JButton buttonReadIPExternal = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
 					ActionIPWebRefreshOVPN actionIPRefresh = new ActionIPWebRefreshOVPN(objKernel, this);
 					buttonReadIPExternal.addActionListener(actionIPRefresh);			
-					this.add(buttonReadIPExternal, cc.xy(6,iRowUsed));				
+					this.add(buttonReadIPExternal, cc.xy(6,iRowUsed));
+					
+					bReturn = true;
 			}//end main;
 			return bReturn;
 		}
