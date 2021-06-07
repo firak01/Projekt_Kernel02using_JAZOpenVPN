@@ -375,8 +375,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			listReturn.add(csGap);
 							
 			ColumnSpec cs2 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5);
-			listReturn.add(cs2);
-			
+			listReturn.add(cs2);			
 			listReturn.add(csGap);
 			
 			ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(100), 0.5 );
