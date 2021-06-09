@@ -31,10 +31,7 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 	private boolean DlgIPExternalOVPN_() throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			
-			//PanelDlgIPExternalContentOVPN panelContent = new PanelDlgIPExternalContentOVPN(this.getKernelObject(), this);
-			//this.setPanelContent(panelContent);
-			
+			//Panels werden über die createPanelContent(), etc. Methoden an die passende Stelle eingebunden.			
 			bReturn = true;
 		}//end main:
 		return bReturn;
