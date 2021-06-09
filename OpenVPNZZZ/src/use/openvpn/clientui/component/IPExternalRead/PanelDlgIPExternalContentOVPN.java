@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import use.openvpn.clientui.component.IPExternalRead.ProgramIPContentOVPN;
+import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpWebOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -116,7 +117,29 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 					sIp = "Enter or refresh";
 				}
 				
+				switch(iRow) {				
+				case 1:
+					this.createRowIpWeb(this, cc, 1, sIp);
+					break;	
+				default:
+					//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
+					//Rückgabewert false ist dann der Abbruch der Schleife
+					
+//					ExceptionZZZ ez = new ExceptionZZZ("Row not defined for " + iRow + "'", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
+//					throw ez;
+					
+					bReturn = false;
+					break main;
+				}
 				
+				bReturn = true;
+			}//end main;
+			return bReturn;
+		}
+		
+		private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
 				//############################################
 				int iRowUsed = this.computeContentRowNumberUsed(iRow); //Darin wird dann die RowNumber unter Berücksichtigung "DebugZeile" Verwenden oder nicht errechnet.
 																	
@@ -132,7 +155,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 					//label.setHorizontalAlignment(JTextField.LEFT);
 					this.add(label, cc.xy(2,iRowUsed));
 																
-					JTextField textfieldIPExternal = new JTextField(sIp, 20);
+					JTextField textfieldIPExternal = new JTextField(sDefaultValue, 20);
 					textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
 										
 					JTextFieldHelperZZZ.markAndFocus(textfieldIPExternal); //Damit werden die Cursorpostionen wieder verändert.
@@ -152,7 +175,9 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 					buttonReadIPExternal.addActionListener(actionIPRefresh);			
 					this.add(buttonReadIPExternal, cc.xy(6,iRowUsed));
 					
-					bReturn = true;
+				
+				//########################				
+				bReturn = true;
 			}//end main;
 			return bReturn;
 		}

@@ -124,6 +124,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
 			panel.add(buttonReadIPWeb, cc.xy(8,iRow*2));
 			
+			bReturn = true;
 		}//end main;
 		return bReturn;
 	}
@@ -149,6 +150,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			buttonUploadIPPage.addActionListener(actionUploadIPPage);
 			panel.add(buttonUploadIPPage, cc.xy(8,iRow*2));						
 			
+			bReturn = true;
 		}//end main;
 		return bReturn;
 	}
@@ -183,6 +185,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			buttonReadIPLocal.addActionListener(actionIpRefreshLocal);
 			panel.add(buttonReadIPLocal, cc.xy(8,iRow*2));
 			
+			bReturn = true;
 		}//end main;
 		return bReturn;
 	}
@@ -201,14 +204,13 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
 			panel.setComponent(IConstantProgramPageWebCreateOVPN.sCOMPONENT_TEXTFIELD, textfieldWebCreate);      
-			
-			
-			
+									
 			JButton buttonGenerateIPPage = new JButton(IConstantProgramPageWebCreateOVPN.sLABEL_BUTTON);
 			ActionPageWebCreateOVPN actionGenerateIPPage = new ActionPageWebCreateOVPN(objKernel, this);
 			buttonGenerateIPPage.addActionListener(actionGenerateIPPage);
 			panel.add(buttonGenerateIPPage, cc.xy(8,iRow*2));
 			
+			bReturn = true;
 		}//end main;
 		return bReturn;
 	}
@@ -242,9 +244,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			ActionIPWebRefreshOVPN actionIPRefreshRouter = new ActionIPWebRefreshOVPN(objKernel, this);
 			buttonReadIPRouter.addActionListener(actionIPRefreshRouter);
 			panel.add(buttonReadIPRouter, cc.xy(8,iRow*2));
-			
-			
-			
+						
+			bReturn = true;
 		}//end main;
 		return bReturn;
 	}
