@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import use.openvpn.clientui.component.IPExternalRead.ProgramIPContentOVPN;
+import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpWebOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -65,39 +66,21 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
 			btemp = this.setFlagZ(stemp, true);
 			if(btemp==false){
-				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+				ExceptionZZZ ez = new ExceptionZZZ( "Flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
 			}
 			
 			stemp = IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name();
 			btemp = this.setFlagZ(stemp, true);
 			if(btemp==false){
-				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+				ExceptionZZZ ez = new ExceptionZZZ( "Flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
 			}
 			
-			//#############################################################################################
-			//### Auslesen des bisher verwendeten ini-Eintrags. 
-			//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
-			//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
-			String sIp = "";
-					
-			//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
-			String sProgram; String sModule;
-			sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleUserZZZ) this);
-			if(StringZZZ.isEmpty(sModule)){
-				ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}
-			
-			sProgram = this.getProgramName();
-			if(StringZZZ.isEmpty(sProgram)){
-				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}
-			
-			this.initFormLayoutContent();
-			
+			//##################################################################
+			//### Definition des Masken UIs	
+			this.initFormLayoutContent(); 		//Hiermit dann erst die Werte füllen.
+						
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
 			ez.printStackTrace();
@@ -107,22 +90,121 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 	
 			
 	//###################################################	
-	//Interface IFormLayoutUserZZZ		
+	//Interface IFormLayoutUserZZZ				
 	@Override
-	public boolean fillRowContent(CellConstraints cc, int iRow) {
+	public boolean fillRowContent(CellConstraints cc, int iRow) throws ExceptionZZZ {
 		boolean bReturn = false;
-		main:{			
+		main:{
+			
+			//#############################################################################################
+			//### Auslesen des bisher verwendeten ini-Eintrags. 
+			//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
+			//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
+			String sIp = "";
+					
+			//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
+			String sProgram; String sModule;
+			sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleZZZ)this);
+			if(StringZZZ.isEmpty(sModule)){
+				ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			
+			sProgram = this.getProgramName(); //Das sollte der Name des Panels selbst sein!!!
+			if(StringZZZ.isEmpty(sProgram)){
+				ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+
+			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
+//			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
+//			sIp = objEntry.getValue();
+					
+			switch(iRow) {
+			case 1:
+				this.createRowAdjustmentNavigator(this, cc, 1, "TESTDEFAULTVALUE");			
+				break;
+//			case 2:
+//				this.createRowGeneratePage(this, cc, 2, "Generate page");			
+//				break;
+//			case 3:
+//				this.createRowIpLocal(this, cc, 3, sIpLocal);			
+//				break;
+//			case 4:
+//				this.createRowUploadPage(this, cc, 4, "Upload generated page");			
+//				break;
+//			case 5:
+//				this.createRowIpWeb(this, cc, 5, sIp);
+//				break;	
+			default:
+				//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
+				//Rückgabewert false ist dann der Abbruch der Schleife				
+				bReturn = false;
+				break main;
+			}
+			
+			bReturn = true;
+		}
+		return bReturn;
+	}
+	
+	private boolean createRowAdjustmentNavigator(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+												
 			//TODOGOON; //20210412: Der Wert soll ein Modulname sein, aus einem Array.
-			JLabel label = new JLabel("TESTDEFAULTVALUE");
+			JLabel label = new JLabel(sDefaultValue);
 			label.setHorizontalAlignment(JTextField.LEFT);
 			
 			iRow=iRow*2;//wg. der Gap-Zeile
-			int iRowUsed = this.computeContentRowNumberUsed(iRow);			
-			this.add(label, cc.xy(2,iRowUsed));
+			int iRowUsed = this.computeContentRowNumberUsed(iRow);
 			
+			ArrayList<ColumnSpec>listCs=this.getColumnSpecs();														
+			int iColumns = listCs.size();//die DebugZeile geht über alle Spalten hinweg
+			int iStartingColumn = 2; //vorneweg ist noch eine GAP-Spalte
+			
+			//+++++++++++++++
+			int iColumnCurrent = 1;
+			
+			// *2 wg. der "GAP" Spalte
+			int iWidthRemainingCurrent=iColumns-iStartingColumn-((iColumnCurrent-1)*2);
+			this.add(label, cc.xyw(iStartingColumn,iRowUsed,iWidthRemainingCurrent));
+			
+//			JLabel labelRouter = new JLabel(IConstantProgramIpWebOVPN.sLABEL_TEXTFIELD);
+//			panel.add(labelRouter, cc.xy(2,iRow*2));
+			
+//			JTextField textfieldIPExternal = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+//			textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
+//			textfieldIPExternal.setCaretPosition(0);
+			
+			//Dimension dim = new Dimension(10, 15);
+			//textfield.setPreferredSize(dim);
+//			panel.add(textfieldIPExternal, cc.xy(4,iRow*2));
+			
+			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
+			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
+//			panel.setComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, textfieldIPExternal);      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			
+			//GGFs Buttons zur Verfügung stellen.....
+//			JButton buttonIpWeb2ini = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON_TO_INI);
+//			ActionIpWeb2iniOVPN actionIpWeb2iniOVPN = new ActionIpWeb2iniOVPN(objKernel, this);
+//			buttonIpWeb2ini.addActionListener(actionIpWeb2iniOVPN);
+//			panel.add(buttonIpWeb2ini, cc.xy(6,iRow*2));
+//				
+//			//Merke: Der Server baut die Internetseite basierend auf dem Ini Eintrag.
+//			//       Der letzte Eintrag kommt dann aus der aktuellen Web-Version.
+//			JButton buttonReadIPWeb = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
+//			ActionIPWebRefreshOVPN actionIPRefreshWeb = new ActionIPWebRefreshOVPN(objKernel, this);
+//			buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
+//			panel.add(buttonReadIPWeb, cc.xy(8,iRow*2));
+//			
+			bReturn = true;
 		}//end main;
 		return bReturn;
 	}
+	
 
 	@Override
 	public ArrayList<RowSpec> buildRowSpecs() {
@@ -153,12 +235,20 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 //			ColumnSpec cs2 = new ColumnSpec(ColumnSpec.DEFAULT, Sizes.dluX(5), 0.5);
 //			listReturn.add(cs2);
 			
-			ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5 );
+			ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(10), 0);//DAS IST DIE SPALTE FÜR DEN BUTTON - KEIN WACHSTUM, ALSO 0
 			listReturn.add(cs3);
+			listReturn.add(csGap); 
+			
+			ColumnSpec cs4 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(100), 0.5 );
+			listReturn.add(cs4);
 			listReturn.add(csGap);
 			
-			ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(5), 0.5 );
-			listReturn.add(cs3);
+			ColumnSpec cs5 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5 );
+			listReturn.add(cs5);
+			listReturn.add(csGap);
+			
+			ColumnSpec cs6 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5 );
+			listReturn.add(cs6);
 			listReturn.add(csGap);
 			
 		}//end main
