@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 import custom.zKernel.file.ini.FileIniZZZ;
 import use.openvpn.component.AbstractProgramIPContentOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpLocalOVPN;
+import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpWebOVPN;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -57,7 +58,7 @@ public class ProgramIPContentOVPN extends AbstractProgramIPContentOVPN implement
 	* lindhaueradmin; 17.01.2007 12:09:17
 	 */
 	public void updateLabel(String stext){
-		super.updateLabel(sCOMPONENT_TEXTFIELD, stext);
+		super.updateLabel(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);
 	}
 }
 
