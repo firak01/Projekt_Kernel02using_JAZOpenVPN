@@ -97,10 +97,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 		main:{
 			
 			//#############################################################################################
-			//### Auslesen des bisher verwendeten ini-Eintrags. 
-			//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
-			//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
-			String sIp = "";
+			//### Auslesen des verwendeten ini-Eintrags für die Details des Navigators 
 					
 			//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
 			String sProgram; String sModule;
@@ -117,9 +114,12 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			}
 
 			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
-//			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
-//			sIp = objEntry.getValue();
-					
+			TODOGOON;//20210630
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "NavigatorContentJson");
+			String sJson = objEntry.getValue();
+			System.out.println(sJson);
+			
+			
 			switch(iRow) {
 			case 1:
 				this.createRowAdjustmentNavigator(this, cc, 1, "TESTDEFAULTVALUE");			
