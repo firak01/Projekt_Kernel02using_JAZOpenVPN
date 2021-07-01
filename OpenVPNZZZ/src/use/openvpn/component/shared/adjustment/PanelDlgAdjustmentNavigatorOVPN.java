@@ -114,7 +114,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			}
 
 			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
-			TODOGOON;//20210630
+			//TODOGOON;//20210630
 			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "NavigatorContentJson");
 			String sJson = objEntry.getValue();
 			System.out.println(sJson);
