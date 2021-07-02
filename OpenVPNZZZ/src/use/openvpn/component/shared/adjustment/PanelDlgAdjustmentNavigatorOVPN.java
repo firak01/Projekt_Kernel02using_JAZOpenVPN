@@ -119,10 +119,11 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			String sJson = objEntry.getValue();
 			System.out.println(sJson);
 			
+			String sValue = sJson;
 			
 			switch(iRow) {
 			case 1:
-				this.createRowAdjustmentNavigator(this, cc, 1, "TESTDEFAULTVALUE");			
+				this.createRowAdjustmentNavigator(this, cc, 1, sValue);			
 				break;
 //			case 2:
 //				this.createRowGeneratePage(this, cc, 2, "Generate page");			
