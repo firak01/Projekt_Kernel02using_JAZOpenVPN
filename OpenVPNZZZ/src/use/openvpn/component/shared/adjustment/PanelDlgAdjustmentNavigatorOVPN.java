@@ -68,14 +68,18 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			if(btemp==false){
 				ExceptionZZZ ez = new ExceptionZZZ( "Flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
+			}else {
+				this.resetProgramUsed();
 			}
 			
-			stemp = IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name();
-			btemp = this.setFlagZ(stemp, true);
-			if(btemp==false){
-				ExceptionZZZ ez = new ExceptionZZZ( "Flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
-				throw ez;		 
-			}
+//			stemp = IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name();
+//			btemp = this.setFlagZ(stemp, true);
+//			if(btemp==false){
+//				ExceptionZZZ ez = new ExceptionZZZ( "Flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+//				throw ez;		 
+//			}else {
+//				this.resetModuleUsed();
+//			}
 			
 			//##################################################################
 			//### Definition des Masken UIs	
@@ -113,7 +117,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 				throw ez;
 			}
 
-			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
+			//DARIN WIRD NACH DEM ALIASNAMEN '....' GESUCHT, UND DER WERT  FÜR 'NavigatorContentJson' geholt.
 			//TODOGOON;//20210630
 			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "NavigatorContentJson");
 			String sJson = objEntry.getValue();
