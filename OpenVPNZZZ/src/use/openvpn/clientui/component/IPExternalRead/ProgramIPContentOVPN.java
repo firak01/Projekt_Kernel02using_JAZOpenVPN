@@ -10,8 +10,7 @@ import javax.swing.SwingUtilities;
 
 import custom.zKernel.file.ini.FileIniZZZ;
 import use.openvpn.component.AbstractProgramIPContentOVPN;
-import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpLocalOVPN;
-import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpWebOVPN;
+import use.openvpn.clientui.component.IPExternalRead.IConstantProgramIpWebOVPN;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zBasic.ExceptionZZZ;

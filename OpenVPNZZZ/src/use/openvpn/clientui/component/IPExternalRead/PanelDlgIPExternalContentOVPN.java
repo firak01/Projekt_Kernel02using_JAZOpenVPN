@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import use.openvpn.clientui.component.IPExternalRead.ProgramIPContentOVPN;
-import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpWebOVPN;
+import use.openvpn.clientui.component.IPExternalRead.IConstantProgramIpWebOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
