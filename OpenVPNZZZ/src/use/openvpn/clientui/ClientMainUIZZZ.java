@@ -2,6 +2,7 @@ package use.openvpn.clientui;
 
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.clientui.ConfigOVPN;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
@@ -29,7 +30,8 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 		main:{						
 			try {
 				//Parameter aus args auslesen
-				ConfigOVPN objConfig = new ConfigOVPN(saArg, "useFormula");
+				String[]saFlag = {"useExpression","useFormula"};
+				ConfigOVPN objConfig = new ConfigOVPN(saArg, saFlag);
 				this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man über die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 				
 				//NUN DAS BACKEND-Handlebar machen

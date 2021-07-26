@@ -32,7 +32,8 @@ public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 				main:{						
 					try {
 //						Parameter aus args auslesen
-						ConfigOVPN objConfig = new ConfigOVPN(saArg, "useFormula");
+						String[]saFlag = {"useExpression","useFormula"};
+						ConfigOVPN objConfig = new ConfigOVPN(saArg, saFlag);
 						this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man �ber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 
 						//NUN DAS BACKEND-Handlebar machen
