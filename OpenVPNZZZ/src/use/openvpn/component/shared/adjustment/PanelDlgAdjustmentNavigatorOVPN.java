@@ -3,6 +3,7 @@ package use.openvpn.component.shared.adjustment;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,6 +17,7 @@ import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpWebOVPN
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.thread.SwingWorker;
@@ -119,16 +121,34 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 
 			//DARIN WIRD NACH DEM ALIASNAMEN '....' GESUCHT, UND DER WERT  FÜR 'NavigatorContentJson' geholt.
 			//TODOGOON;//20210630
+			String sValue = null;
 			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "NavigatorContentJson");
-			String sJson = objEntry.getValue();
-			System.out.println(sJson);
+			if(!objEntry.hasAnyValue()) break main;
+			if(!objEntry.isJson()) {
+				String sJson = objEntry.getValue();
+				System.out.println(sJson);
+				
+				sValue = sJson;							
+			}else {
+				//Mehrfachwerte, beginne mit dem Wert an der passenden iRow-Indexposition
+				if(objEntry.isJsonArray()) {
+					
+				}else if(objEntry.isJsonMap()) {
+					HashMap<String,String>hm=objEntry.getValueHashMap();
+					
+					//TODOGOON; //20210727 eine HashMapExtended aus der HashMap bauen.
+					HashMapExtendedZZZ<String,String>hmzzz = HashMapExtendedZZZ.toHashMapExtended(hm);
+					sValue = (String) hmzzz.getValueByIndex(iRow-1);
+				}
+			}
+						
+			bReturn = this.createRowAdjustmentNavigator(this, cc, iRow, sValue);			
 			
-			String sValue = sJson;
-			
-			switch(iRow) {
-			case 1:
-				this.createRowAdjustmentNavigator(this, cc, 1, sValue);			
-				break;
+//Fallso die Reihen unterschiedliche Typen wären....
+//			switch(iRow) {
+//			case 1:
+//				this.createRowAdjustmentNavigator(this, cc, iRow, sValue);			
+//				break;
 //			case 2:
 //				this.createRowGeneratePage(this, cc, 2, "Generate page");			
 //				break;
@@ -141,14 +161,14 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 //			case 5:
 //				this.createRowIpWeb(this, cc, 5, sIp);
 //				break;	
-			default:
-				//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
-				//Rückgabewert false ist dann der Abbruch der Schleife				
-				bReturn = false;
-				break main;
-			}
+//			default:
+//				//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
+//				//Rückgabewert false ist dann der Abbruch der Schleife				
+//				bReturn = false;
+//				break main;
+//			}
 			
-			bReturn = true;
+//			bReturn = true;
 		}
 		return bReturn;
 	}
