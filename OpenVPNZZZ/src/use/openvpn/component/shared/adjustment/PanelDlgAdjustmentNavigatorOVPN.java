@@ -125,21 +125,27 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "NavigatorContentJson");
 			if(!objEntry.hasAnyValue()) break main;
 			if(!objEntry.isJson()) {
-				String sJson = objEntry.getValue();
-				System.out.println(sJson);
 				
-				sValue = sJson;							
-			}else {
 				//Mehrfachwerte, beginne mit dem Wert an der passenden iRow-Indexposition
 				if(objEntry.isJsonArray()) {
 					
 				}else if(objEntry.isJsonMap()) {
 					HashMap<String,String>hm=objEntry.getValueHashMap();
+					if(iRow>hm.size()) break main;
+					
+					sValue = hm.toString();
 					
 					//TODOGOON; //20210727 eine HashMapExtended aus der HashMap bauen.
-					HashMapExtendedZZZ<String,String>hmzzz = HashMapExtendedZZZ.toHashMapExtended(hm);
-					sValue = (String) hmzzz.getValueByIndex(iRow-1);
+					//HashMapExtendedZZZ<String,String>hmzzz = HashMapExtendedZZZ.toHashMapExtended(hm);
+					//sValue = (String) hmzzz.getValueByIndex(iRow-1);
+				}else {
+					String sJson = objEntry.getValue();
+					System.out.println(sJson);
+					
+					sValue = sJson;	
 				}
+			}else {
+				sValue = objEntry.getValue();				
 			}
 						
 			bReturn = this.createRowAdjustmentNavigator(this, cc, iRow, sValue);			
