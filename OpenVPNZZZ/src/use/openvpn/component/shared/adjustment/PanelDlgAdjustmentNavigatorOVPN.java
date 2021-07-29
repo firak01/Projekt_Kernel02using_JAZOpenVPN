@@ -128,6 +128,11 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 				
 				//Mehrfachwerte, beginne mit dem Wert an der passenden iRow-Indexposition
 				if(objEntry.isJsonArray()) {
+					ArrayList<String>als=objEntry.getValueArrayList();
+					if(iRow>als.size()) break main;
+					
+					//Todogoon: Natürlich eigentlich die passende indexposition und nicht das ganze Array....
+					sValue = als.toString();
 					
 				}else if(objEntry.isJsonMap()) {
 					HashMap<String,String>hm=objEntry.getValueHashMap();
@@ -138,13 +143,17 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 					//TODOGOON; //20210727 eine HashMapExtended aus der HashMap bauen.
 					//HashMapExtendedZZZ<String,String>hmzzz = HashMapExtendedZZZ.toHashMapExtended(hm);
 					//sValue = (String) hmzzz.getValueByIndex(iRow-1);
-				}else {
+				}else {					
+					if(iRow>1) break main;
+					
 					String sJson = objEntry.getValue();
 					System.out.println(sJson);
 					
 					sValue = sJson;	
 				}
 			}else {
+				if(iRow>1) break main;
+				
 				sValue = objEntry.getValue();				
 			}
 						
