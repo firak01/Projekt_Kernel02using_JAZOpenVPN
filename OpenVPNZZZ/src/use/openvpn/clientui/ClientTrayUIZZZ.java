@@ -254,7 +254,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public boolean unload() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{		
-			//TODO Nat�rlich m�ssen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
+			//TODO Natuerlich muessen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
 			
 			//###### Processe beenden
 			//+++ Vorbereitend den processnamen auslesen

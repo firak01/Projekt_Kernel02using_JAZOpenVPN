@@ -124,7 +124,8 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			String sValue = null;
 			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "NavigatorContentJson");
 			if(!objEntry.hasAnyValue()) break main;
-			if(!objEntry.isJson()) {
+			
+			if(objEntry.isJson()) {
 				
 				//Mehrfachwerte, beginne mit dem Wert an der passenden iRow-Indexposition
 				if(objEntry.isJsonArray()) {
@@ -138,11 +139,14 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 					HashMap<String,String>hm=objEntry.getValueHashMap();
 					if(iRow>hm.size()) break main;
 					
-					sValue = hm.toString();
+					//Das ergibt aber nur einen Eintrag, den Debug-String: sValue = hm.toString();
+				
 					
-					//TODOGOON; //20210727 eine HashMapExtended aus der HashMap bauen.
-					//HashMapExtendedZZZ<String,String>hmzzz = HashMapExtendedZZZ.toHashMapExtended(hm);
-					//sValue = (String) hmzzz.getValueByIndex(iRow-1);
+					//TODOGOON; //20210727 eine HashMapExtended aus der HashMap bauen.									
+					HashMapExtendedZZZ<String,String>hmzzz = HashMapExtendedZZZ.toHashMapExtended(hm);
+					                                // .clone(hm);
+					
+					sValue = (String) hmzzz.getValueByIndex(iRow-1);
 				}else {					
 					if(iRow>1) break main;
 					
