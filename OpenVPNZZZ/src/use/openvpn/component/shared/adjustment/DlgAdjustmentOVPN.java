@@ -67,6 +67,9 @@ public class DlgAdjustmentOVPN extends KernelJDialogExtendedZZZ {
 	
 	@Override
 	public KernelJPanelCascadedZZZ createPanelNavigator() throws ExceptionZZZ {
+		//TODOGOON; //20210731 hier muss das Modell für das Panel erstellt werden und dann im Konstruktor übergeben werden.
+		
+		
 		PanelDlgAdjustmentNavigatorOVPN panelNavigator = new PanelDlgAdjustmentNavigatorOVPN(this.getKernelObject(), this);
 		return panelNavigator;
 	}

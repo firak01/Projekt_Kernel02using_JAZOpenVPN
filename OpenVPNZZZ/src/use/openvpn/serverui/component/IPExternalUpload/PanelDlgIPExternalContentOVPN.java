@@ -78,7 +78,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		//### Definition des Masken UIs	
 		this.initFormLayoutContent(); 		//Hiermit dann erst die Werte füllen.
 		
-		/* Das funktioniert nicht. Funktionalit�t des JGoodies-Framework. Warum ???
+		/* Das funktioniert nicht. Funktionalitaet des JGoodies-Framework. Warum ???
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		builder.addLabel("Externe IP Adresse des Servers");
@@ -1238,6 +1238,6 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				
 			}
 			
-	}//End class ...KErnelActionCascaded....											
+	}//End class ...KErnelActionCascaded....										
 }
 
