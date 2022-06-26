@@ -64,7 +64,7 @@ public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impl
 			}
 			
 			stemp = IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name();
-			btemp = this.setFlagZ(stemp, true);
+			btemp = this.setFlagZ(stemp, false); //sonst wird das Modul auf oberster Ebene gesucht.
 			if(btemp==false){
 				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
