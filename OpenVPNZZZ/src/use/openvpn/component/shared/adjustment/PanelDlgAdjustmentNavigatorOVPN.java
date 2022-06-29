@@ -255,12 +255,14 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 		ArrayList<RowSpec>listReturn=new ArrayList<RowSpec>();
 		main:{
 			//geht nicht RowSpec rs = RowSpec.decode("5dlu, center:10dlu, 5dlu");
-			RowSpec rsGap = this.buildRowSpecGap();
-			listReturn.add(rsGap);
+			RowSpec rsGap1 = this.buildRowSpecGap();
+			listReturn.add(rsGap1);
 			
 			RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(5),0.5);
 			listReturn.add(rs1);
-			listReturn.add(rsGap);				
+			
+			RowSpec rsGap2 = this.buildRowSpecGap(); //Neues Objekt bauen, sonst wird es nur in der Liste ersetzt und nicht erweitert.
+			listReturn.add(rsGap2);				
 		}//end main:
 		return listReturn;
 	}
