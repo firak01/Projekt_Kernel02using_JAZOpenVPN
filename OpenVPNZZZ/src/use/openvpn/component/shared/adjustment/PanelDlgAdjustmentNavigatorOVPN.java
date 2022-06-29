@@ -148,7 +148,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 					
 					sValue = (String) hmzzz.getValueByIndex(iRow-1);
 				}else {					
-					if(iRow>1) break main;
+					if(iRow>1) break main;//quasi wird dieser Wert aus der INI-Zeile immer nur als 1 Zeile zurückgegeben.
 					
 					String sJson = objEntry.getValue();
 					System.out.println(sJson);
