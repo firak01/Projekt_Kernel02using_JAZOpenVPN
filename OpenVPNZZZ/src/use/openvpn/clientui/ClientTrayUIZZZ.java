@@ -73,7 +73,11 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			}//End check
 			
 			//Dieses muss beim Beenden angesprochen werden, um das TrayIcon wieder zu entfernen
+			//Merke 20220718: Wohl unter Win10 nicht lauffähig
 			this.objTray = SystemTray.getDefaultSystemTray();
+			
+			//https://docs.oracle.com/javase/tutorial/uiswing/misc/systemtray.html
+			//this.objTray = SystemTray.getSystemTray();
 			
 			JPopupMenu menu = new JPopupMenu();
 			
