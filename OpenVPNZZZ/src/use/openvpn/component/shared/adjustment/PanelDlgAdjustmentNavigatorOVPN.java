@@ -61,7 +61,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 		super();
 	}
 	public PanelDlgAdjustmentNavigatorOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) throws ExceptionZZZ {
-		super(objKernel, dialogExtended);
+		super(objKernel, dialogExtended, KernelJPanelCascadedZZZ.FLAGZLOCAL.SKIPDEBUGUI.name());
 		String stemp; boolean btemp;
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
