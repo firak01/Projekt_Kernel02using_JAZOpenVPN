@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
+import basic.zKernel.flag.IFlagUserZZZ;
 import custom.zUtil.io.FileZZZ;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
@@ -50,7 +51,7 @@ private FileTextParserZZZ objParser = null;
 						stemp = saFlagControl[iCount];
 						btemp = setFlag(stemp, true);
 						if(btemp==false){ 								   
-							   ExceptionZZZ ez = new ExceptionZZZ(stemp, iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							  
+							   ExceptionZZZ ez = new ExceptionZZZ(stemp, IFlagUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							  
 							   throw ez;		 
 						}
 					}

@@ -24,6 +24,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
+import basic.zKernel.flag.IFlagUserZZZ;
 
 public class ConfigFileTemplateServerClientConfigOVPN extends KernelUseObjectZZZ{
 	public static String sFILE_TEMPLATE_PREFIX="template_";
@@ -50,7 +51,7 @@ public class ConfigFileTemplateServerClientConfigOVPN extends KernelUseObjectZZZ
 						stemp = saFlagControl[iCount];
 						btemp = setFlag(stemp, true);
 						if(btemp==false){ 								   
-							   ExceptionZZZ ez = new ExceptionZZZ(stemp, iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							  
+							   ExceptionZZZ ez = new ExceptionZZZ(stemp, IFlagUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							  
 							   throw ez;		 
 						}
 					}
