@@ -151,7 +151,7 @@ public class ProgramPageWebUploadOVPN  extends AbstractKernelProgramUIZZZ implem
 		//4. Konfiguration auslesen
 		//Hier werden Informationen ueber die IP-Adressdatei ausgelesen, etc.
 		String sModule = this.getModuleName();
-		FileIniZZZ objFileIniIPConfig = objKernel.getFileModuleIniByAlias(sModule);
+		FileIniZZZ objFileIniIPConfig = objKernel.getFileConfigModuleIni(sModule);
 		
 		//Programname nicht aus dem Panel, sondern das Program selbst
 		String sProgram = this.getProgramName();		
