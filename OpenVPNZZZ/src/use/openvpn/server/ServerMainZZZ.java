@@ -394,7 +394,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				if(this.objKernel==null) break main;				
 			}//END check:
 		
-		//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enth�lt, die wie der Application - Key aussieht. 
+		//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht. 
 		String stemp = this.objKernel.getParameter("ListenOnStart").getValue();
 		if(stemp==null) break main;
 		if(stemp.equals("1")){
