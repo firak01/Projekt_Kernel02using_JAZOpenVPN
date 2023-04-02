@@ -9,7 +9,7 @@ import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagLocalUserZZZ;
-import basic.zKernel.flag.IFlagUserZZZ;
+import basic.zKernel.flag.IFlagZUserZZZ;
 import use.openvpn.server.ServerConfigMapper4BatchOVPN;
 import use.openvpn.server.ServerMainZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -65,7 +65,7 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 						stemp = saFlagControl[iCount];
 						btemp = setFlag(stemp, true);
 						if(btemp==false){ 								   
-							   ExceptionZZZ ez = new ExceptionZZZ( stemp, IFlagUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							 
+							   ExceptionZZZ ez = new ExceptionZZZ( stemp, IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							 
 							   throw ez;		 
 						}
 					}

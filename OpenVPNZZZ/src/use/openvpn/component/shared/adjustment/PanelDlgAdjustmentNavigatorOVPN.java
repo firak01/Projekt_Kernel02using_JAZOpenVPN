@@ -29,7 +29,7 @@ import basic.zKernel.component.IKernelModuleUserZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernel.flag.IFlagLocalUserZZZ;
-import basic.zKernel.flag.IFlagUserZZZ;
+import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.IComponentCascadedUserZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
@@ -70,7 +70,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
 			btemp = this.setFlagZ(stemp, true);
 			if(btemp==false){
-				ExceptionZZZ ez = new ExceptionZZZ( "Flag '" + stemp + "' is not available. Maybe an interface is not implemented.", IFlagUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+				ExceptionZZZ ez = new ExceptionZZZ( "Flag '" + stemp + "' is not available. Maybe an interface is not implemented.", IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
 			}else {
 				this.resetProgramUsed();

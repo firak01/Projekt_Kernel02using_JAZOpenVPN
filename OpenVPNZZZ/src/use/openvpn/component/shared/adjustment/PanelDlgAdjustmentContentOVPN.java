@@ -25,7 +25,7 @@ import basic.zKernel.component.IKernelModuleUserZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernel.flag.IFlagLocalUserZZZ;
-import basic.zKernel.flag.IFlagUserZZZ;
+import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
@@ -61,14 +61,14 @@ public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impl
 			stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
 			btemp = this.setFlagZ(stemp, true);
 			if(btemp==false){
-				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", IFlagUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
 			}
 			
 			stemp = IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name();
 			btemp = this.setFlagZ(stemp, false); //sonst wird das Modul auf oberster Ebene gesucht.
 			if(btemp==false){
-				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", IFlagUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
 			}
 			

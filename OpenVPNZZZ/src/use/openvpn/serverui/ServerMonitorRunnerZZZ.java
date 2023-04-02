@@ -17,7 +17,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
-import basic.zKernel.flag.IFlagUserZZZ;
+import basic.zKernel.flag.IFlagZUserZZZ;
 
 /**This class watches the ServerMainZZZ-class and the ServerConnectionListenerRuner-objects.
  * This class runs in a seperate thread, so the TrayIcon stays "clickable", that means that clicking on the icon will be processed.
@@ -53,7 +53,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 					stemp = saFlagControl[iCount];
 					btemp = setFlag(stemp, true);
 					if(btemp==false){ 								   
-						   ExceptionZZZ ez = new ExceptionZZZ( stemp, IFlagUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 						
+						   ExceptionZZZ ez = new ExceptionZZZ( stemp, IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 						
 						   throw ez;		 
 					}
 				}

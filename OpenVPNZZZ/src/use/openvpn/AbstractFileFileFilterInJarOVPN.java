@@ -15,7 +15,7 @@ import basic.zBasic.util.file.zip.FilenamePartFilterPathZipZZZ;
 import basic.zBasic.util.file.zip.FilenamePartFilterPrefixZipZZZ;
 import basic.zBasic.util.file.zip.FilenamePartFilterSuffixZipZZZ;
 import basic.zBasic.util.file.zip.ZipEntryFilter;
-import basic.zKernel.flag.IFlagUserZZZ;
+import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zUtil.io.IFileExpansionUserZZZ;
 import basic.zUtil.io.IFileExpansionZZZ;
 
@@ -52,7 +52,7 @@ public abstract class AbstractFileFileFilterInJarOVPN extends AbstractFileFileFi
 				stemp = saFlagControlIn[iCount];
 				btemp = setFlag(stemp, true);
 				if(btemp==false){ 								   
-					   ExceptionZZZ ez = new ExceptionZZZ( IFlagUserZZZ.sERROR_FLAG_UNAVAILABLE + stemp, IFlagUserZZZ.iERROR_FLAG_UNAVAILABLE, ReflectCodeZZZ.getMethodCurrentName(), ""); 
+					   ExceptionZZZ ez = new ExceptionZZZ( IFlagZUserZZZ.sERROR_FLAG_UNAVAILABLE + stemp, IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, ReflectCodeZZZ.getMethodCurrentName(), ""); 
 					   //doesn�t work. Only works when > JDK 1.4
 					   //Exception e = new Exception();
 					   //ExceptionZZZ ez = new ExceptionZZZ(stemp,iCode,this, e, "");
