@@ -7,5 +7,5 @@ public interface IConstantServerOVPN {
 	public static String sLABEL_DETAIL = "PressAction"; //"PressAction": DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein für das Clicken AUF das Icon.
 	
 	public static String sLABEL_PAGE_IP_UPLOAD = "IP Page hochladen";
-	
+	public static String sLABEL_FTP_CREDENTIALS = "FTP Anmeldedaten";	
 }

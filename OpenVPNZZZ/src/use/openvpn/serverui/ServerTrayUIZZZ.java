@@ -21,6 +21,7 @@ import org.jdesktop.jdic.tray.TrayIcon;
 
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.server.ServerMainZZZ;
+import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -52,9 +53,9 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	//TODOGOON 20210210: Realisiere die Idee
 	//Idee: In ClientMainUI eine/verschiedene HashMaps anbieten, in die dann diese Container-Objekte kommen.
 	//      Dadurch muss man sie nicht als Variable deklarieren und kann dynamischer neue Dialogboxen, etc. hinzufügen.
-	//Ziel diese hier als Varible zu deklarieren ist: Die Dialogbox muss nicht immer wieder neu erstellt werden.
+	//Ziel diese hier als Variable zu deklarieren ist: Die Dialogbox muss nicht immer wieder neu erstellt werden.
 	private KernelJDialogExtendedZZZ dlgIPExternal=null;
-	
+	private KernelJDialogExtendedZZZ dlgFTPCredentials=null;
 	
 	public ServerTrayUIZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
@@ -94,10 +95,13 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
             menu.add(menueeintrag3);
 			menueeintrag3.addActionListener(this);
 			
+			JMenuItem menueeintragFTPCredentials = new JMenuItem(IConstantServerOVPN.sLABEL_FTP_CREDENTIALS);
+            menu.add(menueeintragFTPCredentials);
+			menueeintragFTPCredentials.addActionListener(this);
 			
-			JMenuItem menueeintragFTP = new JMenuItem(IConstantServerOVPN.sLABEL_PAGE_IP_UPLOAD);
-            menu.add(menueeintragFTP);
-			menueeintragFTP.addActionListener(this);
+			JMenuItem menueeintragIPPage = new JMenuItem(IConstantServerOVPN.sLABEL_PAGE_IP_UPLOAD);
+            menu.add(menueeintragIPPage);
+			menueeintragIPPage.addActionListener(this);
 			
 			//??? Warum geht das auf meinem Desktop-Rechner nicht, auf dem Notebook aber ???			
 			JMenuItem menueeintrag = new JMenuItem(IConstantServerOVPN.sLABEL_END);	
@@ -500,6 +504,24 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
 						this.dlgIPExternal.showDialog(null, "Build and Upload IP Page");
 						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'Build and Upload IP Page'");
+					} catch (ExceptionZZZ ez) {					
+						System.out.println(ez.getDetailAllLast()+"\n");
+						ez.printStackTrace();
+						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
+					}
+}else if(sCommand.equals(IConstantServerOVPN.sLABEL_FTP_CREDENTIALS)) {					
+					if(this.dlgFTPCredentials==null || this.dlgFTPCredentials.isDisposed() ) {									
+						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
+						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+						hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+						DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlag);
+						//dlgIPExternal.setText4ButtonOk("USE VALUE");	
+						this.dlgFTPCredentials = dlgFTPCredentials;
+					}
+					try {
+						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+						this.dlgFTPCredentials.showDialog(null, "FTP Credentials");
+						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'FTP Credentials'");
 					} catch (ExceptionZZZ ez) {					
 						System.out.println(ez.getDetailAllLast()+"\n");
 						ez.printStackTrace();
