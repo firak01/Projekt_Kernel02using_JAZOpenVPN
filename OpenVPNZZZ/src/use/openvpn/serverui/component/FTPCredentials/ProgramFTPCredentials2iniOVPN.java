@@ -102,16 +102,15 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 			String sProgram = this.getProgramName();
 			
 			IKernelZZZ objKernel = this.getKernelObject();
-			objKernel.setParameterByProgramAlias(sModule, sProgram, "FTPUsername", sUsername);
+			objKernel.setParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_USERNAME, sUsername);
 			
 			CryptAlgorithmFactoryZZZ objCryptFactory = CryptAlgorithmFactoryZZZ.getInstance();
 			ICryptZZZ objCrypt = objCryptFactory.createAlgorithmType(CryptAlgorithmMappedValueZZZ.CipherTypeZZZ.ROT13);
 			
-			TODOGOON20230407;//Wenn es fuer dieses Program einen Aliasnamen gibt, 
-			                 //die Section [Aliasname] aber noch nicht in der ini Datei vorhanden ist,
-			                 //eine entsprechende Section anlegen
-			                 //und die Werte dort hineinschreiben.
-			objKernel.setParameterByProgramAlias(sModule, sProgram, "FTPPassword", sPasswordDecrypted, objCrypt);
+			//Merke: Wenn es fuer dieses Program einen Aliasnamen gibt, 
+			//die Section [Aliasname] aber noch nicht in der ini Datei vorhanden ist,
+			//dann wird eine entsprechende Section angelegt und die Werte dort hineingeschrieben.
+			objKernel.setParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_PASSWORD, sPasswordDecrypted, objCrypt);
 						
 			long lTime = System.currentTimeMillis();
 			Date objDate = new Date(lTime);
@@ -125,8 +124,8 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 				
 			 String sNowDate = iDateYear.toString() + "-" + iDateMonth.toString() + "-" + iDateDay.toString();
 			 String sNowTime = iTimeHour.toString() + ":" + iTimeMinute.toString(); 		     			
-			 objKernel.setParameterByProgramAlias(sModule, sProgram, "CredentialDate", sNowDate);		
-			 objKernel.setParameterByProgramAlias(sModule, sProgram, "CredentialTime", sNowTime);
+			 objKernel.setParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_CREDENTIALDATE, sNowDate);		
+			 objKernel.setParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_CREDENTIALTIME, sNowTime);
 			
 			bReturn = true;
 		}

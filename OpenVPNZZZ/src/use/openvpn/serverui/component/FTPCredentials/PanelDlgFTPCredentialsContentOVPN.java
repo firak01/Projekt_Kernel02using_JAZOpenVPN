@@ -53,7 +53,7 @@ import com.jcraft.jsch.JSchException;
  * @author 0823
  *
  */
-public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayoutedZZZ implements IKernelProgramZZZ{	
+public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayoutedZZZ implements IKernelProgramZZZ,IConstantProgramFTPCredentialsOVPN{	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -99,12 +99,38 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			JLabel labelLocal = new JLabel(IConstantProgramFTPCredentialsOVPN.sLABEL_TEXTFIELD_USERNAME);
 			this.add(labelLocal, cc.xy(2,iRow*2));			
 			
+			
+			//Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
+			boolean bDefaultValue=false;
+			if(StringZZZ.isEmpty(sDefaultValue)){
+				sDefaultValue = this.sVALUE_TEXTFIELD_USERNAME_INITIAL;
+				bDefaultValue=true;
+			}
+			
 			JTextField textfieldFTPUsername = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
 			textfieldFTPUsername.setHorizontalAlignment(JTextField.LEFT);
+			
+			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
+			if(bDefaultValue) {
+				textfieldFTPUsername.selectAll();
+				//textfieldFTPUsername.setSelectionStart(0);
+				//textfieldFTPUsername.setSelectionEnd(sDefaultValue.length()-1);
+			}
+			
 			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
 			//Dimension dim = new Dimension(10, 15);
 			//textfield.setPreferredSize(dim);
 			panel.add(textfieldFTPUsername, cc.xy(4,iRow*2));
+	
+			
+			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
+			if(bDefaultValue) {
+				textfieldFTPUsername.selectAll();
+				//textfieldFTPUsername.setSelectionStart(0);
+				//textfieldFTPUsername.setSelectionEnd(sDefaultValue.length()-1);
+			}
+			
+			
 			
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
@@ -134,9 +160,24 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			JLabel labelLocal = new JLabel(IConstantProgramFTPCredentialsOVPN.sLABEL_TEXTFIELD_PASSWORD);
 			this.add(labelLocal, cc.xy(2,iRow*2));			
 			
+			boolean bDefaultValue=false;
+			if(StringZZZ.isEmpty(sDefaultValue)){
+				sDefaultValue = this.sVALUE_TEXTFIELD_PASSWORD_INITIAL;
+				bDefaultValue=true;
+			}
+			
 			JTextField textfieldFTPPassword = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
 			textfieldFTPPassword.setHorizontalAlignment(JTextField.LEFT);
-			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
+			
+			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
+			if(bDefaultValue) {
+				textfieldFTPPassword.selectAll();
+				//textfieldFTPPassword.setSelectionStart(0);
+				//textfieldFTPPassword.setSelectionEnd(sDefaultValue.length()-1);
+			}
+			
+			//textfieldFTPPassword.setCaretPosition(0); //Cursorposition
+			
 			//Dimension dim = new Dimension(10, 15);
 			//textfield.setPreferredSize(dim);
 			panel.add(textfieldFTPPassword, cc.xy(4,iRow*2));
@@ -181,7 +222,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
 			//panel.setComponent(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, textfieldIPLocal);  
 				
-			JButton buttonFTPCredentials2ini = new JButton(IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI);
+			JButton buttonFTPCredentials2ini = new JButton(sDefaultValue);
 			ActionFTPCredentials2iniOVPN actionFTPCredentials2iniOVPN = new ActionFTPCredentials2iniOVPN(objKernel, this);
 			buttonFTPCredentials2ini.addActionListener(actionFTPCredentials2iniOVPN);
 			panel.add(buttonFTPCredentials2ini, cc.xy(6,iRow*2));
@@ -342,7 +383,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			
 			//#############################################################################################
 			//### Auslesen des bisher verwendeten ini-Eintrags. 						
-			String sFTPUser = "";
+			String sFTPUser = "";String sPasswordDecrypted = "";
 					
 			//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
 			String sProgram; String sModule;
@@ -358,17 +399,15 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				throw ez;
 			}
 
-			//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
-			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "FTPUser");
-			sFTPUser = objEntry.getValue();
-					
-			//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
-			if(StringZZZ.isEmpty(sFTPUser)){
-				sFTPUser = "Enter username";
-			}
+			//DARIN WIRD NACH DEM ALIASNAMEN GESUCHT, UND DER WERT  FÜR 'username' geholt.
+			IKernelConfigSectionEntryZZZ objEntryUsername = objKernel.getParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_USERNAME);
+			sFTPUser = objEntryUsername.getValue();
 			
-			//- - - - - 
-			String sPasswordDecrypted="";
+			//DARIN WIRD NACH DEM ALIASNAMEN GESUCHT, UND DER WERT  FÜR 'password' geholt.
+			IKernelConfigSectionEntryZZZ objEntryPassword = objKernel.getParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_PASSWORD);
+			sPasswordDecrypted = objEntryPassword.getValue();
+			
+			//- - - - - 			
 			if(StringZZZ.isEmpty(sPasswordDecrypted)){
 				sPasswordDecrypted = "Enter password";
 			}
@@ -382,7 +421,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				this.createRowFTPPassword(this, cc, 2, sPasswordDecrypted);			
 				break;
 			case 3:
-				this.createRowSaveCredentialsToIni(this, cc, 3, "Save to ini");			
+				this.createRowSaveCredentialsToIni(this, cc, 3, IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI);			
 				break;			
 			default:
 				//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
