@@ -67,6 +67,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 		String stemp; boolean btemp;
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
+		
 		stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
 		btemp = this.setFlagZ(stemp, true);
 		if(!btemp) {

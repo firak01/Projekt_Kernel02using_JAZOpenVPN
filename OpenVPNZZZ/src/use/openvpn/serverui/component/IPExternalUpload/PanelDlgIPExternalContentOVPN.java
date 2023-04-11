@@ -16,6 +16,7 @@ import use.openvpn.serverui.component.IPExternalUpload.ProgramIPContentWebOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.thread.SwingWorker;
@@ -466,13 +467,9 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			bReturn = true;
 		}
 		return bReturn;
-
-
-
 	}
-	
 		
-		
+//########################################################################		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
 	class ActionIpWeb2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
