@@ -105,7 +105,14 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 			objKernel.setParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_USERNAME, sUsername);
 			
 			CryptAlgorithmFactoryZZZ objCryptFactory = CryptAlgorithmFactoryZZZ.getInstance();
-			ICryptZZZ objCrypt = objCryptFactory.createAlgorithmType(CryptAlgorithmMappedValueZZZ.CipherTypeZZZ.ROT13);
+			//ICryptZZZ objCrypt = objCryptFactory.createAlgorithmType(CryptAlgorithmMappedValueZZZ.CipherTypeZZZ.ROT13);
+			//Gewuenscht ist folgendes:
+			//<Z><Z:Encrypted><Z:Cipher>VigenereNn</Z:Cipher><z:KeyString>Hundi</z:KeyString><z:CharacterPool> abcdefghijklmnopqrstuvwxyz</z:CharacterPool><z:CharacterPoolAdditional>!</z:CharacterPoolAdditional><z:FlagControl>USEUPPERCASE,USENUMERIC,USELOWERCASE,USEADDITIONALCHARACTER</Z:FlagControl><Z:Code>8kBiFyIsAhNOD</Z:Code></Z:Encrypted></Z>
+			ICryptZZZ objCrypt = objCryptFactory.createAlgorithmType(CryptAlgorithmMappedValueZZZ.CipherTypeZZZ.VIGENEREnn);
+			objCrypt.setCryptKey("Hundi");
+			objCrypt.setCharacterPoolBase(" abcdefghijklmnopqrstuvwxyz");
+			objCrypt.setCharacterPoolAdditional("!");
+			
 			
 			//Merke: Wenn es fuer dieses Program einen Aliasnamen gibt, 
 			//die Section [Aliasname] aber noch nicht in der ini Datei vorhanden ist,

@@ -160,9 +160,18 @@ public class ProgramPageWebUploadOVPN  extends AbstractKernelProgramUIZZZ implem
 		
 		IKernelConfigSectionEntryZZZ entryUser = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"User");
 		String sUser = entryUser.getValue();
+		if(StringZZZ.isEmpty(sUser)) {
+			ExceptionZZZ ez = new ExceptionZZZ("No Username available in Ini-File for Program '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}
+		
 		
 		IKernelConfigSectionEntryZZZ entryPassword = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"Password");
 		String sPassword = entryPassword.getValue();
+		if(StringZZZ.isEmpty(sPassword)) {
+			ExceptionZZZ ez = new ExceptionZZZ("No Password available in Ini-File for Program '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}
 		
 		IKernelConfigSectionEntryZZZ entryRoot = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"RootPath");
 		String sRootPath = entryRoot.getValue();
