@@ -19,6 +19,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.crypt.code.CryptAlgorithmFactoryZZZ;
 import basic.zBasic.util.crypt.code.CryptAlgorithmMappedValueZZZ;
+import basic.zBasic.util.crypt.code.ICharacterPoolUserConstantZZZ;
 import basic.zBasic.util.crypt.code.ICryptZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
@@ -45,6 +46,9 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN implements IConstantProgramFTPCredentialsOVPN{
 	private String sUsernameFromUi=null;
 	private String sPasswordFromUi=null;
+	
+	private String sPasswordEncodedWritten=null;
+	private String sUsernameWritten=null;
 
 	//Keine Flags gesetzt
 	//private boolean bFlagUseProxy = false;
@@ -95,6 +99,21 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 		return sReturn;
 	}
 	
+	public String getUsernameWritten() {
+		return this.sUsernameWritten;
+	}
+	private void setUsernameWritten(String sUsername) {
+		this.sUsernameWritten=sUsername;
+	}
+	
+	public String getPasswordEncodedWritten() {
+		return this.sPasswordEncodedWritten;
+	}
+	private void setPasswordEncodedWritten(String sPassword) {
+		this.sPasswordEncodedWritten=sPassword;
+	}
+	
+	
 	public boolean writeCredentialsToIni(String sUsername, String sPasswordDecrypted) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{			
@@ -103,6 +122,7 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 			
 			IKernelZZZ objKernel = this.getKernelObject();
 			objKernel.setParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_USERNAME, sUsername);
+			this.setUsernameWritten(sUsername);
 			
 			CryptAlgorithmFactoryZZZ objCryptFactory = CryptAlgorithmFactoryZZZ.getInstance();
 			//ICryptZZZ objCrypt = objCryptFactory.createAlgorithmType(CryptAlgorithmMappedValueZZZ.CipherTypeZZZ.ROT13);
@@ -110,15 +130,23 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 			//<Z><Z:Encrypted><Z:Cipher>VigenereNn</Z:Cipher><z:KeyString>Hundi</z:KeyString><z:CharacterPool> abcdefghijklmnopqrstuvwxyz</z:CharacterPool><z:CharacterPoolAdditional>!</z:CharacterPoolAdditional><z:FlagControl>USEUPPERCASE,USENUMERIC,USELOWERCASE,USEADDITIONALCHARACTER</Z:FlagControl><Z:Code>8kBiFyIsAhNOD</Z:Code></Z:Encrypted></Z>
 			ICryptZZZ objCrypt = objCryptFactory.createAlgorithmType(CryptAlgorithmMappedValueZZZ.CipherTypeZZZ.VIGENEREnn);
 			objCrypt.setCryptKey("Hundi");
+			
+			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USESTRATEGY_CHARACTERPOOL.name(), true);
 			objCrypt.setCharacterPoolBase(" abcdefghijklmnopqrstuvwxyz");
+			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USEUPPERCASE.name(), true);
+			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USELOWERCASE.name(), true);
+			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USENUMERIC.name(), true);
+			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USEADDITIONALCHARACTER.name(), true);
 			objCrypt.setCharacterPoolAdditional("!");
 			
+			String sPasswordEncrypted = objCrypt.encrypt(sPasswordDecrypted);
 			
 			//Merke: Wenn es fuer dieses Program einen Aliasnamen gibt, 
 			//die Section [Aliasname] aber noch nicht in der ini Datei vorhanden ist,
 			//dann wird eine entsprechende Section angelegt und die Werte dort hineingeschrieben.
-			objKernel.setParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_PASSWORD, sPasswordDecrypted, objCrypt);
-						
+			objKernel.setParameterByProgramAliasEncrypted(sModule, sProgram, this.sINI_PROPERTY_PASSWORD, sPasswordDecrypted, objCrypt);
+			this.setPasswordEncodedWritten(sPasswordEncrypted);		
+			
 			long lTime = System.currentTimeMillis();
 			Date objDate = new Date(lTime);
 			
@@ -230,7 +258,7 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 	
 	@Override
 	public void updateLabel(String stext) {
-		updateLabel(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD, stext);
+		updateLabel(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD, stext);
 	}
 }
 

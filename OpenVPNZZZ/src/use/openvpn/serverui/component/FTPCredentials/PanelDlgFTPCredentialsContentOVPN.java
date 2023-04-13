@@ -187,7 +187,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
 			panel.setComponent(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD, textfieldFTPPassword);  
-				
+			
 			
 //			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
 //			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
@@ -405,6 +405,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			sFTPUser = objEntryUsername.getValue();
 			
 			//DARIN WIRD NACH DEM ALIASNAMEN GESUCHT, UND DER WERT  FÜR 'password' geholt.
+			TODOGOON 20230413;//DAS ENTSCHLUESSELN SCHEITERT
 			IKernelConfigSectionEntryZZZ objEntryPassword = objKernel.getParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_PASSWORD);
 			sPasswordDecrypted = objEntryPassword.getValue();
 			
@@ -505,7 +506,8 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 					boolean bErg = objProg.writeCredentialsToIni(sUsername, sPasswordDecrypted);
 									
 					//3. Diesen Wert wieder ins Label zurückschreiben.
-					updateTextField(objProg, sUsername);
+					String sPasswordEncodedWritten = objProg.getPasswordEncodedWritten();
+					updateTextField(objProg, sPasswordEncodedWritten);
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
