@@ -61,7 +61,7 @@ public class DlgFTPCredentialsOVPN extends KernelJDialogExtendedZZZ {
 	 */
 	@Override
 	public KernelJPanelCascadedZZZ createPanelContent() throws ExceptionZZZ{				
-		PanelDlgFTPCredentialsContentOVPN panelContent = new PanelDlgFTPCredentialsContentOVPN(this.getKernelObject(), this);			
+		PanelDlgFTPCredentialsContentOVPN panelContent = new PanelDlgFTPCredentialsContentOVPN(this.getKernelObject(), this);
 		return panelContent;
 	}
 	

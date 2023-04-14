@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
@@ -22,6 +23,7 @@ import org.jdesktop.jdic.tray.TrayIcon;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.server.ServerMainZZZ;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
+import use.openvpn.serverui.component.FTPCredentials.IConstantProgramFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -32,6 +34,7 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
+import basic.zKernelUI.util.JTextFieldHelperZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
 public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListener {
@@ -522,6 +525,28 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
 						this.dlgFTPCredentials.showDialog(null, "FTP Credentials");
 						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'FTP Credentials'");
+						
+						//Versuch den Focus und ein markiertes Feld zu setzen
+						//DAS GEHT NUR AN DIESER STELLE, NACHDEM DER DIALOG SCHON GESTARTET IST
+						//UND DER STARTWERT SCHON GESETZT WURDE
+						//UND DAS GEHT AUCH NUR FUER 1 TEXTFIELD
+//						String sTextfield4Update1 =IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_USERNAME;
+//						JTextField textField1 = (JTextField) this.dlgFTPCredentials.getPanelContent().searchComponent(sTextfield4Update1);
+//						if(textField1!=null) {
+//							//textField.setText(sText2Update);					
+//							JTextFieldHelperZZZ.markAndFocus(this.dlgFTPCredentials.getPanelContent(),textField1);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.
+//						}else {
+//							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "JTextField '" + sTextfield4Update1 + "' NOT FOUND in panel '" + this.dlgFTPCredentials.getPanelContent().getClass() + "' !!!");										
+//						}
+						
+						String sTextfield4Update2 =IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD;
+						JTextField textField2 = (JTextField) this.dlgFTPCredentials.getPanelContent().searchComponent(sTextfield4Update2);
+						if(textField2!=null) {
+							//textField2.setText(sText2Update);					
+							JTextFieldHelperZZZ.markAndFocus(this.dlgFTPCredentials.getPanelContent(),textField2);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.
+						}else {
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "JTextField '" + sTextfield4Update2 + "' NOT FOUND in panel '" + this.dlgFTPCredentials.getPanelContent().getClass() + "' !!!");										
+						}
 					} catch (ExceptionZZZ ez) {					
 						System.out.println(ez.getDetailAllLast()+"\n");
 						ez.printStackTrace();

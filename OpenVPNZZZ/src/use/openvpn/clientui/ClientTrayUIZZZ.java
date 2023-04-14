@@ -53,7 +53,6 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	private KernelJDialogExtendedZZZ dlgIPExternal=null;
 	private KernelJDialogExtendedZZZ dlgAdjustment=null;
 	
-	
 	public ClientTrayUIZZZ(IKernelZZZ objKernel, ClientMainZZZ objClientMain, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,saFlagControl);//20210402: Die direkten Flags werden nun in der Elternklasse verarbeitet
 		ClientTrayUINew_(objClientMain);
@@ -451,10 +450,6 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return this.sStatusString;
 	}
 	
-	
-	
-	
-
 //FGL Es scheint so als geht das nicht mit extra Klassen.
 		public void actionPerformed(ActionEvent arg0) {
 			try{

@@ -144,7 +144,7 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 			//Merke: Wenn es fuer dieses Program einen Aliasnamen gibt, 
 			//die Section [Aliasname] aber noch nicht in der ini Datei vorhanden ist,
 			//dann wird eine entsprechende Section angelegt und die Werte dort hineingeschrieben.
-			objKernel.setParameterByProgramAliasEncrypted(sModule, sProgram, this.sINI_PROPERTY_PASSWORD, sPasswordDecrypted, objCrypt);
+			objKernel.setParameterByProgramAliasEncrypted(sModule, sProgram, this.sINI_PROPERTY_PASSWORD, sPasswordEncrypted, objCrypt);
 			this.setPasswordEncodedWritten(sPasswordEncrypted);		
 			
 			long lTime = System.currentTimeMillis();

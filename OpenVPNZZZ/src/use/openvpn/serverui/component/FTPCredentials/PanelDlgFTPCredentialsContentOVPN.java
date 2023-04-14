@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -34,6 +36,7 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelFormLayoutedZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
+import basic.zKernelUI.util.JTextFieldHelperZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -110,34 +113,21 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			
 			JTextField textfieldFTPUsername = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
 			textfieldFTPUsername.setHorizontalAlignment(JTextField.LEFT);
-			
-			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
-			if(bDefaultValue) {
-				textfieldFTPUsername.selectAll();
-				//textfieldFTPUsername.setSelectionStart(0);
-				//textfieldFTPUsername.setSelectionEnd(sDefaultValue.length()-1);
-			}
-			
+
 			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
 			//Dimension dim = new Dimension(10, 15);
 			//textfield.setPreferredSize(dim);
 			panel.add(textfieldFTPUsername, cc.xy(4,iRow*2));
-	
-			
-			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
-			if(bDefaultValue) {
-				textfieldFTPUsername.selectAll();
-				//textfieldFTPUsername.setSelectionStart(0);
-				//textfieldFTPUsername.setSelectionEnd(sDefaultValue.length()-1);
-			}
-			
-			
-			
+
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
 			panel.setComponent(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_USERNAME, textfieldFTPUsername);  
 				
+			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
+			if(bDefaultValue) {
+				JTextFieldHelperZZZ.markAndFocus(this, textfieldFTPUsername);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
+			}
 			
 //			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
 //			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
@@ -166,17 +156,10 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				sDefaultValue = this.sVALUE_TEXTFIELD_PASSWORD_INITIAL;
 				bDefaultValue=true;
 			}
-			
+
 			JTextField textfieldFTPPassword = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
 			textfieldFTPPassword.setHorizontalAlignment(JTextField.LEFT);
-			
-			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
-			if(bDefaultValue) {
-				textfieldFTPPassword.selectAll();
-				//textfieldFTPPassword.setSelectionStart(0);
-				//textfieldFTPPassword.setSelectionEnd(sDefaultValue.length()-1);
-			}
-			
+
 			//textfieldFTPPassword.setCaretPosition(0); //Cursorposition
 			
 			//Dimension dim = new Dimension(10, 15);
@@ -188,6 +171,10 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
 			panel.setComponent(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD, textfieldFTPPassword);  
 			
+			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
+			//if(bDefaultValue) { //!!! IMMER UND NICHT NUR BEIM DEFAULT
+				JTextFieldHelperZZZ.markAndFocus(this, textfieldFTPPassword);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
+			//}
 			
 //			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
 //			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
@@ -405,7 +392,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			sFTPUser = objEntryUsername.getValue();
 			
 			//DARIN WIRD NACH DEM ALIASNAMEN GESUCHT, UND DER WERT  FÜR 'password' geholt.
-			TODOGOON 20230413;//DAS ENTSCHLUESSELN SCHEITERT
+			//TODOGOON20230413;//DAS ENTSCHLUESSELN SCHEITERT
 			IKernelConfigSectionEntryZZZ objEntryPassword = objKernel.getParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_PASSWORD);
 			sPasswordDecrypted = objEntryPassword.getValue();
 			
