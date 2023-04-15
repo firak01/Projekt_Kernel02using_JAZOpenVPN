@@ -52,8 +52,12 @@ public class DlgFTPCredentialsOVPN extends KernelJDialogExtendedZZZ {
 	}
 	
 	@Override
-	public KernelJPanelCascadedZZZ createPanelButton(){
-		return null; //Damit gibt es im Dialog nur die Standardbuttons.
+	public KernelJPanelCascadedZZZ createPanelButton() throws ExceptionZZZ{
+		//return null; //Damit gibt es im Dialog nur die Standardbuttons.
+		
+		PanelDlgFTPCredentialsButtonAlternativeOVPN panelButton = new PanelDlgFTPCredentialsButtonAlternativeOVPN(this.getKernelObject(), this,true,true);//Den CLOSE Button weglassen.
+		panelButton.setAlias("BUTTON");
+		return panelButton;
 	}
 	
 	/* (non-Javadoc)
@@ -62,12 +66,14 @@ public class DlgFTPCredentialsOVPN extends KernelJDialogExtendedZZZ {
 	@Override
 	public KernelJPanelCascadedZZZ createPanelContent() throws ExceptionZZZ{				
 		PanelDlgFTPCredentialsContentOVPN panelContent = new PanelDlgFTPCredentialsContentOVPN(this.getKernelObject(), this);
+		panelContent.setAlias("CONTENT");
 		return panelContent;
 	}
 	
 	@Override
 	public KernelJPanelCascadedZZZ createPanelNavigator() throws ExceptionZZZ{
-		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);		
+		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
+		panelNavigator.setAlias("NAVIGATOR");
 		return panelNavigator;
 	}
 	

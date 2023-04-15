@@ -518,7 +518,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
 						hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
 						DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlag);
-						//dlgIPExternal.setText4ButtonOk("USE VALUE");	
+						dlgFTPCredentials.setText4ButtonOk("USE VALUES");	
 						this.dlgFTPCredentials = dlgFTPCredentials;
 					}
 					try {

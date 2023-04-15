@@ -1,4 +1,4 @@
-package use.openvpn.clientui.component.IPExternalRead;
+package use.openvpn.serverui.component.FTPCredentials;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -35,11 +35,11 @@ import basic.zKernel.KernelLogZZZ;
  * @author 0823
  *
  */
-public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialogButtonDefaultZZZ{
-	public PanelDlgIPExternalButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable) throws ExceptionZZZ{
+public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDialogButtonDefaultZZZ{
+	public PanelDlgFTPCredentialsButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable) throws ExceptionZZZ{
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable);
 	}
-	public PanelDlgIPExternalButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable, boolean bIsButtonCloseAvailable) throws ExceptionZZZ{
+	public PanelDlgFTPCredentialsButtonAlternativeOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable, boolean bIsButtonCloseAvailable) throws ExceptionZZZ{
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable, bIsButtonCloseAvailable);
 	}
 	
@@ -48,21 +48,21 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 	public KernelActionCascadedZZZ getActionListenerButtonOk(KernelJPanelCascadedZZZ panelButton) {
 		KernelActionCascadedZZZ objReturn = null;
 		try {
-			objReturn = new ActionListenerDlgIPExternalButtonOk(this.getKernelObject(), panelButton);
+			objReturn = new ActionListenerDlgFTPCredentialsButtonOk(this.getKernelObject(), panelButton);
 		}catch(ExceptionZZZ ez) {
 			ez.printStackTrace();
 		}
 		return objReturn;
 	}	
 	
-	class ActionListenerDlgIPExternalButtonOk extends  ActionListenerButtonOkDefaultZZZ {
+	class ActionListenerDlgFTPCredentialsButtonOk extends  ActionListenerButtonOkDefaultZZZ {
 		/**  Durch Überschreiben des Standardbuttons für die Dialogbox, können hier noch andere Aktionen durchgefuehrt werden, als nur das Schliessen der Dialogbox. 
 		* lindhaueradmin; 17.01.2007 10:10:21
 		 * @param objKernel
 		 * @param panelParent
 		 * @throws ExceptionZZZ 
 		 */
-		public ActionListenerDlgIPExternalButtonOk(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ {
+		public ActionListenerDlgFTPCredentialsButtonOk(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ {
 			super(objKernel, panelParent);
 		}
 		
@@ -116,14 +116,20 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 //			return bReturn;
 //		}
 		
+		
+		/* Hierdurch findet beim Cliecken auf den "APPLY" Button das Setzen der Werte in die INI-Datei statt
+		 * 
+		 * (non-Javadoc)
+		 * @see basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ.ActionListenerButtonOkDefaultZZZ#actionPerformCustom(java.awt.event.ActionEvent, boolean)
+		 */
 		public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 //			try {
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IpWeb2ini'");
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'FTPCredentials2ini'");
 												
 			String[] saFlag = null; //{"useProxy"};					
 			KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
 																	
-			SwingWorker4ProgramIpWeb2iniOVPN worker = new SwingWorker4ProgramIpWeb2iniOVPN(objKernel, panelParent, saFlag);
+			SwingWorker4ProgramFTPCredentials2iniOVPN worker = new SwingWorker4ProgramFTPCredentials2iniOVPN(objKernel, panelParent, saFlag);
 			worker.start();  
 			
 		/*} catch (ExceptionZZZ ez) {				
@@ -141,11 +147,11 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 		public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 		}			 							
 		
-		class SwingWorker4ProgramIpWeb2iniOVPN extends KernelSwingWorkerZZZ{
+		class SwingWorker4ProgramFTPCredentials2iniOVPN extends KernelSwingWorkerZZZ{
 			private KernelJPanelCascadedZZZ panel;
 			private String[] saFlag4Program;
 			
-			public SwingWorker4ProgramIpWeb2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+			public SwingWorker4ProgramFTPCredentials2iniOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
 				super(objKernel);
 				this.panel = panel;
 				this.saFlag4Program = saFlag4Program;					
@@ -155,16 +161,22 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 			public Object construct() {
 				try{
 					//1. IP Auslesen von der Webseite
-					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
-					objProg.reset();
-					String sIp = objProg.getIpFromUi();
-					logLineDate("Ip from UI: " + sIp);
+					ProgramFTPCredentials2iniOVPN objProg = new ProgramFTPCredentials2iniOVPN(objKernel, this.panel, this.saFlag4Program);
+					//objProg.reset();//Das setzt die Felder leer
+					String sUsername = objProg.getUsernameFromUi();
+					logLineDate("Username from Local2ini'" + sUsername + "'");
 					
-					updateTextField(objProg, "writing...");					
-					boolean bErg = objProg.writeIpToIni(sIp);
-										
-					//3. Diesen Wert wieder ins Label schreiben.
-					updateTextField(objProg, sIp);
+					String sPasswordDecrypted = objProg.getPasswordFromUi();
+					//Unverschluesseltes Kennwort nicht loggen!!! logLineDate("Password from Local2ini'" + sPassword + "'");
+					
+					updateTextField(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
+					
+					//2. Schreibe in die ini-Datei
+					boolean bErg = objProg.writeCredentialsToIni(sUsername, sPasswordDecrypted);
+									
+					//3. Diesen Wert wieder ins Label zurückschreiben.
+					String sPasswordEncodedWritten = objProg.getPasswordEncodedWritten();
+					updateTextField(objProg, sPasswordEncodedWritten);
 					
 					//Den Dialog schliessen
 					//this.getPanelParent().getDialogParent().setDisposed();
@@ -184,14 +196,15 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 			* 
 			* lindhaueradmin; 17.01.2007 12:09:17
 			 */
-			public void updateTextField(final ProgramIpWeb2iniOVPN objProg, final String stext){
+			public void updateTextField(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
 								
 //				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
 				Runnable runnerUpdateLabel= new Runnable(){
 
 					public void run(){
-//						In das Textfeld eintragen, das etwas passiert.	
-						objProg.updateLabel(stext);
+//						In das Textfeld eintragen, das etwas passiert.
+						logLineDate("Credentials updated for user '" + stext + "'");					
+						objProg.updateLabel(stext);	
 					}
 				};
 				
@@ -211,7 +224,6 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 		} //End Class MySwingWorker
 
 		public void actionPerformCustomOnError(ActionEvent ae, ExceptionZZZ ez) {
-			// TODO Auto-generated method stub
 			
 		}				
 	}//END class actionListenerButtonCancelDefault

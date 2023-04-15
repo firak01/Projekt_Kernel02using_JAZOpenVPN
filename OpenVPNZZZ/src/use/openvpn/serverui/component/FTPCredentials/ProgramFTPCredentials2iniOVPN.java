@@ -33,6 +33,7 @@ import basic.zKernel.net.client.KernelReaderPageZZZ;
 import basic.zKernel.net.client.KernelReaderURLZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.AbstractKernelProgramUIZZZ;
+import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -82,8 +83,9 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 	public String readUsernameFromUi() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
-			KernelJPanelCascadedZZZ panel = this.getPanelParent();
-			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD_USERNAME);					
+			IPanelCascadedZZZ panelParent = this.getPanelParent();
+			IPanelCascadedZZZ panelContent = panelParent.searchPanel("CONTENT"); 
+			JTextField textField = (JTextField) panelContent.getComponent(sCOMPONENT_TEXTFIELD_USERNAME);					
 			sReturn = textField.getText();
 		}
 		return sReturn;
@@ -92,8 +94,9 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 	public String readPasswordFromUi() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
-			KernelJPanelCascadedZZZ panel = this.getPanelParent();
-			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD_PASSWORD);					
+			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
+			IPanelCascadedZZZ panelContent = panelParent.searchPanel("CONTENT"); 
+			JTextField textField = (JTextField) panelContent.getComponent(sCOMPONENT_TEXTFIELD_PASSWORD);					
 			sReturn = textField.getText();
 		}
 		return sReturn;
