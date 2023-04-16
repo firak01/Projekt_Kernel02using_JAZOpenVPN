@@ -152,8 +152,9 @@ public class ProgramIpLocal2iniOVPN extends AbstractProgram2iniOVPN implements I
 	 * - useproxy
 	 * - haserror
 	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
@@ -193,6 +194,11 @@ public class ProgramIpLocal2iniOVPN extends AbstractProgram2iniOVPN implements I
 	@Override
 	public void updateLabel(String stext) {
 		updateLabel(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, stext);
+	}
+
+	@Override
+	public void updateMessage(String stext){
+		updateLabel(stext);
 	}
 }
 

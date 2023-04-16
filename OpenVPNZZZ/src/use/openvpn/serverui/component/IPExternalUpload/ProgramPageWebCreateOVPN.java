@@ -223,8 +223,9 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 	 * - useproxy
 	 * - haserror
 	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
@@ -279,6 +280,12 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 		};
 		
 		SwingUtilities.invokeLater(runnerUpdateLabel);			
+	}
+	
+
+	@Override
+	public void updateMessage(String stext){
+		updateLabel(stext);
 	}
 }
 

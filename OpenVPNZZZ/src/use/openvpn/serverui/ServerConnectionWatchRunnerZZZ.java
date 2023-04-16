@@ -84,10 +84,18 @@ public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implement
 			
 			}while(true);
 		}catch(InterruptedException e){
-			this.setFlag("HasError", true);
+			try {
+				this.setFlag("HasError", true);
+			} catch (ExceptionZZZ e1) {				
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}catch(ExceptionZZZ ez){
-			this.setFlag("HasError", true);
+			try {
+				this.setFlag("HasError", true);
+			} catch (ExceptionZZZ e) {				
+				e.printStackTrace();
+			}
 			System.out.println(ez.getDetailAllLast());
 		}
 	}
@@ -195,8 +203,9 @@ public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implement
 	 * Flags used:<CR>
 	 * - isconnected
 	 * - haserror
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;

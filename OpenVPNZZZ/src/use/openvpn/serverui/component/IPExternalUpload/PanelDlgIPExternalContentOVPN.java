@@ -69,7 +69,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
 		stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
-		btemp = this.setFlagZ(stemp, true);
+		btemp = this.setFlag(stemp, true);
 		if(!btemp) {
 			ExceptionZZZ ez = new ExceptionZZZ("Flag is not available '" + stemp + "'. Maybe an interface for this flag is not implemented", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;

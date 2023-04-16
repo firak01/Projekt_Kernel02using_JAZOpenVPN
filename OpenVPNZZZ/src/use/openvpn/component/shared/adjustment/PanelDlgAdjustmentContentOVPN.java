@@ -24,7 +24,7 @@ import basic.zKernel.KernelLogZZZ;
 import basic.zKernel.component.IKernelModuleUserZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
-import basic.zKernel.flag.IFlagLocalUserZZZ;
+import basic.zKernel.flag.IFlagZLocalUserZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.IPanelCascadedZZZ;
@@ -59,14 +59,14 @@ public class PanelDlgAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impl
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
 			stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
-			btemp = this.setFlagZ(stemp, true);
+			btemp = this.setFlag(stemp, true);
 			if(btemp==false){
 				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 
 			}
 			
 			stemp = IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name();
-			btemp = this.setFlagZ(stemp, false); //sonst wird das Modul auf oberster Ebene gesucht.
+			btemp = this.setFlag(stemp, false); //sonst wird das Modul auf oberster Ebene gesucht.
 			if(btemp==false){
 				ExceptionZZZ ez = new ExceptionZZZ( "the flag '" + stemp + "' is not available. Maybe an interface is not implemented.", IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
 				throw ez;		 

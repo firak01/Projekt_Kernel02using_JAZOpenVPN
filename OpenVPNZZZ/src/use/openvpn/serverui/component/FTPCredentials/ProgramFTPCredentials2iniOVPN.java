@@ -189,7 +189,7 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 			if(bFunction==true) break main;
 							
 			//getting the flags of this object
-			String stemp = sFlagName.toLowerCase();
+			//String stemp = sFlagName.toLowerCase();
 			/*
 			if(stemp.equals("useproxy")){
 				bFunction = bFlagUseProxy;
@@ -220,8 +220,9 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 	 * - useproxy
 	 * - haserror
 	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
@@ -229,7 +230,7 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 			if(bFunction==true) break main;
 	
 		//setting the flags of this object
-		String stemp = sFlagName.toLowerCase();
+		//String stemp = sFlagName.toLowerCase();
 		/*
 		if(stemp.equals("useproxy")){
 			bFlagUseProxy = bFlagValue;
@@ -261,7 +262,12 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 	
 	@Override
 	public void updateLabel(String stext) {
-		updateLabel(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD, stext);
+		updateLabelMarked(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD, stext);
+	}
+	
+	@Override
+	public void updateMessage(String stext) {
+		updateLabel(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_MESSAGE, stext);
 	}
 }
 

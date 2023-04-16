@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
-import basic.zKernel.flag.IFlagLocalUserZZZ;
+import basic.zKernel.flag.IFlagZLocalUserZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import use.openvpn.server.ServerConfigMapper4BatchOVPN;
 import use.openvpn.server.ServerMainZZZ;
@@ -260,8 +260,9 @@ public abstract class AbstractConfigStarterOVPN extends KernelUseObjectZZZ imple
 	- hasOutput
 	- hasInput
 	- stoprequested
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{			
 			if(StringZZZ.isEmpty(sFlagName)) break main;

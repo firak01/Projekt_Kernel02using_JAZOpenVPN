@@ -145,6 +145,7 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 		}
 
 		public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
+			super.actionPerformPostCustom(ae,bQueryResult);
 		}			 							
 		
 		class SwingWorker4ProgramFTPCredentials2iniOVPN extends KernelSwingWorkerZZZ{
@@ -160,7 +161,7 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 			//#### abstracte - Method aus SwingWorker
 			public Object construct() {
 				try{
-					//1. IP Auslesen von der Webseite
+					//1. Auslesen
 					ProgramFTPCredentials2iniOVPN objProg = new ProgramFTPCredentials2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					//objProg.reset();//Das setzt die Felder leer
 					String sUsername = objProg.getUsernameFromUi();
@@ -169,19 +170,22 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 					String sPasswordDecrypted = objProg.getPasswordFromUi();
 					//Unverschluesseltes Kennwort nicht loggen!!! logLineDate("Password from Local2ini'" + sPassword + "'");
 					
-					updateTextField(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
+					updateMessage(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
 					
 					//2. Schreibe in die ini-Datei
 					boolean bErg = objProg.writeCredentialsToIni(sUsername, sPasswordDecrypted);
 									
 					//3. Diesen Wert wieder ins Label zurückschreiben.
+					updateMessage(objProg, "closing dialog...");
 					String sPasswordEncodedWritten = objProg.getPasswordEncodedWritten();
 					updateTextField(objProg, sPasswordEncodedWritten);
+
+					//20230416: Solange wie es noch keine Loesung gibt, das gesetzte INI Werte in den Cache kommen... cache loeschen.
+					//Sonst bekommt man immer wieder den alten Wert aus dem Cache beim Neuoeffnen des Dialogs.
+					this.getKernelObject().getCacheObject().clear();
 					
-					//Den Dialog schliessen
-					//this.getPanelParent().getDialogParent().setDisposed();
-					updateTextField(objProg, "closing dialog...");
-					this.panel.getDialogParent().setDisposed();
+					//Den Dialog schliessen					
+					this.panel.getDialogParent().onOk();
 					
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
@@ -209,7 +213,28 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 				};
 				
 				SwingUtilities.invokeLater(runnerUpdateLabel);					
-			}				
+			}		
+			
+			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
+			 *  Entspricht auch ProgramIPContext.updateLabel(..)
+			* @param stext
+			* 
+			* lindhaueradmin; 17.01.2007 12:09:17
+			 */			
+			public void updateMessage(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
+								
+//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+				Runnable runnerUpdateLabel= new Runnable(){
+
+					public void run(){
+//						In das Textfeld eintragen, das etwas passiert.
+						logLineDate("Credentials updated for user '" + stext + "'");					
+						objProg.updateMessage(stext);	
+					}
+				};
+				
+				SwingUtilities.invokeLater(runnerUpdateLabel);					
+			}		
 			
 			/**Overwritten and using an object of jakarta.commons.lang
 			 * to create this string using reflection. 

@@ -271,7 +271,11 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 		try {
 			this.start();
 		} catch (ExceptionZZZ ez) {
-			this.setFlag("haserror", true);
+			try {
+				this.setFlag("haserror", true);
+			} catch (ExceptionZZZ e) {				
+				e.printStackTrace();
+			}
 			this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
 		}
 	}
@@ -443,8 +447,9 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	 * Flags used:<CR>
 	 * - isconnected
 	 * - haserror
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;

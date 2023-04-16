@@ -54,8 +54,14 @@ public class ProgramIPContentWebOVPN extends AbstractProgramIPContentOVPN implem
 	* 
 	* lindhaueradmin; 17.01.2007 12:09:17
 	 */
+	@Override
 	public void updateLabel(String stext){
 		super.updateLabel(sCOMPONENT_TEXTFIELD, stext);
+	}
+	
+	@Override
+	public void updateMessage(String stext){
+		updateLabel(stext);
 	}
 	
 }

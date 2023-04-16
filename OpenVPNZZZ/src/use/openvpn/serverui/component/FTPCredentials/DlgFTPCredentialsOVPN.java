@@ -23,8 +23,8 @@ public class DlgFTPCredentialsOVPN extends KernelJDialogExtendedZZZ {
 	 * @param bSnappedToScreen
 	 * @param panelCenter
 	 */
-	public DlgFTPCredentialsOVPN(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner, HashMap<String, Boolean> hmFlag) throws ExceptionZZZ {		
-		super(objKernel, frameOwner, false, hmFlag);  //true, d.h. modal, geht leider nur im Konstruktor zu �bergeben, weil JDialog diesen Parameter im Konstruktor braucht und Super(...) kann keinen Code beinhalten, der auf eigene Properties etc. zugreift.
+	public DlgFTPCredentialsOVPN(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner, HashMap<String, Boolean> hmFlagLocal, HashMap<String, Boolean> hmFlag) throws ExceptionZZZ {		
+		super(objKernel, frameOwner, false, hmFlagLocal, hmFlag);  //true, d.h. modal, geht leider nur im Konstruktor zu �bergeben, weil JDialog diesen Parameter im Konstruktor braucht und Super(...) kann keinen Code beinhalten, der auf eigene Properties etc. zugreift.
 		DlgFTPCredentialsOVPN_();		
 	}
 	
@@ -55,7 +55,7 @@ public class DlgFTPCredentialsOVPN extends KernelJDialogExtendedZZZ {
 	public KernelJPanelCascadedZZZ createPanelButton() throws ExceptionZZZ{
 		//return null; //Damit gibt es im Dialog nur die Standardbuttons.
 		
-		PanelDlgFTPCredentialsButtonAlternativeOVPN panelButton = new PanelDlgFTPCredentialsButtonAlternativeOVPN(this.getKernelObject(), this,true,true);//Den CLOSE Button weglassen.
+		PanelDlgFTPCredentialsButtonAlternativeOVPN panelButton = new PanelDlgFTPCredentialsButtonAlternativeOVPN(this.getKernelObject(), this,true,true,true);//boolean Flags stehen für die Buttons: SPEICHERN, SCHLIESSEN, ABBRECHEN
 		panelButton.setAlias("BUTTON");
 		return panelButton;
 	}
@@ -65,7 +65,7 @@ public class DlgFTPCredentialsOVPN extends KernelJDialogExtendedZZZ {
 	 */
 	@Override
 	public KernelJPanelCascadedZZZ createPanelContent() throws ExceptionZZZ{				
-		PanelDlgFTPCredentialsContentOVPN panelContent = new PanelDlgFTPCredentialsContentOVPN(this.getKernelObject(), this);
+		PanelDlgFTPCredentialsContentOVPN panelContent = new PanelDlgFTPCredentialsContentOVPN(this.getKernelObject(), this, null, null);
 		panelContent.setAlias("CONTENT");
 		return panelContent;
 	}

@@ -34,6 +34,7 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
+import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.util.JTextFieldHelperZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
@@ -512,12 +513,17 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						ez.printStackTrace();
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 					}
-}else if(sCommand.equals(IConstantServerOVPN.sLABEL_FTP_CREDENTIALS)) {					
+				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_FTP_CREDENTIALS)) {					
 					if(this.dlgFTPCredentials==null || this.dlgFTPCredentials.isDisposed() ) {									
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
 						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
 						hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
-						DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlag);
+						
+						HashMap<String,Boolean>hmFlagLocal=new HashMap<String,Boolean>();
+						hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CANCEL.name(), false);
+						hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CLOSE.name(), true);
+						hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_OK.name(), false);
+						DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlagLocal, hmFlag);
 						dlgFTPCredentials.setText4ButtonOk("USE VALUES");	
 						this.dlgFTPCredentials = dlgFTPCredentials;
 					}
@@ -541,8 +547,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						
 						String sTextfield4Update2 =IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD;
 						JTextField textField2 = (JTextField) this.dlgFTPCredentials.getPanelContent().searchComponent(sTextfield4Update2);
-						if(textField2!=null) {
-							//textField2.setText(sText2Update);					
+						if(textField2!=null) {											
 							JTextFieldHelperZZZ.markAndFocus(this.dlgFTPCredentials.getPanelContent(),textField2);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.
 						}else {
 							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "JTextField '" + sTextfield4Update2 + "' NOT FOUND in panel '" + this.dlgFTPCredentials.getPanelContent().getClass() + "' !!!");										
@@ -572,7 +577,9 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				}
 			}catch(ExceptionZZZ ez){
 				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.
-				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
+				String stemp = ez.getDetailAllLast();
+				System.out.println(stemp);
+				this.getKernelObject().getLogObject().WriteLineDate(stemp);
 				this.switchStatus(iSTATUS_ERROR);
 			}
 		}

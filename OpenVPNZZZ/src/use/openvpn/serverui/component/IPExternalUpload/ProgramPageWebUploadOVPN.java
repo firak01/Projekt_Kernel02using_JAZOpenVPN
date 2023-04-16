@@ -376,8 +376,9 @@ TargetFile=testpage.html
 	 * - useproxy
 	 * - haserror
 	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
@@ -416,6 +417,7 @@ TargetFile=testpage.html
 	* 
 	* lindhaueradmin; 17.01.2007 12:09:17
 	 */
+	@Override
 	public void updateLabel(String stext){
 		this.sText2Update = stext;
 		
@@ -437,6 +439,12 @@ TargetFile=testpage.html
 		//JTextField textField = (JTextField) panelParent.getComponent("text1");					
 		//textField.setText("Lese aktuellen Wert .....");
 		
+	}
+	
+
+	@Override
+	public void updateMessage(String stext){
+		updateLabel(stext);
 	}
 }
 

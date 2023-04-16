@@ -96,12 +96,20 @@ private void OVPNConnectionWatchRunnerNew_(String sIP, String sPort, String[] sa
 		}catch(ExceptionZZZ ez){
 			//Eine nicht erwartetet Kernel-Exception
 			System.out.println("Ping Thread wurde mit folgender exception (aussen) beendet: " + ez.getDetailAllLast() + " # " + ReflectCodeZZZ.getMethodCurrentName());	
-			this.setFlag("ConnectionBroken", true);
+			try {
+				this.setFlag("ConnectionBroken", true);
+			} catch (ExceptionZZZ e) {				
+				e.printStackTrace();
+			}
 			break main;		
 		}catch (InterruptedException e) {
 			//Dies wird ebenfalls nicht erwartet
 			e.printStackTrace();
-			this.setFlag("ConnectionBroken", true);
+			try {
+				this.setFlag("ConnectionBroken", true);
+			} catch (ExceptionZZZ e1) {				
+				e1.printStackTrace();
+			}
 			break main;
 		}
 		
@@ -152,8 +160,9 @@ private void OVPNConnectionWatchRunnerNew_(String sIP, String sPort, String[] sa
 	 * @param sFlagName
 	 * Flags used:<CR>
 	 	- ConnectionBroken
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{			
 			if(StringZZZ.isEmpty(sFlagName)) break main;

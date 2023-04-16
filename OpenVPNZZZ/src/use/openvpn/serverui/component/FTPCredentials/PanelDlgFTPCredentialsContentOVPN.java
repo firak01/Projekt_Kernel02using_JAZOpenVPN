@@ -67,12 +67,20 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 	}
 	public PanelDlgFTPCredentialsContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) throws ExceptionZZZ {
 		super(objKernel, dialogExtended);
+		PanelDlgFTPCredentialsContentNew_();
+	}
+	public PanelDlgFTPCredentialsContentOVPN(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended,  HashMap<String, Boolean>hmFlagLocal, HashMap<String, Boolean>hmFlag) throws ExceptionZZZ{	
+		super(objKernel, dialogExtended, hmFlagLocal, hmFlag);
+		PanelDlgFTPCredentialsContentNew_();
+	}
+	
+	private void PanelDlgFTPCredentialsContentNew_() {		
 		String stemp; boolean btemp;
 		try{
 		//Diese Panel ist Grundlage für diverse INI-Werte auf die über Buttons auf "Programname" zugegriffen wird.
 		
 		stemp = IKernelProgramZZZ.FLAGZ.ISKERNELPROGRAM.name();
-		btemp = this.setFlagZ(stemp, true);
+		btemp = this.setFlag(stemp, true);
 		if(!btemp) {
 			ExceptionZZZ ez = new ExceptionZZZ("Flag is not available '" + stemp + "'. Maybe an interface for this flag is not implemented", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
@@ -214,6 +222,54 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			ActionFTPCredentials2iniOVPN actionFTPCredentials2iniOVPN = new ActionFTPCredentials2iniOVPN(objKernel, this);
 			buttonFTPCredentials2ini.addActionListener(actionFTPCredentials2iniOVPN);
 			panel.add(buttonFTPCredentials2ini, cc.xy(6,iRow*2));
+			
+//			JButton buttonReadIPLocal = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON);
+//			ActionIPLocalRefreshOVPN actionIpRefreshLocal = new ActionIPLocalRefreshOVPN(objKernel, this);
+//			buttonReadIPLocal.addActionListener(actionIpRefreshLocal);
+//			panel.add(buttonReadIPLocal, cc.xy(8,iRow*2));
+			
+			bReturn = true;
+		}//end main;
+		return bReturn;
+	}
+	
+	private boolean createRowMessage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			
+			JLabel labelLocal = new JLabel(IConstantProgramFTPCredentialsOVPN.sLABEL_TEXTFIELD_MESSAGE);
+			this.add(labelLocal, cc.xy(2,iRow*2));			
+			
+			
+			//Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
+			boolean bDefaultValue=false;
+			if(StringZZZ.isEmpty(sDefaultValue)){
+				sDefaultValue = this.sVALUE_TEXTFIELD_MESSAGE_INITIAL;
+				bDefaultValue=true;
+			}
+			
+			JTextField textfieldMessage = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			textfieldMessage.setHorizontalAlignment(JTextField.LEFT);
+
+			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
+			//Dimension dim = new Dimension(10, 15);
+			//textfield.setPreferredSize(dim);
+			panel.add(textfieldMessage, cc.xy(4,iRow*2));
+
+			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
+			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
+			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
+			panel.setComponent(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_MESSAGE, textfieldMessage);  
+				
+			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
+			if(bDefaultValue) {
+				JTextFieldHelperZZZ.markAndFocus(this, textfieldMessage);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
+			}
+			
+//			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
+//			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
+//			buttonIpLocal2ini.addActionListener(actionIpLocal2iniOVPN);
+//			this.add(buttonIpLocal2ini, cc.xy(6,iRow*2));
 			
 //			JButton buttonReadIPLocal = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON);
 //			ActionIPLocalRefreshOVPN actionIpRefreshLocal = new ActionIPLocalRefreshOVPN(objKernel, this);
@@ -411,7 +467,10 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				break;
 			case 3:
 				this.createRowSaveCredentialsToIni(this, cc, 3, IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI);			
-				break;			
+				break;	
+			case 4:
+				this.createRowMessage(this, cc, 4, IConstantProgramFTPCredentialsOVPN.sVALUE_TEXTFIELD_MESSAGE_INITIAL);
+				break;
 			default:
 				//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
 				//Rückgabewert false ist dann der Abbruch der Schleife
@@ -478,7 +537,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			//#### abstracte - Method aus SwingWorker
 			public Object construct() {
 				try{
-					//1. IP Auslesen von der Webseite
+					//1. Auslesen
 					ProgramFTPCredentials2iniOVPN objProg = new ProgramFTPCredentials2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					objProg.reset();
 					String sUsername = objProg.getUsernameFromUi();
@@ -487,14 +546,18 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 					String sPasswordDecrypted = objProg.getPasswordFromUi();
 					//Unverschluesseltes Kennwort nicht loggen!!! logLineDate("Password from Local2ini'" + sPassword + "'");
 					
-					updateTextField(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
+					updateMessage(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
 					
 					//2. Schreibe in die ini-Datei
 					boolean bErg = objProg.writeCredentialsToIni(sUsername, sPasswordDecrypted);
 									
 					//3. Diesen Wert wieder ins Label zurückschreiben.
+					updateMessage(objProg, "password encrypted written..."); //Schreibe einen anderen Text in das Feld...					
 					String sPasswordEncodedWritten = objProg.getPasswordEncodedWritten();
 					updateTextField(objProg, sPasswordEncodedWritten);
+					
+					//4. Hier explizit nicht den Cache loeschen!!!
+					//   Dann stehen nach einem CANCEL die Werte zur Verfuegung aus dem CACHE.
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
@@ -517,6 +580,27 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 //						In das Textfeld eintragen, das etwas passiert.
 						logLineDate("Credentials updated for user '" + stext + "'");					
 						objProg.updateLabel(stext);					 
+					}
+				};
+				
+				SwingUtilities.invokeLater(runnerUpdateLabel);			
+			}
+			
+			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
+			 *  Entspricht auch ProgramIPContext.updateLabel(..)
+			* @param stext
+			* 
+			* lindhaueradmin; 17.01.2007 12:09:17
+			 */
+			public void updateMessage(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
+							
+//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
+				Runnable runnerUpdateLabel= new Runnable(){
+
+					public void run(){
+//						In das Textfeld eintragen, das etwas passiert.
+						logLineDate("Credentials updated for user...message: '" + stext + "'");					
+						objProg.updateMessage(stext);					 
 					}
 				};
 				

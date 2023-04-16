@@ -46,9 +46,8 @@ public abstract class AbstractProgram2iniOVPN extends AbstractKernelProgramUIZZZ
 	//### Getter / Setter
 	
 
-	//#### METHIDEN ###############################################
-	public abstract void updateLabel(String stext);
-	
+	//#### METHODEN ###############################################
+		
 //	######### GetFlags - Handled ##############################################
 	/** (non-Javadoc)
 	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
@@ -96,8 +95,9 @@ public abstract class AbstractProgram2iniOVPN extends AbstractKernelProgramUIZZZ
 	 * - useproxy
 	 * - haserror
 	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;

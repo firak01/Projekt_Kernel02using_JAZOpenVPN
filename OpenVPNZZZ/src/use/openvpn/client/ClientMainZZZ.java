@@ -468,7 +468,11 @@ if(this.isPortScanEnabled()==true){
 		try {
 			this.start();
 		} catch (ExceptionZZZ e) {
-			this.setFlag("haserror", true);
+			try {
+				this.setFlag("haserror", true);
+			} catch (ExceptionZZZ e1) {				
+				e1.printStackTrace();
+			}
 			this.getKernelObject().getLogObject().WriteLineDate(e.getDetailAllLast());
 		}
 	}
@@ -770,8 +774,9 @@ if(this.isPortScanEnabled()==true){
 	 * - useproxy
 	 * - haserror
 	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue){
+	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
