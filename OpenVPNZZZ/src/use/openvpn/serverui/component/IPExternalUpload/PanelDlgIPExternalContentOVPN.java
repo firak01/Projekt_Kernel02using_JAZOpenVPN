@@ -1,5 +1,6 @@
 package use.openvpn.serverui.component.IPExternalUpload;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -56,6 +57,14 @@ import com.jcraft.jsch.JSchException;
  *
  */
 public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ implements IKernelProgramZZZ{	
+	public final int iROW_HEIGHT=20;
+	public final int iROWGAP_HEIGHT=5;
+	
+	public final int iCOLUMNGAP_WIDTH=5;
+	
+	public final int iCOMPONENT_HEIGHT=25;
+	public final int iCOMPONENT_WIDTH=200;
+	
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -97,11 +106,17 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
+			Dimension dimLabel = new Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimTextfield = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
+			Dimension dimButton = new  Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimButton02 = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
 			
 			JLabel labelRouter = new JLabel(IConstantProgramIpWebOVPN.sLABEL_TEXTFIELD);
+			labelRouter.setPreferredSize(dimLabel);
 			panel.add(labelRouter, cc.xy(2,iRow*2));
 			
-			JTextField textfieldIPExternal = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			JTextField textfieldIPExternal = new JTextField(sDefaultValue, 0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			textfieldIPExternal.setPreferredSize(dimTextfield);
 			textfieldIPExternal.setHorizontalAlignment(JTextField.LEFT);
 			textfieldIPExternal.setCaretPosition(0);
 			//Dimension dim = new Dimension(10, 15);
@@ -115,6 +130,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			
 			
 			JButton buttonIpWeb2ini = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON_TO_INI);
+			buttonIpWeb2ini.setPreferredSize(dimButton);
 			ActionIpWeb2iniOVPN actionIpWeb2iniOVPN = new ActionIpWeb2iniOVPN(objKernel, this);
 			buttonIpWeb2ini.addActionListener(actionIpWeb2iniOVPN);
 			panel.add(buttonIpWeb2ini, cc.xy(6,iRow*2));
@@ -122,6 +138,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			//Merke: Der Server baut die Internetseite basierend auf dem Ini Eintrag.
 			//       Der letzte Eintrag kommt dann aus der aktuellen Web-Version.
 			JButton buttonReadIPWeb = new JButton(IConstantProgramIpWebOVPN.sLABEL_BUTTON);
+			buttonReadIPWeb.setPreferredSize(dimButton02);
 			ActionIPWebRefreshOVPN actionIPRefreshWeb = new ActionIPWebRefreshOVPN(objKernel, this);
 			buttonReadIPWeb.addActionListener(actionIPRefreshWeb);
 			panel.add(buttonReadIPWeb, cc.xy(8,iRow*2));
@@ -135,10 +152,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	private boolean createRowUploadPage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			
+			Dimension dimLabel = new Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimTextfield = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
+			Dimension dimButton = new  Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimButton02 = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
 			
 			//- - - - - - - -
-			JTextField textfieldWebUpload = new JTextField(sDefaultValue, 20);
+			JTextField textfieldWebUpload = new JTextField(sDefaultValue, 0);			
+			textfieldWebUpload.setPreferredSize(dimTextfield);
 			textfieldWebUpload.setHorizontalAlignment(JTextField.LEFT);
 			panel.add(textfieldWebUpload, cc.xyw(4,iRow*2,3)); //Mehrere Spalten umfassend
 			
@@ -147,7 +168,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
 			panel.setComponent(IConstantProgramPageWebUploadOVPN.sCOMPONENT_TEXTFIELD, textfieldWebUpload);  
 																			
-			JButton buttonUploadIPPage = new JButton(IConstantProgramPageWebUploadOVPN.sLABEL_BUTTON);
+			JButton buttonUploadIPPage = new JButton(IConstantProgramPageWebUploadOVPN.sLABEL_BUTTON);			
+			buttonUploadIPPage.setPreferredSize(dimButton02);
 			ActionPageWebUploadOVPN actionUploadIPPage = new ActionPageWebUploadOVPN(objKernel, this);
 			buttonUploadIPPage.addActionListener(actionUploadIPPage);
 			panel.add(buttonUploadIPPage, cc.xy(8,iRow*2));						
@@ -160,11 +182,17 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	private boolean createRowIpLocal(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
+			Dimension dimLabel = new Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimTextfield = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
+			Dimension dimButton = new  Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimButton02 = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
 			
-			JLabel labelLocal = new JLabel(IConstantProgramIpLocalOVPN.sLABEL_TEXTFIELD);
+			JLabel labelLocal = new JLabel(IConstantProgramIpLocalOVPN.sLABEL_TEXTFIELD);			
+			labelLocal.setPreferredSize(dimLabel);
 			this.add(labelLocal, cc.xy(2,iRow*2));			
 			
-			JTextField textfieldIPLocal = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			JTextField textfieldIPLocal = new JTextField(sDefaultValue, 0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei			
+			labelLocal.setPreferredSize(dimTextfield);
 			textfieldIPLocal.setHorizontalAlignment(JTextField.LEFT);
 			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
 			//Dimension dim = new Dimension(10, 15);
@@ -177,12 +205,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			panel.setComponent(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, textfieldIPLocal);  
 				
 			
-			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
-			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
+			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);			
+			buttonIpLocal2ini.setPreferredSize(dimButton);
+			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);			
 			buttonIpLocal2ini.addActionListener(actionIpLocal2iniOVPN);
 			this.add(buttonIpLocal2ini, cc.xy(6,iRow*2));
 			
 			JButton buttonReadIPLocal = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON);
+			buttonReadIPLocal.setPreferredSize(dimButton02);
 			ActionIPLocalRefreshOVPN actionIpRefreshLocal = new ActionIPLocalRefreshOVPN(objKernel, this);
 			buttonReadIPLocal.addActionListener(actionIpRefreshLocal);
 			panel.add(buttonReadIPLocal, cc.xy(8,iRow*2));
@@ -196,9 +226,13 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	private boolean createRowGeneratePage(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
+			Dimension dimLabel = new Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimTextfield = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
+			Dimension dimButton = new  Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimButton02 = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
 			
-			
-			JTextField textfieldWebCreate = new JTextField("", 20);
+			JTextField textfieldWebCreate = new JTextField("", 0);
+			textfieldWebCreate.setPreferredSize(dimTextfield);
 			textfieldWebCreate.setHorizontalAlignment(JTextField.LEFT);
 			panel.add(textfieldWebCreate, cc.xyw(4,iRow*2,3)); //Mehrere Spalten umfassend
 			
@@ -208,6 +242,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			panel.setComponent(IConstantProgramPageWebCreateOVPN.sCOMPONENT_TEXTFIELD, textfieldWebCreate);      
 									
 			JButton buttonGenerateIPPage = new JButton(IConstantProgramPageWebCreateOVPN.sLABEL_BUTTON);
+			buttonGenerateIPPage.setPreferredSize(dimButton02);
 			ActionPageWebCreateOVPN actionGenerateIPPage = new ActionPageWebCreateOVPN(objKernel, this);
 			buttonGenerateIPPage.addActionListener(actionGenerateIPPage);
 			panel.add(buttonGenerateIPPage, cc.xy(8,iRow*2));
@@ -220,15 +255,19 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	private boolean createRowIpRouter(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
+			Dimension dimLabel = new Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimTextfield = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
+			Dimension dimButton = new  Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			Dimension dimButton02 = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
 			
-			JLabel labelRouter = new JLabel(IConstantProgramIpRouterOVPN.sLABEL_TEXTFIELD);
+			JLabel labelRouter = new JLabel(IConstantProgramIpRouterOVPN.sLABEL_TEXTFIELD);			
+			labelRouter.setPreferredSize(dimLabel);
 			panel.add(labelRouter, cc.xy(2,iRow*2));
 			
-			JTextField textfieldIPRouter = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			JTextField textfieldIPRouter = new JTextField(sDefaultValue, 0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei			
+			textfieldIPRouter.setPreferredSize(dimTextfield);
 			textfieldIPRouter.setHorizontalAlignment(JTextField.LEFT);
 			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
-			//Dimension dim = new Dimension(10, 15);
-			//textfield.setPreferredSize(dim);
 			panel.add(textfieldIPRouter, cc.xy(4,iRow*2));
 			
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
@@ -237,12 +276,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			panel.setComponent(IConstantProgramIpRouterOVPN.sCOMPONENT_TEXTFIELD, textfieldIPRouter);  
 			
 			
-			JButton buttonIpRouter2ini = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON_TO_INI);
+			JButton buttonIpRouter2ini = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON_TO_INI);			
+			buttonIpRouter2ini.setPreferredSize(dimButton);			
 			ActionIpRouter2iniOVPN actionIpRouter2iniOVPN = new ActionIpRouter2iniOVPN(objKernel, this);
 			buttonIpRouter2ini.addActionListener(actionIpRouter2iniOVPN);
 			panel.add(buttonIpRouter2ini, cc.xy(6,iRow*2));
 			
 			JButton buttonReadIPRouter = new JButton(IConstantProgramIpRouterOVPN.sLABEL_BUTTON);
+			buttonReadIPRouter.setPreferredSize(dimButton);
 			ActionIPWebRefreshOVPN actionIPRefreshRouter = new ActionIPWebRefreshOVPN(objKernel, this);
 			buttonReadIPRouter.addActionListener(actionIPRefreshRouter);
 			panel.add(buttonReadIPRouter, cc.xy(8,iRow*2));
@@ -255,12 +296,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	
 	//#### Interface IFormLayoutUserZZZ
 	public ColumnSpec buildColumnSpecGap() {
-		ColumnSpec cs = new ColumnSpec(Sizes.dluX(5));
+		ColumnSpec cs = new ColumnSpec(Sizes.dluX(iCOLUMNGAP_WIDTH));
 		return cs;
 	}
 
 	public RowSpec buildRowSpecGap() {
-		RowSpec rs = new RowSpec(Sizes.dluX(5));
+		RowSpec rs = new RowSpec(Sizes.dluX(iROWGAP_HEIGHT));
 		return rs;
 	}
 
@@ -290,14 +331,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 				listReturn.add(rsGap0);	
 			}
 			
-			RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(iROW_HEIGHT),0.5);				
 			listReturn.add(rs1);
 			
 			RowSpec rsGap1 = this.buildRowSpecGap();
 			listReturn.add(rsGap1);	
 			
 			//++++++++++
-			RowSpec rs2 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs2 = new RowSpec(RowSpec.CENTER,Sizes.dluX(iROW_HEIGHT),0.5);				
 			listReturn.add(rs2);
 			
 			RowSpec rsGap2 = this.buildRowSpecGap();
@@ -305,7 +346,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			
 			
 			//++++++++++
-			RowSpec rs3 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs3 = new RowSpec(RowSpec.CENTER,Sizes.dluX(iROW_HEIGHT),0.5);				
 			listReturn.add(rs3);
 			
 			RowSpec rsGap3 = this.buildRowSpecGap();
@@ -313,14 +354,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			
 			
 			//++++++++++
-			RowSpec rs4 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs4 = new RowSpec(RowSpec.CENTER,Sizes.dluX(iROW_HEIGHT),0.5);				
 			listReturn.add(rs4);
 			
 			RowSpec rsGap4 = this.buildRowSpecGap();
 			listReturn.add(rsGap4);
 			
 			//++++++++++
-			RowSpec rs5 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs5 = new RowSpec(RowSpec.CENTER,Sizes.dluX(iROW_HEIGHT),0.5);				
 			listReturn.add(rs5);
 			
 			RowSpec rsGap5 = this.buildRowSpecGap();

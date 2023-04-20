@@ -62,6 +62,8 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 	public final int iROW_HEIGHT=20;
 	public final int iROWGAP_HEIGHT=5;
 	
+	public final int iCOLUMNGAP_WIDTH=5;
+	
 	public final int iCOMPONENT_HEIGHT=25;
 	public final int iCOMPONENT_WIDTH=200;
 	/**
@@ -300,7 +302,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 	
 	//#### Interface IFormLayoutUserZZZ
 	public ColumnSpec buildColumnSpecGap() {
-		ColumnSpec cs = new ColumnSpec(Sizes.dluX(5));
+		ColumnSpec cs = new ColumnSpec(Sizes.dluX(iCOLUMNGAP_WIDTH));
 		return cs;
 	}
 
