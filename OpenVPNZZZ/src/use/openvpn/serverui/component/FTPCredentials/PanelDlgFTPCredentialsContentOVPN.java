@@ -1,5 +1,6 @@
 package use.openvpn.serverui.component.FTPCredentials;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
+import basic.zKernelUI.component.IDebugUiZZZ;
 import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
@@ -57,6 +59,11 @@ import com.jcraft.jsch.JSchException;
  *
  */
 public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayoutedZZZ implements IKernelProgramZZZ,IConstantProgramFTPCredentialsOVPN{	
+	public final int iROW_HEIGHT=20;
+	public final int iROWGAP_HEIGHT=5;
+	
+	public final int iCOMPONENT_HEIGHT=25;
+	public final int iCOMPONENT_WIDTH=200;
 	/**
 	 * DEFAULT Konstruktor, notwendig, damit man objClass.newInstance(); einfach machen kann.
 	 *                                 
@@ -109,6 +116,8 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 		main:{
 			
 			JLabel labelLocal = new JLabel(IConstantProgramFTPCredentialsOVPN.sLABEL_TEXTFIELD_USERNAME);
+			Dimension dimLabel = new Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			labelLocal.setPreferredSize(dimLabel);		
 			this.add(labelLocal, cc.xy(2,iRow*2));			
 			
 			
@@ -119,12 +128,13 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				bDefaultValue=true;
 			}
 			
-			JTextField textfieldFTPUsername = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			JTextField textfieldFTPUsername = new JTextField(sDefaultValue,  0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
 			textfieldFTPUsername.setHorizontalAlignment(JTextField.LEFT);
 
-			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
-			//Dimension dim = new Dimension(10, 15);
-			//textfield.setPreferredSize(dim);
+			//textfieldFTPPassword.setCaretPosition(0); //Cursorposition
+			
+			Dimension dim = new Dimension(iCOMPONENT_WIDTH, iCOMPONENT_HEIGHT);
+			textfieldFTPUsername.setPreferredSize(dim);
 			panel.add(textfieldFTPUsername, cc.xy(4,iRow*2));
 
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
@@ -157,6 +167,8 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 		main:{
 			
 			JLabel labelLocal = new JLabel(IConstantProgramFTPCredentialsOVPN.sLABEL_TEXTFIELD_PASSWORD);
+			Dimension dimLabel = new Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
+			labelLocal.setPreferredSize(dimLabel);	
 			this.add(labelLocal, cc.xy(2,iRow*2));			
 			
 			boolean bDefaultValue=false;
@@ -165,13 +177,13 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				bDefaultValue=true;
 			}
 
-			JTextField textfieldFTPPassword = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			JTextField textfieldFTPPassword = new JTextField(sDefaultValue, 0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
 			textfieldFTPPassword.setHorizontalAlignment(JTextField.LEFT);
 
 			//textfieldFTPPassword.setCaretPosition(0); //Cursorposition
 			
-			//Dimension dim = new Dimension(10, 15);
-			//textfield.setPreferredSize(dim);
+			Dimension dim = new Dimension(iCOMPONENT_WIDTH, iCOMPONENT_HEIGHT);
+			textfieldFTPPassword.setPreferredSize(dim);
 			panel.add(textfieldFTPPassword, cc.xy(4,iRow*2));
 			
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
@@ -219,6 +231,9 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			//panel.setComponent(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, textfieldIPLocal);  
 				
 			JButton buttonFTPCredentials2ini = new JButton(sDefaultValue);
+			Dimension dim = new Dimension(iCOMPONENT_WIDTH, iCOMPONENT_HEIGHT);
+			buttonFTPCredentials2ini.setPreferredSize(dim);
+			
 			ActionFTPCredentials2iniOVPN actionFTPCredentials2iniOVPN = new ActionFTPCredentials2iniOVPN(objKernel, this);
 			buttonFTPCredentials2ini.addActionListener(actionFTPCredentials2iniOVPN);
 			panel.add(buttonFTPCredentials2ini, cc.xy(6,iRow*2));
@@ -248,12 +263,13 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				bDefaultValue=true;
 			}
 			
-			JTextField textfieldMessage = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			JTextField textfieldMessage = new JTextField(sDefaultValue,  0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
 			textfieldMessage.setHorizontalAlignment(JTextField.LEFT);
 
-			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
-			//Dimension dim = new Dimension(10, 15);
-			//textfield.setPreferredSize(dim);
+			//textfieldFTPPassword.setCaretPosition(0); //Cursorposition
+			
+			Dimension dim = new Dimension(iCOMPONENT_WIDTH, iCOMPONENT_HEIGHT);
+			textfieldMessage.setPreferredSize(dim);
 			panel.add(textfieldMessage, cc.xy(4,iRow*2));
 
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
@@ -288,8 +304,9 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 		return cs;
 	}
 
+	@Override
 	public RowSpec buildRowSpecGap() {
-		RowSpec rs = new RowSpec(Sizes.dluX(5));
+		RowSpec rs = new RowSpec(Sizes.dluX(iROWGAP_HEIGHT));
 		return rs;
 	}
 
@@ -314,14 +331,21 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			//this.createRowIpRouter(this, cc, 1, sIpRouter);							
 			//...
 			
-			RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			
+			//Falls kein Debug Modus an ist, hiermit quasi eine Platzhalterzeile einfügen.
+			if(!this.getFlag(IDebugUiZZZ.FLAGZ.DEBUGUI_PANELLABEL_ON.name())) {	
+				RowSpec rsGap0 = this.buildRowSpecGap();
+				listReturn.add(rsGap0);	
+			}
+			
+			RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX( iROW_HEIGHT),0.5);				
 			listReturn.add(rs1);
 			
 			RowSpec rsGap1 = this.buildRowSpecGap();
 			listReturn.add(rsGap1);	
 			
 			//++++++++++
-			RowSpec rs2 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs2 = new RowSpec(RowSpec.CENTER,Sizes.dluX( iROW_HEIGHT),0.5);				
 			listReturn.add(rs2);
 			
 			RowSpec rsGap2 = this.buildRowSpecGap();
@@ -329,7 +353,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			
 			
 			//++++++++++
-			RowSpec rs3 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs3 = new RowSpec(RowSpec.CENTER,Sizes.dluX( iROW_HEIGHT),0.5);				
 			listReturn.add(rs3);
 			
 			RowSpec rsGap3 = this.buildRowSpecGap();
@@ -337,14 +361,14 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			
 			
 			//++++++++++
-			RowSpec rs4 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs4 = new RowSpec(RowSpec.CENTER,Sizes.dluX( iROW_HEIGHT),0.5);				
 			listReturn.add(rs4);
 			
 			RowSpec rsGap4 = this.buildRowSpecGap();
 			listReturn.add(rsGap4);
 			
 			//++++++++++
-			RowSpec rs5 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
+			RowSpec rs5 = new RowSpec(RowSpec.CENTER,Sizes.dluX( iROW_HEIGHT),0.5);				
 			listReturn.add(rs5);
 			
 			RowSpec rsGap5 = this.buildRowSpecGap();
@@ -400,19 +424,19 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			ColumnSpec csGap = this.buildColumnSpecGap();
 			listReturn.add(csGap);
 			
-			ColumnSpec cs1 = new ColumnSpec(ColumnSpec.RIGHT, Sizes.dluX(100), 0.5 );
+			ColumnSpec cs1 = new ColumnSpec(ColumnSpec.RIGHT, Sizes.dluX(50), 0.5 );//Spalte: Fuehrungstext
 			listReturn.add(cs1);
 			listReturn.add(csGap);
 							
-			ColumnSpec cs2 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5);
+			ColumnSpec cs2 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(125), 0.5); //Spalte: Texteingabefeld
 			listReturn.add(cs2);			
 			listReturn.add(csGap);
 			
-			ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(100), 0.5 );
+			ColumnSpec cs3 = new ColumnSpec(ColumnSpec.LEFT, Sizes.dluX(50), 0.5 ); //Spalte: Button
 			listReturn.add(cs3);
 			listReturn.add(csGap);
 			
-			ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(30), 0.5 );
+			ColumnSpec cs4 = new ColumnSpec(ColumnSpec.CENTER, Sizes.dluX(20), 0.5 );
 			listReturn.add(cs4);				
 			listReturn.add(csGap);
 			
@@ -457,19 +481,22 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				sPasswordDecrypted = "Enter password";
 			}
 			
-			
 			switch(iRow) {
 			case 1:
-				this.createRowFTPUser(this, cc, 1, sFTPUser);			
+				int iRowFTPUser = this.computeContentRowNumberUsed(iRow);
+				this.createRowFTPUser(this, cc, iRowFTPUser, sFTPUser);			
 				break;
 			case 2:
-				this.createRowFTPPassword(this, cc, 2, sPasswordDecrypted);			
+				int iRowFTPPassword = this.computeContentRowNumberUsed(iRow);
+				this.createRowFTPPassword(this, cc, iRowFTPPassword, sPasswordDecrypted);			
 				break;
 			case 3:
-				this.createRowSaveCredentialsToIni(this, cc, 3, IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI);			
+				int iRowSave = this.computeContentRowNumberUsed(iRow);
+				this.createRowSaveCredentialsToIni(this, cc, iRowSave, IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI);			
 				break;	
 			case 4:
-				this.createRowMessage(this, cc, 4, IConstantProgramFTPCredentialsOVPN.sVALUE_TEXTFIELD_MESSAGE_INITIAL);
+				int iRowMessage = this.computeContentRowNumberUsed(iRow);
+				this.createRowMessage(this, cc, iRowMessage, IConstantProgramFTPCredentialsOVPN.sVALUE_TEXTFIELD_MESSAGE_INITIAL);
 				break;
 			default:
 				//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.

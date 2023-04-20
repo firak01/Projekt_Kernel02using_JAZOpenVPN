@@ -28,6 +28,7 @@ import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
+import basic.zKernelUI.component.IDebugUiZZZ;
 import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
@@ -283,6 +284,11 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			//...		
 			//this.createRowIpRouter(this, cc, 1, sIpRouter);							
 			//...
+			
+			if(!this.getFlag(IDebugUiZZZ.FLAGZ.DEBUGUI_PANELLABEL_ON.name())) {	
+				RowSpec rsGap0 = this.buildRowSpecGap();
+				listReturn.add(rsGap0);	
+			}
 			
 			RowSpec rs1 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
 			listReturn.add(rs1);
