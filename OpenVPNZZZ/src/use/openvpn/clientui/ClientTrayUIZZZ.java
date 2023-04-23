@@ -259,7 +259,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		main:{		
 			//TODO Natuerlich muessen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
 			
-			//###### Processe beenden
+			//###### Prozesse beenden
 			//+++ Vorbereitend den processnamen auslesen
 			File objFileExe = ClientConfigFileZZZ.findFileExe();
 			if(objFileExe!=null){
@@ -288,7 +288,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			
 				this.switchStatus(iSTATUS_CONNECTING);
 											
-				//DIES �ber einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+				//DIES ueber einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
 				Thread objThreadConfig = new Thread(this.objClientMain);
 				objThreadConfig.start();
 				

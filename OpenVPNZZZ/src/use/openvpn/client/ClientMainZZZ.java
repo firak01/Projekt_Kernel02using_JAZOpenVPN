@@ -274,7 +274,7 @@ private boolean bFlagPortScanAllFinished = false;
 					 threadaOVPN[icount] = new Thread(runneraOVPN[icount]);					
 					 threadaOVPN[icount].start();
 					 iNumberOfProcessStarted++;	
-					//Das bl�ht das Log unn�tig auf .... this.logStatusString("Finished starting thread # " + icount + " for establishing connection.");
+					//Das blaeht das Log unnoetig auf .... this.logStatusString("Finished starting thread # " + icount + " for establishing connection.");
 				}				
 			}//END for
 			this.logStatusString("Finished starting " + iNumberOfProcessStarted + " threads for establishing connection.");

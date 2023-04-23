@@ -87,7 +87,7 @@ public class ConfigFileTemplateOvpnOVPN extends KernelUseObjectZZZ{
 				//objKernel.getLogObject().WriteLineDate("Filetype .ovpn found. It seems that Open VPN is installed.");				
 			}
 			
-			/*Nur zum Test: Ausgeben aller zur Verf�gung stehenden Actions
+			/*Nur zum Test: Ausgeben aller zur Verfuegung stehenden Actions
 			List lAction = ass.getActionList();
 			if(lAction.isEmpty()==true){
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "Action assoziated with: .ovpn", iERROR_PARAMETER_VALUE, ReflectionZZZ.getMethodCurrentName(), "");
@@ -112,7 +112,7 @@ public class ConfigFileTemplateOvpnOVPN extends KernelUseObjectZZZ{
 				throw ez;
 			}
 			
-			//Aus dieser Commandozeile den Pfad zur ausf�hrbaren Datei auslesen
+			//Aus dieser Commandozeile den Pfad zur ausfuehrbaren Datei auslesen
 			sReturn = objAction.getCommand();
 		}//END main:
 		return sReturn;
@@ -148,7 +148,7 @@ public class ConfigFileTemplateOvpnOVPN extends KernelUseObjectZZZ{
 			File objFileExe = ConfigFileTemplateOvpnOVPN.findFileExe();
 			String sCommand = ConfigFileTemplateOvpnOVPN.readCommandAssociatedRun();
 			
-			//Nun den Executable - Part incl. Anf�hrungszeichen entfernen
+			//Nun den Executable - Part incl. Anfuehrungszeichen entfernen
 			String sFile = "\"" + objFileExe.getPath() + "\"";
 			sReturn = StringZZZ.replace(sCommand, sFile, "");
 			sReturn = sReturn.trim();
