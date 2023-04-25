@@ -1,6 +1,7 @@
 package use.openvpn;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
@@ -15,6 +16,7 @@ public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IAppl
 	private String sVpnIpRemote = null;
 	private String sVpnIpLocal = null;
 	private String sIPLocal = null;
+	private String sIPIni = null;
 	private String sTapAdapterUsed = null;
 	
 	private String sCertifierConfiguredFilename=null;	
@@ -84,6 +86,17 @@ public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IAppl
 		}//END main:
 		return sReturn;
 	}
+	
+	public String readIpIni() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			////Z.B. [IP-ClientContext!02]
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","IP-ClientContext","IPExternal").getValue();					
+		}//END main:
+		return sReturn;
+	}
+	
 	
 	/** Read the used local IP.
 	 * @return
@@ -177,6 +190,16 @@ public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IAppl
 		}
 		public void setVpnIpLocal(String sVpnIpLocal) {
 			this.sVpnIpLocal = sVpnIpLocal;
+		}
+		
+		public String getIpIni() throws ExceptionZZZ{
+			if(StringZZZ.isEmpty(this.sIPIni)) {
+				this.sIPIni = this.readIpIni();
+			}
+			return this.sIPIni;
+		}
+		public void setIpIni(String sIPini) {
+			this.sIPIni=sIPini;
 		}
 		
 		public String getIpLocal() throws ExceptionZZZ{

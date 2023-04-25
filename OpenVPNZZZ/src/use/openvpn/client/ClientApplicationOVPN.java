@@ -20,7 +20,9 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	
 	
 	private String sURL = null;	
-	private String sIPRemote = null;
+	private String sIpURL = null;
+	
+	private String sIpRemote = null;
 
 	//Ggf. ist dieser Wert aussagekräftiger als der Versuch über sIPVPN
 	private String sPortRemoteScanned = null;
@@ -105,7 +107,7 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	* 
 	* lindhaueradmin; 13.07.2006 09:12:43
 	 */
-	public String readIpRemote() throws ExceptionZZZ{
+	public String readIpURL() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
 			
@@ -128,6 +130,27 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 		return sReturn;
 	}
 	
+	/** Hier die Möglichkeit andere Quellen als nur die URL zu definiern
+	 * @return
+	 * @throws ExceptionZZZ
+	 * @author Fritz Lindhauer, 25.04.2023, 07:38:26
+	 */
+	public String readIpRemote() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{						
+			String sIpUsed = null;
+			String sIpIni = this.getIpIni();
+			if(StringZZZ.isEmpty(sIpIni)) {
+				String sIpUrl = this.getIpURL();				
+				sIpUsed = sIpUrl;
+			}else {
+				sIpUsed = sIpIni;
+			}
+			sReturn = sIpUsed;
+		}//END main
+		return sReturn;
+	}
+	
 	//######################################################
 	//### Getter / Setter
 	public ClientMainZZZ getClientObject() {
@@ -146,15 +169,25 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	public void setURL2Parse(String sURL) {
 		this.sURL = sURL;
 	}
+	
+	public String getIpURL() throws ExceptionZZZ{
+		if(this.sIpURL==null) {
+			this.sIpURL = this.readIpURL();
+		}
+		return this.sIpURL;
+	}
+	public void setIpURL(String sIpURL) {
+		this.sIpURL = sIpURL;
+	}
 			
 	public String getIpRemote() throws ExceptionZZZ{
-		if(this.sIPRemote==null) {
-			this.sIPRemote = this.readIpRemote();
+		if(this.sIpRemote==null) {
+			this.sIpRemote = this.readIpRemote();
 		}
-		return this.sIPRemote;
+		return this.sIpRemote;
 	}
-	public void setIpRemote(String sIPRemote) {
-		this.sIPRemote = sIPRemote;
+	public void setIpRemote(String sIpRemote) {
+		this.sIpRemote = sIpRemote;
 	}
 	
 	/**Der Versuch anzugeben, �ber welchen Port die VPN-Verbindung erfolgreich war.

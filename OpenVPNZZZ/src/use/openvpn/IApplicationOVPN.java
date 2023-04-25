@@ -8,6 +8,8 @@ public interface IApplicationOVPN extends IMainUserOVPN{
 
 	String getProxyPort();
 
+	String getIpIni() throws ExceptionZZZ;
+	
 	String getIpLocal() throws ExceptionZZZ;
 	
 	String getVpnIpLocal() throws ExceptionZZZ;

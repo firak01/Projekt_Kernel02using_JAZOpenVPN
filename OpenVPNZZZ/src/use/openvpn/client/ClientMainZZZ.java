@@ -87,24 +87,47 @@ private boolean bFlagPortScanAllFinished = false;
 				this.logStatusString(objaFileConfigTemplate.length + " configuration TEMPLATE file(s) was (were) found in the directory: '" + objChooser.readDirectoryConfigPath() + "'");  //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			}
 			
-//			### 2. Voraussetzung: Web-Seite konfiguriert, auf der die dynamische IP vorhanden ist.
-			//Zur Web-Seite verbinden, dazu den KernelReaderURL verwenden und zun�chst initialisieren.
-			this.logStatusString("Reading configured url to parse for ip-adress."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.			
-			if(((ClientApplicationOVPN)this.getApplicationObject()).getURL2Parse()==null){
-				ExceptionZZZ ez = new ExceptionZZZ(sERROR_CONFIGURATION_MISSING+"URL String", iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
-				throw ez;		
-			}else{
-				this.logStatusString("URL to read IP from is configured as: '" + ((ClientApplicationOVPN)this.getApplicationObject()).getURL2Parse() + "'");
+			//### 2a. Auslesen der IP aus der Ini Datei
+			String sIpIni = ((ClientApplicationOVPN)this.getApplicationObject()).getIpIni();
+			if(StringZZZ.isEmpty(sIpIni)) {
+				this.logStatusString("No Ip is configured in the INI-File");
+			}else {
+				this.logStatusString("IP read from INI-File: '" + sIpIni + "'");
 			}
 			
-						
-//			###3. Voraussetzung: Auf der konfigurierten Web-Seite muss eine IP-Adresse auszulesen sein
-			this.logStatusString("Parsing IP-adress from URL."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.			
-			if(((ClientApplicationOVPN)this.getApplicationObject()).getIpRemote()==null){//Dabei wird auch der Proxy eingestellt.
-				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to receive new IP-adress.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
-				throw ez;
+//			### 2b. Voraussetzung: Web-Seite konfiguriert, auf der die dynamische IP vorhanden ist.
+			//Zur Web-Seite verbinden, dazu den KernelReaderURL verwenden und zun�chst initialisieren.
+			this.logStatusString("Reading configured url to parse for ip-adress."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+			String sIpUrl=null;
+			if(((ClientApplicationOVPN)this.getApplicationObject()).getURL2Parse()==null){
+				//ExceptionZZZ ez = new ExceptionZZZ(sERROR_CONFIGURATION_MISSING+"URL String", iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+				//throw ez;
+				this.logStatusString("No URL to read IP from is configured.");
 			}else{
-				this.logStatusString("New IP-adress received: " + ((ClientApplicationOVPN)this.getApplicationObject()).getIpRemote());			
+				this.logStatusString("URL to read IP from is configured as: '" + ((ClientApplicationOVPN)this.getApplicationObject()).getURL2Parse() + "'");
+				
+//				###2ba. Voraussetzung: Auf der konfigurierten Web-Seite muss eine IP-Adresse auszulesen sein
+				this.logStatusString("Parsing IP-adress from URL."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+				sIpUrl = ((ClientApplicationOVPN)this.getApplicationObject()).getIpURL();//Dabei wird auch der Proxy eingestellt. 
+				if(StringZZZ.isEmpty(sIpUrl)){
+					//ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to receive new IP-adress.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+					//throw ez;
+					this.logStatusString("Unable to receive new IP-adress from URL.");
+				}else{
+					this.logStatusString("New IP-adress from URL received: '" + sIpUrl + "'");
+					
+				}
+			}
+									
+			String sIpUsed = ((ClientApplicationOVPN)this.getApplicationObject()).getIpRemote();//Dahinter liegt dann die Regel welche ausgewählt werden soll.			
+			if(StringZZZ.isEmpty(sIpUsed)) {
+				String sLog = "Unable to receive any IP-adress. Neither from URL nor from the ini.";
+				this.logStatusString(sLog);
+				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + sLog, iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+				throw ez;
+			}else {
+				String sLog = "Using IP as remote: '" + sIpUsed + "'";
+				this.logStatusString(sLog);
 			}
 			
 			
