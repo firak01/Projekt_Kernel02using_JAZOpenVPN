@@ -96,7 +96,7 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 		main:{
 			KernelJPanelCascadedZZZ panelParent = this.getPanelParent();
 			IPanelCascadedZZZ panelContent = panelParent.searchPanel("CONTENT"); 
-			JTextField textField = (JTextField) panelContent.getComponent(sCOMPONENT_TEXTFIELD_PASSWORD);					
+			JTextField textField = (JTextField) panelContent.getComponent(sCOMPONENT_TEXTFIELD_PASSWORD_DECRYPTED);					
 			sReturn = textField.getText();
 		}
 		return sReturn;
@@ -262,7 +262,7 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 	
 	@Override
 	public void updateLabel(String stext) {
-		updateLabelMarked(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD, stext);
+		updateLabelMarked(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD_DECRYPTED, stext);
 	}
 	
 	@Override

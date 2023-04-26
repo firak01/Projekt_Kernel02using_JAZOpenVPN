@@ -7,9 +7,13 @@ public interface IConstantProgramFTPCredentialsOVPN {
 	public static String sCOMPONENT_TEXTFIELD_USERNAME = "textFTPUsername";
 	public static String sVALUE_TEXTFIELD_USERNAME_INITIAL = "Enter username";
 	
-	public static String sLABEL_TEXTFIELD_PASSWORD = "Kennwort:";
-	public static String sCOMPONENT_TEXTFIELD_PASSWORD = "textFTPPassword";
-	public static String sVALUE_TEXTFIELD_PASSWORD_INITIAL = "Enter password";
+	public static String sLABEL_TEXTFIELD_PASSWORD_DECRYPTED = "Kennwort:";
+	public static String sCOMPONENT_TEXTFIELD_PASSWORD_DECRYPTED = "textFTPPassword";
+	public static String sVALUE_TEXTFIELD_PASSWORD_DECRYPTED_INITIAL = "Enter password";
+	
+	public static String sLABEL_LABEL_PASSWORD_ENCRYPTED = "Verschluesselt:";
+	public static String sCOMPONENT_LABEL_PASSWORD_ENCRYPTED = "labelFTPPassword";
+	public static String sVALUE_LABEL_PASSWORD_ENCRYPTED_INITIAL = "";
 	
 	public static String sLABEL_BUTTON_TO_INI = "to ini";
 	
