@@ -554,7 +554,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 		public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 		}			 							
 		
-		class SwingWorker4ProgramIpWeb2iniOVPN extends KernelSwingWorkerZZZ{
+		class SwingWorker4ProgramIpWeb2iniOVPN extends KernelSwingWorker4UIZZZ{
 			private KernelJPanelCascadedZZZ panel;
 			private String[] saFlag4Program;
 			
@@ -573,12 +573,12 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 					String sIp = objProg.getIpFromUi();
 					logLineDate("Ip from Program Web2ini'" + sIp + "'");
 										
-					updateTextField(objProg, "writing...");
+					updateMessage(objProg, "writing...");
 					boolean bErg = objProg.writeIpToIni(sIp);
 					
 					
 					//3. Diesen Wert wieder ins Label schreiben.
-					updateTextField(objProg, sIp);
+					updateValue(objProg, sIp);
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
@@ -586,30 +586,30 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 				return "all done";
 			}
 			
-			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-			 *  Entspricht auch ProgramIPContext.updateLabel(..)
-			* @param stext
-			* 
-			* lindhaueradmin; 17.01.2007 12:09:17
-			 */
-			public void updateTextField(final ProgramIpWeb2iniOVPN objProg, final String stext){
-								
-//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-				Runnable runnerUpdateLabel= new Runnable(){
-
-					public void run(){
-//						In das Textfeld eintragen, das etwas passiert.	
-						logLineDate("Textfield updated with'" + stext + "'");						
-						try {
-							objProg.updateLabel(stext);
-						} catch (ExceptionZZZ e) {
-							e.printStackTrace();
-						}
-					}
-				};
-				
-				SwingUtilities.invokeLater(runnerUpdateLabel);					
-			}
+//			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
+//			 *  Entspricht auch ProgramIPContext.updateLabel(..)
+//			* @param stext
+//			* 
+//			* lindhaueradmin; 17.01.2007 12:09:17
+//			 */
+//			public void updateTextField(final ProgramIpWeb2iniOVPN objProg, final String stext){
+//								
+////				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+//				Runnable runnerUpdateLabel= new Runnable(){
+//
+//					public void run(){
+////						In das Textfeld eintragen, das etwas passiert.	
+//						logLineDate("Textfield updated with'" + stext + "'");						
+//						try {
+//							objProg.updateLabel(stext);
+//						} catch (ExceptionZZZ e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				};
+//				
+//				SwingUtilities.invokeLater(runnerUpdateLabel);					
+//			}
 			
 			/**Overwritten and using an object of jakarta.commons.lang
 			 * to create this string using reflection. 
@@ -666,7 +666,7 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 	public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 	}			 							
 	
-	class SwingWorker4ProgramIpRouter2iniOVPN extends KernelSwingWorkerZZZ{
+	class SwingWorker4ProgramIpRouter2iniOVPN extends KernelSwingWorker4UIZZZ{
 		private KernelJPanelCascadedZZZ panel;
 		private String[] saFlag4Program;
 						
@@ -687,45 +687,20 @@ class ActionIpRouter2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObject
 				String sIp = objProg.getIpFromUi();
 				logLineDate("Ip from Program Router2ini'" + sIp + "'");
 								
-				updateTextField(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
+				updateMessage(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
 				
 				//2. Schreibe in die ini-Datei
 				boolean bErg = objProg.writeIpToIni(sIp);
 								
 				//3. Diesen Wert wieder ins Label zurückschreiben.
-				updateTextField(objProg, sIp);
+				updateValue(objProg, sIp);
 			}catch(ExceptionZZZ ez){
 				System.out.println(ez.getDetailAllLast());
 				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
 			}
 			return "all done";
 		}
-		
-		/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-		 *  Entspricht auch ProgramIPContext.updateLabel(..)
-		* @param stext
-		* 
-		* lindhaueradmin; 17.01.2007 12:09:17
-		 */
-		public void updateTextField(final ProgramIpRouter2iniOVPN objProg, final String stext){
-						
-//			Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
-			Runnable runnerUpdateLabel= new Runnable(){
-
-				public void run(){
-//					In das Textfeld eintragen, das etwas passiert.
-					logLineDate("Textfield updated with '" + stext + "'");					
-					try {
-						objProg.updateLabel(stext);
-					} catch (ExceptionZZZ e) {
-						e.printStackTrace();
-					}					 
-				}
-			};
-			
-			SwingUtilities.invokeLater(runnerUpdateLabel);			
-		}		
-		
+				
 		/**Overwritten and using an object of jakarta.commons.lang
 		 * to create this string using reflection. 
 		 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 

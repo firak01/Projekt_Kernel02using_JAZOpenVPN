@@ -66,7 +66,7 @@ public class ProgramIPContentWebOVPN extends AbstractProgramIPContentOVPN implem
 	
 	@Override
 	public void updateMessage(String stext) throws ExceptionZZZ {
-		
+		updateComponent(sCOMPONENT_TEXTFIELD, stext);
 	}
 	
 }

@@ -275,7 +275,7 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 	
 	@Override
 	public void updateMessage(String stext) throws ExceptionZZZ {
-		
+		super.updateComponent(sCOMPONENT_TEXTFIELD, stext);
 	}
 }
 

@@ -205,7 +205,7 @@ public class ProgramIpRouter2iniOVPN  extends AbstractProgram2iniOVPN implements
 
 	@Override
 	public void updateMessage(String stext) throws ExceptionZZZ {
-		updateLabel(stext);
+		updateComponent(IConstantProgramIpRouterOVPN.sCOMPONENT_TEXTFIELD, stext);
 	}
 	
 }
