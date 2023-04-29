@@ -37,6 +37,7 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelFormLayoutedZZZ;
+import basic.zKernelUI.thread.KernelSwingWorker4UIZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import basic.zKernelUI.util.JTextFieldHelperZZZ;
 
@@ -307,35 +308,35 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 		boolean bReturn = false;
 		main:{
 			
-			JLabel labelLocal = new JLabel(IConstantProgramFTPCredentialsOVPN.sLABEL_TEXTFIELD_MESSAGE);
+			JLabel labelLocal = new JLabel(IConstantProgramFTPCredentialsOVPN.sLABEL_LABEL_MESSAGE);
 			this.add(labelLocal, cc.xy(2,iRow*2));			
 			
 			
 			//Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
 			boolean bDefaultValue=false;
 			if(StringZZZ.isEmpty(sDefaultValue)){
-				sDefaultValue = this.sVALUE_TEXTFIELD_MESSAGE_INITIAL;
+				sDefaultValue = this.sVALUE_LABEL_MESSAGE_INITIAL;
 				bDefaultValue=true;
 			}
 			
-			JTextField textfieldMessage = new JTextField(sDefaultValue,  0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
-			textfieldMessage.setHorizontalAlignment(JTextField.LEFT);
-
+			JLabel labelMessage = new JLabel(sDefaultValue,  0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
+			labelMessage.setHorizontalAlignment(JTextField.LEFT);
+						
 			//textfieldFTPPassword.setCaretPosition(0); //Cursorposition
 			
 			Dimension dim = new Dimension(iCOMPONENT_WIDTH, iCOMPONENT_HEIGHT);
-			textfieldMessage.setPreferredSize(dim);
-			panel.add(textfieldMessage, cc.xy(4,iRow*2));
+			labelMessage.setPreferredSize(dim);
+			panel.add(labelMessage, cc.xy(4,iRow*2));
 
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-			panel.setComponent(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_MESSAGE, textfieldMessage);  
+			panel.setComponent(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_LABEL_MESSAGE, labelMessage);  
 				
 			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
-			if(bDefaultValue) {
-				JTextFieldHelperZZZ.markAndFocus(this, textfieldMessage);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
-			}
+//			if(bDefaultValue) {
+//				JTextFieldHelperZZZ.markAndFocus(this, textfieldMessage);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
+//			}
 			
 //			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
 //			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
@@ -527,7 +528,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			sFTPUser = objEntryUsername.getValue();
 			
 			//DARIN WIRD NACH DEM ALIASNAMEN GESUCHT, UND DER WERT  FÜR 'password' geholt.
-			//TODOGOON20230413;//DAS ENTSCHLUESSELN SCHEITERT
+			//TODOGOON20230427;//DAS VERSCHLUESSELTE SOLL AUCH ZURUECKKOMMEN
 			IKernelConfigSectionEntryZZZ objEntryPasswordDecrypted = objKernel.getParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_PASSWORD);
 			sPasswordDecrypted = objEntryPasswordDecrypted.getValue();		
 			if(StringZZZ.isEmpty(sPasswordDecrypted)){
@@ -562,7 +563,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				break;	
 			case 5:
 				int iRowMessage = this.computeContentRowNumberUsed(iRow);
-				this.createRowMessage(this, cc, iRowMessage, IConstantProgramFTPCredentialsOVPN.sVALUE_TEXTFIELD_MESSAGE_INITIAL);
+				this.createRowMessage(this, cc, iRowMessage, IConstantProgramFTPCredentialsOVPN.sVALUE_LABEL_MESSAGE_INITIAL);
 				break;
 			default:
 				//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
@@ -617,7 +618,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 		public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 		}			 							
 		
-		class SwingWorker4ProgramFTPCredentials2iniOVPN extends KernelSwingWorkerZZZ{		
+		class SwingWorker4ProgramFTPCredentials2iniOVPN extends KernelSwingWorker4UIZZZ{		
 			private KernelJPanelCascadedZZZ panel;
 			private String[] saFlag4Program;
 			
@@ -647,7 +648,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 					//3. Diesen Wert wieder ins Label zurückschreiben.
 					updateMessage(objProg, "password encrypted written..."); //Schreibe einen anderen Text in das Feld...					
 					String sPasswordEncodedWritten = objProg.getPasswordEncodedWritten();
-					updateTextField(objProg, sPasswordEncodedWritten);
+					updateValue(objProg, sPasswordEncodedWritten);
 					
 					//4. Hier explizit nicht den Cache loeschen!!!
 					//   Dann stehen nach einem CANCEL die Werte zur Verfuegung aus dem CACHE.
@@ -656,48 +657,6 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
 				}
 				return "all done";
-			}
-			
-			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-			 *  Entspricht auch ProgramIPContext.updateLabel(..)
-			* @param stext
-			* 
-			* lindhaueradmin; 17.01.2007 12:09:17
-			 */
-			public void updateTextField(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
-							
-//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
-				Runnable runnerUpdateLabel= new Runnable(){
-
-					public void run(){
-//						In das Textfeld eintragen, das etwas passiert.
-						logLineDate("Credentials updated for user '" + stext + "'");					
-						objProg.updateLabel(stext);					 
-					}
-				};
-				
-				SwingUtilities.invokeLater(runnerUpdateLabel);			
-			}
-			
-			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-			 *  Entspricht auch ProgramIPContext.updateLabel(..)
-			* @param stext
-			* 
-			* lindhaueradmin; 17.01.2007 12:09:17
-			 */
-			public void updateMessage(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
-							
-//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
-				Runnable runnerUpdateLabel= new Runnable(){
-
-					public void run(){
-//						In das Textfeld eintragen, das etwas passiert.
-						logLineDate("Credentials updated for user...message: '" + stext + "'");					
-						objProg.updateMessage(stext);					 
-					}
-				};
-				
-				SwingUtilities.invokeLater(runnerUpdateLabel);			
 			}
 					
 			/**Overwritten and using an object of jakarta.commons.lang

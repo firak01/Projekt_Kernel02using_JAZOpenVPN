@@ -17,9 +17,9 @@ public interface IConstantProgramFTPCredentialsOVPN {
 	
 	public static String sLABEL_BUTTON_TO_INI = "to ini";
 	
-	public static String sLABEL_TEXTFIELD_MESSAGE = "";
-	public static String sCOMPONENT_TEXTFIELD_MESSAGE = "textCredentialsLocal";
-	public static String sVALUE_TEXTFIELD_MESSAGE_INITIAL = "xxxxxxx";
+	public static String sLABEL_LABEL_MESSAGE = "";
+	public static String sCOMPONENT_LABEL_MESSAGE = "textCredentialsLocal";
+	public static String sVALUE_LABEL_MESSAGE_INITIAL = "xxxxxxx";
 	
 	public static String sINI_PROPERTY_USERNAME = "FTPUsername";
 	public static String sINI_PROPERTY_PASSWORD = "FTPPassword";

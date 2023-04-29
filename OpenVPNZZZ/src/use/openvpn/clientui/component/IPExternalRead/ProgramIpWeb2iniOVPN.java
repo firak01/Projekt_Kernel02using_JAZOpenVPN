@@ -172,13 +172,18 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 	
 	//### Aus Interfaces und abstrakten Klassen
 	@Override
-	public void updateLabel(String stext) {
-		updateLabel(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);//Merke: ggfs. gibt es das Feld sogar gar nicht
+	public void updateLabel(String stext) throws ExceptionZZZ {
+
+	}
+	
+	@Override
+	public void updateValue(String stext) throws ExceptionZZZ {
+		super.updateComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);//Merke: ggfs. gibt es das Feld sogar gar nicht
 	}
 
 	@Override
-	public void updateMessage(String stext){
-		updateLabel(stext);
+	public void updateMessage(String stext) throws ExceptionZZZ {
+		
 	}
 
 	public void reset() {

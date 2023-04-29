@@ -235,7 +235,11 @@ public class PanelAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impleme
 
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
-							objProg.updateLabel(stext);  
+							try {
+								objProg.updateLabel(stext);
+							} catch (ExceptionZZZ e) {								
+								e.printStackTrace();
+							}  
 						}
 					};
 					

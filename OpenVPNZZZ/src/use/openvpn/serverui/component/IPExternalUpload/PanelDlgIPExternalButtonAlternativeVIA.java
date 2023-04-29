@@ -180,7 +180,11 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 					public void run(){
 //						In das Textfeld eintragen, das etwas passiert.
 						logLineDate("TextField updated with '" + stext + "'");						
-						objProg.updateLabel(stext);
+						try {
+							objProg.updateLabel(stext);
+						} catch (ExceptionZZZ e) {
+							e.printStackTrace();
+						}
 					}
 				};
 				

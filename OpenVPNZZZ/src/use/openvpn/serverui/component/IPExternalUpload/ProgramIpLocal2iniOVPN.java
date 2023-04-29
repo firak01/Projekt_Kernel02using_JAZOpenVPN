@@ -67,7 +67,7 @@ public class ProgramIpLocal2iniOVPN extends AbstractProgram2iniOVPN implements I
 		String sReturn = null;
 		main:{
 			KernelJPanelCascadedZZZ panel = this.getPanelParent();
-			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
+			JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_VALUE);					
 			sReturn = textField.getText();
 		}
 		return sReturn;
@@ -192,13 +192,18 @@ public class ProgramIpLocal2iniOVPN extends AbstractProgram2iniOVPN implements I
 	}
 	
 	@Override
-	public void updateLabel(String stext) {
-		updateLabel(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, stext);
+	public void updateLabel(String stext) throws ExceptionZZZ {
+		
+	}
+	
+	@Override
+	public void updateMessage(String stext) throws ExceptionZZZ {
+		
 	}
 
 	@Override
-	public void updateMessage(String stext){
-		updateLabel(stext);
+	public void updateValue(String sValue) throws ExceptionZZZ {
+		updateComponent(sCOMPONENT_VALUE, sValue);
 	}
 }
 

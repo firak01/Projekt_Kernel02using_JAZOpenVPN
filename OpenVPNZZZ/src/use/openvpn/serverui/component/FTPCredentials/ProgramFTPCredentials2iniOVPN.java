@@ -261,13 +261,18 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 	}
 	
 	@Override
-	public void updateLabel(String stext) {
-		updateLabelMarked(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD_DECRYPTED, stext);
+	public void updateLabel(String stext) throws ExceptionZZZ {
+		
 	}
 	
 	@Override
-	public void updateMessage(String stext) {
-		updateLabel(IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_MESSAGE, stext);
+	public void updateValue(String stext) throws ExceptionZZZ {
+		super.updateComponent(sCOMPONENT_LABEL_PASSWORD_ENCRYPTED, stext);
+	}
+	
+	@Override
+	public void updateMessage(String stext) throws ExceptionZZZ {
+		super.updateComponent(sCOMPONENT_LABEL_MESSAGE, stext);
 	}
 }
 

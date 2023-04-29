@@ -350,7 +350,11 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
-							objProg.updateLabel(stext);  
+							try {
+								objProg.updateLabel(stext);
+							} catch (ExceptionZZZ e) {
+								e.printStackTrace();
+							}  
 						}
 					};
 					

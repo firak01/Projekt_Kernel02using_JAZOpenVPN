@@ -57,13 +57,18 @@ public class ProgramIPContentOVPN extends AbstractProgramIPContentOVPN implement
 	* lindhaueradmin; 17.01.2007 12:09:17
 	 */
 	@Override
-	public void updateLabel(String stext){
-		super.updateLabel(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);
+	public void updateLabel(String stext) throws ExceptionZZZ {
+
 	}
 	
 	@Override
-	public void updateMessage(String stext){
-		updateLabel(stext);
+	public void updateValue(String stext) throws ExceptionZZZ {
+		super.updateComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);
+	}
+	
+	@Override
+	public void updateMessage(String stext) throws ExceptionZZZ {
+		
 	}
 }
 

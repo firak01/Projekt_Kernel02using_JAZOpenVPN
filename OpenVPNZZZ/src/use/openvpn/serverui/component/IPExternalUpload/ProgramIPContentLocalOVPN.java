@@ -55,13 +55,19 @@ public class ProgramIPContentLocalOVPN extends AbstractProgramIPContentOVPN impl
 	* 
 	* lindhaueradmin; 17.01.2007 12:09:17
 	 */
-	public void updateLabel(String stext){
-		super.updateLabel(sCOMPONENT_TEXTFIELD, stext);
-	}	
-
 	@Override
-	public void updateMessage(String stext){
-		updateLabel(stext);
+	public void updateLabel(String stext) throws ExceptionZZZ {
+		
+	}	
+	
+	@Override
+	public void updateValue(String stext) throws ExceptionZZZ {
+		super.updateComponent(sCOMPONENT_VALUE, stext);
+	}
+	
+	@Override
+	public void updateMessage(String stext) throws ExceptionZZZ {
+		
 	}
 }
 

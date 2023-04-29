@@ -264,28 +264,18 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 	* 
 	* lindhaueradmin; 17.01.2007 12:09:17
 	 */
-	public void updateLabel(String stext){
-		this.sText2Update = stext;
-		
-//		Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-		Runnable runnerUpdateLabel= new Runnable(){
-
-			public void run(){
-//				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD + "'");				
-				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
-				textField.setText(sText2Update);
-				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
-			}
-		};
-		
-		SwingUtilities.invokeLater(runnerUpdateLabel);			
+	public void updateLabel(String stext) throws ExceptionZZZ {
+				
 	}
 	
-
 	@Override
-	public void updateMessage(String stext){
-		updateLabel(stext);
+	public void updateValue(String stext) throws ExceptionZZZ {
+		super.updateComponent(sCOMPONENT_TEXTFIELD, stext);
+	}
+	
+	@Override
+	public void updateMessage(String stext) throws ExceptionZZZ {
+		
 	}
 }
 

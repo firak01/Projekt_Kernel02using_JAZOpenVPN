@@ -194,12 +194,17 @@ public class ProgramIpRouter2iniOVPN  extends AbstractProgram2iniOVPN implements
 
 
 	@Override
-	public void updateLabel(String stext) {
-		updateLabel(IConstantProgramIpRouterOVPN.sCOMPONENT_TEXTFIELD, stext);
+	public void updateLabel(String stext) throws ExceptionZZZ {
+		
+	}
+	
+	@Override
+	public void updateValue(String stext) throws ExceptionZZZ {
+		updateComponent(IConstantProgramIpRouterOVPN.sCOMPONENT_TEXTFIELD, stext);
 	}
 
 	@Override
-	public void updateMessage(String stext){
+	public void updateMessage(String stext) throws ExceptionZZZ {
 		updateLabel(stext);
 	}
 	

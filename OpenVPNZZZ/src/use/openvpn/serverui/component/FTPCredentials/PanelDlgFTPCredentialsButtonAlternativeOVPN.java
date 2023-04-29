@@ -24,6 +24,7 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
+import basic.zKernelUI.thread.KernelSwingWorker4UIZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import custom.zKernel.LogZZZ;
 import use.openvpn.clientui.component.IPExternalRead.ProgramIpWeb2iniOVPN;
@@ -148,7 +149,7 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 			super.actionPerformPostCustom(ae,bQueryResult);
 		}			 							
 		
-		class SwingWorker4ProgramFTPCredentials2iniOVPN extends KernelSwingWorkerZZZ{
+		class SwingWorker4ProgramFTPCredentials2iniOVPN extends KernelSwingWorker4UIZZZ{
 			private KernelJPanelCascadedZZZ panel;
 			private String[] saFlag4Program;
 			
@@ -178,7 +179,7 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 					//3. Diesen Wert wieder ins Label zurückschreiben.
 					updateMessage(objProg, "closing dialog...");
 					String sPasswordEncodedWritten = objProg.getPasswordEncodedWritten();
-					updateTextField(objProg, sPasswordEncodedWritten);
+					updateValue(objProg, sPasswordEncodedWritten);
 
 					//20230416: Solange wie es noch keine Loesung gibt, das gesetzte INI Werte in den Cache kommen... cache loeschen.
 					//Sonst bekommt man immer wieder den alten Wert aus dem Cache beim Neuoeffnen des Dialogs.
@@ -194,47 +195,47 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 				return "all done";
 			}
 			
-			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-			 *  Entspricht auch ProgramIPContext.updateLabel(..)
-			* @param stext
-			* 
-			* lindhaueradmin; 17.01.2007 12:09:17
-			 */
-			public void updateTextField(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
-								
-//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-				Runnable runnerUpdateLabel= new Runnable(){
-
-					public void run(){
-//						In das Textfeld eintragen, das etwas passiert.
-						logLineDate("Credentials updated for user '" + stext + "'");					
-						objProg.updateLabel(stext);	
-					}
-				};
-				
-				SwingUtilities.invokeLater(runnerUpdateLabel);					
-			}		
-			
-			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-			 *  Entspricht auch ProgramIPContext.updateLabel(..)
-			* @param stext
-			* 
-			* lindhaueradmin; 17.01.2007 12:09:17
-			 */			
-			public void updateMessage(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
-								
-//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-				Runnable runnerUpdateLabel= new Runnable(){
-
-					public void run(){
-//						In das Textfeld eintragen, das etwas passiert.
-						logLineDate("Credentials updated for user '" + stext + "'");					
-						objProg.updateMessage(stext);	
-					}
-				};
-				
-				SwingUtilities.invokeLater(runnerUpdateLabel);					
-			}		
+//			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
+//			 *  Entspricht auch ProgramIPContext.updateLabel(..)
+//			* @param stext
+//			* 
+//			* lindhaueradmin; 17.01.2007 12:09:17
+//			 */
+//			public void updateTextField(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
+//								
+////				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+//				Runnable runnerUpdateLabel= new Runnable(){
+//
+//					public void run(){
+////						In das Textfeld eintragen, das etwas passiert.
+//						logLineDate("Credentials updated for user '" + stext + "'");					
+//						objProg.updateLabel(stext);	
+//					}
+//				};
+//				
+//				SwingUtilities.invokeLater(runnerUpdateLabel);					
+//			}		
+//			
+//			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
+//			 *  Entspricht auch ProgramIPContext.updateLabel(..)
+//			* @param stext
+//			* 
+//			* lindhaueradmin; 17.01.2007 12:09:17
+//			 */			
+//			public void updateMessage(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
+//								
+////				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+//				Runnable runnerUpdateLabel= new Runnable(){
+//
+//					public void run(){
+////						In das Textfeld eintragen, das etwas passiert.
+//						logLineDate("Credentials updated for user '" + stext + "'");					
+//						objProg.updateMessage(stext);	
+//					}
+//				};
+//				
+//				SwingUtilities.invokeLater(runnerUpdateLabel);					
+//			}		
 			
 			/**Overwritten and using an object of jakarta.commons.lang
 			 * to create this string using reflection. 

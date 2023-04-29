@@ -186,12 +186,16 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 			 */
 			public void updateTextField(final ProgramIpWeb2iniOVPN objProg, final String stext){
 								
-//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
 				Runnable runnerUpdateLabel= new Runnable(){
 
 					public void run(){
 //						In das Textfeld eintragen, das etwas passiert.	
-						objProg.updateLabel(stext);
+						try {
+							objProg.updateLabel(stext);
+						} catch (ExceptionZZZ e) {
+							e.printStackTrace();
+						}
 					}
 				};
 				

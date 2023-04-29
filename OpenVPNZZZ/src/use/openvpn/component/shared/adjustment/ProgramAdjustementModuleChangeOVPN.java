@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -199,26 +200,17 @@ public class ProgramAdjustementModuleChangeOVPN  extends AbstractKernelProgramUI
 	 */
 	@Override
 	public void updateLabel(String stext){
-		this.sText2Update = stext;
-		
-//		Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-		Runnable runnerUpdateLabel= new Runnable(){
-
-			public void run(){
-//				In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField '" + sCOMPONENT_TEXTFIELD + "'");				
-				JTextField textField = (JTextField) panel.getComponent(sCOMPONENT_TEXTFIELD);					
-				textField.setText(sText2Update);
-				textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
-			}
-		};
-		
-		SwingUtilities.invokeLater(runnerUpdateLabel);			
+				
+	}
+	
+	@Override
+	public void updateValue(String stext) throws ExceptionZZZ{
+		super.updateComponent(sCOMPONENT_TEXTFIELD, stext);		
 	}
 	
 	@Override
 	public void updateMessage(String stext){
-		updateLabel(stext);
+		
 	}
 }
 
