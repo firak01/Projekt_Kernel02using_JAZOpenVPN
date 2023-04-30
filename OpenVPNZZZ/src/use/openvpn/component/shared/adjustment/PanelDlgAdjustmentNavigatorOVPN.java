@@ -37,6 +37,7 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelFormLayoutedZZZ;
+import basic.zKernelUI.thread.KernelSwingWorker4UIZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -346,7 +347,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			}			 							
 			
-			class SwingWorker4ProgramModuleChangeOVPN extends KernelSwingWorkerZZZ{				
+			class SwingWorker4ProgramModuleChangeOVPN extends KernelSwingWorker4UIZZZ{				
 				private KernelJPanelCascadedZZZ panel;
 				private String[] saFlag4Program;
 				

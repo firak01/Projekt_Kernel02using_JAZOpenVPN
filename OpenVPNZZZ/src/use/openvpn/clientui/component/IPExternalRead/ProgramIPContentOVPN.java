@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import com.jgoodies.forms.layout.CellConstraints;
+
 import custom.zKernel.file.ini.FileIniZZZ;
 import use.openvpn.component.AbstractProgramIPContentOVPN;
 import use.openvpn.clientui.component.IPExternalRead.IConstantProgramIpWebOVPN;
@@ -19,6 +21,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.component.AbstractKernelProgramZZZ;
+import basic.zKernel.component.IKernelModuleUserZZZ;
 import basic.zKernel.html.TagInputZZZ;
 import basic.zKernel.html.TagTypeInputZZZ;
 import basic.zKernel.html.reader.KernelReaderHtmlZZZ;
@@ -68,7 +71,11 @@ public class ProgramIPContentOVPN extends AbstractProgramIPContentOVPN implement
 	
 	@Override
 	public void updateMessage(String stext) throws ExceptionZZZ {
-		
+		super.updateComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);
 	}
+
+
+	//###################################################	
+			
 }
 

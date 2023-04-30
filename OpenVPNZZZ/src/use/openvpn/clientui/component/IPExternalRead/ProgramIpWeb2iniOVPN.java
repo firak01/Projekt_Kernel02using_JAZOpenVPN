@@ -183,7 +183,7 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 
 	@Override
 	public void updateMessage(String stext) throws ExceptionZZZ {
-		
+		super.updateComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);//Merke: ggfs. gibt es das Feld sogar gar nicht
 	}
 
 	public void reset() {

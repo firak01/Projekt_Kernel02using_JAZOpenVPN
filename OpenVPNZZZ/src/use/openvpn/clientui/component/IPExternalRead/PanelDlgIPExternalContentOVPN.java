@@ -35,6 +35,7 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelFormLayoutedZZZ;
+import basic.zKernelUI.thread.KernelSwingWorker4UIZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import basic.zKernelUI.util.JTextFieldHelperZZZ;
 
@@ -84,62 +85,64 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	}//END Konstruktor
 	
 	//###################################################	
-		//Interface IFormLayoutUserZZZ					
-		@Override
-		public boolean fillRowContent(CellConstraints cc, int iRow) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				
-				//#############################################################################################
-				//### Auslesen des bisher verwendeten ini-Eintrags. 
-				//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
-				//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
-				String sIp = "";
-						
-				//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
-				String sProgram; String sModule;
-				sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleUserZZZ) this);
-				if(StringZZZ.isEmpty(sModule)){
-					ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}
-				
-				sProgram = this.getProgramName();
-				if(StringZZZ.isEmpty(sProgram)){
-					ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}
+			//Interface IFormLayoutUserZZZ					
+			@Override
+			public boolean fillRowContent(CellConstraints cc, int iRow) throws ExceptionZZZ {
+				boolean bReturn = false;
+				main:{
+					
+					//#############################################################################################
+					//### Auslesen des bisher verwendeten ini-Eintrags. 
+					//### Merke: Das wäre ggfs. der zuletzt ins Web gebrachte Wert.
+					//20190123: Lies die zuvor eingegebene / ausgelesene IPAdresse aus der ini-Datei aus.
+					String sIp = "";
+							
+					//Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
+					String sProgram; String sModule;
+					sModule = KernelUIZZZ.getModuleUsedName((IKernelModuleUserZZZ) this);
+					if(StringZZZ.isEmpty(sModule)){
+						ExceptionZZZ ez = new ExceptionZZZ("No module configured for this component '" + this.getClass().getName() + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+						throw ez;
+					}
+					
+					sProgram = this.getProgramName();
+					if(StringZZZ.isEmpty(sProgram)){
+						ExceptionZZZ ez = new ExceptionZZZ("No program '" + sProgram + "' configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+						throw ez;
+					}
 
-				//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
-				IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
-				sIp = objEntry.getValue();
+					//DARIN WIRD NACH DEM ALIASNAMEN 'IP_CONTEXT' GESUCHT, UND DER WERT  FÜR 'IPExternal' geholt.
+					IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModule, sProgram, "IPExternal");
+					sIp = objEntry.getValue();
+							
+					//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
+					if(StringZZZ.isEmpty(sIp)){
+						sIp = "Enter or refresh";
+					}
+					
+					switch(iRow) {				
+					case 1:
+						this.createRowIpWeb(this, cc, 1, sIp);
+						break;	
+					default:
+						//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
+						//Rückgabewert false ist dann der Abbruch der Schleife
 						
-				//TODO GOON 20190124: Hier soll unterschieden werden zwischen einem absichtlich eingetragenenem Leersstring und nix.
-				if(StringZZZ.isEmpty(sIp)){
-					sIp = "Enter or refresh";
-				}
-				
-				switch(iRow) {				
-				case 1:
-					this.createRowIpWeb(this, cc, 1, sIp);
-					break;	
-				default:
-					//Keinen Fehler werfen, da diese Methode in einer Schleife ausgeführt wird.
-					//Rückgabewert false ist dann der Abbruch der Schleife
+//						ExceptionZZZ ez = new ExceptionZZZ("Row not defined for " + iRow + "'", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
+//						throw ez;
+						
+						bReturn = false;
+						break main;
+					}
 					
-//					ExceptionZZZ ez = new ExceptionZZZ("Row not defined for " + iRow + "'", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
-//					throw ez;
-					
-					bReturn = false;
-					break main;
-				}
-				
-				bReturn = true;
-			}//end main;
-			return bReturn;
-		}
-		
-		private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
+					bReturn = true;
+				}//end main;
+				return bReturn;
+			}
+			
+	
+	
+	private boolean createRowIpWeb(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				//############################################
@@ -306,7 +309,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			}			 							
 			
-			class SwingWorker4ProgramIPContentOVPN extends KernelSwingWorkerZZZ {
+			class SwingWorker4ProgramIPContentOVPN extends KernelSwingWorker4UIZZZ {
 				private KernelJPanelCascadedZZZ panel;
 				private String[] saFlag4Program;
 				
@@ -322,14 +325,14 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 						ProgramIPContentOVPN objProg = new ProgramIPContentOVPN(objKernel, this.panel, this.saFlag4Program);
 						
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
-						updateTextField(objProg,"Reading ...");
+						updateMessage(objProg,"Reading ...");
 						
 						//2. IP Auslesen von der Webseite										
 						String sIp = objProg.getIpExternal();
 						logLineDate("Ip from External: " + sIp);
 												
 						//3. Diesen Wert wieder ins Label schreiben.
-						updateTextField(objProg,sIp);
+						updateValue(objProg,sIp);
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
@@ -337,30 +340,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 					return "all done";
 				}
 				
-				/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-				 *  Entspricht auch ProgramIPContext.updateLabel(..)
-				* @param stext
-				* 
-				* lindhaueradmin; 17.01.2007 12:09:17
-				 */
-				public void updateTextField(final ProgramIPContentOVPN objProg, final String stext){
-					
-//					Das Schreiben des Ergebnisses wieder an den EventDispatcher thread uebergeben
-					Runnable runnerUpdateLabel= new Runnable(){
-
-						public void run(){
-//							In das Textfeld eintragen, das etwas passiert.	
-							try {
-								objProg.updateLabel(stext);
-							} catch (ExceptionZZZ e) {
-								e.printStackTrace();
-							}  
-						}
-					};
-					
-					SwingUtilities.invokeLater(runnerUpdateLabel);						
-				}
-										
+												
 				/**Overwritten and using an object of jakarta.commons.lang
 				 * to create this string using reflection. 
 				 * Remark: this is not yet formated. A style class is available in jakarta.commons.lang. 
@@ -379,5 +359,8 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			}
 			
 	}//End class ...KErnelActionCascaded....
+
+
+		
 }
 

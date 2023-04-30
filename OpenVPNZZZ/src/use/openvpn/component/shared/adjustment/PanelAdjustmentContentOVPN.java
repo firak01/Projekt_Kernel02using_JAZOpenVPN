@@ -27,10 +27,12 @@ import basic.zKernel.component.IKernelProgramZZZ;
 import basic.zKernel.flag.IFlagZLocalUserZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
+import basic.zKernelUI.component.IProgramUIZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import basic.zKernelUI.thread.KernelSwingWorker4UIZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -191,7 +193,7 @@ public class PanelAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impleme
 			public void actionPerformPostCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			}			 							
 			
-			class SwingWorker4ProgramIPContentOVPN extends KernelSwingWorkerZZZ implements IObjectZZZ, IKernelUserZZZ{				
+			class SwingWorker4ProgramIPContentOVPN extends KernelSwingWorker4UIZZZ implements IObjectZZZ, IKernelUserZZZ{				
 				private KernelJPanelCascadedZZZ panel;
 				private String[] saFlag4Program;
 				
@@ -207,14 +209,14 @@ public class PanelAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impleme
 						ProgramIPContentOVPN objProg = new ProgramIPContentOVPN(objKernel, this.panel, this.saFlag4Program);
 						
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
-						updateTextField(objProg,"Reading ...");
+						updateMessage(objProg,"Reading ...");
 						
 						//2. IP Auslesen von der Webseite										
 						String sIp = objProg.getIpExternal();
 						logLineDate("Ip from External Content: " + sIp);
 												
 						//3. Diesen Wert wieder ins Label schreiben.
-						updateTextField(objProg,sIp);
+						updateValue(objProg,sIp);
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
