@@ -160,15 +160,15 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			Dimension dimButton02 = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
 			
 			//- - - - - - - -
-			JTextField textfieldWebUpload = new JTextField(sDefaultValue, 0);			
-			textfieldWebUpload.setPreferredSize(dimTextfield);
-			textfieldWebUpload.setHorizontalAlignment(JTextField.LEFT);
-			panel.add(textfieldWebUpload, cc.xyw(4,iRow*2,3)); //Mehrere Spalten umfassend
+			JLabel labelWebUpload = new JLabel(sDefaultValue, 0);			
+			labelWebUpload.setPreferredSize(dimTextfield);
+			labelWebUpload.setHorizontalAlignment(JTextField.LEFT);
+			panel.add(labelWebUpload, cc.xyw(4,iRow*2,3)); //Mehrere Spalten umfassend
 			
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-			panel.setComponent(IConstantProgramPageWebUploadOVPN.sCOMPONENT_TEXTFIELD, textfieldWebUpload);  
+			panel.setComponent(IConstantProgramPageWebUploadOVPN.sCOMPONENT_LABEL_MESSAGE, labelWebUpload);  
 																			
 			JButton buttonUploadIPPage = new JButton(IConstantProgramPageWebUploadOVPN.sLABEL_BUTTON);			
 			buttonUploadIPPage.setPreferredSize(dimButton02);
@@ -233,15 +233,15 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			Dimension dimButton = new  Dimension((iCOMPONENT_WIDTH/2), iCOMPONENT_HEIGHT);
 			Dimension dimButton02 = new Dimension((iCOMPONENT_WIDTH), iCOMPONENT_HEIGHT);
 			
-			JTextField textfieldWebCreate = new JTextField("", 0);
-			textfieldWebCreate.setPreferredSize(dimTextfield);
-			textfieldWebCreate.setHorizontalAlignment(JTextField.LEFT);
-			panel.add(textfieldWebCreate, cc.xyw(4,iRow*2,3)); //Mehrere Spalten umfassend
+			JLabel labelWebCreate = new JLabel(sDefaultValue, 0);
+			labelWebCreate.setPreferredSize(dimTextfield);
+			labelWebCreate.setHorizontalAlignment(JTextField.LEFT);
+			panel.add(labelWebCreate, cc.xyw(4,iRow*2,3)); //Mehrere Spalten umfassend
 			
 			// Dieses Feld soll einer ggfs. Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-			panel.setComponent(IConstantProgramPageWebCreateOVPN.sCOMPONENT_TEXTFIELD, textfieldWebCreate);      
+			panel.setComponent(IConstantProgramPageWebCreateOVPN.sCOMPONENT_LABEL_MESSAGE, labelWebCreate);      
 									
 			JButton buttonGenerateIPPage = new JButton(IConstantProgramPageWebCreateOVPN.sLABEL_BUTTON);
 			buttonGenerateIPPage.setPreferredSize(dimButton02);
@@ -491,13 +491,13 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 				this.createRowIpRouter(this, cc, 1, sIpRouter);			
 				break;
 			case 2:
-				this.createRowGeneratePage(this, cc, 2, "Generate page");			
+				this.createRowGeneratePage(this, cc, 2, IConstantProgramPageWebCreateOVPN.sCOMPONENT_LABEL_MESSAGE_VALUE);			
 				break;
 			case 3:
 				this.createRowIpLocal(this, cc, 3, sIpLocal);			
 				break;
 			case 4:
-				this.createRowUploadPage(this, cc, 4, "Upload generated page");			
+				this.createRowUploadPage(this, cc, 4, IConstantProgramPageWebUploadOVPN.sCOMPONENT_LABEL_MESSAGE_VALUE);			
 				break;
 			case 5:
 				this.createRowIpWeb(this, cc, 5, sIp);
