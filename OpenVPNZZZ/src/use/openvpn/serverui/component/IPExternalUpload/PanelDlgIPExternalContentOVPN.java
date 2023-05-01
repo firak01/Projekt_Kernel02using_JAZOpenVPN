@@ -328,6 +328,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			//this.createRowIpRouter(this, cc, 1, sIpRouter);							
 			//...
 			
+			//Falls kein Debug Modus an ist, hiermit quasi eine Platzhalterzeile einfügen
 			if(!this.getFlag(IDebugUiZZZ.FLAGZ.DEBUGUI_PANELLABEL_ON.name())) {	
 				RowSpec rsGap0 = this.buildRowSpecGap();
 				listReturn.add(rsGap0);	

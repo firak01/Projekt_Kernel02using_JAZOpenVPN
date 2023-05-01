@@ -1,5 +1,6 @@
 package use.openvpn.serverui.component.FTPCredentials;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -12,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
@@ -150,6 +152,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				JTextFieldHelperZZZ.markAndFocus(this, textfieldFTPUsername);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
 			}
 			
+//			GGfs. weitere Spalten hinzufuegen
 //			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
 //			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
 //			buttonIpLocal2ini.addActionListener(actionIpLocal2iniOVPN);
@@ -195,9 +198,35 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			
 			//Den bisherigen Inhalt des Textfelds markieren, so dass er beim Tippen sofort überschrieben werden kann.
 			//if(bDefaultValue) { //!!! IMMER UND NICHT NUR BEIM DEFAULT
-				JTextFieldHelperZZZ.markAndFocus(this, textfieldFTPPassword);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
+			JTextFieldHelperZZZ.markAndFocus(this, textfieldFTPPassword);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
 			//}
+				
+			final JButton buttonFTPCredentials2ini = new JButton(IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI);			
+			buttonFTPCredentials2ini.setPreferredSize(dim);
 			
+			ActionFTPCredentials2iniOVPN actionFTPCredentials2iniOVPN = new ActionFTPCredentials2iniOVPN(objKernel, this);
+			buttonFTPCredentials2ini.addActionListener(actionFTPCredentials2iniOVPN);
+			
+			//Damit ggfs. ein abgeschnittener Buttontext komplett erscheint, etc.
+			//buttonFTPCredentials2ini.setToolTipText("<html>Manchester<br>53.4800° N, 2.2400° W</html>");
+			buttonFTPCredentials2ini.setToolTipText("<html>"+IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI+":<br>Password will be encoded<br>and written to the configuration ini file</html>");
+			
+			//Fuer eine "hover" Effekt auf dem Button
+			buttonFTPCredentials2ini.addMouseListener(new java.awt.event.MouseAdapter() {
+				    public void mouseEntered(java.awt.event.MouseEvent evt) {
+				    	buttonFTPCredentials2ini.setBackground(Color.GREEN);
+				    }
+				
+				    public void mouseExited(java.awt.event.MouseEvent evt) {
+				    	buttonFTPCredentials2ini.setBackground(UIManager.getColor("control"));
+				    }
+			});
+			
+			
+			panel.add(buttonFTPCredentials2ini, cc.xy(6,iRow*2));
+				
+				
+//			GGfs. weitere Spalten hinzufuegen
 //			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
 //			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
 //			buttonIpLocal2ini.addActionListener(actionIpLocal2iniOVPN);
@@ -229,18 +258,11 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				bDefaultValue=true;
 			}
 
-			//JTextField textfieldFTPPassword = new JTextField(sDefaultValue, 0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
-			//textfieldFTPPassword.setHorizontalAlignment(JTextField.LEFT);
-			////textfieldFTPPassword.setCaretPosition(0); //Cursorposition
-			//textfieldFTPPassword.setPreferredSize(dim);
-			//panel.add(textfieldFTPPassword, cc.xy(4,iRow*2));
 			JLabel labelLocalEncrypted = new JLabel(sDefaultValue);			
 			labelLocalEncrypted.setPreferredSize(dimLabel);	
 			this.add(labelLocalEncrypted, cc.xy(2,iRow*2));			
 			panel.add(labelLocalEncrypted, cc.xy(4,iRow*2));
-			
-			
-			
+
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
@@ -252,47 +274,11 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			//	JTextFieldHelperZZZ.markAndFocus(this, textfieldFTPPassword);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
 			//}
 			
+//			GGfs. weitere Spalten hinzufuegen
 //			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
 //			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
 //			buttonIpLocal2ini.addActionListener(actionIpLocal2iniOVPN);
 //			this.add(buttonIpLocal2ini, cc.xy(6,iRow*2));
-			
-//			JButton buttonReadIPLocal = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON);
-//			ActionIPLocalRefreshOVPN actionIpRefreshLocal = new ActionIPLocalRefreshOVPN(objKernel, this);
-//			buttonReadIPLocal.addActionListener(actionIpRefreshLocal);
-//			panel.add(buttonReadIPLocal, cc.xy(8,iRow*2));
-			
-			bReturn = true;
-		}//end main;
-		return bReturn;
-	}
-	
-	private boolean createRowSaveCredentialsToIni(KernelJPanelCascadedZZZ panel, CellConstraints cc, int iRow, String sDefaultValue) throws ExceptionZZZ {
-		boolean bReturn = false;
-		main:{
-			
-//			JLabel labelLocal = new JLabel(IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI ...);
-//			this.add(labelLocal, cc.xy(2,iRow*2));			
-			
-//			JTextField textfieldIPLocal = new JTextField(sDefaultValue, 20);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
-//			textfieldIPLocal.setHorizontalAlignment(JTextField.LEFT);
-			//textfieldIPRouter.setCaretPosition(0); //Cursorposition		
-			//Dimension dim = new Dimension(10, 15);
-			//textfield.setPreferredSize(dim);
-//			panel.add(textfieldIPLocal, cc.xy(4,iRow*2));
-			
-			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
-			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
-			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-			//panel.setComponent(IConstantProgramIpLocalOVPN.sCOMPONENT_TEXTFIELD, textfieldIPLocal);  
-				
-			JButton buttonFTPCredentials2ini = new JButton(sDefaultValue);
-			Dimension dim = new Dimension(iCOMPONENT_WIDTH, iCOMPONENT_HEIGHT);
-			buttonFTPCredentials2ini.setPreferredSize(dim);
-			
-			ActionFTPCredentials2iniOVPN actionFTPCredentials2iniOVPN = new ActionFTPCredentials2iniOVPN(objKernel, this);
-			buttonFTPCredentials2ini.addActionListener(actionFTPCredentials2iniOVPN);
-			panel.add(buttonFTPCredentials2ini, cc.xy(6,iRow*2));
 			
 //			JButton buttonReadIPLocal = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON);
 //			ActionIPLocalRefreshOVPN actionIpRefreshLocal = new ActionIPLocalRefreshOVPN(objKernel, this);
@@ -320,8 +306,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			}
 			
 			JLabel labelMessage = new JLabel(sDefaultValue,  0);//Vorbelegen mit dem "alten" Wert aus der Ini-Datei
-			labelMessage.setHorizontalAlignment(JTextField.LEFT);
-						
+			labelMessage.setHorizontalAlignment(JTextField.LEFT);						
 			//textfieldFTPPassword.setCaretPosition(0); //Cursorposition
 			
 			Dimension dim = new Dimension(iCOMPONENT_WIDTH, iCOMPONENT_HEIGHT);
@@ -338,6 +323,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 //				JTextFieldHelperZZZ.markAndFocus(this, textfieldMessage);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.				
 //			}
 			
+//			GGfs. weitere Spalten hinzufuegen			
 //			JButton buttonIpLocal2ini = new JButton(IConstantProgramIpLocalOVPN.sLABEL_BUTTON_TO_INI);
 //			ActionIpLocal2iniOVPN actionIpLocal2iniOVPN = new ActionIpLocal2iniOVPN(objKernel, this);
 //			buttonIpLocal2ini.addActionListener(actionIpLocal2iniOVPN);
@@ -430,7 +416,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			RowSpec rsGap5 = this.buildRowSpecGap();
 			listReturn.add(rsGap5);
 			
-			//++++++++++
+//			//++++++++++
 //			RowSpec rs6 = new RowSpec(RowSpec.CENTER,Sizes.dluX(20),0.5);				
 //			listReturn.add(rs6);
 //			
@@ -527,8 +513,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			IKernelConfigSectionEntryZZZ objEntryUsername = objKernel.getParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_USERNAME);
 			sFTPUser = objEntryUsername.getValue();
 			
-			//DARIN WIRD NACH DEM ALIASNAMEN GESUCHT, UND DER WERT  FÜR 'password' geholt.
-			//TODOGOON20230427;//DAS VERSCHLUESSELTE SOLL AUCH ZURUECKKOMMEN
+			//DARIN WIRD NACH DEM ALIASNAMEN GESUCHT, UND DER ENTSCHLUESSELTE WERT  FÜR 'password' geholt.		
 			IKernelConfigSectionEntryZZZ objEntryPasswordDecrypted = objKernel.getParameterByProgramAlias(sModule, sProgram, this.sINI_PROPERTY_PASSWORD);
 			sPasswordDecrypted = objEntryPasswordDecrypted.getValue();		
 			if(StringZZZ.isEmpty(sPasswordDecrypted)){
@@ -536,6 +521,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			}								
 			//- - - - - 
 						
+			//DER VERSCHLUESSELTE WERT SOLL AUCH ZURUECKKOMMEN
 			sPasswordEncrypted = objEntryPasswordDecrypted.getValueEncrypted();
 			if(StringZZZ.isEmpty(sPasswordEncrypted)){
 				sPasswordEncrypted = IConstantProgramFTPCredentialsOVPN.sVALUE_LABEL_PASSWORD_ENCRYPTED_INITIAL;
@@ -557,11 +543,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 				int iRowFTPPasswordEncrypted = this.computeContentRowNumberUsed(iRow);
 				this.createRowFTPPasswordEncrypted(this, cc, iRowFTPPasswordEncrypted, sPasswordEncrypted);			
 				break;
-			case 4:
-				int iRowSave = this.computeContentRowNumberUsed(iRow);
-				this.createRowSaveCredentialsToIni(this, cc, iRowSave, IConstantProgramFTPCredentialsOVPN.sLABEL_BUTTON_TO_INI);			
-				break;	
-			case 5:
+			case 4:	
 				int iRowMessage = this.computeContentRowNumberUsed(iRow);
 				this.createRowMessage(this, cc, iRowMessage, IConstantProgramFTPCredentialsOVPN.sVALUE_LABEL_MESSAGE_INITIAL);
 				break;
@@ -646,7 +628,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 					boolean bErg = objProg.writeCredentialsToIni(sUsername, sPasswordDecrypted);
 									
 					//3. Diesen Wert wieder ins Label zurückschreiben.
-					updateMessage(objProg, "password encrypted written..."); //Schreibe einen anderen Text in das Feld...					
+					updateMessage(objProg, "user and password encrypted written..."); //Schreibe einen anderen Text in das Feld...					
 					String sPasswordEncodedWritten = objProg.getPasswordEncodedWritten();
 					updateValue(objProg, sPasswordEncodedWritten);
 					

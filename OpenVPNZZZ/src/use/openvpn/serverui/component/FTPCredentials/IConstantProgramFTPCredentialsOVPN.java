@@ -15,11 +15,11 @@ public interface IConstantProgramFTPCredentialsOVPN {
 	public static String sCOMPONENT_LABEL_PASSWORD_ENCRYPTED = "labelFTPPassword";
 	public static String sVALUE_LABEL_PASSWORD_ENCRYPTED_INITIAL = "";
 	
-	public static String sLABEL_BUTTON_TO_INI = "to ini";
+	public static String sLABEL_BUTTON_TO_INI = "encrypt to ini";
 	
 	public static String sLABEL_LABEL_MESSAGE = "";
 	public static String sCOMPONENT_LABEL_MESSAGE = "textCredentialsLocal";
-	public static String sVALUE_LABEL_MESSAGE_INITIAL = "xxxxxxx";
+	public static String sVALUE_LABEL_MESSAGE_INITIAL = "Please enter the new credentials.";
 	
 	public static String sINI_PROPERTY_USERNAME = "FTPUsername";
 	public static String sINI_PROPERTY_PASSWORD = "FTPPassword";

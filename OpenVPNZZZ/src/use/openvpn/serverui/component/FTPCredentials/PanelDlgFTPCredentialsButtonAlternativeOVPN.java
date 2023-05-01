@@ -67,56 +67,6 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 			super(objKernel, panelParent);
 		}
 		
-//		/**Durch überschreiben dieser Methoden können erbende Klassen noch anderen Code ausfuehren
-//		* @param ActionEvent
-//		* @return true ==> es wird der weitere Code ausgefuehrt
-//		* 
-//		* lindhaueradmin; 09.01.2007 09:03:32
-//		 */		
-//		public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult){
-//			boolean bReturn = false;
-//			try{
-//				main:{
-//				//Hier erst einmal den Inhalt einer per Alias zugänglich gemachten Komponente (siehe KernelPanelCascadedZZZ) auslesen
-//				KernelJPanelCascadedZZZ panelButton = (KernelJPanelCascadedZZZ) this.getPanelParent();
-//				KernelJPanelCascadedZZZ panelCenter = (KernelJPanelCascadedZZZ) panelButton.getPanelNeighbour("CENTER");
-//				JTextField texttemp = (JTextField) panelCenter.getComponent("textIpContent");
-//				String sIP= texttemp.getText();	
-//				
-//				ReportLogZZZ.write(ReportLogZZZ.INFO, "IP/URL found for use closing dialog 'TODOGOON hier den Namen des Buttons... Export Data via Http': " + sIP);
-//				
-////				Wichtige Informationen, zum Auslesen von Parametern aus der KernelConfiguration
-//				IKernelZZZ objKernel = this.getKernelObject();
-//				KernelJDialogExtendedZZZ dialog = panelCenter.getDialogParent();	
-//				KernelJFrameCascadedZZZ frameParent = null;
-//				
-//				String sProgram; String sModule;
-//				sModule = this.getModuleUsed();
-//				if(StringZZZ.isEmpty(sModule)){
-//					ExceptionZZZ ez = new ExceptionZZZ("No module configured.", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//					throw ez;
-//				}	
-//				
-//				sProgram = this.getProgramUsed();
-//				if(StringZZZ.isEmpty(sProgram)){
-//					ExceptionZZZ ez = new ExceptionZZZ("No program configured for the module: '" +  sModule + "'", iERROR_CONFIGURATION_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-//					throw ez;
-//				}
-//						
-//				//Merke: Beim Setzen wird auch der KernelCache sofort wieder neu gesetzt.
-//				objKernel.setParameterByProgramAlias(sModule, sProgram, "IPExternal", sIP);
-//				
-//				panelButton.getDialogParent().setDisposed();			
-//				bReturn = true; //erst dann wird das PostCustom-ausgeführt
-//							
-//				}//END main:
-//			}catch(ExceptionZZZ ez){
-//				System.out.println(ez.getDetailAllLast());
-//				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
-//			}
-//			return bReturn;
-//		}
-		
 		
 		/* Hierdurch findet beim Cliecken auf den "APPLY" Button das Setzen der Werte in die INI-Datei statt
 		 * 
@@ -193,49 +143,7 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
 				}
 				return "all done";
-			}
-			
-//			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-//			 *  Entspricht auch ProgramIPContext.updateLabel(..)
-//			* @param stext
-//			* 
-//			* lindhaueradmin; 17.01.2007 12:09:17
-//			 */
-//			public void updateTextField(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
-//								
-////				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-//				Runnable runnerUpdateLabel= new Runnable(){
-//
-//					public void run(){
-////						In das Textfeld eintragen, das etwas passiert.
-//						logLineDate("Credentials updated for user '" + stext + "'");					
-//						objProg.updateLabel(stext);	
-//					}
-//				};
-//				
-//				SwingUtilities.invokeLater(runnerUpdateLabel);					
-//			}		
-//			
-//			/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-//			 *  Entspricht auch ProgramIPContext.updateLabel(..)
-//			* @param stext
-//			* 
-//			* lindhaueradmin; 17.01.2007 12:09:17
-//			 */			
-//			public void updateMessage(final ProgramFTPCredentials2iniOVPN objProg, final String stext){
-//								
-////				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-//				Runnable runnerUpdateLabel= new Runnable(){
-//
-//					public void run(){
-////						In das Textfeld eintragen, das etwas passiert.
-//						logLineDate("Credentials updated for user '" + stext + "'");					
-//						objProg.updateMessage(stext);	
-//					}
-//				};
-//				
-//				SwingUtilities.invokeLater(runnerUpdateLabel);					
-//			}		
+			}	
 			
 			/**Overwritten and using an object of jakarta.commons.lang
 			 * to create this string using reflection. 
