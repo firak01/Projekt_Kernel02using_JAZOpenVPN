@@ -1,9 +1,9 @@
 package use.openvpn.serverui;
 
 import basic.zBasic.ExceptionZZZ;
-import basic.zKernel.KernelConfigZZZ;
+import basic.zKernel.AbstractKernelConfigZZZ;
 
-public class ConfigOVPN  extends KernelConfigZZZ{
+public class ConfigOVPN  extends AbstractKernelConfigZZZ{
 	public ConfigOVPN() throws ExceptionZZZ{
 		super();
 	}

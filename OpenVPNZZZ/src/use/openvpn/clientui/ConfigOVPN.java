@@ -6,11 +6,11 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapCaseInsensitiveZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
-import basic.zKernel.KernelConfigZZZ;
+import basic.zKernel.AbstractKernelConfigZZZ;
 import basic.zKernel.config.KernelConfigEntryUtilZZZ;
 import custom.zKernel.file.ini.FileIniZZZ;
 
-public class ConfigOVPN  extends KernelConfigZZZ{
+public class ConfigOVPN  extends AbstractKernelConfigZZZ{
 	public ConfigOVPN() throws ExceptionZZZ{
 		super();
 	}
