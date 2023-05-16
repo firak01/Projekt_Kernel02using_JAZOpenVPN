@@ -196,9 +196,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			}
 			this.logStatusString("Open VPN not yet running. Continue starting process.");
 			
-            //+++++++++++++++++++++++++++++++
-			//TODOGOO20230510;//Jetzt kommt nur noch <Z></Z> zurück und dann struertz die Jacob.dll ab!!!
-			
+            //+++++++++++++++++++++++++++++++			
 			//Starterlaubnis: Läuft der Domino Server schon ???
 			//Falls nicht: Warte eine konfigurierte Zeit. (Merke: Nicht abbrechen, weil ja ggf. Probleme existieren oder der Server gar nicht starten soll).
 			String sDominoCaption = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","Process2Check").getValue();
