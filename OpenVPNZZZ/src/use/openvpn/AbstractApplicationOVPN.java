@@ -3,6 +3,7 @@ package use.openvpn;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
@@ -46,23 +47,39 @@ public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IAppl
 			
 		    //+++ Ggf. notwendige Proxy-Einstellung pr�fen.
 			//Z.B. bei der itelligence bin ich hinter einem Proxy. Die auszulesende Seite ist aber im Web.
-			this.sProxyHost = objKernel.getParameterByProgramAlias("OVPN","ProgProxyHandler","ProxyHost").getValue();
-			if(sProxyHost!=null && sProxyHost.trim().equals("")==false){		//Eine Proxy-Konfiguration ist nicht Pflicht		
-				sProxyPort = objKernel.getParameterByProgramAlias("OVPN","ProgProxyHandler","ProxyPort").getValue();
+			IKernelConfigSectionEntryZZZ objEntryHost = objKernel.getParameterByProgramAlias("OVPN","ProgProxyHandler","ProxyHost");			
+			if(objEntryHost.hasAnyValue()){		//Eine Proxy-Konfiguration ist nicht Pflicht
+				this.sProxyHost = objEntryHost.getValue();	
+				if(StringZZZ.isEmpty(this.sProxyHost)) {
+					this.getMainObject().logStatusString("Proxy host as empty configured.");
+					break main;
+				}
 				
-				//+++ Nun versuchen herauszufinden, ob der Proxy auch erreichbar ist und existiert. Nur nutzen, falls er existiert
-				KernelPingHostZZZ objPing = new KernelPingHostZZZ(objKernel, null);
-				try{ //Hier soll nicht abgebrochen werden, wenn es nicht klappt. Lediglich ins Log soll etwas geschrieben werden.
-					this.getMainObject().logStatusString( "Trying to reach the proxy configured. '" + sProxyHost + " : " + sProxyPort +"'");									
-					bReturn = objPing.ping(sProxyHost, sProxyPort);								
-					this.getMainObject().logStatusString("Configured proxy reached. " + sProxyHost + " : " + sProxyPort +"'");
-									
-				}catch(ExceptionZZZ ez){
-					objKernel.getLogObject().WriteLineDate("Will not use the proxy configured, because: " + ez.getDetailAllLast());
-					this.getMainObject().logStatusString("Configured proxy unreachable. " + sProxyHost + " : " + sProxyPort +"'. No proxy will be enabled.");
-				}	
+				
+				IKernelConfigSectionEntryZZZ objEntryPort = objKernel.getParameterByProgramAlias("OVPN","ProgProxyHandler","ProxyPort");
+				if(objEntryHost.hasAnyValue()){
+					this.sProxyPort = objEntryPort.getValue();
+					if(StringZZZ.isEmpty(this.sProxyPort)) {
+						this.getMainObject().logStatusString("Proxy port as empty configured.");
+						break main;
+					}
+					
+					//+++ Nun versuchen herauszufinden, ob der Proxy auch erreichbar ist und existiert. Nur nutzen, falls er existiert
+					KernelPingHostZZZ objPing = new KernelPingHostZZZ(objKernel, null);
+					try{ //Hier soll nicht abgebrochen werden, wenn es nicht klappt. Lediglich ins Log soll etwas geschrieben werden.
+						this.getMainObject().logStatusString( "Trying to reach the proxy configured. '" + sProxyHost + " : " + sProxyPort +"'");									
+						bReturn = objPing.ping(sProxyHost, sProxyPort);								
+						this.getMainObject().logStatusString("Configured proxy reached. " + sProxyHost + " : " + sProxyPort +"'");
+										
+					}catch(ExceptionZZZ ez){
+						objKernel.getLogObject().WriteLineDate("Will not use the proxy configured, because: " + ez.getDetailAllLast());
+						this.getMainObject().logStatusString("Configured proxy unreachable. " + sProxyHost + " : " + sProxyPort +"'. No proxy will be enabled.");
+					}	
+				}else {
+					this.getMainObject().logStatusString("No proxy port configured.");
+				}				
 			}else{
-				this.getMainObject().logStatusString("No proxy configured.");								
+				this.getMainObject().logStatusString("No proxy host configured.");								
 			}//END 	if(sProxyHost!=null && sProxyHost.equals("")==false){		//Eine Proxy-Konfiguration ist nicht Pflicht		
 		}//END main
 		this.setFlag("UseProxy", bReturn);
