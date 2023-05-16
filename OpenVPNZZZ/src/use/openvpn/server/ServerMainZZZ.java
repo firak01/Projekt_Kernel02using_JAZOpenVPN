@@ -203,13 +203,15 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			//Falls nicht: Warte eine konfigurierte Zeit. (Merke: Nicht abbrechen, weil ja ggf. Probleme existieren oder der Server gar nicht starten soll).
 			String sDominoCaption = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","Process2Check").getValue();
 			if(!StringZZZ.isEmpty(sDominoCaption)){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Warte auf Start von Prozess '" + sDominoCaption + "'");
+				
 				String sTimeoutSecond = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","CheckTimeout").getValue();
 				if(StringZZZ.isEmpty(sTimeoutSecond)){
 					sTimeoutSecond = "1";
-				}
+				}				
 				int iTimeoutSecond = Integer.parseInt(sTimeoutSecond);
 				boolean bProof = false;
-				do{
+				do{					
 					bProof = objWMI.isProcessRunning(sDominoCaption);
 					if(bProof == false){
 						try{
