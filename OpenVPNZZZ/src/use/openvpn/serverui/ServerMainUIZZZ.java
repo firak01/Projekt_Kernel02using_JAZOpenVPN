@@ -9,6 +9,11 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
+import basic.zKernel.file.ini.IKernelCallIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelEncryptionIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelExpressionIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelJavaCallIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelZFormulaIniSolverZZZ;
 import custom.zKernel.LogZZZ;
 
 public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
@@ -32,7 +37,7 @@ public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 				main:{						
 					try {
 //						Parameter aus args auslesen
-						String[]saFlag = {"useExpression","useFormula","useEncryption"};
+						String[]saFlag = {IKernelExpressionIniSolverZZZ.FLAGZ.USEEXPRESSION.name(),IKernelZFormulaIniSolverZZZ.FLAGZ.USEFORMULA.name(), IKernelZFormulaIniSolverZZZ.FLAGZ.USEFORMULA_MATH.name(),IKernelEncryptionIniSolverZZZ.FLAGZ.USEENCRYPTION.name(),IKernelCallIniSolverZZZ.FLAGZ.USECALL.name(), IKernelJavaCallIniSolverZZZ.FLAGZ.USECALL_JAVA.name()};
 						ConfigOVPN objConfig = new ConfigOVPN(saArg, saFlag);
 						this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man ueber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 
