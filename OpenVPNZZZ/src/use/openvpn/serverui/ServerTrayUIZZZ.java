@@ -172,48 +172,30 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				ExceptionZZZ ez = new ExceptionZZZ("unable to receiver classloader object", iERROR_RUNTIME, ServerTrayUIZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
-			String sPath= ResourceEasyZZZ.searchDirectoryAsStringRelative("resourceZZZ/image/tray"); //Merke: Innerhalb einer JAR-Datei soll hier ein src/ vorangestellt werden.
-//			String sPath = null;
-//			if(JarEasyZZZ.isInJarStatic()) {
-//				sPath = "src/resourceZZZ/image/tray/";
-//			}else {				
-//				//Das ist bei der Ausfuehrung aber nicht richtig
-//				//sPath = "file:\\" + FileEasyZZZ.getDirectoryOfExecution() + "\\resource\\image\\tray\\";
-//				//Richtig ist für den Classloader das bin Verzeichnis, oder bei Maven Projekten ggfs. das target\\classes - Verzeichnis
-//				//Damit sollte es dann auch in einer .jar Datei klappen.
-//				sPath = "resourceZZZ/image/tray/";
-//			}					
+			String sPath= ResourceEasyZZZ.searchDirectoryAsStringRelative("resourceZZZ/image/tray"); //Merke: Innerhalb einer JAR-Datei soll hier ein src/ vorangestellt werden.					
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Using path for directory '"+sPath+"'");
-			//System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": SystemClassloaderPath '" + FileEasyZZZ.getDirectoryOfSystemClassloaderAsString() + "'");
 			
 			String sPathTotal = "";
 			switch(iStatus){
-			case iSTATUS_NEW:
-//				sPathTotal = sPath + "pill-button-yellow_benji_01.png";			
+			case iSTATUS_NEW:			
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");
 				break;
 			case iSTATUS_STARTING:
-//				sPathTotal = sPath + "pill-button-blue_benji_p_01.png";
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_benji_p_01.png");
 				break;
 			case iSTATUS_LISTENING:
-//				sPathTotal = sPath + "pill-button-green_benji__01.png";
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-green_benji__01.png");
 				break;
 			case iSTATUS_CONNECTED:
-//				sPathTotal = sPath + "pill-button-seagreen_ben_01.png";
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-seagreen_ben_01.png");
 				break;
-			case iSTATUS_INTERRUPTED:
-//				sPathTotal = sPath + "pill-button-purple_benji_01.png";	
+			case iSTATUS_INTERRUPTED:	
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-purple_benji_01.png");				
 				break;
 			case iSTATUS_STOPPED:
-//				sPathTotal = sPath + "button-red_benji_park_01.png";
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");				
 				break;		
 			case iSTATUS_ERROR:
-//				sPathTotal = sPath + "button-red_benji_park_01.png";
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");
 				break;		
 			default:

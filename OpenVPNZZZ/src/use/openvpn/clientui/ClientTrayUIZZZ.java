@@ -23,11 +23,14 @@ import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.clientui.IConstantClientOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
+import use.openvpn.serverui.ServerTrayUIZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.file.FileEasyZZZ;
+import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
@@ -150,32 +153,79 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}//END main
 	}
 	
-	public ImageIcon readImageIconByStatus(int iStatus){
+	public ImageIcon readImageIconByStatus(int iStatus) throws ExceptionZZZ{
 		ImageIcon objReturn = null;
 		main:{
 			URL url = null;
+			ClassLoader objClassLoader = ServerTrayUIZZZ.class.getClassLoader(); 
+			if(objClassLoader==null) {
+				ExceptionZZZ ez = new ExceptionZZZ("unable to receiver classloader object", iERROR_RUNTIME, ServerTrayUIZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			String sPath= ResourceEasyZZZ.searchDirectoryAsStringRelative("resourceZZZ/image/tray"); //Merke: Innerhalb einer JAR-Datei soll hier ein src/ vorangestellt werden.					
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Using path for directory '"+sPath+"'");
+			
+			String sPathTotal = "";
 			switch(iStatus){
-			case iSTATUS_CONNECTING:
-				 url= ClassLoader.getSystemResource("button-yellow_benji_park_01.png");
-				 break;
+//			case iSTATUS_NEW:			
+//				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");
+//				break;
+//			case iSTATUS_STARTING:
+//				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_benji_p_01.png");
+//				break;
+//			case iSTATUS_LISTENING:
+//				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-green_benji__01.png");
+//				break;
 			case iSTATUS_CONNECTED:
-				 url= ClassLoader.getSystemResource("button-green_benji_park_01.png");
-				 break;
-			case iSTATUS_DISCONNECTED:
-				 url= ClassLoader.getSystemResource("button-blue_benji_park_01.png");
-				 break;
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-seagreen_ben_01.png");
+				break;
+			case iSTATUS_INTERRUPTED:	
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-purple_benji_01.png");				
+				break;
+//			case iSTATUS_STOPPED:
+//				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");				
+//				break;		
 			case iSTATUS_ERROR:
-				url= ClassLoader.getSystemResource("button-red_benji_park_01.png");
-				 break;
-			case iSTATUS_FAILED:
-				url= ClassLoader.getSystemResource("button-purple_benji_park_01.png");
-				 break;
-			case iSTATUS_INTERRUPTED:
-				url= ClassLoader.getSystemResource("button-purple_benji_park_01.png");
-				 break;
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");
+				break;		
 			default:
 				break main;
 			}
+			
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Using path for imageicon '"+sPathTotal+"'");			
+			url= ClassLoader.getSystemResource(sPathTotal);
+			if(url==null) {
+				String sLog = "unable to receive url object. Path '" + sPathTotal + "' not found?";
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
+				ExceptionZZZ ez = new ExceptionZZZ(sLog, iERROR_RUNTIME, ServerTrayUIZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else {
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": URL = '"+url.toExternalForm() + "'");
+			}
+												
+//			URL url = null;
+//			switch(iStatus){
+//			case iSTATUS_CONNECTING:
+//				 url= ClassLoader.getSystemResource("button-yellow_benji_park_01.png");
+//				 break;
+//			case iSTATUS_CONNECTED:
+//				 url= ClassLoader.getSystemResource("button-green_benji_park_01.png");
+//				 break;
+//			case iSTATUS_DISCONNECTED:
+//				 url= ClassLoader.getSystemResource("button-blue_benji_park_01.png");
+//				 break;
+//			case iSTATUS_ERROR:
+//				url= ClassLoader.getSystemResource("button-red_benji_park_01.png");
+//				 break;
+//			case iSTATUS_FAILED:
+//				url= ClassLoader.getSystemResource("button-purple_benji_park_01.png");
+//				 break;
+//			case iSTATUS_INTERRUPTED:
+//				url= ClassLoader.getSystemResource("button-purple_benji_park_01.png");
+//				 break;
+//			default:
+//				break main;
+//			}
 			objReturn = new ImageIcon(url);
 		}//END main:
 		return objReturn;
@@ -210,7 +260,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return sReturn;
 	}
 	
-	public boolean switchStatus(int iStatus){
+	public boolean switchStatus(int iStatus) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			//StatusString �ndern
@@ -298,7 +348,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 							   
 			}catch(ExceptionZZZ ez){
 				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.
-				this.switchStatus(iSTATUS_ERROR);
+				try {
+					this.switchStatus(iSTATUS_ERROR);
+				} catch (ExceptionZZZ e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}		
 		}
 		return bReturn;
@@ -572,7 +627,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			}catch(ExceptionZZZ ez){
 				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.
 				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
-				this.switchStatus(iSTATUS_ERROR);
+				try {
+					this.switchStatus(iSTATUS_ERROR);
+				} catch (ExceptionZZZ e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
