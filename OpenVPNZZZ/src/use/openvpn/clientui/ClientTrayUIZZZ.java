@@ -37,12 +37,13 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
 public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListener {
-	public static final int iSTATUS_DISCONNECTED = 0;
+	public static final int iSTATUS_NEW = 0;	
 	public static final int iSTATUS_CONNECTING = 1;
-	public static final int iSTATUS_CONNECTED = 2;
-	public static final int iSTATUS_ERROR = 3;
-	public static final int iSTATUS_FAILED = 4;
-	public static final int iSTATUS_INTERRUPTED = 5;
+	public static final int iSTATUS_FAILED = 2;	
+	public static final int iSTATUS_CONNECTED = 3;		
+	public static final int iSTATUS_INTERRUPTED = 4;	
+	public static final int iSTATUS_DISCONNECTED = 5;
+	public static final int iSTATUS_ERROR = 6;
 	private String sStatusString = null;
 
 	private SystemTray objTray = null;
@@ -166,29 +167,42 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Using path for directory '"+sPath+"'");
 			
 			String sPathTotal = "";
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Status for image icon  = '"+iStatus+"'");
 			switch(iStatus){
-//			case iSTATUS_NEW:			
-//				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");
-//				break;
+			case iSTATUS_NEW:			
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");
+				break;
 //			case iSTATUS_STARTING:
 //				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_benji_p_01.png");
 //				break;
 //			case iSTATUS_LISTENING:
 //				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-green_benji__01.png");
 //				break;
+			case iSTATUS_CONNECTING:
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_benji_p_01.png");
+				break;
+			case iSTATUS_FAILED:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FAILED");
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-purple_benji_01.png");				
+				break;
 			case iSTATUS_CONNECTED:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": CONNECTED");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-seagreen_ben_01.png");
 				break;
 			case iSTATUS_INTERRUPTED:	
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": INTERRUPTED");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-purple_benji_01.png");				
 				break;
-//			case iSTATUS_STOPPED:
-//				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");				
-//				break;		
+			case iSTATUS_DISCONNECTED:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": DISCONNECTED");
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");				
+				break;		
 			case iSTATUS_ERROR:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ERROR");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");
 				break;		
 			default:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Status for image icon not handled");
 				break main;
 			}
 			
@@ -235,6 +249,9 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		String sReturn=null;
 		main:{
 			switch(iStatus){
+			case iSTATUS_NEW:
+				sReturn = "New.";
+				break;
 			case iSTATUS_CONNECTING:
 				sReturn = "Connecting ...";
 				break;

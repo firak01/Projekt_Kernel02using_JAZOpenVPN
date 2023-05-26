@@ -177,25 +177,32 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			
 			String sPathTotal = "";
 			switch(iStatus){
-			case iSTATUS_NEW:			
+			case iSTATUS_NEW:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NEW");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");
 				break;
 			case iSTATUS_STARTING:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": STARTING");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_benji_p_01.png");
 				break;
 			case iSTATUS_LISTENING:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": LISTENING");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-green_benji__01.png");
 				break;
 			case iSTATUS_CONNECTED:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": CONNECTED");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-seagreen_ben_01.png");
 				break;
 			case iSTATUS_INTERRUPTED:	
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": INTERRRUPTED");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-purple_benji_01.png");				
 				break;
 			case iSTATUS_STOPPED:
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");				
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": STOPPED");
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");				
 				break;		
 			case iSTATUS_ERROR:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ERROR");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");
 				break;		
 			default:
