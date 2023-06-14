@@ -5,6 +5,11 @@ import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.clientui.ConfigOVPN;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
+import basic.zKernel.file.ini.IKernelCallIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelEncryptionIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelExpressionIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelJavaCallIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelZFormulaIniSolverZZZ;
 import custom.zKernel.LogZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
@@ -30,7 +35,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 		main:{						
 			try {
 				//Parameter aus args auslesen
-				String[]saFlag = {"useExpression","useFormula"};
+				String[]saFlag = {IKernelExpressionIniSolverZZZ.FLAGZ.USEEXPRESSION.name(),IKernelZFormulaIniSolverZZZ.FLAGZ.USEFORMULA.name(), IKernelZFormulaIniSolverZZZ.FLAGZ.USEFORMULA_MATH.name(),IKernelEncryptionIniSolverZZZ.FLAGZ.USEENCRYPTION.name(),IKernelCallIniSolverZZZ.FLAGZ.USECALL.name(), IKernelJavaCallIniSolverZZZ.FLAGZ.USECALL_JAVA.name()};
 				ConfigOVPN objConfig = new ConfigOVPN(saArg, saFlag);
 				this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man über die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 				
