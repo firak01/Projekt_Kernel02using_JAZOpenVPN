@@ -94,7 +94,7 @@ ClientConfigHostname=HANNIBALDEV04VM
 			}
 			
 			//Neue Konfigurationsdateien erstellen, sofern welche konfiguriert sind.
-			String[] saClientConfig = objKernel.getParameterArrayStringByProgramAlias("OVPN","ProgConfigServerClientConfig","ServerClientConfigHostname");
+			String[] saClientConfig = objKernel.getParameterArrayWithStringByProgramAlias("OVPN","ProgConfigServerClientConfig","ServerClientConfigHostname");
 			boolean bUseDirectoryClientConfig = true;
 			boolean bUseClientConfig = true;
 			if(StringArrayZZZ.isEmpty(saClientConfig)) {

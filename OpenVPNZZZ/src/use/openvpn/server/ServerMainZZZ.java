@@ -122,7 +122,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			
 			//ABER: Es werden nur die Konfigurationsdateien verwendet, die auch konfiguriert sind. Falls nix konfiguriert ist, werden alle gefundenen verwendet.
 			ArrayList<File> listaFileConfigUsed = this.getConfigFileObjectsAll();		
-			String[] saFileConfigConfigured = objKernel.getParameterArrayStringByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile");
+			String[] saFileConfigConfigured = objKernel.getParameterArrayWithStringByProgramAlias("OVPN", "ProgConfigHandler", "ConfigFile");
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed(null);//.findFileConfigTemplate(null);
 			
 			listaFileConfigUsed.clear();//Baue die Liste der letztendlich genutzten Konfigurationen neu auf.			
