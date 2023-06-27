@@ -46,7 +46,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  * @author 0823
  *
  */
-public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implements IConstantProgramPageWebCreateOVPN{
+public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ implements IConstantProgramPageWebCreateUiOVPN{
 		
 	private KernelJPanelCascadedZZZ panel = null;
 	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
@@ -54,7 +54,7 @@ public class ProgramPageWebCreateOVPN  extends AbstractKernelProgramUIZZZ implem
 
 	private boolean bFlagUseProxy = false;
 	
-	public ProgramPageWebCreateOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
+	public ProgramPageWebCreateUiOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, panel, saFlagControl);
 		main:{			
 			this.setPanelParent(panel);						

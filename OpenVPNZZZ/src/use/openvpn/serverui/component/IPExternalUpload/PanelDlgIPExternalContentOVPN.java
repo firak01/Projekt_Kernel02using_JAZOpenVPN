@@ -168,9 +168,9 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			// Dieses Feld soll ggfs. einer Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-			panel.setComponent(IConstantProgramPageWebUploadOVPN.sCOMPONENT_LABEL_MESSAGE, labelWebUpload);  
+			panel.setComponent(IConstantProgramPageWebUploadUiOVPN.sCOMPONENT_LABEL_MESSAGE, labelWebUpload);  
 																			
-			JButton buttonUploadIPPage = new JButton(IConstantProgramPageWebUploadOVPN.sLABEL_BUTTON);			
+			JButton buttonUploadIPPage = new JButton(IConstantProgramPageWebUploadUiOVPN.sLABEL_BUTTON);			
 			buttonUploadIPPage.setPreferredSize(dimButton02);
 			ActionPageWebUploadOVPN actionUploadIPPage = new ActionPageWebUploadOVPN(objKernel, this);
 			buttonUploadIPPage.addActionListener(actionUploadIPPage);
@@ -241,9 +241,9 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			// Dieses Feld soll einer ggfs. Aktion in der Buttonleiste zur Verfügung stehen.
 			//Als CascadedPanelZZZ, wird diese Componente mit einem Alias versehen und in eine HashMap gepackt.
 			//Der Inhalt des Textfelds könnte dann beim O.K. Button in die ini-Datei gepackt werden.
-			panel.setComponent(IConstantProgramPageWebCreateOVPN.sCOMPONENT_LABEL_MESSAGE, labelWebCreate);      
+			panel.setComponent(IConstantProgramPageWebCreateUiOVPN.sCOMPONENT_LABEL_MESSAGE, labelWebCreate);      
 									
-			JButton buttonGenerateIPPage = new JButton(IConstantProgramPageWebCreateOVPN.sLABEL_BUTTON);
+			JButton buttonGenerateIPPage = new JButton(IConstantProgramPageWebCreateUiOVPN.sLABEL_BUTTON);
 			buttonGenerateIPPage.setPreferredSize(dimButton02);
 			ActionPageWebCreateOVPN actionGenerateIPPage = new ActionPageWebCreateOVPN(objKernel, this);
 			buttonGenerateIPPage.addActionListener(actionGenerateIPPage);
@@ -492,13 +492,13 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 				this.createRowIpRouter(this, cc, 1, sIpRouter);			
 				break;
 			case 2:
-				this.createRowGeneratePage(this, cc, 2, IConstantProgramPageWebCreateOVPN.sCOMPONENT_LABEL_MESSAGE_VALUE);			
+				this.createRowGeneratePage(this, cc, 2, IConstantProgramPageWebCreateUiOVPN.sCOMPONENT_LABEL_MESSAGE_VALUE);			
 				break;
 			case 3:
 				this.createRowIpLocal(this, cc, 3, sIpLocal);			
 				break;
 			case 4:
-				this.createRowUploadPage(this, cc, 4, IConstantProgramPageWebUploadOVPN.sCOMPONENT_LABEL_MESSAGE_VALUE);			
+				this.createRowUploadPage(this, cc, 4, IConstantProgramPageWebUploadUiOVPN.sCOMPONENT_LABEL_MESSAGE_VALUE);			
 				break;
 			case 5:
 				this.createRowIpWeb(this, cc, 5, sIp);
@@ -1033,7 +1033,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				//#### abstracte - Method aus SwingWorker
 				public Object construct() {
 					try{
-						ProgramPageWebCreateOVPN objProgWebPageCreate = new ProgramPageWebCreateOVPN(objKernel, this.panel, this.saFlag4Program);
+						ProgramPageWebCreateUiOVPN objProgWebPageCreate = new ProgramPageWebCreateUiOVPN(objKernel, this.panel, this.saFlag4Program);
 						
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
 						updateMessage(objProgWebPageCreate, "Creating ...");
@@ -1124,7 +1124,7 @@ class ActionIpLocal2iniOVPN extends  KernelActionCascadedZZZ{ //KernelUseObjectZ
 				//#### abstracte - Method aus SwingWorker
 				public Object construct(){
 					try{
-						ProgramPageWebUploadOVPN objProgWebPageUpload = new ProgramPageWebUploadOVPN(objKernel, this.panel, this.saFlag4Program);
+						ProgramPageWebUploadUiOVPN objProgWebPageUpload = new ProgramPageWebUploadUiOVPN(objKernel, this.panel, this.saFlag4Program);
 						
 						//1. Ins Label schreiben, dass hier ein Update stattfindet
 						updateMessage(objProgWebPageUpload, "Uploading ...");

@@ -46,7 +46,7 @@ import com.jcraft.jsch.JSchException;
  * @author 0823
  *
  */
-public class ProgramPageWebUploadOVPN  extends AbstractKernelProgramUIZZZ implements IConstantProgramPageWebUploadOVPN{
+public class ProgramPageWebUploadUiOVPN  extends AbstractKernelProgramUIZZZ implements IConstantProgramPageWebUploadUiOVPN{
 	private String sTargetUrl=null;
 
 	private String sIPProxy = null;
@@ -58,7 +58,7 @@ public class ProgramPageWebUploadOVPN  extends AbstractKernelProgramUIZZZ implem
 
 	private boolean bFlagUseProxy = false;
 	
-	public ProgramPageWebUploadOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
+	public ProgramPageWebUploadUiOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, panel, saFlagControl);
 		main:{			
 			this.setPanelParent(panel);						

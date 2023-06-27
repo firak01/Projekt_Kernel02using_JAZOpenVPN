@@ -8,9 +8,12 @@ import basic.zBasic.util.abstractList.HashMapCaseInsensitiveZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zKernel.AbstractKernelConfigZZZ;
 import basic.zKernel.config.KernelConfigEntryUtilZZZ;
+import basic.zKernel.net.client.ConfigHtmlTableHandlerZZZ;
 import custom.zKernel.file.ini.FileIniZZZ;
 
 public class ConfigOVPN  extends AbstractKernelConfigZZZ{
+	private static String sPROJECT_NAME = "OpenVPNZZZ";
+	private static String sPROJECT_PATH = "Project_Kernel02using_JAZOpenVPN";
 	public ConfigOVPN() throws ExceptionZZZ{
 		super();
 	}
@@ -39,5 +42,14 @@ public class ConfigOVPN  extends AbstractKernelConfigZZZ{
 
 	public String getSystemNumberDefault() {
 		return "01";
+	}
+	
+	@Override
+	public String getProjectName() {
+		return ConfigOVPN.sPROJECT_NAME;
+	}
+	@Override
+	public String getProjectDirectory() {
+		return ConfigOVPN.sPROJECT_PATH;
 	}
 }
