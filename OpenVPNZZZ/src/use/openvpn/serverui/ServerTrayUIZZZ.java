@@ -346,15 +346,16 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				objThreadMonitor.start();
 							   
 			}catch(ExceptionZZZ ez){
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
-				ez.printStackTrace();
-				String stemp = ez.getDetailAllLast();
-				this.getKernelObject().getLogObject().WriteLineDate(stemp);
 				try {
+					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
+					ez.printStackTrace();
+					String stemp = ez.getDetailAllLast();
+					this.getKernelObject().getLogObject().WriteLineDate(stemp);
+					System.out.println(ez.getDetailAllLast());
 					this.switchStatus(ServerTrayUIZZZ.iSTATUS_ERROR);
-				} catch (ExceptionZZZ ez2) {					
-					ez2.printStackTrace();
-					this.getLogObject().WriteLineDate(ez2.getDetailAllLast());
+				} catch (ExceptionZZZ ez2) {
+					System.out.println(ez.getDetailAllLast());
+					ez2.printStackTrace();					
 				}
 			}		
 		}
@@ -617,15 +618,16 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					*/
 				}
 			}catch(ExceptionZZZ ez){
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.				
-				ez.printStackTrace();
-				String stemp = ez.getDetailAllLast();
-				this.getKernelObject().getLogObject().WriteLineDate(stemp);
 				try {
+					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.				
+					ez.printStackTrace();
+					String stemp = ez.getDetailAllLast();
+					this.getKernelObject().getLogObject().WriteLineDate(stemp);
+					System.out.println(stemp);
 					this.switchStatus(iSTATUS_ERROR);
 				} catch (ExceptionZZZ ez2) {					
+					System.out.println(ez.getDetailAllLast());
 					ez2.printStackTrace();
-					this.getLogObject().WriteLineDate(ez2.getDetailAllLast());
 				}
 			}
 		}

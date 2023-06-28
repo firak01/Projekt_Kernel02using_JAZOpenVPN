@@ -274,10 +274,13 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 		} catch (ExceptionZZZ ez) {
 			try {
 				this.setFlag("haserror", true);
+				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
+				System.out.println(ez.getDetailAllLast());
 			} catch (ExceptionZZZ e) {				
+				System.out.println(ez.getDetailAllLast());
 				e.printStackTrace();
 			}
-			this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
+			
 		}
 	}
 	
@@ -299,8 +302,9 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	* @param sStatus 
 	* 
 	* lindhaueradmin; 13.07.2006 08:38:51
+	 * @throws ExceptionZZZ 
 	 */
-	public void logStatusString(String sStatus){
+	public void logStatusString(String sStatus) throws ExceptionZZZ{
 		if(sStatus!=null){
 			this.addStatusString(sStatus);
 			
@@ -311,7 +315,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 		}
 	}
 	
-	public void logStatusString(String[] saStatus) {
+	public void logStatusString(String[] saStatus) throws ExceptionZZZ {
 		if(saStatus!=null) {
 			int iMax = Array.getLength(saStatus)-1;
 			for(int icount=0;icount<=iMax;icount++) {
@@ -320,12 +324,12 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 		}		
 	}
 	
-	public void logStatusString(ArrayList<String>lista) {
+	public void logStatusString(ArrayList<String>lista) throws ExceptionZZZ {
 		String[]sa = ArrayListZZZ.toStringArray(lista);
 		this.logStatusString(sa);
 	}
 	
-	public void logStatusString(ReferenceArrayZZZ<String>strStatus) {
+	public void logStatusString(ReferenceArrayZZZ<String>strStatus) throws ExceptionZZZ {
 		ArrayList<String>listas=strStatus.getArrayList();
 		this.logStatusString(listas);
 	}

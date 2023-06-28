@@ -643,12 +643,17 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				}
 			}catch(ExceptionZZZ ez){
 				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.
-				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
+				try {
+					this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
+				} catch (ExceptionZZZ e1) {
+					System.out.println(ez.getDetailAllLast());
+					e1.printStackTrace();
+				}
 				try {
 					this.switchStatus(iSTATUS_ERROR);
-				} catch (ExceptionZZZ e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (ExceptionZZZ e2) {
+					System.out.println(e2.getDetailAllLast());
+					e2.printStackTrace();
 				}
 			}
 		}

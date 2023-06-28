@@ -1,7 +1,9 @@
 package use.openvpn;
 
+import basic.zBasic.ExceptionZZZ;
+
 public interface IMainOVPN extends IConfigMapper4TemplateUserOVPN,IApplicationUserOVPN,IMainConstantOVPN{
-	public void logStatusString(String sStatus);
+	public void logStatusString(String sStatus) throws ExceptionZZZ;
 	public void addStatusString(String sStatus);
 	public String getJarFilePathUsed();
 	

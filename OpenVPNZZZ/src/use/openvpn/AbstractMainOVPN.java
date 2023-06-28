@@ -27,8 +27,9 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	* @param sStatus 
 	* 
 	* lindhaueradmin; 13.07.2006 08:38:51
+	 * @throws ExceptionZZZ 
 	 */
-	public void logStatusString(String sStatus){
+	public void logStatusString(String sStatus) throws ExceptionZZZ{
 		if(sStatus!=null){
 			this.addStatusString(sStatus);
 			

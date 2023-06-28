@@ -90,7 +90,13 @@ public class ProcessWatchRunnerZZZ extends KernelUseObjectZZZ implements Runnabl
 		this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
 					
 		}catch(ExceptionZZZ ez){
-			this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+			try {
+				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+				System.out.println(ez.getDetailAllLast());
+			} catch (ExceptionZZZ e) {
+				System.out.println(ez.getDetailAllLast());
+				e.printStackTrace();
+			}
 		}
 		}//END main
 	}

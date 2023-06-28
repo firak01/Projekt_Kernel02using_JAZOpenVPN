@@ -496,7 +496,12 @@ if(this.isPortScanEnabled()==true){
 			} catch (ExceptionZZZ e1) {				
 				e1.printStackTrace();
 			}
-			this.getKernelObject().getLogObject().WriteLineDate(e.getDetailAllLast());
+			try {
+				this.getKernelObject().getLogObject().WriteLineDate(e.getDetailAllLast());
+			} catch (ExceptionZZZ e1) {
+				System.out.println(e.getDetailAllLast());
+				e1.printStackTrace();
+			}
 		}
 	}
 	
