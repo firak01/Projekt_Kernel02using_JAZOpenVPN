@@ -22,6 +22,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.character.CharZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
+import basic.zBasic.util.file.IFileEasyConstantsZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.component.AbstractKernelProgramZZZ;
@@ -210,7 +211,7 @@ TargetFile=testpage.html
 		}else{
 			IKernelConfigSectionEntryZZZ entryDirTarget=objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"TargetDirectory");
 			String sDirTarget = entryDirTarget.getValue();
-			StringZZZ.replace(sDirTarget, FileEasyZZZ.sDIRECTORY_SEPARATOR_WINDOWS, CharZZZ.toString(objFTP.getDirectorySeparatorRemote()));
+			StringZZZ.replace(sDirTarget, IFileEasyConstantsZZZ.sDIRECTORY_SEPARATOR_WINDOWS, CharZZZ.toString(objFTP.getDirectorySeparatorRemote()));
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": DirTarget='"+sDirTarget+"'");
 			
 			//Dateiname bleibt ggfs. nicht gleich, also extra auslesen.
