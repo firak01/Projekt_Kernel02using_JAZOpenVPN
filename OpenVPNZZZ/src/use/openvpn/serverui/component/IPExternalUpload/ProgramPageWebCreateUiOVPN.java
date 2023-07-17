@@ -83,6 +83,7 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 		
 		//2. Protokoll
 		IKernelLogZZZ objLog = objKernel.getLogObject();
+		String sLog=null;
 //		
 //		//4. Konfiguration auslesen
 //		//Hier werden Informationen ueber die IP-Adressdatei ausgelesen, etc.
@@ -96,16 +97,20 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 		//          Dadurch wird sich nie eine Änderung ergeben, die ja durch ein anderes Program erzeugt wurde.
 		//          Diesen Cache Zugriff kann man nun abstellen.
 		IKernelConfigSectionEntryZZZ entryServer = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternal", false);
-		String sIP = entryServer.getValue();
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": sIP='"+sIP+"'");
+		String sIP = entryServer.getValue();	
+		sLog = "sIP='"+sIP+"'";
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
+		objLog.WriteLineDate(sLog);
 		
 		IKernelConfigSectionEntryZZZ entryDate = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPDate");
 		String sIPDate = entryDate.getValue();
 		
 		IKernelConfigSectionEntryZZZ entryTime =objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPTime"); 
 		String sIPTime = entryTime.getValue();
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Page Generator - IP Detail read from file: "+sIP + " ("+sIPDate+" - "+sIPTime+")");
-
+		sLog = "Page Generator - IP Detail read from file: "+sIP + " ("+sIPDate+" - "+sIPTime+")";
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": "+sLog);
+		objLog.WriteLineDate(sLog);
+		
 		//Den alten IP Wert aus der Ini-Datei holen
 		//IKernelConfigSectionEntryZZZ entryServerPrevious = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternalPrevious", false);
 		//String sIPPrevious = entryServerPrevious.getValue();
@@ -113,13 +118,18 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 		
 		//if(!sIP.equals(sIPPrevious)){
 			//System.out.println("PageGenerator - geaenderter Wert fuer die IP-Adresse. Erstelle neue HTML-Datei.");
-		System.out.println("PageGenerator - Unabhängig von bisheriger IP-Adresse. Erstelle neue HTML-Datei.");
-			
+		sLog = "PageGenerator - Unabhängig von bisheriger IP-Adresse. Erstelle neue HTML-Datei.";				
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": "+sLog);
+		objLog.WriteLineDate(sLog);	
+		
 			//Nur eine neue Datei erzeugen, wenn es auch eine neue IPNr gibt
 			//Create a Content Store object, here: pass the IP Details as Variable 
 			ContentPageIPZZZ objPageStorage = new ContentPageIPZZZ(objKernel, (String[]) null);
 		   
-		   
+			sLog="PageGenerator - Unabhängig von bisheriger IP-Adresse. Erstelle neue HTML-Datei.";
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": "+sLog);
+			objLog.WriteLineDate(sLog);	
+			
 			//Diese Variablen werden nun in das Storage-Objekt �bertragen	
 		   objPageStorage.setVar("IPNr",sIP);
 		   
