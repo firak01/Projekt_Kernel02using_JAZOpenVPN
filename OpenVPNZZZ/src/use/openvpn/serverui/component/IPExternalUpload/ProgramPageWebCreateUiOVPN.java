@@ -84,19 +84,43 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 		//2. Protokoll
 		IKernelLogZZZ objLog = objKernel.getLogObject();
 		String sLog=null;
+		
+		sLog="ReflectCodeZZZ.getPositionCurrent() + :";
+		objLog.WriteLineDate(sLog);
+		
+		sLog = "KernelIniFile= '" + objKernel.getFileConfigKernel().getAbsolutePath() + "'";
+		objLog.WriteLineDate(sLog);		
+				
 //		
 //		//4. Konfiguration auslesen
 //		//Hier werden Informationen ueber die IP-Adressdatei ausgelesen, etc.
 		String sModule = this.getModuleName();
 		FileIniZZZ objFileIniIPConfig = objKernel.getFileConfigModuleIni(sModule);
-//		
+		sLog = "objFileIniIPConfig absoluter Pfad='"+objFileIniIPConfig.getFileObject().getAbsolutePath()+"'";
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
+		objLog.WriteLineDate(sLog);
+		
+		
 //		//Programname nicht aus dem Panel, sondern das Program selbst
 		String sProgram = this.getProgramName();
+		sLog = "Program='"+sProgram+"'";
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
+		objLog.WriteLineDate(sLog);
 		
 		//20210216: Hier wird normalerweise ein ggfs. gecachter Wert geholt. 
 		//          Dadurch wird sich nie eine Änderung ergeben, die ja durch ein anderes Program erzeugt wurde.
 		//          Diesen Cache Zugriff kann man nun abstellen.
 		IKernelConfigSectionEntryZZZ entryServer = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternal", false);
+		
+		sLog = "entryServer.getSection()='"+entryServer.getSection()+"'";
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
+		objLog.WriteLineDate(sLog);
+		
+		sLog = "entryServer.getSystemNumber()='"+entryServer.getSystemNumber()+"'";
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
+		objLog.WriteLineDate(sLog);
+
+		
 		String sIP = entryServer.getValue();	
 		sLog = "sIP='"+sIP+"'";
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
