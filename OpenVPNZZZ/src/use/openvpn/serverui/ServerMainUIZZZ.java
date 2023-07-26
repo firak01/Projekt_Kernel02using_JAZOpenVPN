@@ -32,7 +32,7 @@ public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 			 */
 			public static void main(String[] args) {
 				ServerMainUIZZZ objServer = new ServerMainUIZZZ();
-				objServer.start(args);
+				boolean bStarted = objServer.start(args);								
 			}//END main()
 			
 			public boolean start(String[] saArg){
@@ -55,13 +55,31 @@ public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 						this.objServerTray.setServerBackendObject(this.objServerMain);
 						bReturn = objServerTray.load();
 						
-						//Konfigurierbar: Beim Starten schon connecten
-						boolean btemp = this.objServerMain.isListenOnStart();
+						//Konfigurierbar: Beim Launch der Applikation schon starten
+						boolean btemp = this.objServerMain.isStartingOnLaunch();
+						if(btemp==false){							
+							bReturn = true;
+							break main;
+						}
+						bReturn = objServerTray.start();//Prüfe die startbedingungen ab.
+						if(!bReturn) {
+							bReturn = true;
+							break main;
+						}
+						objServerTray.getServerBackendObject().setFlag("isstarted", bReturn);						
+						objServerTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTING);
+						
+						//Konfigurierbar: Beim Starten schon connecten						
+						 btemp = this.objServerMain.isListenOnStart();
 						if(btemp==true){
-							bReturn = objServerTray.listen();
+							objServerTray.listen();
+							bReturn = true;
+							break main;
 						}else{
 							bReturn = true;
-						}				
+							break main;
+						}
+						
 					} catch (ExceptionZZZ ez) {
 						if(objKernel!=null){
 							LogZZZ objLog = objKernel.getLogObject();

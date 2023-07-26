@@ -29,8 +29,10 @@ public class ServerMonitorRunnerZZZ extends KernelUseObjectZZZ implements Runnab
 	private ServerMainZZZ objServerMain = null;
 	private ServerTrayUIZZZ objTray = null;
 	
-	private HashMap hmWatchRunnerStatus = new HashMap(); //Das wird hier gef�llt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
-	private String sWatchRunnerStatus = new String("");            //Das wird hier gef�llt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
+	private HashMap hmWatchRunnerStatus = new HashMap(); //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
+	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
+	private String sWatchRunnerStatusPrevious = new String("");    //den vorherigen Status festhalten, damit z.B. nicht immer wieder das Icon geholt wird.
+	
 	private ArrayList listaWatchRunner = new ArrayList();
 	
 	//private int iStatusSet = 0;  //Der Status, der schon im Tray gesetzt ist. Damit er nicht permanent neu gesetzt wird.
@@ -78,35 +80,58 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 				if(this.objServerMain==null) break main;
 			}//END check:
 	
-			//Zuerst mal pr�fen, ob der ServerMain-Prozess erfolgreich abgeschlossen worden ist.
-			boolean bCheck=false;	
+			//Zuerst mal pruefen, ob der ServerMain-Prozess erfolgreich abgeschlossen worden ist.
+			boolean bCheck=false;
+			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": In run()-Schleife.";
 			do{
+				System.out.println(sLog);
+				this.getLogObject().WriteLineDate(sLog);
 				if(objServerMain.getFlag("HasError")==true){
-					//StatusString �ndern
-					this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_ERROR);			
-					this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_ERROR);
+					//StatusString aendern
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_ERROR);
+					if(this.isStatusChanged(sWatchRunnerStatus)) {
+						this.setStatusString(sWatchRunnerStatus);
+						this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_ERROR);
+					}					
 					break main;
-				}
-				bCheck = objServerMain.getFlag("isstarted");
-				if(bCheck==false){
-					this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_STARTING);			
-					this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTING);
+				}			
+				
+				boolean bStarted = objServerMain.getFlag("isstarted");
+				boolean bWatchRunnerStarted = objServerMain.getFlag("watchrunnerstarted");
+				boolean bListening = objServerMain.getFlag("islistening");
+				if(bWatchRunnerStarted & !bListening){
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_STARTING);
+					if(this.isStatusChanged(sWatchRunnerStatus)) {
+						this.setStatusString(sWatchRunnerStatus);
+						this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTING);	
+					}					
 					Thread.sleep(500);	
-				}else{
-					this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_LISTENING);		
-					this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_LISTENING);
-				}				
+				}
+				
+				if(bWatchRunnerStarted && bListening) {
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_LISTENING);
+					if(this.isStatusChanged(sWatchRunnerStatus)) {
+						this.setStatusString(sWatchRunnerStatus);
+						this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_LISTENING);
+					}
+					Thread.sleep(500);
+				}
+				
 			}while(bCheck==false);
 			
-			//Erst mal sehn, ob �berhaupt was da ist.
+			//Erst mal sehn, ob ueberhaupt was da ist.
 			ArrayList listaProcessStarter = objServerMain.getProcessStarterAll();
-			if(listaProcessStarter.size() <= 0){
-				this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);		
-				this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);
-				break main;
-			}
-			
-			//Nun f�r alle in ServerMain gestarteten OpenVPN.exe - Processe einen Thread bereitstellen, der das VPN-IP-Adressen Ziel versuchen kann zu erreichen.
+//			bCheck = objServerMain.getFlag("isstarted");
+//			if(listaProcessStarter.size() <= 0 && bCheck){
+//				String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);
+//				if(this.isStatusChanged(sWatchRunnerStatus)) {
+//					this.setStatusString(sWatchRunnerStatus);
+//					this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);
+//				}				
+//				break main;
+//			}
+					
+			//Nun fuer alle in ServerMain gestarteten OpenVPN.exe - Processe einen Thread bereitstellen, der das VPN-IP-Adressen Ziel versuchen kann zu erreichen.
 			listaWatchRunner = new ArrayList(listaProcessStarter.size());			
 			for(int icount=0; icount < listaProcessStarter.size(); icount++){
 				ServerConfigStarterOVPN objProcessStarterTemp = (ServerConfigStarterOVPN) listaProcessStarter.get(icount);
@@ -129,13 +154,15 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 			this.setFlag("WatchRunnerStarted", true);
 			
 			
-			//Nun in einer Endlosschleife permanent den Status der ganzen WatchRunner pr�fen
-			//Daraus ergibt sich dann ggf. ein �ndern der Anzeige und der Status - String dieses Objekts wird aktualisiert.
+			
+			
+			//Nun in einer Endlosschleife permanent den Status der ganzen WatchRunner pruefen
+			//Daraus ergibt sich dann ggf. ein aendern der Anzeige und der Status - String dieses Objekts wird aktualisiert.
 			this.hmWatchRunnerStatus = new HashMap(listaWatchRunner.size());
 			HashMap hmConnectionCount = new HashMap(listaWatchRunner.size()); //Hier wird festgehalten wieviele und welche Verbindung (alias) erfolgt ist
 			boolean bConnected = false;
 			do{
-				//Schleife zum �ndern des Statustexts + des Status
+				//Schleife zum aendern des Statustexts + des Status
 				for(int icount=0; icount < listaWatchRunner.size(); icount ++){
 					//Das w�re ein aktiver Ping   ServerConnectionWatchRunnerZZZ objWatchTemp = (ServerConnectionWatchRunnerZZZ) listaWatchRunner.get(icount);
 					//Nun aber den passiven listener verwenden
@@ -146,7 +173,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 						hmWatchRunnerStatus.put(objProcessStarterTemp.getAlias(), "Stopped. Not listening.");
 						listaWatchRunner.remove(icount);
 						hmConnectionCount.remove(objProcessStarterTemp.getAlias());
-						break; //Z�hlerindizierung hat sich ggf. ge�ndert. Darum die Schleife verlassen und neu anfangen.
+						break; //Zaehlerindizierung hat sich ggf. geaendert. Darum die Schleife verlassen und neu anfangen.
 					}else{
 						if(bConnected == false && objWatchTemp.getFlag("isconnected")){
 							//+++ FALL: Neue, erste Verbindung entdeckt
@@ -154,7 +181,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 							hmConnectionCount.put(objProcessStarterTemp.getAlias(), "1");
 							hmWatchRunnerStatus.put(objWatchTemp.getAlias(), "Connected to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());
 							
-							//Das Symbol in der Statuszeile �ndern. Eine Connectin reicht dazu aus.
+							//Das Symbol in der Statuszeile aendern. Eine Connection reicht dazu aus.
 							this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_CONNECTED);	
 							this.objTray.getServerBackendObject().logStatusString(icount + "# Connection reported by ServerMonitorRunner to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());
 							this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_CONNECTED);
@@ -186,7 +213,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 							
 							
 							this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_ERROR);
-							//Merke: Die hmWathcRunnerStatus - Eintr�ge bleiben dabei jedoch unber�hrt.
+							//Merke: Die hmWathcRunnerStatus - Eintraege bleiben dabei jedoch unber�hrt.
 							break main;
 						}else{
 							//+++ FALL: Noch garkeine Verbindung
@@ -198,16 +225,21 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 //				+++ Spezielles Symbol in der Statusleiste setzen
 				if(bConnected == true && listaWatchRunner.size() == 0){
 //					Falls schon mal connected war und die Anzahl der "aktiven" OpenVPN Prozesse auf 0 runtergegangen ist, den Status auf "NotListening" �ndern. Die Schleife verlassen.
-					this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_STOPPED);		
-					this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STOPPED);
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_STOPPED);
+					if(this.isStatusChanged(sWatchRunnerStatus)) {
+						this.setStatusString(sWatchRunnerStatus);
+						this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STOPPED);
+					}
 					break; //DIE ENDLOSSCHLEIFE VERLASSEN
 				}else if(bConnected == true && hmConnectionCount.isEmpty()){
-//					Falls schon mal connected war und nun der Z�hler der Verbindungen auf 0 zur�ckgegangen ist, das Icon entsprechend �ndern.
-					this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);		
-					this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);
+//					Falls schon mal connected war und nun der Zaehler der Verbindungen auf 0 zur�ckgegangen ist, das Icon entsprechend aendern.
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);
+					if(this.isStatusChanged(sWatchRunnerStatus)) {
+						this.setStatusString(sWatchRunnerStatus);
+						this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);
+					}
 					bConnected = false;
-				}
-				
+				}				
 				this.setFlag("StatiAllFilled", true);  //Kennzeichnet, das alle hmWatchRunnerStatus Eintr�ge erfolgt sind.
 				Thread.sleep(1000);
 			}while(true);
@@ -267,6 +299,50 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 	public String getStatusString(){
 		return this.sWatchRunnerStatus;
 	}
+	public void setStatusString(String sStatus) {
+		
+		main:{
+			String sStatusPrevious = this.getStatusString();
+			if(sStatus == null) {
+				if(sStatusPrevious==null)break main;
+			}
+			
+			if(!sStatus.equals(sStatusPrevious)) {
+				String sStatusCurrent = this.getStatusString();
+				this.sWatchRunnerStatus = sStatus;
+				this.setStatusPrevious(sStatusCurrent);
+			}
+		}//end main:
+	
+	}
+	
+	public String getStatusPreviousString() {
+		return this.sWatchRunnerStatusPrevious;
+	}
+	public void setStatusPrevious(String sStatusPrevious) {
+		this.sWatchRunnerStatusPrevious = sStatusPrevious;
+	}
+	
+	public boolean isStatusChanged(String sStatusString) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			if(sStatusString == null) {
+				bReturn = this.getStatusString()==null;
+				break main;
+			}
+			
+			if(!sStatusString.equals(this.getStatusString())) {
+				bReturn = true;
+			}
+		}//end main:
+		if(bReturn) {
+			String sLog = ReflectCodeZZZ.getPositionCurrent()+ ": Status changed to '"+sStatusString+"'";
+			System.out.println(sLog);
+		    this.getLogObject().WriteLineDate(sLog);			
+		}
+		return bReturn;
+	}
+	
 	
 	
 	

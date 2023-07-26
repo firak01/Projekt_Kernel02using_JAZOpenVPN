@@ -98,6 +98,10 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			menu.add(menueeintrag2);
 			menueeintrag2.addActionListener(this);
 			
+			JMenuItem menueeintrag2b = new JMenuItem(IConstantServerOVPN.sLABEL_LISTEN);
+			menu.add(menueeintrag2b);
+			menueeintrag2b.addActionListener(this);
+			
 			JMenuItem menueeintrag3 = new JMenuItem(IConstantServerOVPN.sLABEL_LOG);
             menu.add(menueeintrag3);
 			menueeintrag3.addActionListener(this);
@@ -224,9 +228,12 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return objReturn;
 	}
 	
-	public static String getStatusStringByStatus(int iStatus){
+	public static String getStatusStringByStatus(int iStatus) throws ExceptionZZZ{
 		String sReturn=null;
 		main:{
+			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Status="+iStatus;			
+			System.out.println(sLog);
+			
 			switch(iStatus){
 			case iSTATUS_NEW:
 				sReturn = "Not yet started.";
@@ -235,7 +242,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				sReturn = "Starting ...";
 				break;
 			case iSTATUS_LISTENING:
-				sReturn = "Listening.";
+				sReturn = "Listening for Connection.";
 				break;
 			case iSTATUS_CONNECTED:
 				sReturn = "Connected.";
@@ -259,7 +266,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public boolean switchStatus(int iStatus) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			//ImageIcon �ndern
+			//ImageIcon aendern
 			ImageIcon objIcon = this.getImageIconByStatus(iStatus);
 			if(objIcon==null)break main;
 			
@@ -318,20 +325,26 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		return bReturn;
 	}
+	
+	public boolean start() throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			this.getServerBackendObject().start();
+		}
+		return bReturn;
+	}
 
 	
 	/**
 	 * @return
 	 * @author Fritz Lindhauer, 24.05.2023, 08:07:21
 	 */
-	public boolean listen(){
+	public boolean listen() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			try{ 
 				check:{
-				}
-				this.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTING);
-				
+				}								
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
 				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
 				
@@ -340,11 +353,15 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				objThreadConfig.start();
 					
 				//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.
-				//Merke: Dieser Monitor Thread muss mit dem Starten der einzelnen Unterthreads solange warten, bis das ServerMainZZZ-Object in seinem Flag anzeigt, dass es fertig mit dem Start ist.				
+				//Merke: Dieser Monitor Thread muss mit dem Starten der einzelnen Unterthreads solange warten, bis das ServerMainZZZ-Object in seinem Flag anzeigt, dass es fertig mit dem Start ist.
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ServerMonitorRunner-Object";
+				System.out.println(sLog);
+				this.getLogObject().WriteLineDate(sLog);
 				this.objMonitor = new ServerMonitorRunnerZZZ(this.getKernelObject(), this, this.objServerBackend, null);
 				Thread objThreadMonitor = new Thread(objMonitor);
 				objThreadMonitor.start();
-							   
+				this.objServerBackend.setFlag("islistening", true);												
+				bReturn = true;
 			}catch(ExceptionZZZ ez){
 				try {
 					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
@@ -509,7 +526,11 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				if(sCommand.equals(IConstantServerOVPN.sLABEL_END)){
 					this.unload();	
 				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_START)){
-					this.listen();
+					boolean bFlagValue = this.start();
+					this.getServerBackendObject().setFlag("isstarted", bFlagValue);
+				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_LISTEN)) {
+					boolean bFlagValue = this.listen();
+					this.getServerBackendObject().setFlag("islistening", bFlagValue);
 				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_LOG)){
 					//JOptionPane pane = new JOptionPane();
 					String stemp = this.readLogString();

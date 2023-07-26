@@ -61,7 +61,7 @@ public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implement
 	public void run() {
 		try{
 			ServerConfigFileOVPN objConfigFile = this.getConfigFileHandlerObject();
-			this.setFlag("isstarted", true);
+			//this.setFlag("isstarted", true);
 			
 			
 			this.sTargetIP = objConfigFile.getVpnIpRemote();

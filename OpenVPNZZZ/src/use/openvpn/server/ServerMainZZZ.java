@@ -40,7 +40,9 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	private ArrayList listaStatus = new ArrayList(); //Hier�ber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
     																	//Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
 	private ArrayList listaConfigStarter = new ArrayList(); //Hier�ber werden alle Procese, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.
+	private boolean bFlagIsLaunched=false;
 	private boolean bFlagIsStarted=false;
+	private boolean bFlagIsListening=false;
 	private boolean bFlagWatchRunnerStarted=false;
 	private boolean bFlagHasError= false;
 	                                                                      //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
@@ -111,7 +113,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 					if(btemp==true){
 						this.logStatusString( "'Used file' successfully created for template: '" + objaFileConfigTemplate[icount].getPath() + "'");
 		
-						//+++ Nun dieses used-file dem Array hinzuf�gen, dass f�r den Start der OVPN-Verbindung verwendet wird.
+						//+++ Nun dieses used-file dem Array hinzufuegen, dass fuer den Start der OVPN-Verbindung verwendet wird.
 						//listaFileConfig.add(objUpdater.getFileUsed());
 						this.getConfigFileObjectsAll().add(objUpdater.getFileUsed());
 					}else{
@@ -227,7 +229,8 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				}while(bProof==false);
 				this.logStatusString("Depending process '" + sDominoCaption + "' running. Continue starting process.");
 			}//END if sDominoCaption isempty
-			
+			 this.setFlag("isstarted", true);
+			 
 			
 			//##########################################################################################
 			//+++ Diese OVPN-Konfigurationsfiles zum Starten der VPN-Verbindung verwenden !!!
@@ -243,7 +246,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				this.logStatusString("Requesting start of process #"+ icount + " (File: " + objFileConfigOvpn.getName() + ")");				
 				Process objProcessTemp = objStarter.requestStart();			
 				if(objProcessTemp==null){
-					//Hier nicht abbrechen, sondern die Verarbeitung bei der n�chsten Datei fortf�hren
+					//Hier nicht abbrechen, sondern die Verarbeitung bei der naechsten Datei fortfuehren
 					this.logStatusString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"'");
 				}else{			
 					this.addProcessStarter(objStarter);
@@ -253,24 +256,22 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 					 threadaOVPN[icount] = new Thread(runneraOVPN[icount]);					
 					 threadaOVPN[icount].start();
 					 iNumberOfProcessStarted++;	
-					//Das bl�ht das Log unn�tig auf .... zum Test aber i.o.
+					//Das blaeht das Log unnoetig auf .... zum Test aber i.o.
 					 this.logStatusString("Finished starting thread # " + icount + " for listening to connection.");
-					 this.setFlag("WatchRunnerStarted", true);
+					 this.setFlag("WatchRunnerStarted", true);					
 				}				
 			}//END for
 			
-			//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.			
-			
-			
+			//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.									
 		   bReturn = true;
-	}//END main
-		this.setFlag("isstarted", bReturn);
+	}//END main		
 		return bReturn;
 	}//END start()
 	
 	public void run() {
 		try {
-			this.start();
+			boolean bStarted = this.start();
+			this.setFlag("isstarted", bStarted);
 		} catch (ExceptionZZZ ez) {
 			try {
 				this.setFlag("haserror", true);
@@ -396,6 +397,23 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 		return listaConfigStarter;
 	}
 	
+	public boolean isStartingOnLaunch() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			check:{
+				if(this.objKernel==null) break main;				
+			}//END check:
+		
+		//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht. 
+		String stemp = this.objKernel.getParameter("StartingOnLaunch").getValue();
+		if(stemp==null) break main;
+		if(stemp.equals("1")){
+			bReturn = true;
+		}
+		}//END main
+		return bReturn;
+	}
+	
 	public boolean isListenOnStart() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
@@ -429,8 +447,14 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 						
 			//getting the flags of this object
 			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("isstarted")){
+			if(stemp.equals("islaunched")){
+				bFunction = bFlagIsLaunched;
+				break main;
+			}else if(stemp.equals("isstarted")){
 				bFunction = bFlagIsStarted;
+				break main;
+			}else if(stemp.equals("islistening")){
+				bFunction = bFlagIsListening;
 				break main;
 			}else if(stemp.equals("watchrunnerstarted")){
 				bFunction = bFlagWatchRunnerStarted;
@@ -463,8 +487,16 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	
 		//setting the flags of this object
 		String stemp = sFlagName.toLowerCase();
-		if(stemp.equals("isstarted")){
+		if(stemp.equals("islaunched")){
+			bFlagIsLaunched = bFlagValue;
+			bFunction = true;
+			break main;	
+		}else if(stemp.equals("isstarted")){
 			bFlagIsStarted = bFlagValue;
+			bFunction = true;
+			break main;	
+		}else if(stemp.equals("islistening")) {
+			bFlagIsListening = bFlagValue;
 			bFunction = true;
 			break main;	
 		}else if(stemp.equals("watchrunnerstarted")){
