@@ -44,12 +44,13 @@ import basic.zWin32.com.wmi.KernelWMIZZZ;
 public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListener {
 	public static final int iSTATUS_NEW = 0;                       //Wenn das SystemTry-icon neu ist 
 	public static final int iSTATUS_STARTING = 1;               //Die OVPN-Konfiguration wird gesucht und die Processe werden mit diesen Konfigurationen gestartet.
-	public static final int iSTATUS_LISTENING = 2;               //Die OVPN-Processe laufen.
-	public static final int iSTATUS_CONNECTED = 3;            //Falls sich ein Client per vpn mit dem Server verbunden hat und erreichbar ist
-	public static final int iSTATUS_INTERRUPTED = 4;          //Falls der Client wieder nicht erreichbar ist. Das soll aber keine Fehlermeldung in dem Sinne sein, sondern nur anzeigen, dass mal ein Client verbunden war.
+	public static final int iSTATUS_STARTED = 2;
+	public static final int iSTATUS_LISTENING = 3;               //Die OVPN-Processe laufen.
+	public static final int iSTATUS_CONNECTED = 4;            //Falls sich ein Client per vpn mit dem Server verbunden hat und erreichbar ist
+	public static final int iSTATUS_INTERRUPTED = 5;          //Falls der Client wieder nicht erreichbar ist. Das soll aber keine Fehlermeldung in dem Sinne sein, sondern nur anzeigen, dass mal ein Client verbunden war.
 	                                                                                      //Dies wird auch angezeigt, wenn z.B. die Netzwerkverbindung unterbrochen worden ist.
-	public static final int iSTATUS_STOPPED = 5; 				 //Wenn kein OVPN-Prozess mehr l�uft.
-	public static final int iSTATUS_ERROR = 6;
+	public static final int iSTATUS_STOPPED = 6; 				 //Wenn kein OVPN-Prozess mehr l�uft.
+	public static final int iSTATUS_ERROR = 7;
 	//private String sStatusString = null;  soll nun aus dem objMonitor ausgelsen werden
 
 	private SystemTray objTray = null;                                    //Das gesamte SystemTray von Windows
@@ -183,19 +184,23 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			switch(iStatus){
 			case iSTATUS_NEW:
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NEW");
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "Green Metallic_32.png");
 				break;
 			case iSTATUS_STARTING:
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": STARTING");
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_benji_p_01.png");
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");
+				break;
+			case iSTATUS_STARTED:
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": STARTEED");
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-green_benji_p_01.png");
 				break;
 			case iSTATUS_LISTENING:
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": LISTENING");
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-green_benji__01.png");
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-seagreen_benji__01.png");
 				break;
 			case iSTATUS_CONNECTED:
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": CONNECTED");
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-seagreen_ben_01.png");
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_ben_01.png");
 				break;
 			case iSTATUS_INTERRUPTED:	
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": INTERRRUPTED");
@@ -329,7 +334,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public boolean start() throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			this.getServerBackendObject().start();
+			this.getServerBackendObject().start(this);
 		}
 		return bReturn;
 	}

@@ -65,9 +65,7 @@ public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 						if(!bReturn) {
 							bReturn = true;
 							break main;
-						}
-						objServerTray.getServerBackendObject().setFlag("isstarted", bReturn);						
-						objServerTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTING);
+						}						
 						
 						//Konfigurierbar: Beim Starten schon connecten						
 						 btemp = this.objServerMain.isListenOnStart();

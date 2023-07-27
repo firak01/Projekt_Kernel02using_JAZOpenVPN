@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
+import use.openvpn.serverui.ServerTrayUIZZZ;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
@@ -41,6 +42,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
     																	//Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
 	private ArrayList listaConfigStarter = new ArrayList(); //Hier�ber werden alle Procese, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.
 	private boolean bFlagIsLaunched=false;
+	private boolean bFlagIsStarting=false;
 	private boolean bFlagIsStarted=false;
 	private boolean bFlagIsListening=false;
 	private boolean bFlagWatchRunnerStarted=false;
@@ -58,20 +60,87 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	 *
 	 * javadoc created by: 0823, 30.06.2006 - 10:24:31
 	 */
-	public boolean start() throws ExceptionZZZ{
+	public boolean start()throws ExceptionZZZ{
+		return this.start(null);
+	}
+	
+	public boolean start(ServerTrayUIZZZ objServerTray) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			TODOGOON20230727; //Aufteilen in einen OVPN-Teil und einen "Warte auf windows-Task"-Teil
+			//TODOGOON20230727; //Aufteilen in einen OVPN-Teil und einen "Warte auf windows-Task"-Teil
 			//TodoGOON: im ServerSystemTray muss das dann Heissen... Starte OVPN.
 			//TODOGOON: Erst sollte das Warten auf den Windows - Task passieren... und zwar in einer Schleife... dann erst OVPN Dinge
 			
-			//TODO Dies in eine Methode "find fileConfigAvailableAndConfigured"
-			this.logStatusString("Searching for configuration template files '*.ovpn'"); //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.
+			//1. Diverse Dinge mit WMI testen.
+			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
+			
+			//++++++++++++++++++++++++++++++
+			//Starterlaubnis: Läuft schon ovpn ???
 			IKernelZZZ objKernel = this.getKernelObject();			
-						
+			
 			ServerApplicationOVPN objApplication = (ServerApplicationOVPN) this.getApplicationObject();//Im UI erzeugt und übergeben.
 			ConfigChooserOVPN objChooser = new ConfigChooserOVPN(objKernel,"server", objApplication);
 			this.setConfigChooserObject(objChooser);
+			
+		   //TODO KernelWMIZZZ eines win32 - packages.
+			File objFileExe = ServerConfigFileOVPN.findFileExe();   //Anders als im Client muss nix weiter gemacht werden
+			if(objFileExe!=null){
+				String sExeCaption = objFileExe.getName();
+								
+				boolean bproof = objWMI.isProcessRunning(sExeCaption);
+				if(bproof==true){
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "There were found processes '"+ sExeCaption + "' still running. Will not start new ones. Quitting.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+				
+			}else{
+				//Wahrscheinlich ist .ovpn garnicht als Dateiendung installiert. Abbrechen.
+				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "OVPN seems not to be installed. '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+				throw ez;
+			}
+			this.logStatusString("Open VPN not yet running. Continue starting process.");
+			
+			//2.  Läuft schon ein  benötigter anderer Prozesss
+			 //+++++++++++++++++++++++++++++++			
+			//Starterlaubnis: Läuft der benoetigte Task, z.B. der Domino Server schon ???
+			//Falls nicht: Warte eine konfigurierte Zeit. (Merke: Nicht abbrechen, weil ja ggf. Probleme existieren oder der Server gar nicht starten soll).
+			String sDominoCaption = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","Process2Check").getValue();
+			if(!StringZZZ.isEmpty(sDominoCaption)){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Warte auf Start von Prozess '" + sDominoCaption + "'");
+				
+				String sTimeoutSecond = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","CheckTimeout").getValue();
+				if(StringZZZ.isEmpty(sTimeoutSecond)){
+					sTimeoutSecond = "1";
+				}				
+				int iTimeoutSecond = Integer.parseInt(sTimeoutSecond);
+				boolean bProof = false;
+				do{					
+					bProof = objWMI.isProcessRunning(sDominoCaption);
+					if(bProof == false){
+						try{
+							Thread.sleep(1000); //DIESEN THREAD fuer 1 Sekunde anhalten
+							iTimeoutSecond--;
+							//System.out.println(iTimeoutSecond);
+							if(iTimeoutSecond<=0){
+								ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME_TIMEOUT + "Waiting for domino-servertask to start - '" + sDominoCaption + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+								throw ez;
+							}
+						}catch(InterruptedException e){
+							ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + "Thread.sleep(...). " + e.getMessage(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+							throw ez;
+						}
+					}//bProof == false
+				}while(bProof==false);
+				this.logStatusString("Depending process '" + sDominoCaption + "' running. Continue starting process.");
+			}//END if sDominoCaption isempty
+			this.setFlag("isstarting", true);
+			if(objServerTray!=null) objServerTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTING);
+			
+			
+			//+++++++++++++++++++++++++++++++++++++++++
+			//3. OVPN Dateien fertig machen
+			//TODO Dies in eine Methode "find fileConfigAvailableAndConfigured"
+			this.logStatusString("Searching for configuration template files '*.ovpn'"); //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.			
 			
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 						
 			//Die Konfigurations-Template Dateien finden
@@ -177,64 +246,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			ServerConfigOnServerAllowedClientFacadeOVPN objClientConfigHandler = new ServerConfigOnServerAllowedClientFacadeOVPN(this.getKernelObject(), this, null);
 			boolean bSuccess = objClientConfigHandler.execute();
 			
-			//######################################################
-			//2. Diverse Dinge mit WMI testen.
-			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
 			
-			//++++++++++++++++++++++++++++++
-			//Starterlaubnis: Läuft schon ovpn ???
-		   //TODO KernelWMIZZZ eines win32 - packages.
-			File objFileExe = ServerConfigFileOVPN.findFileExe();   //Anders als im Client muss nix weiter gemacht werden
-			if(objFileExe!=null){
-				String sExeCaption = objFileExe.getName();
-								
-				boolean bproof = objWMI.isProcessRunning(sExeCaption);
-				if(bproof==true){
-					ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "There were found processes '"+ sExeCaption + "' still running. Will not start new ones. Quitting.", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
-					throw ez;
-				}
-				
-			}else{
-				//Wahrscheinlich ist .ovpn garnicht als Dateiendung installiert. Abbrechen.
-				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "OVPN seems not to be installed. '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
-				throw ez;
-			}
-			this.logStatusString("Open VPN not yet running. Continue starting process.");
-			
-            //+++++++++++++++++++++++++++++++			
-			//Starterlaubnis: Läuft der Domino Server schon ???
-			//Falls nicht: Warte eine konfigurierte Zeit. (Merke: Nicht abbrechen, weil ja ggf. Probleme existieren oder der Server gar nicht starten soll).
-			String sDominoCaption = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","Process2Check").getValue();
-			if(!StringZZZ.isEmpty(sDominoCaption)){
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Warte auf Start von Prozess '" + sDominoCaption + "'");
-				
-				String sTimeoutSecond = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","CheckTimeout").getValue();
-				if(StringZZZ.isEmpty(sTimeoutSecond)){
-					sTimeoutSecond = "1";
-				}				
-				int iTimeoutSecond = Integer.parseInt(sTimeoutSecond);
-				boolean bProof = false;
-				do{					
-					bProof = objWMI.isProcessRunning(sDominoCaption);
-					if(bProof == false){
-						try{
-							Thread.sleep(1000); //DIESEN THREAD fuer 1 Sekunde anhalten
-							iTimeoutSecond--;
-							//System.out.println(iTimeoutSecond);
-							if(iTimeoutSecond<=0){
-								ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME_TIMEOUT + "Waiting for domino-servertask to start - '" + sDominoCaption + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
-								throw ez;
-							}
-						}catch(InterruptedException e){
-							ExceptionZZZ ez = new ExceptionZZZ(sERROR_RUNTIME + "Thread.sleep(...). " + e.getMessage(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
-							throw ez;
-						}
-					}//bProof == false
-				}while(bProof==false);
-				this.logStatusString("Depending process '" + sDominoCaption + "' running. Continue starting process.");
-			}//END if sDominoCaption isempty
-			 this.setFlag("isstarted", true);
-			 
 			
 			//##########################################################################################
 			//+++ Diese OVPN-Konfigurationsfiles zum Starten der VPN-Verbindung verwenden !!!
@@ -265,6 +277,9 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 					 this.setFlag("WatchRunnerStarted", true);					
 				}				
 			}//END for
+			 this.setFlag("isstarted", true);
+			 if(objServerTray!=null) objServerTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTED);
+				
 			
 			//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.									
 		   bReturn = true;
@@ -454,6 +469,9 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			if(stemp.equals("islaunched")){
 				bFunction = bFlagIsLaunched;
 				break main;
+			}else if(stemp.equals("isstarting")){
+				bFunction = bFlagIsStarting;
+				break main;
 			}else if(stemp.equals("isstarted")){
 				bFunction = bFlagIsStarted;
 				break main;
@@ -493,6 +511,10 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 		String stemp = sFlagName.toLowerCase();
 		if(stemp.equals("islaunched")){
 			bFlagIsLaunched = bFlagValue;
+			bFunction = true;
+			break main;	
+		}else if(stemp.equals("isstarting")){
+			bFlagIsStarting = bFlagValue;
 			bFunction = true;
 			break main;	
 		}else if(stemp.equals("isstarted")){
