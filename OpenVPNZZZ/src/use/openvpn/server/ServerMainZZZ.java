@@ -61,6 +61,10 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
+			TODOGOON20230727; //Aufteilen in einen OVPN-Teil und einen "Warte auf windows-Task"-Teil
+			//TodoGOON: im ServerSystemTray muss das dann Heissen... Starte OVPN.
+			//TODOGOON: Erst sollte das Warten auf den Windows - Task passieren... und zwar in einer Schleife... dann erst OVPN Dinge
+			
 			//TODO Dies in eine Methode "find fileConfigAvailableAndConfigured"
 			this.logStatusString("Searching for configuration template files '*.ovpn'"); //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			IKernelZZZ objKernel = this.getKernelObject();			
