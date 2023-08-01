@@ -21,12 +21,17 @@ import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
 import use.openvpn.client.ClientConfigFileZZZ;
+import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.ServerMainZZZ;
+import use.openvpn.serverui.ServerTrayStatusZZZ;
+import use.openvpn.serverui.ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 import use.openvpn.serverui.component.FTPCredentials.IConstantProgramFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.datatype.enums.EnumSetUtilZZZ;
+import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.JarEasyZZZ;
@@ -35,24 +40,34 @@ import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
+import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.util.JTextFieldHelperZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
-public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListener {
-	public static final int iSTATUS_NEW = 0;                       //Wenn das SystemTry-icon neu ist 
-	public static final int iSTATUS_STARTING = 1;               //Die OVPN-Konfiguration wird gesucht und die Processe werden mit diesen Konfigurationen gestartet.
-	public static final int iSTATUS_STARTED = 2;
-	public static final int iSTATUS_LISTENING = 3;               //Die OVPN-Processe laufen.
-	public static final int iSTATUS_CONNECTED = 4;            //Falls sich ein Client per vpn mit dem Server verbunden hat und erreichbar ist
-	public static final int iSTATUS_INTERRUPTED = 5;          //Falls der Client wieder nicht erreichbar ist. Das soll aber keine Fehlermeldung in dem Sinne sein, sondern nur anzeigen, dass mal ein Client verbunden war.
-	                                                                                      //Dies wird auch angezeigt, wenn z.B. die Netzwerkverbindung unterbrochen worden ist.
-	public static final int iSTATUS_STOPPED = 6; 				 //Wenn kein OVPN-Prozess mehr l�uft.
-	public static final int iSTATUS_ERROR = 7;
+public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListener, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetZZZ {		
+	private static final long serialVersionUID = 4170579821557468353L;
+//	public enum STATUS{
+//		NEW,STARTING,STARTED,LISTENING,CONNECTED,INTERRUPTED,STOPPED,ERROR
+//	}
+	//Ersetzt durch enum, die Bedeutung bleibt 
+//	public static final int iSTATUS_NEW = 0;                       //Wenn das SystemTry-icon neu ist 
+//	public static final int iSTATUS_STARTING = 1;               //Die OVPN-Konfiguration wird gesucht und die Processe werden mit diesen Konfigurationen gestartet.
+//	public static final int iSTATUS_STARTED = 2;
+//	public static final int iSTATUS_LISTENING = 3;               //Die OVPN-Processe laufen.
+//	public static final int iSTATUS_CONNECTED = 4;            //Falls sich ein Client per vpn mit dem Server verbunden hat und erreichbar ist
+//	public static final int iSTATUS_INTERRUPTED = 5;          //Falls der Client wieder nicht erreichbar ist. Das soll aber keine Fehlermeldung in dem Sinne sein, sondern nur anzeigen, dass mal ein Client verbunden war.
+//	                                                                                      //Dies wird auch angezeigt, wenn z.B. die Netzwerkverbindung unterbrochen worden ist.
+//	public static final int iSTATUS_STOPPED = 6; 				 //Wenn kein OVPN-Prozess mehr l�uft.
+//	public static final int iSTATUS_ERROR = 7;
+	
+	
 	//private String sStatusString = null;  soll nun aus dem objMonitor ausgelsen werden
-
 	private SystemTray objTray = null;                                    //Das gesamte SystemTray von Windows
 	private TrayIcon objTrayIcon = null;                                 //Das TrayIcon dieser Application
 	private ServerMonitorRunnerZZZ  objMonitor = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verf�gung, bzw. �ndert das TrayIcon selbst.
@@ -95,28 +110,28 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			
 			JPopupMenu menu = new JPopupMenu();
 			
-			JMenuItem menueeintrag2 = new JMenuItem(IConstantServerOVPN.sLABEL_START);
+			JMenuItem menueeintrag2 = new JMenuItem(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.START.getMenue());
 			menu.add(menueeintrag2);
 			menueeintrag2.addActionListener(this);
 			
-			JMenuItem menueeintrag2b = new JMenuItem(IConstantServerOVPN.sLABEL_LISTEN);
+			JMenuItem menueeintrag2b = new JMenuItem(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.LISTEN.getMenue());
 			menu.add(menueeintrag2b);
 			menueeintrag2b.addActionListener(this);
 			
-			JMenuItem menueeintrag3 = new JMenuItem(IConstantServerOVPN.sLABEL_LOG);
+			JMenuItem menueeintrag3 = new JMenuItem(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.LOG.getMenue());
             menu.add(menueeintrag3);
 			menueeintrag3.addActionListener(this);
 			
-			JMenuItem menueeintragFTPCredentials = new JMenuItem(IConstantServerOVPN.sLABEL_FTP_CREDENTIALS);
+			JMenuItem menueeintragFTPCredentials = new JMenuItem(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.FTP_CREDENTIALS.getMenue());
             menu.add(menueeintragFTPCredentials);
 			menueeintragFTPCredentials.addActionListener(this);
 			
-			JMenuItem menueeintragIPPage = new JMenuItem(IConstantServerOVPN.sLABEL_PAGE_IP_UPLOAD);
+			JMenuItem menueeintragIPPage = new JMenuItem(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.PAGE_IP_UPLOAD.getMenue());
             menu.add(menueeintragIPPage);
 			menueeintragIPPage.addActionListener(this);
 			
 			//??? Warum geht das auf meinem Desktop-Rechner nicht, auf dem Notebook aber ???			
-			JMenuItem menueeintrag = new JMenuItem(IConstantServerOVPN.sLABEL_END);	
+			JMenuItem menueeintrag = new JMenuItem(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.END.getMenue());	
 			menu.add(menueeintrag);		
 			menueeintrag.addActionListener(this);
 			
@@ -159,7 +174,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			*/
 
 		
-			ImageIcon objIcon = this.getImageIconByStatus(iSTATUS_NEW);			
+			ImageIcon objIcon = this.getImageIconByStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.NEW);			
 			this.objTrayIcon = new TrayIcon(objIcon, "OVPNListener", menu);
 			this.objTrayIcon.addActionListener(this);
 			
@@ -168,7 +183,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}//END main
 	}
 	
-	public static ImageIcon getImageIconByStatus(int iStatus)throws ExceptionZZZ{
+	public static ImageIcon getImageIconByStatus(Enum enumSTATUS)throws ExceptionZZZ{
 		ImageIcon objReturn = null;
 		main:{
 			URL url = null;
@@ -181,40 +196,31 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Using path for directory '"+sPath+"'");
 			
 			String sPathTotal = "";
-			switch(iStatus){
-			case iSTATUS_NEW:
+			if(enumSTATUS.name().equalsIgnoreCase(ServerTrayStatusTypeZZZ.NEW.name())){			
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NEW");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "Green Metallic_32.png");
-				break;
-			case iSTATUS_STARTING:
+			}else if(enumSTATUS.name().equalsIgnoreCase(ServerTrayStatusTypeZZZ.STARTING.name())){				
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": STARTING");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");
-				break;
-			case iSTATUS_STARTED:
+			}else if(enumSTATUS.name().equalsIgnoreCase(ServerTrayStatusTypeZZZ.STARTED.name())){					
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": STARTEED");
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-green_benji_p_01.png");
-				break;
-			case iSTATUS_LISTENING:
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-green_benji_01.png");
+			}else if(enumSTATUS.name().equalsIgnoreCase(ServerTrayStatusTypeZZZ.LISTENING.name())){
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": LISTENING");
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-seagreen_benji__01.png");
-				break;
-			case iSTATUS_CONNECTED:
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-seagreen_benji_01.png");
+			}else if(enumSTATUS.name().equalsIgnoreCase(ServerTrayStatusTypeZZZ.CONNECTED.name())){			
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": CONNECTED");
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_ben_01.png");
-				break;
-			case iSTATUS_INTERRUPTED:	
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-blue_benji_01.png");
+			}else if(enumSTATUS.name().equalsIgnoreCase(ServerTrayStatusTypeZZZ.INTERRUPTED.name())){				
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": INTERRRUPTED");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-purple_benji_01.png");				
-				break;
-			case iSTATUS_STOPPED:
+			}else if(enumSTATUS.name().equalsIgnoreCase(ServerTrayStatusTypeZZZ.STOPPED.name())){			
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": STOPPED");
 				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-yellow_benji_01.png");				
-				break;		
-			case iSTATUS_ERROR:
+			}else if(enumSTATUS.name().equalsIgnoreCase(ServerTrayStatusTypeZZZ.ERROR.name())){			
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ERROR");
-				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "button-red_benji_park_01.png");
-				break;		
-			default:
+				sPathTotal = FileEasyZZZ.joinFilePathNameForUrl(sPath, "pill-button-red_benji_01.png");
+			}else {
 				break main;
 			}
 			
@@ -233,46 +239,44 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return objReturn;
 	}
 	
-	public static String getStatusStringByStatus(int iStatus) throws ExceptionZZZ{
+	public static String getStatusStringByStatus(Enum enumSTATUS) throws ExceptionZZZ{
 		String sReturn=null;
 		main:{
-			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Status="+iStatus;			
+			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Status="+enumSTATUS.name();			
 			System.out.println(sLog);
-			
-			switch(iStatus){
-			case iSTATUS_NEW:
+			String a = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.class, "NEW");
+			String b = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.class, "STARTING");
+			String c = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.class, "LISTENING");
+			String d = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.class, "CONNECTED");
+			String e = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.class, "INTERRUPTED");
+			String f = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.class, "STOPPED");
+			String g = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.class, "ERROR");
+			if(enumSTATUS.name().equalsIgnoreCase(a)){ 			
 				sReturn = "Not yet started.";
-				break;
-			case iSTATUS_STARTING:
+			}else if(enumSTATUS.name().equalsIgnoreCase(b)) {
 				sReturn = "Starting ...";
-				break;
-			case iSTATUS_LISTENING:
+			}else if(enumSTATUS.name().equalsIgnoreCase(c)) {
 				sReturn = "Listening for Connection.";
-				break;
-			case iSTATUS_CONNECTED:
+			}else if(enumSTATUS.name().equalsIgnoreCase(d)) {
 				sReturn = "Connected.";
-				break;
-			case iSTATUS_INTERRUPTED:
+			}else if(enumSTATUS.name().equalsIgnoreCase(e)) {
 				sReturn = "Connection ended or interrupted.";
-				break;
-			case iSTATUS_STOPPED:
+			}else if(enumSTATUS.name().equalsIgnoreCase(f)) {
 				sReturn = "Stopped listening.";
-				break;
-			case iSTATUS_ERROR:
-				sReturn = "ERROR.";
-				break;			
-			default: 
+			}else if(enumSTATUS.name().equalsIgnoreCase(g)) {
+				sReturn = "ERROR.";			
+			}else{ 
 				break main;
 			}
-		}
+		}//end main:
 		return sReturn;
 	}
 	
-	public boolean switchStatus(int iStatus) throws ExceptionZZZ{
+	public boolean switchStatus(Enum enumSTATUS) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			//ImageIcon aendern
-			ImageIcon objIcon = this.getImageIconByStatus(iStatus);
+			ImageIcon objIcon = this.getImageIconByStatus(enumSTATUS);
 			if(objIcon==null)break main;
 			
 			this.getTrayIconObject().setIcon(objIcon);
@@ -334,7 +338,15 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	public boolean start() throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			this.getServerBackendObject().start(this);
+			//Wenn das so ohne Thread gestartet wird, dann reagiert der Tray auf keine weiteren Clicks.
+			//Z.B. den Status anzuzeigen.
+			//this.getServerBackendObject().start(this);
+			
+			//Also dies über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+			//Problem dabei: Der SystemTray wird nicht aktualisiert.
+			Thread objThreadConfig = new Thread(this.getServerBackendObject());
+			objThreadConfig.start();
+			
 		}
 		return bReturn;
 	}
@@ -349,14 +361,18 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		main:{
 			try{ 
 				check:{
-				}								
+				}
+				boolean bStarted = this.objServerBackend.getFlag(IServerMainOVPN.STATUSLOCAL.ISSTARTED.name());
+				if(!bStarted) break main;
+			
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
 				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
 				
 				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
-				Thread objThreadConfig = new Thread(this.getServerBackendObject());
-				objThreadConfig.start();
-					
+				//Thread objThreadConfig = new Thread(this.getServerBackendObject());
+				//objThreadConfig.start();
+
+				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
 				//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.
 				//Merke: Dieser Monitor Thread muss mit dem Starten der einzelnen Unterthreads solange warten, bis das ServerMainZZZ-Object in seinem Flag anzeigt, dass es fertig mit dem Start ist.
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ServerMonitorRunner-Object";
@@ -365,7 +381,11 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				this.objMonitor = new ServerMonitorRunnerZZZ(this.getKernelObject(), this, this.objServerBackend, null);
 				Thread objThreadMonitor = new Thread(objMonitor);
 				objThreadMonitor.start();
-				this.objServerBackend.setFlag("islistening", true);												
+				//this.objServerBackend.setFlag("islistening", true);												
+				
+				//Merke: Wenn über das enum der setFlag gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
+				this.objServerBackend.setFlag(IServerMainOVPN.STATUSLOCAL.ISLISTENING, true);
+				//this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.LISTENING);
 				bReturn = true;
 			}catch(ExceptionZZZ ez){
 				try {
@@ -374,7 +394,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					String stemp = ez.getDetailAllLast();
 					this.getKernelObject().getLogObject().WriteLineDate(stemp);
 					System.out.println(ez.getDetailAllLast());
-					this.switchStatus(ServerTrayUIZZZ.iSTATUS_ERROR);
+					this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {
 					System.out.println(ez.getDetailAllLast());
 					ez2.printStackTrace();					
@@ -467,7 +487,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				}
 			}//END check:
 		 
-		ArrayList listaLogString = this.objServerBackend.getStatusStringAll();
+		ArrayList listaLogString = this.objServerBackend.getMessageStringAll();
 		if(listaLogString.isEmpty()){
 			if (this.objServerBackend == null){
 					sReturn = "No log string available.";
@@ -528,20 +548,20 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			try{
 				String sCommand = arg0.getActionCommand();
 				//System.out.println("Action to perform: " + sCommand);
-				if(sCommand.equals(IConstantServerOVPN.sLABEL_END)){
+				if(sCommand.equalsIgnoreCase(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.END.getMenue())){
 					this.unload();	
-				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_START)){
+				}else if(sCommand.equalsIgnoreCase(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.START.getMenue())){
 					boolean bFlagValue = this.start();
-					this.getServerBackendObject().setFlag("isstarted", bFlagValue);
-				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_LISTEN)) {
+					//this.getServerBackendObject().setFlag("isstarted", bFlagValue);
+				}else if(sCommand.equalsIgnoreCase(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.LISTEN.getMenue())) {
 					boolean bFlagValue = this.listen();
-					this.getServerBackendObject().setFlag("islistening", bFlagValue);
-				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_LOG)){
+					//this.getServerBackendObject().setFlag("islistening", bFlagValue);
+				}else if(sCommand.equalsIgnoreCase(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.LOG.getMenue())){
 					//JOptionPane pane = new JOptionPane();
 					String stemp = this.readLogString();
 					//this.getTrayIconObject() ist keine Component ????
 					JOptionPane.showMessageDialog(null, stemp, "Log des OVPN Connection Listeners", JOptionPane.INFORMATION_MESSAGE );
-				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_PAGE_IP_UPLOAD)) {
+				}else if(sCommand.equalsIgnoreCase(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.PAGE_IP_UPLOAD.name())) {
 					
 					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
 					//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
@@ -581,7 +601,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						ez.printStackTrace();
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 					}
-				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_FTP_CREDENTIALS)) {					
+				}else if(sCommand.equalsIgnoreCase(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.FTP_CREDENTIALS.getMenue())) {					
 					if(this.dlgFTPCredentials==null || this.dlgFTPCredentials.isDisposed() ) {									
 						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
 						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
@@ -626,7 +646,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 					}
 					
-				}else if(sCommand.equals(IConstantServerOVPN.sLABEL_DETAIL)){		
+				}else if(sCommand.equalsIgnoreCase(ServerTrayMenueZZZ.ServerTrayMenueTypeZZZ.DETAIL.getMenue())){		
 					String stemp = this.computeStatusDetailString();
 					if(stemp!= null){
 						if(objTrayIcon!=null) objTrayIcon.displayMessage("Status des OVPN Connection Listeners.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
@@ -650,7 +670,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					String stemp = ez.getDetailAllLast();
 					this.getKernelObject().getLogObject().WriteLineDate(stemp);
 					System.out.println(stemp);
-					this.switchStatus(iSTATUS_ERROR);
+					this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {					
 					System.out.println(ez.getDetailAllLast());
 					ez2.printStackTrace();
@@ -658,7 +678,84 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			}
 		}
 
-	
+		//+++ Aus IListenerObjectFlagZsetZZZ
+		@Override
+		public boolean flagChanged(IEventObjectFlagZsetZZZ eventFlagZset) throws ExceptionZZZ {
+			boolean bReturn=false;
+			main:{
+				Enum objFlagEnum = eventFlagZset.getFlagEnum();
+				if(objFlagEnum==null) break main;
+				
+				boolean bFlagValue = eventFlagZset.getFlagValue();
+				if(bFlagValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+				
+				//geht so nicht:
+//				switch(objFlagEnum) {
+//				case IServerMainOVPN.FLAGZ.ISLAUNCHED:
+//					
+//					break;
+//				
+//				}
+				
+				//Also ohne Switch
+//				if(IServerMainOVPN.STATUSLOCAL.ISLAUNCHED==objFlagEnum) {
+//					this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.NEW);	
+//				}else if(IServerMainOVPN.STATUSLOCAL.ISSTARTING==objFlagEnum) {
+//					this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTING);
+//				}else if(IServerMainOVPN.STATUSLOCAL.ISSTARTED==objFlagEnum) {
+//					this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTED);
+//				}else if(IServerMainOVPN.STATUSLOCAL.ISLISTENING==objFlagEnum) {
+//					this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.LISTENING);
+//				}else if(IServerMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED==objFlagEnum) {
+//					this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
+//				}else if(IServerMainOVPN.STATUSLOCAL.HASERROR==objFlagEnum) {
+//					this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.ERROR);
+//				}else {
+//					break main;
+//				}
+//				bReturn = true;
+			}//end main:
+			return bReturn;
+		}
 
+	//+++ Aus IListenerObjectStatusLocalSetZZZ
+	@Override
+	public boolean statusLocalChanged(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn=false;
+		main:{
+			Enum objStatusEnum = eventStatusLocalSet.getStatusEnum();
+			if(objStatusEnum==null) break main;
+			
+			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
+			if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+			
+			//geht so nicht:
+//						switch(objFlagEnum) {
+//						case IServerMainOVPN.FLAGZ.ISLAUNCHED:
+//							
+//							break;
+//						
+//						}
+			
+			//Also ohne Switch
+			if(IServerMainOVPN.STATUSLOCAL.ISLAUNCHED==objStatusEnum) {
+				this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.NEW);	
+			}else if(IServerMainOVPN.STATUSLOCAL.ISSTARTING==objStatusEnum) {
+				this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTING);
+			}else if(IServerMainOVPN.STATUSLOCAL.ISSTARTED==objStatusEnum) {
+				this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTED);
+			}else if(IServerMainOVPN.STATUSLOCAL.ISLISTENING==objStatusEnum) {
+				this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.LISTENING);
+			}else if(IServerMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED==objStatusEnum) {
+				this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
+			}else if(IServerMainOVPN.STATUSLOCAL.HASERROR==objStatusEnum) {
+				this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.ERROR);
+			}else {
+				break main;
+			}
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
 }//END Class
 

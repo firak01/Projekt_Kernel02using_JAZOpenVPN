@@ -4,22 +4,39 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
+import use.openvpn.serverui.ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ;
+import use.openvpn.serverui.ServerTrayStatusZZZ;
 import use.openvpn.serverui.ServerTrayUIZZZ;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientConfigTemplateUpdaterZZZ;
 import basic.zKernel.KernelZZZ;
+import basic.zKernel.flag.EventObjectFlagZsetZZZ;
+import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
+import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.flag.ISenderObjectFlagZsetZZZ;
+import basic.zKernel.flag.KernelSenderObjectFlagZsetZZZ;
+import basic.zKernel.flag.json.FlagZHelperZZZ;
+import basic.zKernel.status.EventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IStatusLocalUserZZZ;
+import basic.zKernel.status.KernelSenderObjectStatusLocalSetZZZ;
+import basic.zKernel.status.StatusLocalHelperZZZ;
 import basic.zUtil.io.KernelFileExpansionZZZ;
 import custom.zUtil.io.FileExpansionZZZ;
 import custom.zUtil.io.FileZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
@@ -31,24 +48,20 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
-public class ServerMainZZZ extends AbstractMainOVPN {
+public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 //	private ServerApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
 //	private ConfigChooserOVPN objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
 //	private ServerConfigMapperOVPN objConfigMapper = null; //Objekt, dass ein Mapping zu passenden Templatezeilen verwaltet.
 	private ArrayList<File> listaConfigFile = null;
 
-	private String sStatusCurrent = null; //Hier�ber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
-	private ArrayList listaStatus = new ArrayList(); //Hier�ber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
-    																	//Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
-	private ArrayList listaConfigStarter = new ArrayList(); //Hier�ber werden alle Procese, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.
-	private boolean bFlagIsLaunched=false;
-	private boolean bFlagIsStarting=false;
-	private boolean bFlagIsStarted=false;
-	private boolean bFlagIsListening=false;
-	private boolean bFlagWatchRunnerStarted=false;
-	private boolean bFlagHasError= false;
-	                                                                      //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
+	private String sMessageCurrent = null; //Hierueber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
+	private ArrayList listaMessage = new ArrayList(); //Hierueber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
+    																	//Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
+	private ArrayList listaConfigStarter = new ArrayList(); //Hier�ber werden alle Procese, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.	
+	private HashMap<String, Boolean>hmStatusLocal = new HashMap<String, Boolean>(); //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
 
+	protected ISenderObjectStatusLocalSetZZZ objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+	
 	public ServerMainZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, saFlagControl);
 	}
@@ -70,7 +83,13 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			//TODOGOON20230727; //Aufteilen in einen OVPN-Teil und einen "Warte auf windows-Task"-Teil
 			//TodoGOON: im ServerSystemTray muss das dann Heissen... Starte OVPN.
 			//TODOGOON: Erst sollte das Warten auf den Windows - Task passieren... und zwar in einer Schleife... dann erst OVPN Dinge
+			//this.setFlag("isstarting", true);
 			
+			//Merke: Wenn über das enum der setFlag gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
+			//this.setFlag(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTING, true);
+			this.setStatusLocal(IServerMainOVPN.STATUSLOCAL.ISSTARTING, true);
+			if(objServerTray!=null) objServerTray.switchStatus(ServerTrayStatusTypeZZZ.STARTING);
+									
 			//1. Diverse Dinge mit WMI testen.
 			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
 			
@@ -98,7 +117,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "OVPN seems not to be installed. '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}
-			this.logStatusString("Open VPN not yet running. Continue starting process.");
+			this.logMessageString("Open VPN installed and not yet running. Continue starting process.");
 			
 			//2.  Läuft schon ein  benötigter anderer Prozesss
 			 //+++++++++++++++++++++++++++++++			
@@ -131,16 +150,14 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 						}
 					}//bProof == false
 				}while(bProof==false);
-				this.logStatusString("Depending process '" + sDominoCaption + "' running. Continue starting process.");
+				this.logMessageString("Depending process '" + sDominoCaption + "' running. Continue starting process.");
 			}//END if sDominoCaption isempty
-			this.setFlag("isstarting", true);
-			if(objServerTray!=null) objServerTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTING);
 			
 			
 			//+++++++++++++++++++++++++++++++++++++++++
 			//3. OVPN Dateien fertig machen
 			//TODO Dies in eine Methode "find fileConfigAvailableAndConfigured"
-			this.logStatusString("Searching for configuration template files '*.ovpn'"); //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.			
+			this.logMessageString("Searching for configuration template files '*.ovpn'"); //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.			
 			
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 						
 			//Die Konfigurations-Template Dateien finden
@@ -154,7 +171,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + sDirectoryConfigPath + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}else{
-				this.logStatusString(objaFileConfigTemplate.length + " configuration TEMPLATE file(s) was (were) found in the directory: '" + sDirectoryConfigPath + "'");  //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.
+				this.logMessageString(objaFileConfigTemplate.length + " configuration TEMPLATE file(s) was (were) found in the directory: '" + sDirectoryConfigPath + "'");  //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			}
 			
 			//####################################################################
@@ -162,13 +179,13 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 					
 			//+++ A) Vorbereitung			
 			//+++ 1. Die früher mal verwendeten Dateien entfernen
-			this.logStatusString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+			this.logMessageString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			ReferenceArrayZZZ<String> strUpdate=new ReferenceArrayZZZ<String>(null);
 			int itemp = objChooser.removeFileConfigUsed(null,strUpdate);			
-			this.logStatusString(strUpdate);
+			this.logMessageString(strUpdate);
 			
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
-			this.logStatusString("Creating new configuration-file(s) from template-file(s), using new line(s)");					
+			this.logMessageString("Creating new configuration-file(s) from template-file(s), using new line(s)");					
 			//ArrayList listaFileConfig = new ArrayList(objaFileConfigTemplate.length);
 			for(int icount = 0; icount <= objaFileConfigTemplate.length-1; icount++){	
 				File fileConfigTemplateOvpnUsed = objaFileConfigTemplate[icount];
@@ -179,18 +196,18 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				ServerConfigTemplateUpdaterOVPN objUpdater = new ServerConfigTemplateUpdaterOVPN(objKernel, this, objChooser, objMapper, null);
 				File objFileNew = objUpdater.refreshFileUsed(fileConfigTemplateOvpnUsed);	
 				if(objFileNew==null){
-					this.logStatusString("Unable to create 'used file' file base on template template: '" + objaFileConfigTemplate[icount].getPath() + "'");					
+					this.logMessageString("Unable to create 'used file' file base on template template: '" + objaFileConfigTemplate[icount].getPath() + "'");					
 				}else{
 					
 					boolean btemp = objUpdater.update(objFileNew, true); //Bei false werden also auch Zeilen automatisch hinzugefügt, die nicht im Template sind. Z.B. Proxy-Einstellungen.
 					if(btemp==true){
-						this.logStatusString( "'Used file' successfully created for template: '" + objaFileConfigTemplate[icount].getPath() + "'");
+						this.logMessageString( "'Used file' successfully created for template: '" + objaFileConfigTemplate[icount].getPath() + "'");
 		
 						//+++ Nun dieses used-file dem Array hinzufuegen, dass fuer den Start der OVPN-Verbindung verwendet wird.
 						//listaFileConfig.add(objUpdater.getFileUsed());
 						this.getConfigFileObjectsAll().add(objUpdater.getFileUsed());
 					}else{
-						this.logStatusString( "'Used file' not processed, based upon: '" + objaFileConfigTemplate[icount].getPath() + "'");					
+						this.logMessageString( "'Used file' not processed, based upon: '" + objaFileConfigTemplate[icount].getPath() + "'");					
 					}	
 				}
 			}//end for
@@ -224,7 +241,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				}//END for
 			}//END if
 			if(listaFileConfigUsed.size()==0){
-				this.logStatusString("No configuration available which is configured in Kernel Ini File for Program 'ProgConfigHandler' and Property 'ConfigFile'.");
+				this.logMessageString("No configuration available which is configured in Kernel Ini File for Program 'ProgConfigHandler' and Property 'ConfigFile'.");
 				bReturn = false;
 				break main;
 			}else{
@@ -237,7 +254,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 						stemp = stemp + "; " + objFileTemp.getName();	
 					}					 
 				}//END for
-				this.logStatusString("Finally used configuration  file(s): " + stemp);
+				this.logMessageString("Finally used configuration  file(s): " + stemp);
 			}
 			
 			//#############
@@ -259,11 +276,11 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endgültige auszuführende Befehl über eine Batch gegeben werden muss. Herausgefunden durch Try and Error.				
 				File objFileTemplateBatch = objChooser.findFileConfigBatchTemplateFirst();				
 				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, objFileTemplateBatch, objFileConfigOvpn, sAlias, saTemp);
-				this.logStatusString("Requesting start of process #"+ icount + " (File: " + objFileConfigOvpn.getName() + ")");				
+				this.logMessageString("Requesting start of process #"+ icount + " (File: " + objFileConfigOvpn.getName() + ")");				
 				Process objProcessTemp = objStarter.requestStart();			
 				if(objProcessTemp==null){
 					//Hier nicht abbrechen, sondern die Verarbeitung bei der naechsten Datei fortfuehren
-					this.logStatusString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"'");
+					this.logMessageString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"'");
 				}else{			
 					this.addProcessStarter(objStarter);
 					
@@ -273,12 +290,16 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 					 threadaOVPN[icount].start();
 					 iNumberOfProcessStarted++;	
 					//Das blaeht das Log unnoetig auf .... zum Test aber i.o.
-					 this.logStatusString("Finished starting thread # " + icount + " for listening to connection.");
+					 this.logMessageString("Finished starting thread # " + icount + " for listening to connection.");
 					 this.setFlag("WatchRunnerStarted", true);					
 				}				
 			}//END for
-			 this.setFlag("isstarted", true);
-			 if(objServerTray!=null) objServerTray.switchStatus(ServerTrayUIZZZ.iSTATUS_STARTED);
+			 //this.setFlag("isstarted", true);
+			
+			//Merke: Wenn über das enum der setFlag gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
+			//this.setFlag(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTED, true);
+			this.setFlag(IServerMainOVPN.STATUSLOCAL.ISSTARTED, true);
+			 if(objServerTray!=null) objServerTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTED);
 				
 			
 			//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.									
@@ -290,7 +311,7 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	public void run() {
 		try {
 			boolean bStarted = this.start();
-			this.setFlag("isstarted", bStarted);
+			//this.setFlag("isstarted", bStarted);
 		} catch (ExceptionZZZ ez) {
 			try {
 				this.setFlag("haserror", true);
@@ -310,48 +331,48 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	* 
 	* lindhaueradmin; 13.07.2006 08:34:56
 	 */
-	public void addStatusString(String sStatus){
-		if(sStatus!=null){
-			this.sStatusCurrent = sStatus;
-			this.listaStatus.add(sStatus);
+	public void addMessageString(String sMessage){
+		if(sMessage!=null){
+			this.sMessageCurrent = sMessage;
+			this.listaMessage.add(sMessage);
 		}
 	}
 	
 	/**Adds a line to the status arraylist PLUS writes a line to the kernel-log-file.
 	 * Remark: The status arraylist is used to enable the frontend-client to show a log dialogbox.
-	* @param sStatus 
+	* @param sMessage 
 	* 
 	* lindhaueradmin; 13.07.2006 08:38:51
 	 * @throws ExceptionZZZ 
 	 */
-	public void logStatusString(String sStatus) throws ExceptionZZZ{
-		if(sStatus!=null){
-			this.addStatusString(sStatus);
+	public void logMessageString(String sMessage) throws ExceptionZZZ{
+		if(sMessage!=null){
+			this.addMessageString(sMessage);
 			
 			IKernelZZZ objKernel = this.getKernelObject();
 			if(objKernel!= null){
-				objKernel.getLogObject().WriteLineDate(sStatus);
+				objKernel.getLogObject().WriteLineDate(sMessage);
 			}
 		}
 	}
 	
-	public void logStatusString(String[] saStatus) throws ExceptionZZZ {
-		if(saStatus!=null) {
-			int iMax = Array.getLength(saStatus)-1;
+	public void logMessageString(String[] saMessage) throws ExceptionZZZ {
+		if(saMessage!=null) {
+			int iMax = Array.getLength(saMessage)-1;
 			for(int icount=0;icount<=iMax;icount++) {
-				this.logStatusString(saStatus[icount]);
+				this.logMessageString(saMessage[icount]);
 			}
 		}		
 	}
 	
-	public void logStatusString(ArrayList<String>lista) throws ExceptionZZZ {
+	public void logMessageString(ArrayList<String>lista) throws ExceptionZZZ {
 		String[]sa = ArrayListZZZ.toStringArray(lista);
-		this.logStatusString(sa);
+		this.logMessageString(sa);
 	}
 	
-	public void logStatusString(ReferenceArrayZZZ<String>strStatus) throws ExceptionZZZ {
+	public void logMessageString(ReferenceArrayZZZ<String>strStatus) throws ExceptionZZZ {
 		ArrayList<String>listas=strStatus.getArrayList();
-		this.logStatusString(listas);
+		this.logMessageString(listas);
 	}
 	
 	/**This status is a type of "Log".
@@ -361,8 +382,8 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	 *
 	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
 	 */
-	public String getStatusStringCurrent(){
-		return this.sStatusCurrent;
+	public String getMessageStringCurrent(){
+		return this.sMessageCurrent;
 	}
 
 	/**This status is a type of "Log".
@@ -372,8 +393,8 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	 *
 	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
 	 */
-	public ArrayList getStatusStringAll(){
-		return this.listaStatus;
+	public ArrayList getMessageStringAll(){
+		return this.listaMessage;
 	}
 	
 	 public  boolean addProcessStarter(ServerConfigStarterOVPN objStarter){
@@ -465,26 +486,27 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 			if(bFunction==true) break main;
 						
 			//getting the flags of this object
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("islaunched")){
-				bFunction = bFlagIsLaunched;
-				break main;
-			}else if(stemp.equals("isstarting")){
-				bFunction = bFlagIsStarting;
-				break main;
-			}else if(stemp.equals("isstarted")){
-				bFunction = bFlagIsStarted;
-				break main;
-			}else if(stemp.equals("islistening")){
-				bFunction = bFlagIsListening;
-				break main;
-			}else if(stemp.equals("watchrunnerstarted")){
-				bFunction = bFlagWatchRunnerStarted;
-				break main;
-			}else if(stemp.equals("haserror")){				
-				bFunction = bFlagHasError;
-				break main;
-			}
+			//sind nun stati
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("islaunched")){
+//				bFunction = bFlagIsLaunched;
+//				break main;
+//			}else if(stemp.equals("isstarting")){
+//				bFunction = bFlagIsStarting;
+//				break main;
+//			}else if(stemp.equals("isstarted")){
+//				bFunction = bFlagIsStarted;
+//				break main;
+//			}else if(stemp.equals("islistening")){
+//				bFunction = bFlagIsListening;
+//				break main;
+//			}else if(stemp.equals("watchrunnerstarted")){
+//				bFunction = bFlagWatchRunnerStarted;
+//				break main;
+//			}else if(stemp.equals("haserror")){				
+//				bFunction = bFlagHasError;
+//				break main;
+//			}
 		}//end main:
 		return bFunction;
 	}
@@ -508,32 +530,33 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 		if(bFunction==true) break main;
 	
 		//setting the flags of this object
-		String stemp = sFlagName.toLowerCase();
-		if(stemp.equals("islaunched")){
-			bFlagIsLaunched = bFlagValue;
-			bFunction = true;
-			break main;	
-		}else if(stemp.equals("isstarting")){
-			bFlagIsStarting = bFlagValue;
-			bFunction = true;
-			break main;	
-		}else if(stemp.equals("isstarted")){
-			bFlagIsStarted = bFlagValue;
-			bFunction = true;
-			break main;	
-		}else if(stemp.equals("islistening")) {
-			bFlagIsListening = bFlagValue;
-			bFunction = true;
-			break main;	
-		}else if(stemp.equals("watchrunnerstarted")){
-				bFlagWatchRunnerStarted = bFlagValue;
-				bFunction = true;
-				break main;				
-		}else if(stemp.equals("haserror")){
-			bFlagHasError = bFlagValue;
-			bFunction = true;
-			break main;	
-		}
+		//sind nun stati
+//		String stemp = sFlagName.toLowerCase();
+//		if(stemp.equals("islaunched")){
+//			bFlagIsLaunched = bFlagValue;
+//			bFunction = true;
+//			break main;	
+//		}else if(stemp.equals("isstarting")){
+//			bFlagIsStarting = bFlagValue;
+//			bFunction = true;
+//			break main;	
+//		}else if(stemp.equals("isstarted")){
+//			bFlagIsStarted = bFlagValue;
+//			bFunction = true;
+//			break main;	
+//		}else if(stemp.equals("islistening")) {
+//			bFlagIsListening = bFlagValue;
+//			bFunction = true;
+//			break main;	
+//		}else if(stemp.equals("watchrunnerstarted")){
+//				bFlagWatchRunnerStarted = bFlagValue;
+//				bFunction = true;
+//				break main;				
+//		}else if(stemp.equals("haserror")){
+//			bFlagHasError = bFlagValue;
+//			bFunction = true;
+//			break main;	
+//		}
 		}//end main:
 		return bFunction;
 	}
@@ -570,4 +593,312 @@ public class ServerMainZZZ extends AbstractMainOVPN {
 	public void setConfigFileObjectsAll(ArrayList<File> listaConfigFile) {
 		this.listaConfigFile = listaConfigFile;
 	}
+	
+	//### IStatusLocalUserZZZ
+	/** DIESE METHODEN MUSS IN ALLEN KLASSEN VORHANDEN SEIN - über Vererbung -, DIE IHREN STATUS SETZEN WOLLEN
+	 * Weitere Voraussetzungen:
+	 * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
+	 * - Innere Klassen müssen auch public deklariert werden.
+	 * @param objClassParent
+	 * @param sFlagName
+	 * @param bFlagValue
+	 * @return
+	 * lindhaueradmin, 23.07.2013
+	 * @throws ExceptionZZZ 
+	 */
+	@Override
+	public boolean getStatusLocal(Enum enumStatus) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatus==null) {
+				break main;
+			}
+			
+			String sStatusName = enumStatus.name();
+			if(StringZZZ.isEmpty(sStatusName)) break main;
+										
+			HashMap<String, Boolean> hmFlag = this.getHashMapStatusLocal();
+			Boolean objBoolean = hmFlag.get(sStatusName.toUpperCase());
+			if(objBoolean==null){
+				bFunction = false;
+			}else{
+				bFunction = objBoolean.booleanValue();
+			}
+							
+		}	// end main:
+		
+		return bFunction;	
+	}
+	
+	@Override
+	public boolean setStatusLocal(Enum enumStatus, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatus==null) {
+				break main;
+			}
+		//return this.getStatusLocal(objEnumStatus.name());
+		//Nein, trotz der Redundanz nicht machen, da nun der Event anders gefeuert wird, nämlich über das enum
+		
+		String sStatusName = enumStatus.name();
+		bFunction = this.proofStatusLocalExists(sStatusName);															
+		if(bFunction == true){
+			
+			//Setze das Flag nun in die HashMap
+			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+			hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+		
+			//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+			//Dann erzeuge den Event und feuer ihn ab.
+			//Merke: Nun aber ueber das enum			
+			if(this.objEventStatusLocalBroker!=null) {
+				IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,enumStatus, bStatusValue);
+				this.objEventStatusLocalBroker.fireEvent(event);
+			}			
+			bFunction = true;								
+		}										
+	}	// end main:
+	return bFunction;
+	}	
+	
+	@Override
+	public boolean[] setStatusLocal(Enum[] objaEnumStatus, boolean bStatusValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!ArrayUtilZZZ.isEmpty(objaEnumStatus)) {
+				baReturn = new boolean[objaEnumStatus.length];
+				int iCounter=-1;
+				for(Enum objEnumStatus:objaEnumStatus) {
+					iCounter++;
+					boolean bReturn = this.setStatusLocal(objEnumStatus, bStatusValue);
+					baReturn[iCounter]=bReturn;
+				}
+			}
+		}//end main:
+		return baReturn;
+	}
+	
+	@Override
+	public boolean proofStatusLocalExists(Enum objEnumStatus) throws ExceptionZZZ {
+		return this.proofFlagExists(objEnumStatus.name());
+	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++
+	/* @see basic.zBasic.IFlagZZZ#getFlagZ(java.lang.String)
+	 * 	 Weteire Voraussetzungen:
+	 * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
+	 * - Innere Klassen m�ssen auch public deklariert werden.(non-Javadoc)
+	 */
+	public boolean getStatusLocal(String sStatusName) {
+		boolean bFunction = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName)) break main;
+										
+			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+			Boolean objBoolean = hmStatus.get(sStatusName.toUpperCase());
+			if(objBoolean==null){
+				bFunction = false;
+			}else{
+				bFunction = objBoolean.booleanValue();
+			}
+							
+		}	// end main:
+		
+		return bFunction;	
+	}
+	
+	@Override
+	public boolean setStatusLocal(String sStatusName, boolean bFlagValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName)) {
+				bFunction = true;
+				break main;
+			}
+						
+			bFunction = this.proofStatusLocalExists(sStatusName);															
+			if(bFunction == true){
+				
+				//Setze das Flag nun in die HashMap
+				HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+				hmStatus.put(sStatusName.toUpperCase(), bFlagValue);
+				
+				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+				//Dann erzeuge den Event und feuer ihn ab.
+				if(this.objEventStatusLocalBroker!=null) {
+					IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,sStatusName.toUpperCase(), bFlagValue);
+					this.objEventStatusLocalBroker.fireEvent(event);
+				}
+				
+				bFunction = true;								
+			}										
+		}	// end main:
+		
+		return bFunction;	
+	}
+	
+	@Override
+	public boolean[] setStatusLocal(String[] saStatus, boolean bValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!StringArrayZZZ.isEmptyTrimmed(saStatus)) {
+				baReturn = new boolean[saStatus.length];
+				int iCounter=-1;
+				for(String sStatusName:saStatus) {
+					iCounter++;
+					boolean bReturn = this.setStatusLocal(sStatusName, bValue);
+					baReturn[iCounter]=bReturn;
+				}
+			}
+		}//end main:
+		return baReturn;
+	}
+		
+	@Override
+	public HashMap<String, Boolean>getHashMapStatusLocal(){
+		return this.hmStatusLocal;
+	}
+	
+	@Override
+	public void setHashMapStatusLocal(HashMap<String, Boolean> hmStatusLocal) {
+		this.hmStatusLocal = hmStatusLocal;
+	}
+	
+	/**Gibt alle möglichen FlagZ Werte als Array zurück. 
+	 * @return
+	 * @throws ExceptionZZZ 
+	 */
+	public String[] getStatusLocal() throws ExceptionZZZ{
+		String[] saReturn = null;
+		main:{	
+			saReturn = StatusLocalHelperZZZ.getStatusLocalDirectAvailable(this.getClass());				
+		}//end main:
+		return saReturn;
+	}
+	
+	/**Gibt alle "true" gesetzten FlagZ - Werte als Array zurück. 
+	 * @return
+	 * @throws ExceptionZZZ 
+	 */
+	public String[] getStatusLocal(boolean bValueToSearchFor) throws ExceptionZZZ{
+		return this.getStatusLocal_(bValueToSearchFor, false);
+	}
+	
+	public String[] getStatusLocal(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
+		return this.getStatusLocal_(bValueToSearchFor, bLookupExplizitInHashMap);
+	}
+	
+	private String[]getStatusLocal_(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
+		String[] saReturn = null;
+		main:{
+			ArrayList<String>listasTemp=new ArrayList<String>();
+			
+			//FALLUNTERSCHEIDUNG: Alle gesetzten Status werden in der HashMap gespeichert. Aber die noch nicht gesetzten FlagZ stehen dort nicht drin.
+			//                                  Diese kann man nur durch Einzelprüfung ermitteln.
+			if(bLookupExplizitInHashMap) {
+				HashMap<String,Boolean>hmStatus=this.getHashMapStatusLocal();
+				if(hmStatus==null) break main;
+				
+				Set<String> setKey = hmStatus.keySet();
+				for(String sKey : setKey){
+					boolean btemp = hmStatus.get(sKey);
+					if(btemp==bValueToSearchFor){
+						listasTemp.add(sKey);
+					}
+				}
+			}else {
+				//So bekommt man alle Flags zurück, also auch die, die nicht explizit true oder false gesetzt wurden.						
+				String[]saStatus = this.getStatusLocal();
+				
+				//20211201:
+				//Problem: Bei der Suche nach true ist das egal... aber bei der Suche nach false bekommt man jedes der Flags zurück,
+				//         auch wenn sie garnicht gesetzt wurden.
+				//Lösung:  Statt dessen explitzit über die HashMap der gesetzten Werte gehen....						
+				for(String sStatus : saStatus){
+					boolean btemp = this.getStatusLocal(sStatus);
+					if(btemp==bValueToSearchFor ){ //also 'true'
+						listasTemp.add(sStatus);
+					}
+				}
+			}
+			saReturn = listasTemp.toArray(new String[listasTemp.size()]);
+		}//end main:
+		return saReturn;
+	}
+	
+	/** DIESE METHODE MUSS IN ALLEN KLASSEN VORHANDEN SEIN - über Vererbung ODER Interface Implementierung -, DIE IHRE FLAGS SETZEN WOLLEN
+	 *  SIE WIRD PER METHOD.INVOKE(....) AUFGERUFEN.
+	 * @param name 
+	 * @param sFlagName
+	 * @return
+	 * lindhaueradmin, 23.07.2013
+	 * @throws ExceptionZZZ 
+	 */
+	public boolean proofStatusLocalExists(String sStatusName) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName))break main;
+			bReturn = StatusLocalHelperZZZ.proofStatusLocalDirectExists(this.getClass(), sStatusName);				
+		}//end main:
+		return bReturn;
+	}
+
+	//### aus ISenderObjectStatusLocalSetZZZ
+	@Override
+	public void fireEvent(IEventObjectStatusLocalSetZZZ event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ArrayList<IListenerObjectStatusLocalSetZZZ> getListenerRegisteredAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//### aus IEventBrokerStatusLocalSetUserZZZ
+	@Override
+	public ISenderObjectStatusLocalSetZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {		
+		if(this.objEventStatusLocalBroker==null) {
+			//++++++++++++++++++++++++++++++
+			//Nun geht es darum den Sender fuer Aenderungen an den Flags zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
+			ISenderObjectStatusLocalSetZZZ objSenderStatusLocal = new KernelSenderObjectStatusLocalSetZZZ();
+			this.objEventStatusLocalBroker = objSenderStatusLocal;
+		}
+		return this.objEventStatusLocalBroker;
+		
+	}
+
+	@Override
+	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetZZZ objEventStatusLocalBroker) {
+		this.objEventStatusLocalBroker = objEventStatusLocalBroker;
+	}
+
+	@Override
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+		this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
+	}
+
+	@Override
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
+	}
+		
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++
+	
+	
 }//END class

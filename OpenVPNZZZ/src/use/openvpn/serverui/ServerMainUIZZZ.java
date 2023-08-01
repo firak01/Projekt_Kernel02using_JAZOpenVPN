@@ -5,8 +5,12 @@ import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.server.ServerApplicationOVPN;
 import use.openvpn.server.ServerMainZZZ;
 import use.openvpn.serverui.ConfigOVPN;
+
+import java.util.ArrayList;
+
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
+import basic.zBasic.ObjectZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.file.ini.IKernelCallIniSolverZZZ;
@@ -17,9 +21,12 @@ import basic.zKernel.file.ini.IKernelJsonArrayIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonMapIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelZFormulaIniSolverZZZ;
+import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
+import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
+import basic.zKernel.flag.ISenderObjectFlagZsetZZZ;
 import custom.zKernel.LogZZZ;
 
-public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
+public class ServerMainUIZZZ extends ObjectZZZ implements IConstantServerOVPN , ISenderObjectFlagZsetZZZ{
 			private IKernelZZZ objKernel=null;
 			private ServerMainZZZ objServerMain = null;
 			private ServerTrayUIZZZ objServerTray=null;
@@ -52,6 +59,14 @@ public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 						
 						//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
 						this.objServerTray = new ServerTrayUIZZZ(objKernel, (String[]) null);
+						
+						//Registriere das ServerTray-Objekt fuer Aenderungen an den ServerMain-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
+						this.objServerMain.registerForFlagEvent(this.objServerTray);
+						
+						//Registriere das ServerTray-Objekt fuer Aenderung am ServerMain-Objekt-Status. Das garantiert, das der Tray auch auf Änderungen des Status reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
+						this.objServerMain.registerForStatusLocalEvent(this.objServerTray);
+						
+						
 						this.objServerTray.setServerBackendObject(this.objServerMain);
 						bReturn = objServerTray.load();
 						
@@ -95,6 +110,30 @@ public class ServerMainUIZZZ implements IConstantZZZ, IConstantServerOVPN {
 					}//END main:
 				System.out.println("finished starting trayicon.");
 				return bReturn;			
+			}
+
+			@Override
+			public void fireEvent(IEventObjectFlagZsetZZZ event) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void removeListenerObjectFlagZset(IListenerObjectFlagZsetZZZ objEventListener) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void addListenerObjectFlagZset(IListenerObjectFlagZsetZZZ objEventListener) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public ArrayList<IListenerObjectFlagZsetZZZ> getListenerRegisteredAll() {
+				// TODO Auto-generated method stub
+				return null;
 			}									
 
 }//END class

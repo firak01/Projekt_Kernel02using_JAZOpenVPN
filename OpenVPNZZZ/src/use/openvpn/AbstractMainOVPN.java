@@ -29,7 +29,7 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	* lindhaueradmin; 13.07.2006 08:38:51
 	 * @throws ExceptionZZZ 
 	 */
-	public void logStatusString(String sStatus) throws ExceptionZZZ{
+	public void logMessageString(String sStatus) throws ExceptionZZZ{
 		if(sStatus!=null){
 			this.addStatusString(sStatus);
 			
@@ -66,7 +66,7 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	 *
 	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
 	 */
-	public String getStatusStringCurrent(){
+	public String getMessageStringCurrent(){
 		return this.sStatusCurrent;
 	}
 
@@ -77,7 +77,7 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	 *
 	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
 	 */
-	public ArrayList getStatusStringAll(){
+	public ArrayList getMessageStringAll(){
 		return this.listaStatus;
 	}
 	

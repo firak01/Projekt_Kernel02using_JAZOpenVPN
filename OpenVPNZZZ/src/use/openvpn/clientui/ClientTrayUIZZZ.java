@@ -494,7 +494,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				}
 			}//END check:
 		
-		ArrayList listaLogString = this.objClientMain.getStatusStringAll();
+		ArrayList listaLogString = this.objClientMain.getMessageStringAll();
 		if(listaLogString.isEmpty()){
 			if (this.objClientMain == null){
 					sReturn = "No log string available.";
