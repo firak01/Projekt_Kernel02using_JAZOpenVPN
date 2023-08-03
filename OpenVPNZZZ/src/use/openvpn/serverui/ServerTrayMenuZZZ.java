@@ -11,13 +11,13 @@ import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 //20191123: Um die Enumeration herum eine Klasse bauen.
 //            Diese Struktur hat den Vorteil, das solche Werte auch in einer Datenbank per Hibernate persistiert werden können.
 //            Verwendet wird solch eine Struktur z.B. in der Defaulttext - Klasse des TileHexMapTHM Projekts
-public class ServerTrayStatusZZZ implements Serializable{
+public class ServerTrayMenuZZZ implements Serializable{
 	
 	//Entsprechend der internen Enumeration
 	//Merke: Die Enumeration dient der Festlegung der Defaultwerte. In den Feldern des Entities werden die gespeicherten Werte gehalten.
-	private String sAbbreviation,sDescription;
+	private String sAbbreviation,sMenu,sDescription;
 			
-	public ServerTrayStatusZZZ(){		
+	public ServerTrayMenuZZZ(){		
 	}
 						
 	public String getAbbreviation(){
@@ -25,6 +25,13 @@ public class ServerTrayStatusZZZ implements Serializable{
 	}
 	public void setAbbreviation(String sAbbreviation){
 		this.sAbbreviation = sAbbreviation;
+	}
+	
+	public String getMenu(){
+		return this.sMenu;
+	}
+	public void setMenu(String sMenu){
+		this.sMenu = sMenu;
 	}
 
 	//### Statische Methode (um einfacher darauf zugreifen zu können)
@@ -35,50 +42,34 @@ public class ServerTrayStatusZZZ implements Serializable{
 			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
 			System.out.println(sError);
 		}
-    	return ServerTrayStatusTypeZZZ.class;    	
+    	return ServerTrayMenuTypeZZZ.class;    	
     }
 	
 	//#######################################################
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### String fullName, String abbreviation
 	//#######################################################
-//	    public enum STATUS{
-//			NEW,STARTING,STARTED,LISTENING,CONNECTED,INTERRUPTED,STOPPED,ERROR
-//		}
-		//Ersetzt durch enum, die Bedeutung bleibt 
-//		public static final int iSTATUS_NEW = 0;                       //Wenn das SystemTry-icon neu ist 
-//		public static final int iSTATUS_STARTING = 1;               //Die OVPN-Konfiguration wird gesucht und die Processe werden mit diesen Konfigurationen gestartet.
-//		public static final int iSTATUS_STARTED = 2;
-//		public static final int iSTATUS_LISTENING = 3;               //Die OVPN-Processe laufen.
-//		public static final int iSTATUS_CONNECTED = 4;            //Falls sich ein Client per vpn mit dem Server verbunden hat und erreichbar ist
-//		public static final int iSTATUS_INTERRUPTED = 5;          //Falls der Client wieder nicht erreichbar ist. Das soll aber keine Fehlermeldung in dem Sinne sein, sondern nur anzeigen, dass mal ein Client verbunden war.
-//		                                                                                      //Dies wird auch angezeigt, wenn z.B. die Netzwerkverbindung unterbrochen worden ist.
-//		public static final int iSTATUS_STOPPED = 6; 				 //Wenn kein OVPN-Prozess mehr l�uft.
-//		public static final int iSTATUS_ERROR = 7;
-					
-	    
-	    
-	    
+    
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Menuepunkt-Text","Beschreibung, wird nicht genutzt....",)
-	public enum ServerTrayStatusTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		NEW("new",""),
-		STARTING("starting",""),
-		STARTED("started",""),
-		LISTENING("listenig",""),
-		CONNECTED("connected",""),
-		INTERRUPTED("interrupted",""),
-		STOPPED("stopped",""),
-		ERROR("error","");
+	public enum ServerTrayMenuTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		END("end","Beenden",""),
+		START("start","Starten",""),		
+		LISTEN("listen","Auf Verbindung warten",""),
+		LOG("log","Server Log ansehen",""),
+		DETAIL("detail","PressAction",""),
+		PAGE_IP_UPLOAD("page_ip_upload","IP Page hochladen",""),
+		FTP_CREDENTIALS("ftp_credentials","FTP Anmeldedaten","");				
 		
-	private String sAbbreviation,sDescription;
+	private String sAbbreviation,sMenu,sDescription;
 
 	//#############################################
 	//#### Konstruktoren
 	//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
 	//In der Util-Klasse habe ich aber einen Workaround gefunden.
-	ServerTrayStatusTypeZZZ(String sAbbreviation, String sDescription) {
+	ServerTrayMenuTypeZZZ(String sAbbreviation, String sMenu, String sDescription) {
 	    this.sAbbreviation = sAbbreviation;
+	    this.sMenu = sMenu;
 	    this.sDescription = sDescription;
 	}
 
@@ -86,8 +77,12 @@ public class ServerTrayStatusZZZ implements Serializable{
 	 return this.sAbbreviation;
 	}
 	
+	public String getMenu() {
+		 return this.sMenu;
+		}
+	
 	public EnumSet<?>getEnumSetUsed(){
-		return ServerTrayStatusTypeZZZ.getEnumSet();
+		return ServerTrayMenuTypeZZZ.getEnumSet();
 	}
 
 	/* Die in dieser Methode verwendete Klasse für den ...TypeZZZ muss immer angepasst werden. */
@@ -100,12 +95,12 @@ public class ServerTrayStatusZZZ implements Serializable{
 		//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
 		
 		//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
-		Class<ServerTrayStatusTypeZZZ> enumClass = ServerTrayStatusTypeZZZ.class;
-		EnumSet<ServerTrayStatusTypeZZZ> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
+		Class<ServerTrayMenuTypeZZZ> enumClass = ServerTrayMenuTypeZZZ.class;
+		EnumSet<ServerTrayMenuTypeZZZ> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 		
-		for(Object obj : ServerTrayStatusTypeZZZ.class.getEnumConstants()){
+		for(Object obj : ServerTrayMenuTypeZZZ.class.getEnumConstants()){
 			//System.out.println(obj + "; "+obj.getClass().getName());
-			set.add((ServerTrayStatusTypeZZZ) obj);
+			set.add((ServerTrayMenuTypeZZZ) obj);
 		}
 		return set;
 		
@@ -127,8 +122,8 @@ public class ServerTrayStatusZZZ implements Serializable{
 
 	//+++ Das könnte auch in einer Utility-Klasse sein.
 	//the valueOfMethod <--- Translating from DB
-	public static ServerTrayStatusTypeZZZ fromAbbreviation(String s) {
-	for (ServerTrayStatusTypeZZZ state : values()) {
+	public static ServerTrayMenuTypeZZZ fromAbbreviation(String s) {
+	for (ServerTrayMenuTypeZZZ state : values()) {
 	   if (s.equals(state.getAbbreviation()))
 	       return state;
 	}

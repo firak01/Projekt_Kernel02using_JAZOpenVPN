@@ -10,8 +10,8 @@ import java.util.StringTokenizer;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
-import use.openvpn.serverui.ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ;
-import use.openvpn.serverui.ServerTrayStatusZZZ;
+import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
+import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
 import use.openvpn.serverui.ServerTrayUIZZZ;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
@@ -57,7 +57,7 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 	private String sMessageCurrent = null; //Hierueber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
 	private ArrayList listaMessage = new ArrayList(); //Hierueber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
     																	//Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
-	private ArrayList listaConfigStarter = new ArrayList(); //Hier�ber werden alle Procese, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.	
+	private ArrayList listaConfigStarter = new ArrayList(); //Hieruwber werden alle Prozesse, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.	
 	private HashMap<String, Boolean>hmStatusLocal = new HashMap<String, Boolean>(); //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
 
 	protected ISenderObjectStatusLocalSetZZZ objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
@@ -65,30 +65,23 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 	public ServerMainZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, saFlagControl);
 	}
-
-	/**Entrypoint for managing the configuration files for "OpenVPN" client.
-	 * @param args, 
-	 *
-	 * @return void
-	 *
-	 * javadoc created by: 0823, 30.06.2006 - 10:24:31
-	 */
-	public boolean start()throws ExceptionZZZ{
-		return this.start(null);
-	}
 	
-	public boolean start(ServerTrayUIZZZ objServerTray) throws ExceptionZZZ{
+	/**Starten des ServerBackends.
+	 * - Aufgeteil in einen "Warte auf windows-Task"-Teil und in einen OVPN-Teil
+	 * - Erst sollte das Warten auf den Windows - Task passieren... und zwar in einer Schleife... dann erst OVPN Dinge
+	 * 
+	 * Merke: Weil bei Änderung des Status ein Event erzeugt und geworfen wird, braucht man z.B. kein ServerTrayUI-Objekt.
+	 *        Das ServerTrayUI-Objekt muss an dem Event registriert sein.
+	 * 
+	 * @return
+	 * @throws ExceptionZZZ
+	 * @author Fritz Lindhauer, 03.08.2023, 09:31:22
+	 */
+	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;
-		main:{
-			//TODOGOON20230727; //Aufteilen in einen OVPN-Teil und einen "Warte auf windows-Task"-Teil
-			//TodoGOON: im ServerSystemTray muss das dann Heissen... Starte OVPN.
-			//TODOGOON: Erst sollte das Warten auf den Windows - Task passieren... und zwar in einer Schleife... dann erst OVPN Dinge
-			//this.setFlag("isstarting", true);
-			
-			//Merke: Wenn über das enum der setFlag gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
-			//this.setFlag(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTING, true);
-			this.setStatusLocal(IServerMainOVPN.STATUSLOCAL.ISSTARTING, true);
-			if(objServerTray!=null) objServerTray.switchStatus(ServerTrayStatusTypeZZZ.STARTING);
+		main:{						
+			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
+			this.setStatusLocal(IServerMainOVPN.STATUSLOCAL.ISSTARTING, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
 									
 			//1. Diverse Dinge mit WMI testen.
 			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
@@ -263,8 +256,6 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 			ServerConfigOnServerAllowedClientFacadeOVPN objClientConfigHandler = new ServerConfigOnServerAllowedClientFacadeOVPN(this.getKernelObject(), this, null);
 			boolean bSuccess = objClientConfigHandler.execute();
 			
-			
-			
 			//##########################################################################################
 			//+++ Diese OVPN-Konfigurationsfiles zum Starten der VPN-Verbindung verwenden !!!
 			Thread[] threadaOVPN = new Thread[listaFileConfigUsed.size()];
@@ -291,27 +282,22 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 					 iNumberOfProcessStarted++;	
 					//Das blaeht das Log unnoetig auf .... zum Test aber i.o.
 					 this.logMessageString("Finished starting thread # " + icount + " for listening to connection.");
-					 this.setFlag("WatchRunnerStarted", true);					
+					 this.setStatusLocal(ServerMainZZZ.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.					
 				}				
 			}//END for
-			 //this.setFlag("isstarted", true);
 			
-			//Merke: Wenn über das enum der setFlag gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
-			//this.setFlag(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTED, true);
-			this.setFlag(IServerMainOVPN.STATUSLOCAL.ISSTARTED, true);
-			 if(objServerTray!=null) objServerTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTED);
-				
+			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.			
+			this.setStatusLocal(ServerMainZZZ.STATUSLOCAL.ISSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
 			
 			//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.									
 		   bReturn = true;
-	}//END main		
+		}//END main		
 		return bReturn;
 	}//END start()
 	
 	public void run() {
 		try {
 			boolean bStarted = this.start();
-			//this.setFlag("isstarted", bStarted);
 		} catch (ExceptionZZZ ez) {
 			try {
 				this.setFlag("haserror", true);
@@ -472,44 +458,21 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 	}
 		
 //	######### GetFlags - Handled ##############################################
-	/** (non-Javadoc)
-	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
-	Flags used:<CR>
-	-  isConnected	
-	- haserror
-	 */
-	public boolean getFlag(String sFlagName){
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.getFlag(sFlagName);
-			if(bFunction==true) break main;
-						
-			//getting the flags of this object
-			//sind nun stati
-//			String stemp = sFlagName.toLowerCase();
-//			if(stemp.equals("islaunched")){
-//				bFunction = bFlagIsLaunched;
-//				break main;
-//			}else if(stemp.equals("isstarting")){
-//				bFunction = bFlagIsStarting;
-//				break main;
-//			}else if(stemp.equals("isstarted")){
-//				bFunction = bFlagIsStarted;
-//				break main;
-//			}else if(stemp.equals("islistening")){
-//				bFunction = bFlagIsListening;
-//				break main;
-//			}else if(stemp.equals("watchrunnerstarted")){
-//				bFunction = bFlagWatchRunnerStarted;
-//				break main;
-//			}else if(stemp.equals("haserror")){				
-//				bFunction = bFlagHasError;
-//				break main;
-//			}
-		}//end main:
-		return bFunction;
-	}
+//	/** (non-Javadoc)
+//	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
+//	Flags used:<CR>
+//	-  isConnected	
+//	- haserror
+//	 */
+//	public boolean getFlag(String sFlagName){
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.getFlag(sFlagName);
+//			if(bFunction==true) break main;
+//		}//end main:
+//		return bFunction;
+//	}
 	
 	
 
@@ -522,44 +485,17 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 	 * - haserror
 	 * @throws ExceptionZZZ 
 	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.setFlag(sFlagName, bFlagValue);
-		if(bFunction==true) break main;
-	
-		//setting the flags of this object
-		//sind nun stati
-//		String stemp = sFlagName.toLowerCase();
-//		if(stemp.equals("islaunched")){
-//			bFlagIsLaunched = bFlagValue;
-//			bFunction = true;
-//			break main;	
-//		}else if(stemp.equals("isstarting")){
-//			bFlagIsStarting = bFlagValue;
-//			bFunction = true;
-//			break main;	
-//		}else if(stemp.equals("isstarted")){
-//			bFlagIsStarted = bFlagValue;
-//			bFunction = true;
-//			break main;	
-//		}else if(stemp.equals("islistening")) {
-//			bFlagIsListening = bFlagValue;
-//			bFunction = true;
-//			break main;	
-//		}else if(stemp.equals("watchrunnerstarted")){
-//				bFlagWatchRunnerStarted = bFlagValue;
-//				bFunction = true;
-//				break main;				
-//		}else if(stemp.equals("haserror")){
-//			bFlagHasError = bFlagValue;
-//			bFunction = true;
-//			break main;	
-//		}
-		}//end main:
-		return bFunction;
-	}
+//	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.setFlag(sFlagName, bFlagValue);
+//		if(bFunction==true) break main;
+//	
+//		
+//		}//end main:
+//		return bFunction;
+//	}
 
 	//##### GETTER / SETTER
 //	public ConfigChooserOVPN getConfigChooserObject() {
@@ -852,21 +788,18 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 	}
 
 	@Override
-	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) {
-		// TODO Auto-generated method stub
-		
+	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+		this.getListenerRegisteredAll().remove(objEventListener);
 	}
 
 	@Override
-	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) {
-		// TODO Auto-generated method stub
-		
+	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+		this.getListenerRegisteredAll().add(objEventListener);
 	}
 
 	@Override
-	public ArrayList<IListenerObjectStatusLocalSetZZZ> getListenerRegisteredAll() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<IListenerObjectStatusLocalSetZZZ> getListenerRegisteredAll() throws ExceptionZZZ {
+		return this.getSenderStatusLocalUsed().getListenerRegisteredAll();
 	}
 
 	//### aus IEventBrokerStatusLocalSetUserZZZ

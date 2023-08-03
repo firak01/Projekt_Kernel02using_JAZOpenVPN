@@ -88,10 +88,10 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 				this.getLogObject().WriteLineDate(sLog);
 				if(objServerMain.getFlag("HasError")==true){
 					//StatusString aendern
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.ERROR);
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.ERROR);
+						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
 					}					
 					break main;
 				}			
@@ -100,19 +100,19 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 				boolean bWatchRunnerStarted = objServerMain.getFlag("watchrunnerstarted");
 				boolean bListening = objServerMain.getFlag("islistening");
 				if(bWatchRunnerStarted & !bListening){
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTING);
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STARTING);	
+						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);	
 					}					
 					Thread.sleep(500);	
 				}
 				
 				if(bWatchRunnerStarted && bListening) {
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.LISTENING);
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.LISTENING);
+						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
 					}
 					Thread.sleep(500);
 				}
@@ -182,9 +182,9 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 							hmWatchRunnerStatus.put(objWatchTemp.getAlias(), "Connected to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());
 							
 							//Das Symbol in der Statuszeile aendern. Eine Connection reicht dazu aus.
-							this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.CONNECTED);	
+							this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);	
 							this.objTray.getServerBackendObject().logMessageString(icount + "# Connection reported by ServerMonitorRunner to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());
-							this.objTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
+							this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
 						}else if(bConnected == true && objWatchTemp.getFlag("isconnected")==true){
 							//+++ FALL: Neue, weitere Verbindung entdeckt (bzw. die ist noch aktiv)
 							hmConnectionCount.put(objProcessStarterTemp.getAlias(), "1");  //!!! Das soll f�r schon existierende Werte nur ersetzen, nicht neue Listeneintr�ge erzeugen
@@ -208,11 +208,11 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 							//+++ FALL: Fehler und ENDE
 							//Der Fehler soll abgefangen werden, wenn z.B. das TAP-Defice (virtuelle Netzwerkkarte) nicht gestartet werden kann.
 //							Das Symbol in der Statuszeile �ndern
-							this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.ERROR);		
+							this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);		
 							this.objTray.getServerBackendObject().logMessageString(icount + "# Error reported by ServerMonitorRunner. Canceling application. See log file for details.");
 							
 							
-							this.objTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.ERROR);
+							this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
 							//Merke: Die hmWathcRunnerStatus - Eintraege bleiben dabei jedoch unber�hrt.
 							break main;
 						}else{
@@ -225,18 +225,18 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 //				+++ Spezielles Symbol in der Statusleiste setzen
 				if(bConnected == true && listaWatchRunner.size() == 0){
 //					Falls schon mal connected war und die Anzahl der "aktiven" OpenVPN Prozesse auf 0 runtergegangen ist, den Status auf "NotListening" �ndern. Die Schleife verlassen.
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STOPPED);
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STOPPED);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.STOPPED);
+						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STOPPED);
 					}
 					break; //DIE ENDLOSSCHLEIFE VERLASSEN
 				}else if(bConnected == true && hmConnectionCount.isEmpty()){
 //					Falls schon mal connected war und nun der Zaehler der Verbindungen auf 0 zur�ckgegangen ist, das Icon entsprechend aendern.
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
+					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
+						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
 					}
 					bConnected = false;
 				}				
