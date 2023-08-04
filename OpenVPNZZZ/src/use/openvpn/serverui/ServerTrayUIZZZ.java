@@ -338,7 +338,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			try{ 
 				check:{
 				}
-				boolean bStarted = this.objServerBackend.getFlag(IServerMainOVPN.STATUSLOCAL.ISSTARTED.name());
+				boolean bStarted = this.objServerBackend.getStatusLocal(ServerMainZZZ.STATUSLOCAL.ISSTARTED);
 				if(!bStarted) break main;
 			
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
@@ -360,7 +360,7 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				//this.objServerBackend.setFlag("islistening", true);												
 				
 				//Merke: Wenn über das enum der setFlag gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
-				this.objServerBackend.setFlag(IServerMainOVPN.STATUSLOCAL.ISLISTENING, true);
+				this.objServerBackend.setStatusLocal(ServerMainZZZ.STATUSLOCAL.ISLISTENING, true);
 				//this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.LISTENING);
 				bReturn = true;
 			}catch(ExceptionZZZ ez){
@@ -527,11 +527,9 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.END.getMenu())){
 					this.unload();	
 				}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START.getMenu())){
-					boolean bFlagValue = this.start();
-					//this.getServerBackendObject().setFlag("isstarted", bFlagValue);
+					boolean bFlagValue = this.start();					
 				}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN.getMenu())) {
 					boolean bFlagValue = this.listen();
-					//this.getServerBackendObject().setFlag("islistening", bFlagValue);
 				}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LOG.getMenu())){
 					//JOptionPane pane = new JOptionPane();
 					String stemp = this.readLogString();
@@ -714,17 +712,17 @@ public class ServerTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 //						}
 			
 			//Also ohne Switch
-			if(IServerMainOVPN.STATUSLOCAL.ISLAUNCHED==objStatusEnum) {
-				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.NEW);	
-			}else if(IServerMainOVPN.STATUSLOCAL.ISSTARTING==objStatusEnum) {
+			if(ServerMainZZZ.STATUSLOCAL.ISLAUNCHED==objStatusEnum) {
+				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.NEW);				
+			}else if(ServerMainZZZ.STATUSLOCAL.ISSTARTING==objStatusEnum) {
 				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);
-			}else if(IServerMainOVPN.STATUSLOCAL.ISSTARTED==objStatusEnum) {
+			}else if(ServerMainZZZ.STATUSLOCAL.ISSTARTED==objStatusEnum) {
 				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTED);
-			}else if(IServerMainOVPN.STATUSLOCAL.ISLISTENING==objStatusEnum) {
+			}else if(ServerMainZZZ.STATUSLOCAL.ISLISTENING==objStatusEnum) {
 				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
-			}else if(IServerMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED==objStatusEnum) {
+			}else if(ServerMainZZZ.STATUSLOCAL.WATCHRUNNERSTARTED==objStatusEnum) {
 				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
-			}else if(IServerMainOVPN.STATUSLOCAL.HASERROR==objStatusEnum) {
+			}else if(ServerMainZZZ.STATUSLOCAL.HASERROR==objStatusEnum) {
 				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
 			}else {
 				break main;

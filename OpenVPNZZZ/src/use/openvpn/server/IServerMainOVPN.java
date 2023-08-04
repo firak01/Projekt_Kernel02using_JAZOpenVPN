@@ -8,8 +8,9 @@ public interface IServerMainOVPN extends IStatusLocalUserZZZ, ISenderObjectStatu
 	public enum FLAGZ{
 		DUMMY
 	}
-	
-	public enum STATUSLOCAL{
-		ISLAUNCHED,ISSTARTING,ISSTARTED,ISLISTENING,WATCHRUNNERSTARTED,HASERROR
-	}
+
+//  20230804: Jetzt in ServerMainZZZ verschoben als ServerMainStatusTypeZZZ interne enum-Klasse
+//	public enum STATUSLOCAL{
+//		ISLAUNCHED,ISSTARTING,ISSTARTED,ISLISTENING,WATCHRUNNERSTARTED,HASERROR
+//	}
 }
