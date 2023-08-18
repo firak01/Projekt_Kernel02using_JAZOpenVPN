@@ -8,14 +8,19 @@ import java.util.Set;
 import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.clientui.ClientTrayUIZZZ;
 import use.openvpn.clientui.OVPNConnectionWatchRunnerZZZ;
+import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
-import use.openvpn.server.ServerMainZZZ;
+import use.openvpn.server.ServerMainOVPN;
+import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 
@@ -25,9 +30,9 @@ import basic.zKernel.flag.IFlagZUserZZZ;
  * @author 0823
  *
  */
-public class ServerMonitorRunnerZZZ extends KernelUseObjectZZZ implements Runnable{
-	private ServerMainZZZ objServerMain = null;
-	private ServerTrayUIZZZ objTray = null;
+public class ServerMonitorRunnerOVPN extends KernelUseObjectZZZ implements Runnable, IListenerObjectStatusLocalSetOVPN{
+	private ServerMainOVPN objServerMain = null;
+	private ServerTrayUIOVPN objTray = null;
 	
 	private HashMap hmWatchRunnerStatus = new HashMap(); //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
 	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
@@ -39,12 +44,12 @@ public class ServerMonitorRunnerZZZ extends KernelUseObjectZZZ implements Runnab
 	private boolean bFlagWatchRunnerStarted=false;
 	private boolean bFlagStatiAllFilled = false;
 	
-public ServerMonitorRunnerZZZ(IKernelZZZ objKernel, ServerTrayUIZZZ objTray, ServerMainZZZ objConfig, String[] saFlagControl) throws ExceptionZZZ{
+public ServerMonitorRunnerOVPN(IKernelZZZ objKernel, ServerTrayUIOVPN objTray, IServerMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 	super(objKernel);
 	ServerMonitorRunnerNew_(objTray, objConfig, saFlagControl);
 }
 
-private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objServerMain, String[] saFlagControl) throws ExceptionZZZ{
+private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN objServerMain, String[] saFlagControl) throws ExceptionZZZ{
 	main:{
 		
 		check:{
@@ -63,7 +68,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 			}
 		
 						
-			this.objServerMain = objServerMain;
+			this.objServerMain = (ServerMainOVPN) objServerMain;
 			this.objTray = objTray;
 		}//End check
 
@@ -88,7 +93,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 				this.getLogObject().WriteLineDate(sLog);
 				if(objServerMain.getFlag("HasError")==true){
 					//StatusString aendern
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
+					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
 						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
@@ -100,7 +105,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 				boolean bWatchRunnerStarted = objServerMain.getFlag("watchrunnerstarted");
 				boolean bListening = objServerMain.getFlag("islistening");
 				if(bWatchRunnerStarted & !bListening){
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);
+					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
 						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);	
@@ -109,7 +114,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 				}
 				
 				if(bWatchRunnerStarted && bListening) {
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
+					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
 						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
@@ -182,7 +187,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 							hmWatchRunnerStatus.put(objWatchTemp.getAlias(), "Connected to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());
 							
 							//Das Symbol in der Statuszeile aendern. Eine Connection reicht dazu aus.
-							this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);	
+							this.sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);	
 							this.objTray.getServerBackendObject().logMessageString(icount + "# Connection reported by ServerMonitorRunner to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());
 							this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
 						}else if(bConnected == true && objWatchTemp.getFlag("isconnected")==true){
@@ -208,7 +213,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 							//+++ FALL: Fehler und ENDE
 							//Der Fehler soll abgefangen werden, wenn z.B. das TAP-Defice (virtuelle Netzwerkkarte) nicht gestartet werden kann.
 //							Das Symbol in der Statuszeile �ndern
-							this.sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);		
+							this.sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);		
 							this.objTray.getServerBackendObject().logMessageString(icount + "# Error reported by ServerMonitorRunner. Canceling application. See log file for details.");
 							
 							
@@ -225,7 +230,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 //				+++ Spezielles Symbol in der Statusleiste setzen
 				if(bConnected == true && listaWatchRunner.size() == 0){
 //					Falls schon mal connected war und die Anzahl der "aktiven" OpenVPN Prozesse auf 0 runtergegangen ist, den Status auf "NotListening" �ndern. Die Schleife verlassen.
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STOPPED);
+					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STOPPED);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
 						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STOPPED);
@@ -233,7 +238,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 					break; //DIE ENDLOSSCHLEIFE VERLASSEN
 				}else if(bConnected == true && hmConnectionCount.isEmpty()){
 //					Falls schon mal connected war und nun der Zaehler der Verbindungen auf 0 zur�ckgegangen ist, das Icon entsprechend aendern.
-					String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
+					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
 						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
@@ -423,6 +428,18 @@ private void ServerMonitorRunnerNew_(ServerTrayUIZZZ objTray, ServerMainZZZ objS
 
 		}//end main:
 		return bFunction;
+	}
+
+	//aus IListenerObjectStatusLocalSetZZZ
+	@Override
+	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		//Lies den Status (geworfen vom Backend aus)
+		String sStatus = eventStatusLocalSet.getStatusText();
+		
+		//übernimm den Status
+		this.setStatusString(sStatus);
+		
+		return true;
 	}
 
 }//END class

@@ -10,7 +10,7 @@ import use.openvpn.client.ClientMainZZZ;
 
 public class ServerApplicationOVPN extends AbstractApplicationOVPN {
 	
-	public ServerApplicationOVPN(IKernelZZZ objKernel, ServerMainZZZ objServer) throws ExceptionZZZ {
+	public ServerApplicationOVPN(IKernelZZZ objKernel, ServerMainOVPN objServer) throws ExceptionZZZ {
 		super(objKernel, (IMainOVPN) objServer);
 		this.setServerObject(objServer);
 	}
@@ -19,10 +19,10 @@ public class ServerApplicationOVPN extends AbstractApplicationOVPN {
 	
 	//######################################################
 		//### Getter / Setter
-		public ServerMainZZZ getServerObject() {
-			return (ServerMainZZZ) this.getMainObject();
+		public ServerMainOVPN getServerObject() {
+			return (ServerMainOVPN) this.getMainObject();
 		}
-		public void setServerObject(ServerMainZZZ objServer) {
+		public void setServerObject(ServerMainOVPN objServer) {
 			this.setMainObject((IMainOVPN) objServer);
 		}						
 }

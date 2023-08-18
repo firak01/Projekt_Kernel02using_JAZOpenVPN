@@ -23,7 +23,8 @@ import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.clientui.IConstantClientOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
-import use.openvpn.serverui.ServerTrayUIZZZ;
+import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
+import use.openvpn.serverui.ServerTrayUIOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
@@ -158,9 +159,9 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		ImageIcon objReturn = null;
 		main:{
 			URL url = null;
-			ClassLoader objClassLoader = ServerTrayUIZZZ.class.getClassLoader(); 
+			ClassLoader objClassLoader = ServerTrayUIOVPN.class.getClassLoader(); 
 			if(objClassLoader==null) {
-				ExceptionZZZ ez = new ExceptionZZZ("unable to receiver classloader object", iERROR_RUNTIME, ServerTrayUIZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				ExceptionZZZ ez = new ExceptionZZZ("unable to receiver classloader object", iERROR_RUNTIME, ServerTrayUIOVPN.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
 			String sPath= ResourceEasyZZZ.searchDirectoryAsStringRelative("resourceZZZ/image/tray"); //Merke: Innerhalb einer JAR-Datei soll hier ein src/ vorangestellt werden.					
@@ -211,7 +212,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			if(url==null) {
 				String sLog = "unable to receive url object. Path '" + sPathTotal + "' not found?";
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-				ExceptionZZZ ez = new ExceptionZZZ(sLog, iERROR_RUNTIME, ServerTrayUIZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				ExceptionZZZ ez = new ExceptionZZZ(sLog, iERROR_RUNTIME, ServerTrayUIOVPN.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}else {
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": URL = '"+url.toExternalForm() + "'");
@@ -278,6 +279,19 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	}
 	
 	public boolean switchStatus(int iStatus) throws ExceptionZZZ{
+	//TODO 20230817: Wie beim Server auch mit einem Enum arbeiten
+	//public boolean switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
+//		boolean bReturn = false;
+//		main:{
+//			//ImageIcon aendern
+//			ImageIcon objIcon = this.getImageIconByStatus(enumSTATUS);
+//			if(objIcon==null)break main;
+//			
+//			this.getTrayIconObject().setIcon(objIcon);
+//			bReturn = true;
+//		}//END main:
+//		return bReturn;
+//	}
 		boolean bReturn = false;
 		main:{
 			//StatusString �ndern
@@ -393,7 +407,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			}//END check
 			
 		if(this.sStatusString==null){
-			sReturn = sReturn + "Not yet tried to connect\n\n";
+			sReturn = sReturn + "No status set\n\n";
 		}else{
 			//20200114: Erweiterung - Angabe des Rechnernamens
 			try {				

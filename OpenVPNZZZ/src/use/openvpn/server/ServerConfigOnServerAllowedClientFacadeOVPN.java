@@ -420,10 +420,10 @@ ClientConfigHostname=HANNIBALDEV04VM
 	
 	
 	//###### Getter / Setter
-	public ServerMainZZZ getServerObject() {
-		return (ServerMainZZZ) this.getMainObject();
+	public ServerMainOVPN getServerObject() {
+		return (ServerMainOVPN) this.getMainObject();
 	}
-	public void setServerObject(ServerMainZZZ objServer) {
+	public void setServerObject(ServerMainOVPN objServer) {
 		this.setMainObject((IMainOVPN) objServer);
 	}
 	

@@ -3,7 +3,7 @@ package use.openvpn.serverui;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientMainZZZ;
 import use.openvpn.server.ServerApplicationOVPN;
-import use.openvpn.server.ServerMainZZZ;
+import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.serverui.ConfigOVPN;
 
 import java.util.ArrayList;
@@ -28,8 +28,8 @@ import custom.zKernel.LogZZZ;
 
 public class ServerMainUIZZZ extends ObjectZZZ implements IConstantServerOVPN , ISenderObjectFlagZsetZZZ{
 			private IKernelZZZ objKernel=null;
-			private ServerMainZZZ objServerMain = null;
-			private ServerTrayUIZZZ objServerTray=null;
+			private ServerMainOVPN objServerMain = null;
+			private ServerTrayUIOVPN objServerTray=null;
 			
 			/**Entry point for the OVPN-Server-Starter.
 			 * @return void
@@ -52,13 +52,13 @@ public class ServerMainUIZZZ extends ObjectZZZ implements IConstantServerOVPN , 
 						this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man ueber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 
 						//NUN DAS BACKEND-Handlebar machen
-						this.objServerMain = new ServerMainZZZ(objKernel, null);
+						this.objServerMain = new ServerMainOVPN(objKernel, null);
 						
 						ServerApplicationOVPN objApplication = new ServerApplicationOVPN(objKernel, this.objServerMain);
 						this.objServerMain.setApplicationObject(objApplication);
 						
 						//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
-						this.objServerTray = new ServerTrayUIZZZ(objKernel, (String[]) null);
+						this.objServerTray = new ServerTrayUIOVPN(objKernel, this.objServerMain, (String[]) null);
 						
 						//Registriere das ServerTray-Objekt fuer Aenderungen an den ServerMain-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
 						this.objServerMain.registerForFlagEvent(this.objServerTray);
@@ -66,8 +66,7 @@ public class ServerMainUIZZZ extends ObjectZZZ implements IConstantServerOVPN , 
 						//Registriere das ServerTray-Objekt fuer Aenderung am ServerMain-Objekt-Status. Das garantiert, das der Tray auch auf Änderungen des Status reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
 						this.objServerMain.registerForStatusLocalEvent(this.objServerTray);
 						
-						
-						this.objServerTray.setServerBackendObject(this.objServerMain);
+												
 						bReturn = objServerTray.load();
 						
 						//Konfigurierbar: Beim Launch der Applikation schon starten

@@ -7,7 +7,7 @@ import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
-import use.openvpn.server.ServerMainZZZ;
+import use.openvpn.server.ServerMainOVPN;
 
 public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IApplicationOVPN{
 	private IMainOVPN objMain = null;

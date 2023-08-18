@@ -46,7 +46,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	 * @param saFlagControl
 	 * @throws ExceptionZZZ
 	 */
-	public ServerConfigStarterOVPN(IKernelZZZ objKernel, ServerMainZZZ objServer, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, ServerMainOVPN objServer, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,(IMainOVPN) objServer, objFileTemplateBatch, objFileConfigOvpn, "-1", saFlagControl);
 	}
 			
@@ -176,10 +176,10 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	
 	
 	
-	public ServerMainZZZ getServerObject() {
-		return (ServerMainZZZ) this.getMainObject();
+	public ServerMainOVPN getServerObject() {
+		return (ServerMainOVPN) this.getMainObject();
 	}
-	public void setServerObject(ServerMainZZZ objServer) {
+	public void setServerObject(ServerMainOVPN objServer) {
 		this.setMainObject((IMainOVPN) objServer);
 	}
 	

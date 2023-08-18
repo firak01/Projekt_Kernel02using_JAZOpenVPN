@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -13,12 +14,16 @@ import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
 import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
-import use.openvpn.serverui.ServerTrayUIZZZ;
 import use.openvpn.serverui.ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientConfigTemplateUpdaterZZZ;
+import use.openvpn.server.status.EventObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.EventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
@@ -51,10 +56,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
-public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
-//	private ServerApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
-//	private ConfigChooserOVPN objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
-//	private ServerConfigMapperOVPN objConfigMapper = null; //Objekt, dass ein Mapping zu passenden Templatezeilen verwaltet.
+public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	private ArrayList<File> listaConfigFile = null;
 
 	private String sMessageCurrent = null; //Hierueber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
@@ -63,9 +65,9 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 	private ArrayList listaConfigStarter = new ArrayList(); //Hieruwber werden alle Prozesse, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.	
 	private HashMap<String, Boolean>hmStatusLocal = new HashMap<String, Boolean>(); //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
 
-	protected ISenderObjectStatusLocalSetZZZ objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
-	public ServerMainZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
+	public ServerMainOVPN(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, saFlagControl);
 	}
 	
@@ -84,7 +86,7 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 		boolean bReturn = false;
 		main:{						
 			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
-			this.setStatusLocal(ServerMainZZZ.STATUSLOCAL.ISSTARTING, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+			this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.ISSTARTING, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
 									
 			//1. Diverse Dinge mit WMI testen.
 			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
@@ -285,12 +287,12 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 					 iNumberOfProcessStarted++;	
 					//Das blaeht das Log unnoetig auf .... zum Test aber i.o.
 					 this.logMessageString("Finished starting thread # " + icount + " for listening to connection.");
-					 this.setStatusLocal(ServerMainZZZ.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.					
+					 this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.					
 				}				
 			}//END for
 			
 			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.			
-			this.setStatusLocal(ServerMainZZZ.STATUSLOCAL.ISSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+			this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.ISSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
 			
 			//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.									
 		   bReturn = true;
@@ -570,15 +572,16 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 	}
 	
 	@Override
-	public boolean setStatusLocal(Enum enumStatus, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
-			if(enumStatus==null) {
+			if(enumStatusIn==null) {
 				break main;
 			}
 		//return this.getStatusLocal(objEnumStatus.name());
 		//Nein, trotz der Redundanz nicht machen, da nun der Event anders gefeuert wird, nämlich über das enum
 		
+	    ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 		String sStatusName = enumStatus.name();
 		bFunction = this.proofStatusLocalExists(sStatusName);															
 		if(bFunction == true){
@@ -591,7 +594,7 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 			//Dann erzeuge den Event und feuer ihn ab.
 			//Merke: Nun aber ueber das enum			
 			if(this.objEventStatusLocalBroker!=null) {
-				IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,enumStatus, bStatusValue);
+				IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);
 				this.objEventStatusLocalBroker.fireEvent(event);
 			}			
 			bFunction = true;								
@@ -666,7 +669,7 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
 				//Dann erzeuge den Event und feuer ihn ab.
 				if(this.objEventStatusLocalBroker!=null) {
-					IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,sStatusName.toUpperCase(), bFlagValue);
+					IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,sStatusName.toUpperCase(), bFlagValue);
 					this.objEventStatusLocalBroker.fireEvent(event);
 				}
 				
@@ -785,33 +788,35 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 
 	//### aus ISenderObjectStatusLocalSetZZZ
 	@Override
-	public void fireEvent(IEventObjectStatusLocalSetZZZ event) {
+	public void fireEvent(IEventObjectStatusLocalSetOVPN event) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+	//public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getListenerRegisteredAll().remove(objEventListener);
 	}
 
 	@Override
-	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+	//public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getListenerRegisteredAll().add(objEventListener);
 	}
 
 	@Override
-	public ArrayList<IListenerObjectStatusLocalSetZZZ> getListenerRegisteredAll() throws ExceptionZZZ {
+	public ArrayList<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ {
 		return this.getSenderStatusLocalUsed().getListenerRegisteredAll();
 	}
 
 	//### aus IEventBrokerStatusLocalSetUserZZZ
 	@Override
-	public ISenderObjectStatusLocalSetZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {		
+	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {		
 		if(this.objEventStatusLocalBroker==null) {
 			//++++++++++++++++++++++++++++++
 			//Nun geht es darum den Sender fuer Aenderungen an den Flags zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
-			ISenderObjectStatusLocalSetZZZ objSenderStatusLocal = new KernelSenderObjectStatusLocalSetZZZ();
+			ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
 			this.objEventStatusLocalBroker = objSenderStatusLocal;
 		}
 		return this.objEventStatusLocalBroker;
@@ -819,17 +824,17 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 	}
 
 	@Override
-	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetZZZ objEventStatusLocalBroker) {
+	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker) {
 		this.objEventStatusLocalBroker = objEventStatusLocalBroker;
 	}
-
+	
 	@Override
-	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
 	}
 
 	@Override
-	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
 	}
 		
@@ -865,7 +870,7 @@ public class ServerMainZZZ extends AbstractMainOVPN implements IServerMainOVPN{
 		
 		public String getStatusMessage() {
 			 return this.sStatusMessage;
-			}
+		}
 		
 		public EnumSet<?>getEnumSetUsed(){
 			return STATUSLOCAL.getEnumSet();

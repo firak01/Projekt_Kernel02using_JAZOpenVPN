@@ -26,15 +26,15 @@ public class ServerConfigTemplateUpdaterOVPN extends AbstractConfigTemplateUpdat
 // Die Properties erf�llen nicht meine Erwartungen           private Properties objProp = null;
 private FileTextParserZZZ objParser = null;
 
-	public ServerConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, ServerMainZZZ objServer, ConfigChooserOVPN objConfigChooser, ServerConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
+	public ServerConfigTemplateUpdaterOVPN(IKernelZZZ objKernel, ServerMainOVPN objServer, ConfigChooserOVPN objConfigChooser, ServerConfigMapper4TemplateOVPN objConfigMapper, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, (IMainOVPN) objServer, objConfigChooser, objConfigMapper, saFlagControl);
 	}	
 	
 	//############# Getter / Setter
-	public ServerMainZZZ getServerObject() {
-		return (ServerMainZZZ) this.getMainObject();
+	public ServerMainOVPN getServerObject() {
+		return (ServerMainOVPN) this.getMainObject();
 	}
-	public void setServerObject(ServerMainZZZ objServer) {
+	public void setServerObject(ServerMainOVPN objServer) {
 		this.setMainObject((IMainOVPN)objServer);
 	}
 	public ServerConfigMapper4TemplateOVPN getConfigMapperObject() {

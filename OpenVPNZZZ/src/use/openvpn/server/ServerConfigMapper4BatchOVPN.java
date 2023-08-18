@@ -27,7 +27,7 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainZZZ;
 
 public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN{	
-	public ServerConfigMapper4BatchOVPN(IKernelZZZ objKernel, ServerMainZZZ objServerMain, File fileTemplateBatch, File fileConfigOvpn) throws ExceptionZZZ {
+	public ServerConfigMapper4BatchOVPN(IKernelZZZ objKernel, ServerMainOVPN objServerMain, File fileTemplateBatch, File fileConfigOvpn) throws ExceptionZZZ {
 		super(objKernel, objServerMain, fileTemplateBatch, fileConfigOvpn);		
 	}
 
@@ -124,10 +124,10 @@ pause
 	}
 	
 	//###### GETTER / SETTER
-		public ServerMainZZZ getServerMainObject() {
-			return (ServerMainZZZ) this.getMainObject();
+		public ServerMainOVPN getServerMainObject() {
+			return (ServerMainOVPN) this.getMainObject();
 		}
-		public void setServerMainObject(ServerMainZZZ objServerMain) {
+		public void setServerMainObject(ServerMainOVPN objServerMain) {
 			this.setMainObject((IMainOVPN)objServerMain);
 		}
 		

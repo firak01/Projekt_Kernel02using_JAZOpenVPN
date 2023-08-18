@@ -3,9 +3,9 @@ package debug.openvpn.serverui;
 import java.io.File;
 
 import use.openvpn.server.ServerConfigStarterOVPN;
-import use.openvpn.server.ServerMainZZZ;
-import use.openvpn.serverui.ServerMonitorRunnerZZZ;
-import use.openvpn.serverui.ServerTrayUIZZZ;
+import use.openvpn.server.ServerMainOVPN;
+import use.openvpn.serverui.ServerMonitorRunnerOVPN;
+import use.openvpn.serverui.ServerTrayUIOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
@@ -26,10 +26,10 @@ public class DebugServerTrayUIZZZ {
 				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNServer_test.ini", (String)null);
 				objKernel.getLogObject().WriteLineDate("TEST");
 				 
-				ServerMainZZZ objServer = new ServerMainZZZ(objKernel, null);//Das Backendobjekt, das pro Konfigurationsfile eine OVPN.exe Datei als Process startet.
+				ServerMainOVPN objServer = new ServerMainOVPN(objKernel, null);//Das Backendobjekt, das pro Konfigurationsfile eine OVPN.exe Datei als Process startet.
 				
 				//Das TrayIcon ohne, das ein Backend-Objekt aufgebaut worden ist.
-				ServerTrayUIZZZ objTray = new ServerTrayUIZZZ(objKernel, null);
+				ServerTrayUIOVPN objTray = new ServerTrayUIOVPN(objKernel, objServer, null);
 				
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//+++ Hier wird das "Listen" simuliert.
@@ -37,12 +37,12 @@ public class DebugServerTrayUIZZZ {
 				ServerConfigStarterOVPN objConfig = new ServerConfigStarterOVPN(objKernel, objServer, objFile, null);
 				
 				objServer.addProcessStarter(objConfig);                                      //eben diese Datei
-				objTray.setServerBackendObject(objServer);                                //Damit wird ein Teil der .listen() Methode simuliert.
+				//objTray.setServerBackendObject(objServer);                                //Damit wird ein Teil der .listen() Methode simuliert.
 								
-				ServerMonitorRunnerZZZ objMonitor = new ServerMonitorRunnerZZZ(objKernel, objTray, objServer, null);
-				objTray.setMonitorObject(objMonitor);
-				Thread objThreadMonitor = new Thread(objMonitor);
-				objThreadMonitor.start();
+//				ServerMonitorRunnerZZZ objMonitor = new ServerMonitorRunnerZZZ(objKernel, objTray, objServer, null);
+//				objTray.setMonitorObject(objMonitor);
+//				Thread objThreadMonitor = new Thread(objMonitor);
+//				objThreadMonitor.start();
 			
 			} catch (ExceptionZZZ ez) {
 				if(objKernel!=null){

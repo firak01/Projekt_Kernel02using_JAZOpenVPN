@@ -98,10 +98,10 @@ public class ServerConfigMapper4ServerClientConfigOVPN extends AbstractConfigMap
 	}
 	
 	//###### GETTER / SETTER
-		public ServerMainZZZ getServerMainObject() {
-			return (ServerMainZZZ) this.getMainObject();
+		public ServerMainOVPN getServerMainObject() {
+			return (ServerMainOVPN) this.getMainObject();
 		}
-		public void setServerMainObject(ServerMainZZZ objServerMain) {
+		public void setServerMainObject(ServerMainOVPN objServerMain) {
 			this.setMainObject((IMainOVPN)objServerMain);
 		}
 		

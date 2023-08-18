@@ -88,10 +88,10 @@ public class ServerConfigMapper4ReadmeOVPN extends AbstractConfigMapper4ReadmeOV
 	}
 	
 	//###### GETTER / SETTER
-		public ServerMainZZZ getServerMainObject() {
-			return (ServerMainZZZ) this.getMainObject();
+		public ServerMainOVPN getServerMainObject() {
+			return (ServerMainOVPN) this.getMainObject();
 		}
-		public void setServerMainObject(ServerMainZZZ objServerMain) {
+		public void setServerMainObject(ServerMainOVPN objServerMain) {
 			this.setMainObject((IMainOVPN)objServerMain);
 		}
 		

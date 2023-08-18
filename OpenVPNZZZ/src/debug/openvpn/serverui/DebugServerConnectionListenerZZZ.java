@@ -4,7 +4,7 @@ import java.io.File;
 
 import use.openvpn.IMainOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
-import use.openvpn.server.ServerMainZZZ;
+import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.serverui.ServerConnectionListenerZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -28,7 +28,7 @@ public class DebugServerConnectionListenerZZZ {
 				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNServer.ini", (String)null);
 				objKernel.getLogObject().WriteLineDate("TEST");
 				
-				ServerMainZZZ objServer = new ServerMainZZZ(objKernel, null);
+				ServerMainOVPN objServer = new ServerMainOVPN(objKernel, null);
 				 
 				//!!! Damit die lokale VPN-IP-Adresse aufgel�st werden kann, muss der entsprehcende Netzwerkadapter "verbunden" sein.
 				objFile = new File("C:\\Programme\\OpenVPN\\config\\client_TCP_443.ovpn");
