@@ -1,6 +1,6 @@
 package debug.ovpn.server;
 
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelZZZ;

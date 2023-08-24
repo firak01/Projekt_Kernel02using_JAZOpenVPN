@@ -1,7 +1,7 @@
 package use.openvpn.serverui;
 
 import use.openvpn.client.ClientApplicationOVPN;
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.server.ServerApplicationOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.serverui.ConfigOVPN;

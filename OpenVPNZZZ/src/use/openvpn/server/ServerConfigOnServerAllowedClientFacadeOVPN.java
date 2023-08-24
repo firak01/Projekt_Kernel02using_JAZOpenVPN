@@ -19,7 +19,7 @@ import use.openvpn.IConfigMapper4ReadmeOVPN;
 import use.openvpn.IConfigMapper4ReadmeUserOVPN;
 import use.openvpn.IMainOVPN;
 import use.openvpn.IMainUserOVPN;
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;

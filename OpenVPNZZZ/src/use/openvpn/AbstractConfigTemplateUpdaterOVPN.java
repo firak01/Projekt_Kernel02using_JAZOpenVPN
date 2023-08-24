@@ -11,7 +11,7 @@ import custom.zUtil.io.FileZZZ;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;

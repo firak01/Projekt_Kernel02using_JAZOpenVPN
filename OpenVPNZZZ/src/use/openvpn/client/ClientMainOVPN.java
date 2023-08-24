@@ -2,15 +2,26 @@ package use.openvpn.client;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Set;
 
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IMainOVPN;
 import use.openvpn.FileFilterConfigOVPN;
 import use.openvpn.ProcessWatchRunnerZZZ;
+import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
+import use.openvpn.clientui.ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
@@ -23,6 +34,7 @@ import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.net.client.KernelPortScanHostZZZ;
 import basic.zKernel.net.client.KernelReaderPageZZZ;
 import basic.zKernel.net.client.KernelReaderURLZZZ;
+import basic.zKernel.status.StatusLocalHelperZZZ;
 import basic.zKernel.KernelZZZ;
 
 /**This class is used as a backend worker.
@@ -31,26 +43,18 @@ import basic.zKernel.KernelZZZ;
  * @author 0823
  *
  */
-public class ClientMainZZZ extends AbstractMainOVPN{	
-//private ClientApplicationOVPN objApplication = null;//Objekt, dass Werte, z.B. aus der Kernelkonfiguration holt/speichert
-//private ConfigChooserOVPN objConfigChooser = null;   //Objekt, dass Templates "verwaltet"
-//private ClientConfigMapperOVPN objConfigMapper = null; //Objekt, dass ein Mapping zu passenden Templatezeilen verwaltet.
-
-private ClientConfigFileZZZ objFileConfigReached = null;
+public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN{	
+	private HashMap<String, Boolean>hmStatusLocal = new HashMap<String, Boolean>(); //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
+	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+		
+	private ClientConfigFileZZZ objFileConfigReached = null;
 
 /*STEHEN LASSEN: DIE PROBLEMATIK IST, DAS NICHT NACHVOLLZIEHBAR IST, �BER WELCHEN PORT DIE VPN-VERBINDUNG HERGESTELLT WURDE 
  * Zumindest nicht PER PING-BEFEHL !!!
 private String sPortVPN = null;
 */
-
-private boolean bFlagUseProxy = false;
-private boolean bFlagIsConnected = false;
-private boolean bFlagHasError = false;
-private boolean bFlagPortScanAllFinished = false;
 	
-
-	
-	public ClientMainZZZ(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientMainOVPN(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,saFlagControl);
 	}
 	
@@ -753,89 +757,7 @@ if(this.isPortScanEnabled()==true){
 		}//END main
 		return bReturn;
 	}	
-	
-	
-	
-	
-//	######### GetFlags - Handled ##############################################
-	/** (non-Javadoc)
-	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
-	Flags used:<CR>
-	-  isConnected
-	- useProxy
-	- haserror
-	 */
-	public boolean getFlag(String sFlagName){
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.getFlag(sFlagName);
-			if(bFunction==true) break main;
-		
-			//getting the flags of this object
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("isconnected")){
-				bFunction = bFlagIsConnected;
-				break main;
-			}else if(stemp.equals("useproxy")){
-				bFunction = bFlagUseProxy;
-				break main;
-			}else if(stemp.equals("haserror")){				
-				bFunction = bFlagHasError;
-				break main;
-			}else if(stemp.equals("portscanallfinished")){				
-				bFunction = bFlagPortScanAllFinished;
-				break main;
-			}
-		}//end main:
-		return bFunction;
-	}
-	
-	
 
-
-	/**
-	 * @see zzzKernel.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
-	 * @param sFlagName
-	 * Flags used:<CR>
-	 * - isconnected
-	 * - useproxy
-	 * - haserror
-	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
-	 * @throws ExceptionZZZ 
-	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.setFlag(sFlagName, bFlagValue);
-		if(bFunction==true) break main;
-	
-		//setting the flags of this object
-		String stemp = sFlagName.toLowerCase();
-		if(stemp.equals("isconnected")){
-			bFlagIsConnected = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("useproxy")){
-			bFlagUseProxy = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("haserror")){
-			bFlagHasError = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("portscanallfinished")){
-			bFlagPortScanAllFinished = bFlagValue;
-			bFunction = true;
-			break main;
-		}
-		}//end main:
-		return bFunction;
-	}
-
-
-	
 	//######################################################
 	//### Getter / Setter
 	public ClientConfigFileZZZ getFileConfigReached(){
@@ -844,26 +766,424 @@ if(this.isPortScanEnabled()==true){
 	public void setFileConfigReached(ClientConfigFileZZZ objFileConfig){
 		this.objFileConfigReached = objFileConfig;
 	}
+
+	//#####################################################
+	//### IStatusLocalUserZZZ
+	/** DIESE METHODEN MUSS IN ALLEN KLASSEN VORHANDEN SEIN - über Vererbung -, DIE IHREN STATUS SETZEN WOLLEN*/
+
+	/* (non-Javadoc)
+	 * @see basic.zKernel.status.IStatusLocalUserZZZ#getStatusLocal(java.lang.Enum)
+	 */
+	@Override
+	public boolean getStatusLocal(Enum enumStatusIn) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			
+			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			String sStatusName = enumStatus.name();
+			if(StringZZZ.isEmpty(sStatusName)) break main;
+										
+			HashMap<String, Boolean> hmFlag = this.getHashMapStatusLocal();
+			Boolean objBoolean = hmFlag.get(sStatusName.toUpperCase());
+			if(objBoolean==null){
+				bFunction = false;
+			}else{
+				bFunction = objBoolean.booleanValue();
+			}
+							
+		}	// end main:
+		
+		return bFunction;	
+	}
+
 	
-//	public ConfigChooserOVPN getConfigChooserObject() {
-//		return this.objConfigChooser;
-//	}
-//	public void setConfigChooserObject(ConfigChooserOVPN objConfigChooser) {
-//		this.objConfigChooser = objConfigChooser;
-//	}
-//	
-//	public ClientConfigMapperOVPN getConfigMapperObject() {
-//		return this.objConfigMapper;
-//	}
-//	public void setConfigMapperObject(ClientConfigMapperOVPN objConfigMapper) {
-//		this.objConfigMapper = objConfigMapper;
-//	}
-//	
-//	public ClientApplicationOVPN getApplicationObject() {
-//		return this.objApplication;
-//	}
-//	public void setApplicationObject(ClientApplicationOVPN objApplication) {
-//		this.objApplication = objApplication;
-//	}
+
+	@Override
+	public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+		//return this.getStatusLocal(objEnumStatus.name());
+		//Nein, trotz der Redundanz nicht machen, da nun der Event anders gefeuert wird, nämlich über das enum
+		
+	    ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+		String sStatusName = enumStatus.name();
+		bFunction = this.proofStatusLocalExists(sStatusName);															
+		if(bFunction == true){
+			
+			//Setze das Flag nun in die HashMap
+			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+			hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+		
+			//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+			//Dann erzeuge den Event und feuer ihn ab.
+			//Merke: Nun aber ueber das enum			
+			if(this.objEventStatusLocalBroker!=null) {
+				IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);
+				this.objEventStatusLocalBroker.fireEvent(event);
+			}			
+			bFunction = true;								
+		}										
+	}	// end main:
+	return bFunction;
+	}
+
+
+	@Override
+	public boolean[] setStatusLocal(Enum[] objaEnumStatus, boolean bStatusValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!ArrayUtilZZZ.isEmpty(objaEnumStatus)) {
+				baReturn = new boolean[objaEnumStatus.length];
+				int iCounter=-1;
+				for(Enum objEnumStatus:objaEnumStatus) {
+					iCounter++;
+					boolean bReturn = this.setStatusLocal(objEnumStatus, bStatusValue);
+					baReturn[iCounter]=bReturn;
+				}
+			}
+		}//end main:
+		return baReturn;
+	}
+
+	
+
+	@Override
+	public boolean proofStatusLocalExists(Enum objEnumStatus) throws ExceptionZZZ {
+		return this.proofStatusLocalExists(objEnumStatus.name());
+	}
+	
+	@Override
+	public boolean getStatusLocal(String sStatusName) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName)) break main;
+										
+			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+			Boolean objBoolean = hmStatus.get(sStatusName.toUpperCase());
+			if(objBoolean==null){
+				bFunction = false;
+			}else{
+				bFunction = objBoolean.booleanValue();
+			}
+							
+		}	// end main:
+		
+		return bFunction;	
+	}
+	
+	@Override
+	public boolean setStatusLocal(String sStatusName, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName)) {
+				bFunction = true;
+				break main;
+			}
+						
+			bFunction = this.proofStatusLocalExists(sStatusName);															
+			if(bFunction == true){
+				
+				//Setze das Flag nun in die HashMap
+				HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+				hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+				
+				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+				//Dann erzeuge den Event und feuer ihn ab.
+				if(this.objEventStatusLocalBroker!=null) {
+					IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,sStatusName.toUpperCase(), bStatusValue);
+					this.objEventStatusLocalBroker.fireEvent(event);
+				}
+				
+				bFunction = true;								
+			}										
+		}	// end main:
+		
+		return bFunction;
+	}
+	
+	@Override
+	public boolean[] setStatusLocal(String[] saStatus, boolean bValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!StringArrayZZZ.isEmptyTrimmed(saStatus)) {
+				baReturn = new boolean[saStatus.length];
+				int iCounter=-1;
+				for(String sStatusName:saStatus) {
+					iCounter++;
+					boolean bReturn = this.setStatusLocal(sStatusName, bValue);
+					baReturn[iCounter]=bReturn;
+				}
+			}
+		}//end main:
+		return baReturn;
+	}
+	
+	@Override
+	public HashMap<String, Boolean> getHashMapStatusLocal() {
+		return this.hmStatusLocal;
+	}
+
+	@Override
+	public void setHashMapStatusLocal(HashMap<String, Boolean> hmStatusLocal) {
+		this.hmStatusLocal = hmStatusLocal;
+	}
+
+	/**Gibt alle möglichen StatusLocal Werte als Array zurück. 
+	 * @return
+	 * @throws ExceptionZZZ 
+	 */
+	@Override
+	public String[] getStatusLocal() throws ExceptionZZZ {
+		String[] saReturn = null;
+		main:{	
+			saReturn = StatusLocalHelperZZZ.getStatusLocalDirectAvailable(this.getClass());				
+		}//end main:
+		return saReturn;
+	}
+	
+	/**Gibt alle "true" gesetzten StatusLocal - Werte als Array zurück. 
+	 * @return
+	 * @throws ExceptionZZZ 
+	 */
+	@Override
+	public String[] getStatusLocal(boolean bValueToSearchFor) throws ExceptionZZZ {
+		return this.getStatusLocal_(bValueToSearchFor, false);
+	}
+	
+	@Override
+	public String[] getStatusLocal(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap)throws ExceptionZZZ {
+		return this.getStatusLocal_(bValueToSearchFor, bLookupExplizitInHashMap);
+	}
+	
+	private String[]getStatusLocal_(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
+		String[] saReturn = null;
+		main:{
+			ArrayList<String>listasTemp=new ArrayList<String>();
+			
+			//FALLUNTERSCHEIDUNG: Alle gesetzten Status werden in der HashMap gespeichert. Aber die noch nicht gesetzten FlagZ stehen dort nicht drin.
+			//                                  Diese kann man nur durch Einzelprüfung ermitteln.
+			if(bLookupExplizitInHashMap) {
+				HashMap<String,Boolean>hmStatus=this.getHashMapStatusLocal();
+				if(hmStatus==null) break main;
+				
+				Set<String> setKey = hmStatus.keySet();
+				for(String sKey : setKey){
+					boolean btemp = hmStatus.get(sKey);
+					if(btemp==bValueToSearchFor){
+						listasTemp.add(sKey);
+					}
+				}
+			}else {
+				//So bekommt man alle Flags zurück, also auch die, die nicht explizit true oder false gesetzt wurden.						
+				String[]saStatus = this.getStatusLocal();
+				
+				//20211201:
+				//Problem: Bei der Suche nach true ist das egal... aber bei der Suche nach false bekommt man jedes der Flags zurück,
+				//         auch wenn sie garnicht gesetzt wurden.
+				//Lösung:  Statt dessen explitzit über die HashMap der gesetzten Werte gehen....						
+				for(String sStatus : saStatus){
+					boolean btemp = this.getStatusLocal(sStatus);
+					if(btemp==bValueToSearchFor ){ //also 'true'
+						listasTemp.add(sStatus);
+					}
+				}
+			}
+			saReturn = listasTemp.toArray(new String[listasTemp.size()]);
+		}//end main:
+		return saReturn;
+	}
+	
+	@Override
+	public boolean proofStatusLocalExists(String sStatusName) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName))break main;
+			bReturn = StatusLocalHelperZZZ.proofStatusLocalDirectExists(this.getClass(), sStatusName);				
+		}//end main:
+		return bReturn;
+	}
+
+
+	//### aus ISenderObjectStatusLocalSetOVPN
+	/* (non-Javadoc)
+	 * @see use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN#fireEvent(use.openvpn.server.status.IEventObjectStatusLocalSetOVPN)
+	 */
+	@Override
+	public void fireEvent(IEventObjectStatusLocalSetOVPN event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
+		this.getListenerRegisteredAll().remove(objEventListener);
+	}
+
+
+
+	@Override
+	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
+		this.getListenerRegisteredAll().add(objEventListener);
+	}
+
+	@Override
+	public ArrayList<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ {
+		return this.getSenderStatusLocalUsed().getListenerRegisteredAll();
+	}
+
+
+	//### aus IEventBrokerStatusLocalSetUserOVPN
+	@Override
+	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+		//TODO: Entweder diese LocalStatus-Klassen allgemeingueltig machen
+		//      ODER das gleiche Package für den Client machen.
+		if(this.objEventStatusLocalBroker==null) {
+			//++++++++++++++++++++++++++++++
+			//Nun geht es darum den Sender fuer Aenderungen an den Flags zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
+			ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
+			this.objEventStatusLocalBroker = objSenderStatusLocal;
+		}
+		return this.objEventStatusLocalBroker;
+	}
+
+
+
+	@Override
+	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+		this.objEventStatusLocalBroker = objEventStatusLocalBroker;
+	}
+
+
+
+	@Override
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+		this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
+	}
+
+	@Override
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
+	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++
+	
+	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
+		//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
+		public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+			ISSTARTED("isstarted","Client ist gestartet",""),
+			ISSTARTING("isstarting","Client startet...",""),
+			ISCONNECTING("isconnecting","Client verbindet sich...",""),
+			ISCONNECTED("isconnected","Client ist verbunden",""),
+			PortScanAllFinished("portscanallfinished","xyz Fragezeichen",""),
+			HASERROR("haserror","Ein Fehler ist aufgetreten","");
+							
+		private String sAbbreviation,sStatusMessage,sDescription;
+
+		//#############################################
+		//#### Konstruktoren
+		//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
+		//In der Util-Klasse habe ich aber einen Workaround gefunden.
+		STATUSLOCAL(String sAbbreviation, String sStatusMessage, String sDescription) {
+		    this.sAbbreviation = sAbbreviation;
+		    this.sStatusMessage = sStatusMessage;
+		    this.sDescription = sDescription;
+		}
+
+		public String getAbbreviation() {
+		 return this.sAbbreviation;
+		}
+		
+		public String getStatusMessage() {
+			 return this.sStatusMessage;
+		}
+		
+		public EnumSet<?>getEnumSetUsed(){
+			return STATUSLOCAL.getEnumSet();
+		}
+
+		/* Die in dieser Methode verwendete Klasse für den ...TypeZZZ muss immer angepasst werden. */
+		@SuppressWarnings("rawtypes")
+		public static <E> EnumSet getEnumSet() {
+			
+		 //Merke: Das wird anders behandelt als FLAGZ Enumeration.
+			//String sFilterName = "FLAGZ"; /
+			//...
+			//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
+			
+			//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
+			Class<STATUSLOCAL> enumClass = STATUSLOCAL.class;
+			EnumSet<STATUSLOCAL> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
+			
+			for(Object obj : ClientTrayMenuTypeZZZ.class.getEnumConstants()){
+				//System.out.println(obj + "; "+obj.getClass().getName());
+				set.add((STATUSLOCAL) obj);
+			}
+			return set;
+			
+		}
+
+		//TODO: Mal ausprobieren was das bringt
+		//Convert Enumeration to a Set/List
+		private static <E extends Enum<E>>EnumSet<E> toEnumSet(Class<E> enumClass,long vector){
+			  EnumSet<E> set=EnumSet.noneOf(enumClass);
+			  long mask=1;
+			  for (  E e : enumClass.getEnumConstants()) {
+			    if ((mask & vector) == mask) {
+			      set.add(e);
+			    }
+			    mask<<=1;
+			  }
+			  return set;
+			}
+
+		//+++ Das könnte auch in einer Utility-Klasse sein.
+		//the valueOfMethod <--- Translating from DB
+		public static STATUSLOCAL fromAbbreviation(String s) {
+		for (STATUSLOCAL state : values()) {
+		   if (s.equals(state.getAbbreviation()))
+		       return state;
+		}
+		throw new IllegalArgumentException("Not a correct abbreviation: " + s);
+		}
+
+		//##################################################
+		//#### Folgende Methoden bring Enumeration von Hause aus mit. 
+				//Merke: Diese Methoden können aber nicht in eine abstrakte Klasse verschoben werden, zum daraus Erben. Grund: Enum erweitert schon eine Klasse.
+		@Override
+		public String getName() {	
+			return super.name();
+		}
+
+		@Override
+		public String toString() {//Mehrere Werte mit # abtennen
+		    return this.sAbbreviation+"="+this.sDescription;
+		}
+
+		@Override
+		public int getIndex() {
+			return ordinal();
+		}
+
+		//### Folgende Methoden sind zum komfortablen Arbeiten gedacht.
+		@Override
+		public int getPosition() {
+			return getIndex()+1; 
+		}
+
+		@Override
+		public String getDescription() {
+			return this.sDescription;
+		}
+		//+++++++++++++++++++++++++
+		}//End internal Class
 }//END class
 

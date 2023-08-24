@@ -1,7 +1,7 @@
 package use.openvpn.clientui;
 
 import use.openvpn.client.ClientApplicationOVPN;
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.clientui.ConfigOVPN;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
@@ -19,7 +19,7 @@ import basic.zBasic.IConstantZZZ;
 
 public class ClientMainUIZZZ implements IConstantZZZ {
 	private IKernelZZZ objKernel=null;
-	private ClientMainZZZ objClientMain = null;
+	private ClientMainOVPN objClientMain = null;
 	private ClientTrayUIZZZ objClientTray=null;
 	
 	/**Entry point for the OVPN-Client-Starter.
@@ -43,7 +43,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 				this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man über die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 				
 				//NUN DAS BACKEND-Handlebar machen
-				this.objClientMain = new ClientMainZZZ(objKernel, null);
+				this.objClientMain = new ClientMainOVPN(objKernel, null);
 				
 				ClientApplicationOVPN objApplication = new ClientApplicationOVPN(objKernel, this.objClientMain);
 				this.objClientMain.setApplicationObject(objApplication);
@@ -53,6 +53,10 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 				//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
 				this.objClientTray = new ClientTrayUIZZZ(objKernel, this.objClientMain, (String[]) null);
 
+				//Registriere das ClientTray-Objekt fuer Aenderungen an den ServerMain-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
+				this.objClientMain.registerForFlagEvent(this.objClientTray);
+				
+				
 				//Konfigurierbar: Beim Starten schon connecten
 				boolean btemp = this.objClientMain.isConnectOnStart();
 				if(btemp==true){

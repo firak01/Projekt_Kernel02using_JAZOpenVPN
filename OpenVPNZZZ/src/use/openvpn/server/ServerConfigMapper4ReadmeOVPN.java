@@ -26,7 +26,7 @@ import use.openvpn.AbstractConfigMapper4TemplateOVPN;
 import use.openvpn.ConfigFileTemplateBatchOVPN;
 import use.openvpn.ConfigFileTemplateReadmeOVPN;
 import use.openvpn.IMainOVPN;
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 
 public class ServerConfigMapper4ReadmeOVPN extends AbstractConfigMapper4ReadmeOVPN{	
 	public ServerConfigMapper4ReadmeOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File fileTemplateReadme) throws ExceptionZZZ {

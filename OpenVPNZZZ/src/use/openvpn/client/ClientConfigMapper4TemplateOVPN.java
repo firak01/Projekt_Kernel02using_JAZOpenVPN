@@ -13,7 +13,7 @@ import use.openvpn.AbstractConfigMapper4TemplateOVPN;
 import use.openvpn.ConfigChooserOVPN;
 
 public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4TemplateOVPN{	
-	public ClientConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ClientMainZZZ objClientMain, File fileTemplateOvpn) throws ExceptionZZZ {
+	public ClientConfigMapper4TemplateOVPN(IKernelZZZ objKernel, ClientMainOVPN objClientMain, File fileTemplateOvpn) throws ExceptionZZZ {
 		super(objKernel, objClientMain, fileTemplateOvpn);		
 	}
 	
@@ -201,10 +201,10 @@ public class ClientConfigMapper4TemplateOVPN extends AbstractConfigMapper4Templa
 	}
 	
 	//###### GETTER / SETTER
-	public ClientMainZZZ getClientMainObject() {
-		return (ClientMainZZZ) this.getMainObject();
+	public ClientMainOVPN getClientMainObject() {
+		return (ClientMainOVPN) this.getMainObject();
 	}
-	public void setClientMainObject(ClientMainZZZ objClientMain) {
+	public void setClientMainObject(ClientMainOVPN objClientMain) {
 		this.setMainObject(objClientMain);
 	}
 	

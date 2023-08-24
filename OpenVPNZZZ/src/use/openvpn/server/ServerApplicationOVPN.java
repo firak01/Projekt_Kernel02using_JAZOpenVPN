@@ -6,7 +6,7 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import use.openvpn.AbstractApplicationOVPN;
 import use.openvpn.IMainOVPN;
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 
 public class ServerApplicationOVPN extends AbstractApplicationOVPN {
 	

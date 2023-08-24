@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.clientui.ClientTrayUIZZZ;
 import use.openvpn.clientui.OVPNConnectionWatchRunnerZZZ;
 import use.openvpn.server.IServerMainOVPN;
@@ -87,42 +87,35 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 	
 			//Zuerst mal pruefen, ob der ServerMain-Prozess erfolgreich abgeschlossen worden ist.
 			boolean bCheck=false;
-			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": In run()-Schleife.";
-			do{
-				System.out.println(sLog);
-				this.getLogObject().WriteLineDate(sLog);
-				if(objServerMain.getFlag("HasError")==true){
-					//StatusString aendern
-					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
-					if(this.isStatusChanged(sWatchRunnerStatus)) {
-						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
-					}					
-					break main;
-				}			
-				
-				boolean bStarted = objServerMain.getFlag("isstarted");
-				boolean bWatchRunnerStarted = objServerMain.getFlag("watchrunnerstarted");
-				boolean bListening = objServerMain.getFlag("islistening");
-				if(bWatchRunnerStarted & !bListening){
-					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);
-					if(this.isStatusChanged(sWatchRunnerStatus)) {
-						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);	
-					}					
-					Thread.sleep(500);	
+			
+			//TODOGOON20230820;//Eigentlich sollte das doch nicht mehr auf getFlag abfragen, oder?
+			
+			
+			//Hier wird der Status String initialisiert. Sonst geht nix.
+			if(objServerMain.getFlag("HasError")){				
+				String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
+				if(this.isStatusChanged(sWatchRunnerStatus)) {
+					this.setStatusString(sWatchRunnerStatus);
+				}					
+				break main;
+			}			
+			
+			boolean bWatchRunnerStarted = objServerMain.getFlag("watchrunnerstarted");
+			boolean bListening = objServerMain.getFlag("islistening");
+			if(bWatchRunnerStarted & !bListening){
+				String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);
+				if(this.isStatusChanged(sWatchRunnerStatus)) {
+					this.setStatusString(sWatchRunnerStatus);
 				}
-				
-				if(bWatchRunnerStarted && bListening) {
-					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
-					if(this.isStatusChanged(sWatchRunnerStatus)) {
-						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
-					}
-					Thread.sleep(500);
+			}
+			
+			if(bWatchRunnerStarted && bListening) {
+				String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.LISTENING);
+				if(this.isStatusChanged(sWatchRunnerStatus)) {
+					this.setStatusString(sWatchRunnerStatus);
 				}
-				
-			}while(bCheck==false);
+			}				
+			
 			
 			//Erst mal sehn, ob ueberhaupt was da ist.
 			ArrayList listaProcessStarter = objServerMain.getProcessStarterAll();
@@ -137,8 +130,8 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 //			}
 					
 			//Nun fuer alle in ServerMain gestarteten OpenVPN.exe - Processe einen Thread bereitstellen, der das VPN-IP-Adressen Ziel versuchen kann zu erreichen.
-			listaWatchRunner = new ArrayList(listaProcessStarter.size());			
-			for(int icount=0; icount < listaProcessStarter.size(); icount++){
+			listaWatchRunner = new ArrayList(listaProcessStarter.size());				
+			for(int icount=0; icount < listaProcessStarter.size(); icount++){										
 				ServerConfigStarterOVPN objProcessStarterTemp = (ServerConfigStarterOVPN) listaProcessStarter.get(icount);
 				if(objProcessStarterTemp!=null){
 				  
@@ -157,16 +150,19 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 				}
 			}//END for
 			this.setFlag("WatchRunnerStarted", true);
-			
-			
-			
-			
+
 			//Nun in einer Endlosschleife permanent den Status der ganzen WatchRunner pruefen
 			//Daraus ergibt sich dann ggf. ein aendern der Anzeige und der Status - String dieses Objekts wird aktualisiert.
 			this.hmWatchRunnerStatus = new HashMap(listaWatchRunner.size());
 			HashMap hmConnectionCount = new HashMap(listaWatchRunner.size()); //Hier wird festgehalten wieviele und welche Verbindung (alias) erfolgt ist
 			boolean bConnected = false;
-			do{
+			
+			String sStatusTemp=null;
+			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": In run()-Schleife.";
+			do{								
+				System.out.println(sLog);
+				this.getLogObject().WriteLineDate(sLog);
+								
 				//Schleife zum aendern des Statustexts + des Status
 				for(int icount=0; icount < listaWatchRunner.size(); icount ++){
 					//Das w�re ein aktiver Ping   ServerConnectionWatchRunnerZZZ objWatchTemp = (ServerConnectionWatchRunnerZZZ) listaWatchRunner.get(icount);
@@ -187,9 +183,11 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 							hmWatchRunnerStatus.put(objWatchTemp.getAlias(), "Connected to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());
 							
 							//Das Symbol in der Statuszeile aendern. Eine Connection reicht dazu aus.
-							this.sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);	
-							this.objTray.getServerBackendObject().logMessageString(icount + "# Connection reported by ServerMonitorRunner to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());
-							this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
+							sStatusTemp = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
+							this.setStatusString(sStatusTemp);
+							this.objTray.getServerBackendObject().logMessageString(icount + "# Connection reported by ServerMonitorRunner to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());							
+							//raus wg. Events zum Switchen							this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
+							//es müsste also sein                                   this.objTray.getServerBackendObject().fireEvent(event);
 						}else if(bConnected == true && objWatchTemp.getFlag("isconnected")==true){
 							//+++ FALL: Neue, weitere Verbindung entdeckt (bzw. die ist noch aktiv)
 							hmConnectionCount.put(objProcessStarterTemp.getAlias(), "1");  //!!! Das soll f�r schon existierende Werte nur ersetzen, nicht neue Listeneintr�ge erzeugen
@@ -217,8 +215,9 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 							this.objTray.getServerBackendObject().logMessageString(icount + "# Error reported by ServerMonitorRunner. Canceling application. See log file for details.");
 							
 							
-							this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
 							//Merke: Die hmWathcRunnerStatus - Eintraege bleiben dabei jedoch unber�hrt.
+							
+							//es müsste also sein  this.objTray.getServerBackendObject().fireEvent(event);
 							break main;
 						}else{
 							//+++ FALL: Noch garkeine Verbindung
@@ -233,7 +232,6 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STOPPED);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STOPPED);
 					}
 					break; //DIE ENDLOSSCHLEIFE VERLASSEN
 				}else if(bConnected == true && hmConnectionCount.isEmpty()){
@@ -241,7 +239,6 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
 					if(this.isStatusChanged(sWatchRunnerStatus)) {
 						this.setStatusString(sWatchRunnerStatus);
-						this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.INTERRUPTED);
 					}
 					bConnected = false;
 				}				

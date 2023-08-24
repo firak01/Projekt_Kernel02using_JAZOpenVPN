@@ -24,7 +24,7 @@ import use.openvpn.AbstractConfigMapper4BatchOVPN;
 import use.openvpn.AbstractConfigMapper4TemplateOVPN;
 import use.openvpn.ConfigFileTemplateBatchOVPN;
 import use.openvpn.IMainOVPN;
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 
 public class ServerConfigMapper4BatchOVPN extends AbstractConfigMapper4BatchOVPN{	
 	public ServerConfigMapper4BatchOVPN(IKernelZZZ objKernel, ServerMainOVPN objServerMain, File fileTemplateBatch, File fileConfigOvpn) throws ExceptionZZZ {

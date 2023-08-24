@@ -195,6 +195,7 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 			this.objMonitor = new ServerMonitorRunnerOVPN(this.getKernelObject(), this, this.objServerBackend, null);
 			this.getServerBackendObject().registerForStatusLocalEvent(this.objMonitor);
 			
+			//Monitor noch nicht starten!!!
 			//Thread objThreadMonitor = new Thread(objMonitor);
 			//objThreadMonitor.start();
 		}//END main
@@ -234,6 +235,8 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 	public static String getStatusStringByStatus(Enum enumSTATUS) throws ExceptionZZZ{
 		String sReturn=null;
 		main:{
+			
+			//TODO: Diese Strings müssen aus dem enum kommen
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Status="+enumSTATUS.name();			
 			System.out.println(sLog);
 			String a = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.class, "NEW");
@@ -265,7 +268,6 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 		return sReturn;
 	}
 	
-	//public boolean switchStatus(Enum enumSTATUS) throws ExceptionZZZ{
 	public boolean switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
 		boolean bReturn = false;
 		main:{
@@ -275,6 +277,7 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 			
 			this.getTrayIconObject().setIcon(objIcon);
 			
+//          Der Monitor aendert den Status String selbst, aufgrund des vom Backend geworfenen Ereignisses
 //			String sStatus = this.getStatusStringByStatus(enumSTATUS);
 //			if(this.getMonitorObject()!=null) {
 //				this.getMonitorObject().setStatusString(sStatus);
@@ -360,6 +363,7 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 		main:{
 			try{ 
 				check:{
+				if(this.getServerBackendObject()==null)break main;
 				}
 				
 				ServerMonitorRunnerOVPN objMonitor = this.getMonitorObject();
@@ -378,11 +382,6 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 					break main;
 				}
 				
-				
-				
-				
-				
-			
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
 				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
 				

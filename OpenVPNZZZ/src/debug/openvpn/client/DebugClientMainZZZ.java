@@ -1,6 +1,6 @@
 package debug.openvpn.client;
 
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
@@ -21,7 +21,7 @@ public class DebugClientMainZZZ {
 				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNClient.ini", (String)null);
 				//objKernel.getLogObject().WriteLineDate("TEST");
 				
-				ClientMainZZZ objConfig = new ClientMainZZZ(objKernel, null);
+				ClientMainOVPN objConfig = new ClientMainOVPN(objKernel, null);
 				objConfig.start();
 			
 

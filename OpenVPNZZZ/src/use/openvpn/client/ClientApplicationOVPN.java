@@ -31,7 +31,7 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	private String sIPVPN = null;
 	
 	
-	public ClientApplicationOVPN(IKernelZZZ objKernel, ClientMainZZZ objClient) throws ExceptionZZZ {
+	public ClientApplicationOVPN(IKernelZZZ objKernel, ClientMainOVPN objClient) throws ExceptionZZZ {
 		super(objKernel, objClient);		
 	}
 	
@@ -153,10 +153,10 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	
 	//######################################################
 	//### Getter / Setter
-	public ClientMainZZZ getClientObject() {
-		return (ClientMainZZZ) this.getMainObject();
+	public ClientMainOVPN getClientObject() {
+		return (ClientMainOVPN) this.getMainObject();
 	}
-	public void setClientObject(ClientMainZZZ objClient) {
+	public void setClientObject(ClientMainOVPN objClient) {
 		this.setMainObject((IMainOVPN) objClient);
 	}		
 		

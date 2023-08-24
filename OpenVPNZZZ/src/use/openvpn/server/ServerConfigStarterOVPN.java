@@ -16,7 +16,7 @@ import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 import use.openvpn.IConfigMapper4BatchOVPN;
 import use.openvpn.IMainOVPN;
-import use.openvpn.client.ClientMainZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.SetZZZ;

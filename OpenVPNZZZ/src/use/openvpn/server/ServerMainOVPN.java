@@ -462,69 +462,6 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		return bReturn;
 	}
 		
-//	######### GetFlags - Handled ##############################################
-//	/** (non-Javadoc)
-//	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
-//	Flags used:<CR>
-//	-  isConnected	
-//	- haserror
-//	 */
-//	public boolean getFlag(String sFlagName){
-//		boolean bFunction = false;
-//		main:{
-//			if(StringZZZ.isEmpty(sFlagName)) break main;
-//			bFunction = super.getFlag(sFlagName);
-//			if(bFunction==true) break main;
-//		}//end main:
-//		return bFunction;
-//	}
-	
-	
-
-
-	/**
-	 * @see zzzKernel.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
-	 * @param sFlagName
-	 * Flags used:<CR>
-	 * - isconnected
-	 * - haserror
-	 * @throws ExceptionZZZ 
-	 */
-//	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
-//		boolean bFunction = false;
-//		main:{
-//			if(StringZZZ.isEmpty(sFlagName)) break main;
-//			bFunction = super.setFlag(sFlagName, bFlagValue);
-//		if(bFunction==true) break main;
-//	
-//		
-//		}//end main:
-//		return bFunction;
-//	}
-
-	//##### GETTER / SETTER
-//	public ConfigChooserOVPN getConfigChooserObject() {
-//		return this.objConfigChooser;
-//	}
-//	public void setConfigChooserObject(ConfigChooserOVPN objConfigChooser) {
-//		this.objConfigChooser = objConfigChooser;
-//	}
-//	
-//	public ServerConfigMapperOVPN getConfigMapperObject() {
-//		return this.objConfigMapper;
-//	}
-//	public void setConfigMapperObject(ServerConfigMapperOVPN objConfigMapper) {
-//		this.objConfigMapper = objConfigMapper;
-//	}
-//	
-//	public ServerApplicationOVPN getApplicationObject() {
-//		return this.objApplication;
-//	}
-//	public void setApplicationObject(ServerApplicationOVPN objApplication) {
-//		this.objApplication = objApplication;
-//	}
-	
-	
 	public ArrayList<File> getConfigFileObjectsAll() {
 		if(this.listaConfigFile==null) {
 			this.listaConfigFile = new ArrayList<File>();
@@ -535,26 +472,22 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		this.listaConfigFile = listaConfigFile;
 	}
 	
+	//##########################################
 	//### IStatusLocalUserZZZ
-	/** DIESE METHODEN MUSS IN ALLEN KLASSEN VORHANDEN SEIN - über Vererbung -, DIE IHREN STATUS SETZEN WOLLEN
-	 * Weitere Voraussetzungen:
-	 * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
-	 * - Innere Klassen müssen auch public deklariert werden.
-	 * @param objClassParent
-	 * @param sFlagName
-	 * @param bFlagValue
-	 * @return
-	 * lindhaueradmin, 23.07.2013
-	 * @throws ExceptionZZZ 
+	/** DIESE METHODEN MUSS IN ALLEN KLASSEN VORHANDEN SEIN - über Vererbung -, DIE IHREN STATUS SETZEN WOLLEN*/
+	
+	/* (non-Javadoc)
+	 * @see basic.zKernel.status.IStatusLocalUserZZZ#getStatusLocal(java.lang.Enum)
 	 */
 	@Override
-	public boolean getStatusLocal(Enum enumStatus) throws ExceptionZZZ {
+	public boolean getStatusLocal(Enum enumStatusIn) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
-			if(enumStatus==null) {
+			if(enumStatusIn==null) {
 				break main;
 			}
 			
+			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			String sStatusName = enumStatus.name();
 			if(StringZZZ.isEmpty(sStatusName)) break main;
 										
@@ -622,16 +555,10 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	
 	@Override
 	public boolean proofStatusLocalExists(Enum objEnumStatus) throws ExceptionZZZ {
-		return this.proofFlagExists(objEnumStatus.name());
+		return this.proofStatusLocalExists(objEnumStatus.name());
 	}
 	
-	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++
-	/* @see basic.zBasic.IFlagZZZ#getFlagZ(java.lang.String)
-	 * 	 Weteire Voraussetzungen:
-	 * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
-	 * - Innere Klassen m�ssen auch public deklariert werden.(non-Javadoc)
-	 */
+	@Override
 	public boolean getStatusLocal(String sStatusName) {
 		boolean bFunction = false;
 		main:{
@@ -651,7 +578,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	}
 	
 	@Override
-	public boolean setStatusLocal(String sStatusName, boolean bFlagValue) throws ExceptionZZZ {
+	public boolean setStatusLocal(String sStatusName, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sStatusName)) {
@@ -664,12 +591,12 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				
 				//Setze das Flag nun in die HashMap
 				HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
-				hmStatus.put(sStatusName.toUpperCase(), bFlagValue);
+				hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
 				
 				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
 				//Dann erzeuge den Event und feuer ihn ab.
 				if(this.objEventStatusLocalBroker!=null) {
-					IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,sStatusName.toUpperCase(), bFlagValue);
+					IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,sStatusName.toUpperCase(), bStatusValue);
 					this.objEventStatusLocalBroker.fireEvent(event);
 				}
 				
@@ -707,7 +634,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		this.hmStatusLocal = hmStatusLocal;
 	}
 	
-	/**Gibt alle möglichen FlagZ Werte als Array zurück. 
+	/**Gibt alle möglichen StatusLocal Werte als Array zurück. 
 	 * @return
 	 * @throws ExceptionZZZ 
 	 */
@@ -719,7 +646,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		return saReturn;
 	}
 	
-	/**Gibt alle "true" gesetzten FlagZ - Werte als Array zurück. 
+	/**Gibt alle "true" gesetzten StatusLocal - Werte als Array zurück. 
 	 * @return
 	 * @throws ExceptionZZZ 
 	 */
@@ -786,7 +713,10 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		return bReturn;
 	}
 
-	//### aus ISenderObjectStatusLocalSetZZZ
+	//### aus ISenderObjectStatusLocalSetOVPN
+	/* (non-Javadoc)
+	 * @see use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN#fireEvent(use.openvpn.server.status.IEventObjectStatusLocalSetOVPN)
+	 */
 	@Override
 	public void fireEvent(IEventObjectStatusLocalSetOVPN event) {
 		// TODO Auto-generated method stub
@@ -794,13 +724,11 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	}
 
 	@Override
-	//public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
 	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getListenerRegisteredAll().remove(objEventListener);
 	}
 
 	@Override
-	//public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
 	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getListenerRegisteredAll().add(objEventListener);
 	}
@@ -810,7 +738,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		return this.getSenderStatusLocalUsed().getListenerRegisteredAll();
 	}
 
-	//### aus IEventBrokerStatusLocalSetUserZZZ
+	//### aus IEventBrokerStatusLocalSetUserOVPN
 	@Override
 	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {		
 		if(this.objEventStatusLocalBroker==null) {
