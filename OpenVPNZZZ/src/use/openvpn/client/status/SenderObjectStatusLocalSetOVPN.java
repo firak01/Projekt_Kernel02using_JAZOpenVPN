@@ -19,6 +19,8 @@ import basic.zBasic.ReflectCodeZZZ;
  */
 public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalSetOVPN,Serializable{
 	private static final long serialVersionUID = 8999783685575147532L;
+	private IEventObjectStatusLocalSetOVPN eventPrevious=null;
+	
 	public SenderObjectStatusLocalSetOVPN() throws ExceptionZZZ{
 		super();
 	}
@@ -51,6 +53,18 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 		main:{
 			if(event==null)break main;
 			
+			//Dafür sorgen, dass der Event nur 1x geworfen wird, wenn der vorherige Event der gleich war.
+			IEventObjectStatusLocalSetOVPN eventPrevious = this.getEventPrevious();
+			if(eventPrevious!=null) {
+				System.out.println("FGLTEST00: Test auf previous Event: A="+event.toString()+" | B="+eventPrevious.toString());
+				if(eventPrevious.equals(event))break main;
+				System.out.println("FGLTEST01: Kein previous Event: A="+event.toString()+" | B="+eventPrevious.toString());
+				System.out.println("FGLTEST02: event.getStatusText()=" + event.getStatusText());
+				if(event.getStatusText().equals(eventPrevious.getStatusText()) && event.getStatusValue()==eventPrevious.getStatusValue()) break main;
+				System.out.println("FGLTEST03: event.getStatusValue()=" + event.getStatusValue());
+			}
+			this.setEventPrevious(event);
+			
 			try {
 				for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 					IListenerObjectStatusLocalSetOVPN l = (IListenerObjectStatusLocalSetOVPN) this.getListenerRegisteredAll().get(i);				
@@ -73,6 +87,16 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 		}//end main:
 	}
 	
+	@Override
+	public IEventObjectStatusLocalSetOVPN getEventPrevious() {
+		return this.eventPrevious;
+	}
+
+	@Override
+	public void setEventPrevious(IEventObjectStatusLocalSetOVPN event) {
+		this.eventPrevious = event;
+	}
+	
 	/* (non-Javadoc)
 	 * @see use.via.client.module.export.ISenderEventComponentReset#removeSelectionResetListener(basic.zKernelUI.component.model.ISelectionResetListener)
 	 */
@@ -90,5 +114,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {	
 		this.getListenerRegisteredAll().add(objEventListener);
 	}
+
+	
 }
 

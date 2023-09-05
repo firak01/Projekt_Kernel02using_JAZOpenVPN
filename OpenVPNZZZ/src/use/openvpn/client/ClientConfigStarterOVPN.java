@@ -82,7 +82,7 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				Runtime load = Runtime.getRuntime();
 				if (this.getFlag("byBatch")==false){
 					// DAS FUNKTIONIERT BEIM CLIENT
-					this.getLogObject().WriteLineDate("Excecuting direkt '"+sCommandConcrete+"'");				
+					this.getLogObject().WriteLineDate("Executing direct '"+sCommandConcrete+"'");				
 					objReturn = load.exec("cmd /c " + sCommandConcrete);
 					//Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");
 					//DAS GEHT: Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");

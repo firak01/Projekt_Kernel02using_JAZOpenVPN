@@ -62,14 +62,16 @@ public class ClientTrayStatusMappedValueZZZ implements Serializable{
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Menuepunkt-Text","Icon-Dateiname","Beschreibung, wird nicht genutzt....",)
 	public enum ClientTrayStatusTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		NEW("new","","Green Metallic_32.png", ""),
-		CONNECTING("connecting","","pill-button-blue_benji_p_01.png",""),		
-		STARTING("starting","","pill-button-yellow_benji_01.png",""),		
-		CONNECTED("connected","","pill-button-seagreen_ben_01.png",""),
+		NEW("new","","icons8-networking-64_black_bgGray.png", ""),			
+		STARTING("starting","","icons8-networking-64_black.png",""),	
+		STARTED("started","","icons8-networking-64_black_bgYellow.png",""),
+		CONNECTING("connecting","","icons8-networking-64_yellow.png",""),
+		WATCHING("watching","","pill-button-yellow_benji_01.png",""),
+		CONNECTED("connected","","pill-button-blue_benji_01.png",""),
 		INTERRUPTED("interrupted","","pill-button-purple_benji_01.png",""),
-		DISCONNECTED("disconnected","","pill-button-yellow_benji_01.png",""),
-		FAILED("failed","","pill-button-purple_benji_01.png",""),
-		ERROR("error","","pill-button-red_benji_01.png","");
+		STOPPED("stopped","","Green Metallic_32.png",""),		
+		ERROR("error","","pill-button-red_benji_01.png",""),
+		FAILED("failed","","pill-button-purple_benji_01.png","");
 		
 	private String sAbbreviation,sMenuText, sIconFileName, sDescription;
 

@@ -56,13 +56,31 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 				//Registriere das ClientTray-Objekt fuer Aenderungen an den ServerMain-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
 				this.objClientMain.registerForFlagEvent(this.objClientTray);
 				
+				//Registriere das ServerTray-Objekt fuer Aenderung am ServerMain-Objekt-Status. Das garantiert, das der Tray auch auf Änderungen des Status reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
+				this.objClientMain.registerForStatusLocalEvent(this.objClientTray);
 				
+				bReturn = objClientTray.load();
+				
+				//Konfigurierbar: Beim Launch der Applikation schon starten
+				boolean btemp = this.objClientMain.isStartingOnLaunch();
+				if(btemp==false){							
+					bReturn = true;
+					break main;
+				}
+				bReturn = objClientTray.start();
+				if(!bReturn) {
+					bReturn = true;
+					break main;
+				}	
+								
 				//Konfigurierbar: Beim Starten schon connecten
-				boolean btemp = this.objClientMain.isConnectOnStart();
+				btemp = this.objClientMain.isConnectOnStart();
 				if(btemp==true){
 					bReturn = objClientTray.connect();
+					break main;
 				}else{
 					bReturn = true;
+					break main;
 				}				
 			} catch (ExceptionZZZ ez) {
 				if(objKernel!=null){

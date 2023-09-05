@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import use.openvpn.client.ClientMainOVPN;
+import use.openvpn.server.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.ClientTrayUIZZZ;
 import use.openvpn.clientui.OVPNConnectionWatchRunnerZZZ;
 import use.openvpn.server.IServerMainOVPN;
@@ -13,6 +14,8 @@ import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalSetUserOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -30,7 +33,7 @@ import basic.zKernel.flag.IFlagZUserZZZ;
  * @author 0823
  *
  */
-public class ServerMonitorRunnerOVPN extends KernelUseObjectZZZ implements Runnable, IListenerObjectStatusLocalSetOVPN{
+public class ServerMonitorRunnerOVPN extends KernelUseObjectZZZ implements Runnable, IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
 	private ServerMainOVPN objServerMain = null;
 	private ServerTrayUIOVPN objTray = null;
 	
@@ -85,23 +88,9 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 				if(this.objServerMain==null) break main;
 			}//END check:
 	
-			//Zuerst mal pruefen, ob der ServerMain-Prozess erfolgreich abgeschlossen worden ist.
-			boolean bCheck=false;
-			
-			//TODOGOON20230820;//Eigentlich sollte das doch nicht mehr auf getFlag abfragen, oder?
-			
-			
-			//Hier wird der Status String initialisiert. Sonst geht nix.
-			if(objServerMain.getFlag("HasError")){				
-				String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
-				if(this.isStatusChanged(sWatchRunnerStatus)) {
-					this.setStatusString(sWatchRunnerStatus);
-				}					
-				break main;
-			}			
-			
-			boolean bWatchRunnerStarted = objServerMain.getFlag("watchrunnerstarted");
-			boolean bListening = objServerMain.getFlag("islistening");
+			//TODOGOON20230827;//Dies in die Schleife verschieben....
+			boolean bWatchRunnerStarted = objServerMain.getStatusLocal(ServerMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED);			
+			boolean bListening = objServerMain.getStatusLocal(ServerMainOVPN.STATUSLOCAL.ISLISTENING);
 			if(bWatchRunnerStarted & !bListening){
 				String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STARTING);
 				if(this.isStatusChanged(sWatchRunnerStatus)) {
@@ -119,26 +108,13 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 			
 			//Erst mal sehn, ob ueberhaupt was da ist.
 			ArrayList listaProcessStarter = objServerMain.getProcessStarterAll();
-//			bCheck = objServerMain.getFlag("isstarted");
-//			if(listaProcessStarter.size() <= 0 && bCheck){
-//				String sWatchRunnerStatus = ServerTrayUIZZZ.getStatusStringByStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);
-//				if(this.isStatusChanged(sWatchRunnerStatus)) {
-//					this.setStatusString(sWatchRunnerStatus);
-//					this.objTray.switchStatus(ServerTrayUIZZZ.iSTATUS_INTERRUPTED);
-//				}				
-//				break main;
-//			}
 					
 			//Nun fuer alle in ServerMain gestarteten OpenVPN.exe - Processe einen Thread bereitstellen, der das VPN-IP-Adressen Ziel versuchen kann zu erreichen.
 			listaWatchRunner = new ArrayList(listaProcessStarter.size());				
 			for(int icount=0; icount < listaProcessStarter.size(); icount++){										
 				ServerConfigStarterOVPN objProcessStarterTemp = (ServerConfigStarterOVPN) listaProcessStarter.get(icount);
 				if(objProcessStarterTemp!=null){
-				  
-					/* Merke: (A) Dies setzt voraus, dass auf dem Client ein Thread auf den entsprechenden Port "h�rt". Besser gef�llt mir die L�sung, dass auf dem Server ein spezieller Thread auf den Verbindungsaufbau des Clients h�rt und dementsprechend reagiert. 
-					ServerConnectionWatchRunnerZZZ objWatchTemp = new ServerConnectionWatchRunnerZZZ(objKernel, objStarterTemp, null);					
-					*/									
-					
+				  					
 					//Nur die Processe Monitoren, die noch "aktiv sind
 					if(objProcessStarterTemp.isProcessAlive()){
 					ServerConnectionListenerZZZ objWatchTemp = new ServerConnectionListenerZZZ(objKernel, objProcessStarterTemp, null);
@@ -150,6 +126,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 				}
 			}//END for
 			this.setFlag("WatchRunnerStarted", true);
+			this.objServerMain.setStatusLocal(ServerMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);
 
 			//Nun in einer Endlosschleife permanent den Status der ganzen WatchRunner pruefen
 			//Daraus ergibt sich dann ggf. ein aendern der Anzeige und der Status - String dieses Objekts wird aktualisiert.
@@ -158,14 +135,28 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 			boolean bConnected = false;
 			
 			String sStatusTemp=null;
+			
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": In run()-Schleife.";
 			do{								
 				System.out.println(sLog);
 				this.getLogObject().WriteLineDate(sLog);
-								
+					
+				//Zuerst mal pruefen, ob der ServerMain-Prozess erfolgreich abgeschlossen worden ist.		
+				//Hier wird der Status String initialisiert. Sonst geht nix.
+				if(objServerMain.getStatusLocal(ServerMainOVPN.STATUSLOCAL.HASERROR)){				
+					String sMainStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
+					if(this.isStatusChanged(sMainStatus)) {
+						this.setStatusString(sMainStatus);
+					}					
+					break main;
+				}			
+				
+				bListening = objServerMain.getStatusLocal(ServerMainOVPN.STATUSLOCAL.ISLISTENING);
+				
+				
 				//Schleife zum aendern des Statustexts + des Status
 				for(int icount=0; icount < listaWatchRunner.size(); icount ++){
-					//Das w�re ein aktiver Ping   ServerConnectionWatchRunnerZZZ objWatchTemp = (ServerConnectionWatchRunnerZZZ) listaWatchRunner.get(icount);
+					//Das waere ein aktiver Ping   ServerConnectionWatchRunnerZZZ objWatchTemp = (ServerConnectionWatchRunnerZZZ) listaWatchRunner.get(icount);
 					//Nun aber den passiven listener verwenden
 					ServerConnectionListenerZZZ objWatchTemp = (ServerConnectionListenerZZZ) listaWatchRunner.get(icount);
 					ServerConfigStarterOVPN objProcessStarterTemp = objWatchTemp.getStarterObject();
@@ -225,8 +216,17 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 						}						
 					}
 				}//END for
-											
-//				+++ Spezielles Symbol in der Statusleiste setzen
+										
+				TODOGOON20230903;//Einen Event werfen und damit den ICONTRAY ändern
+				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+				//Dann erzeuge den Event und feuer ihn ab.
+				//Merke: Nun aber ueber das enum			
+				if(this.getSenderStatusLocalUsed()!=null) {
+					IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,ServerMainOVPN.STATUSLOCAL.ISSTOPPED, true);
+					this.getSenderStatusLocalUsed().fireEvent(event);
+				}		
+				
+				//				+++ Spezielles Symbol in der Statusleiste setzen
 				if(bConnected == true && listaWatchRunner.size() == 0){
 //					Falls schon mal connected war und die Anzahl der "aktiven" OpenVPN Prozesse auf 0 runtergegangen ist, den Status auf "NotListening" �ndern. Die Schleife verlassen.
 					String sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.STOPPED);
@@ -437,6 +437,18 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 		this.setStatusString(sStatus);
 		
 		return true;
+	}
+
+	
+	//### aus ISenderObjectStatusLocalSetUserOVPN
+	@Override
+	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+		return this.objServerMain.getSenderStatusLocalUsed();
+	}
+
+	@Override
+	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+		this.objServerMain.setSenderStatusLocalUsed(objEventSender);
 	}
 
 }//END class

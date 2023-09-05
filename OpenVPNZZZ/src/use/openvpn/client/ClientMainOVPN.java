@@ -6,9 +6,18 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Set;
 
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zBasic.util.datatype.string.StringArrayZZZ;
+import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
+import basic.zKernel.IKernelZZZ;
+import basic.zKernel.net.client.KernelPortScanHostZZZ;
+import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
-import use.openvpn.IMainOVPN;
 import use.openvpn.FileFilterConfigOVPN;
 import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
@@ -17,25 +26,7 @@ import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
-import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import basic.zBasic.util.datatype.string.StringArrayZZZ;
-import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.machine.EnvironmentZZZ;
-import basic.zKernel.IKernelConfigSectionEntryZZZ;
-import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
-import basic.zKernel.html.TagInputZZZ;
-import basic.zKernel.html.TagTypeInputZZZ;
-import basic.zKernel.html.reader.KernelReaderHtmlZZZ;
-import basic.zKernel.net.client.KernelPingHostZZZ;
-import basic.zKernel.net.client.KernelPortScanHostZZZ;
-import basic.zKernel.net.client.KernelReaderPageZZZ;
-import basic.zKernel.net.client.KernelReaderURLZZZ;
-import basic.zKernel.status.StatusLocalHelperZZZ;
-import basic.zKernel.KernelZZZ;
+import use.openvpn.server.ServerMainOVPN;
 
 /**This class is used as a backend worker.
  * For frontend features, use ConfigMainUIZZZ.
@@ -48,7 +39,10 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN{
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 		
 	private ClientConfigFileZZZ objFileConfigReached = null;
-
+	private ArrayList<ClientConfigStarterOVPN> listaClientConfigStarter = null; //Liste der Batches, die OVPN starten mit den Konfigurationen.
+	private ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = null; //Liste der Batches, die OVPN starten mit den Konfigurationen, die noch laufen, also gestartet worden sind.
+	//Nein, jetzt aus der ClientConfigStarterRunning - Liste die Konfiguartionsdateien holen.... private ArrayList<File>listaFileConnectionToMonitor = null;                 //Liste der Konfigurationsdateien, die übrig bleiben, also gestartet worden sind.
+	
 /*STEHEN LASSEN: DIE PROBLEMATIK IST, DAS NICHT NACHVOLLZIEHBAR IST, �BER WELCHEN PORT DIE VPN-VERBINDUNG HERGESTELLT WURDE 
  * Zumindest nicht PER PING-BEFEHL !!!
 private String sPortVPN = null;
@@ -70,6 +64,9 @@ private String sPortVPN = null;
 	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
+			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
+			this.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert worden ist und dann sich passend einstellen kann.
+			
 			connmain:{
 			this.logMessageString("Searching for configuration template files 'Template*.ovpn'"); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			IKernelZZZ objKernel = this.getKernelObject();	
@@ -98,34 +95,36 @@ private String sPortVPN = null;
 			}else {
 				this.logMessageString("IP read from INI-File: '" + sIpIni + "'");
 			}
-			
+
+//Merke: Die in der Ini-Datei eingetragene IP hat Vorrang.			
+//	     Die IP aus der Webseite wird in einem anderen Menüpunkt ausgelesen.
 //			### 2b. Voraussetzung: Web-Seite konfiguriert, auf der die dynamische IP vorhanden ist.
-			//Zur Web-Seite verbinden, dazu den KernelReaderURL verwenden und zun�chst initialisieren.
-			this.logMessageString("Reading configured url to parse for ip-adress."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
-			String sIpUrl=null;
-			if(((ClientApplicationOVPN)this.getApplicationObject()).getURL2Parse()==null){
-				//ExceptionZZZ ez = new ExceptionZZZ(sERROR_CONFIGURATION_MISSING+"URL String", iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
-				//throw ez;
-				this.logMessageString("No URL to read IP from is configured.");
-			}else{
-				this.logMessageString("URL to read IP from is configured as: '" + ((ClientApplicationOVPN)this.getApplicationObject()).getURL2Parse() + "'");
-				
-//				###2ba. Voraussetzung: Auf der konfigurierten Web-Seite muss eine IP-Adresse auszulesen sein
-				this.logMessageString("Parsing IP-adress from URL."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
-				sIpUrl = ((ClientApplicationOVPN)this.getApplicationObject()).getIpURL();//Dabei wird auch der Proxy eingestellt. 
-				if(StringZZZ.isEmpty(sIpUrl)){
-					//ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to receive new IP-adress.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
-					//throw ez;
-					this.logMessageString("Unable to receive new IP-adress from URL.");
-				}else{
-					this.logMessageString("New IP-adress from URL received: '" + sIpUrl + "'");
-					
-				}
-			}
+//			//Zur Web-Seite verbinden, dazu den KernelReaderURL verwenden und zunaechst initialisieren.
+//			this.logMessageString("Reading configured url to parse for ip-adress."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+//			String sIpUrl=null;
+//			if(((ClientApplicationOVPN)this.getApplicationObject()).getURL2Parse()==null){
+//				//ExceptionZZZ ez = new ExceptionZZZ(sERROR_CONFIGURATION_MISSING+"URL String", iERROR_CONFIGURATION_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+//				//throw ez;
+//				this.logMessageString("No URL to read IP from is configured.");
+//			}else{
+//				this.logMessageString("URL to read IP from is configured as: '" + ((ClientApplicationOVPN)this.getApplicationObject()).getURL2Parse() + "'");
+//				
+////				###2ba. Voraussetzung: Auf der konfigurierten Web-Seite muss eine IP-Adresse auszulesen sein
+//				this.logMessageString("Parsing IP-adress from URL."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+//				sIpUrl = ((ClientApplicationOVPN)this.getApplicationObject()).getIpURL();//Dabei wird auch der Proxy eingestellt. 
+//				if(StringZZZ.isEmpty(sIpUrl)){
+//					//ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + "Unable to receive new IP-adress.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
+//					//throw ez;
+//					this.logMessageString("Unable to receive new IP-adress from URL.");
+//				}else{
+//					this.logMessageString("New IP-adress from URL received: '" + sIpUrl + "'");
+//					
+//				}
+//			}
 									
 			String sIpUsed = ((ClientApplicationOVPN)this.getApplicationObject()).getIpRemote();//Dahinter liegt dann die Regel welche ausgewählt werden soll.			
 			if(StringZZZ.isEmpty(sIpUsed)) {
-				String sLog = "Unable to receive any IP-adress. Neither from URL nor from the ini.";
+				String sLog = "Unable to receive any IP-adress from Ini-file. First read the IP from the URL Website.";
 				this.logMessageString(sLog);
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_MISSING + sLog, iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
@@ -139,7 +138,6 @@ private String sPortVPN = null;
 			//### DAS SCHREIBEN DER NEUEN KONFIGURATION
 					
 			//+++ A) Vorbereitung
-			///*TEST: Path Expanded Berechnung
 			//+++ 1. Die früher mal verwendeten Dateien entfernen
 			this.logMessageString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			File[] objaFileConfigUsed = objChooser.findFileConfigUsed();
@@ -158,10 +156,7 @@ private String sPortVPN = null;
 					}					
 				}//END for
 			}
-			//*/
-			
-			
-						
+					
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
 			this.logMessageString("Creating new configuration-file(s) from template-file(s), using new line(s)");									
 			ArrayList listaFileUsed = new ArrayList(objaFileConfigTemplate.length);
@@ -192,49 +187,9 @@ private String sPortVPN = null;
 			
 			//##########################################################################################
 			//+++ Die neuen OVPN-Verbindungsfiles zum Starten der VPN-Verbindung verwenden !!!
-			//Diese werden in unabh�ngigen Threads "gemonitored"
-			
-			/*TODO WARUM GEHT DAS NICHT. Kl�ren, ob Firewall oder Proxy-Einstellungen bei mir oder bei der itelligence das verhindern !!!
-			//+++ Vorab: Checken, ob die Remote-Verbindungen erreichbar sind !!!
-			//       Die Konfigurationen, die nicht erreichbar sind, hier schon entfernen !!!
-			sStatus = "Checking if the remote connection connection is available.";
-			objKernel.getLogObject().WriteLineDate(sStatus);				
-			this.addStatusString(sStatus);
-			
-			ArrayList listaPos = new ArrayList(); //Hier werden die zu entfernenden ArrayList-Konfigurations-Positionen eingetragen
-			for(int icount = 0; icount < listaFileUsed.size(); icount++){
-				File objFileConfig2start = (File) listaFileUsed.get(icount);
-				ConfigStarterZZZ objStarter = new ConfigStarterZZZ(objKernel, objFileConfig2start, null);
-				
-				//Falls die Remote-Verbindung nicht aufzubauen ist, hieraus entfernen.
-				boolean bReachable = objStarter.isRemoteReachable();
-				if(bReachable==true){
-					sStatus = "Remote connection availabe. '"+ objStarter.getRemoteIp() + ":" + objStarter.getRemotePort() + "'";
-					objKernel.getLogObject().WriteLineDate(sStatus);				
-					this.addStatusString(sStatus);
-					//Keine weitere Konsequenz
-				}else{
-					sStatus = "Remote connection NOT availabe. Not starting this configuration. '"+ objStarter.getRemoteIp() + ":" + objStarter.getRemotePort() + "'";
-					objKernel.getLogObject().WriteLineDate(sStatus);				
-					this.addStatusString(sStatus);
-					
-					//DIESE KONFIGURATION DEMN�CHST ENTFERNEN
-					listaPos.add(new Integer(icount));					
-				}
-			}//END for
-			
-			//TODO DAS ENTFERNEN AUS DER ARRAYLIST ALS KERNEL-STATIC-METHODE ANBIETEN !!!
-			//NUN DAS TATS�CHLICHE ENTFERNEN, Von hinten nach vorne und dann immer um 1 abnehmend.
-			if(listaPos.isEmpty()==false){
-				for(int icount=listaPos.size()-1;icount >=0;icount--){
-				Integer inttemp = (Integer)listaPos.get(icount);
-				int itemp = inttemp.intValue();
-				listaFileUsed.remove(itemp);
-				}//END for
-			}
-			*/
-			
-			//Gibt es �berhaupt eine "mögliche" Konfiguration  ???
+			//    Merke: Diese werden in unabhaengigen Threads "gemonitored"
+
+			//Gibt es ueberhaupt eine "mögliche" Konfiguration  ???
 			if(listaFileUsed.isEmpty()){
 				this.logMessageString("No valid remote connection available. Quitting.");
 			
@@ -244,240 +199,48 @@ private String sPortVPN = null;
 			
 			
 			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-			//+++ VPN schon verbunden ? Dies checken .....
-			//TODO DAS CHECKEN DER VERBINDUNGEN IN THREAD AUSLAGERN UND SO PARALLESISIEREN
-			//         L�sungsansatz: Neue Klasse PingCollectionZZZ(...), in der dann PingZZZ in verschiedenen Threads ausgef�hrt wird		
-			//                                Neue Methode in ConfigMainZZZ: isAnyTargetReachable(...) 
+			//+++ VPN schon verbunden ? Dies checken .....						 
 			this.logMessageString("Checking if any OVPN connection is still established.");
 			String sVpnIp = this.scanVpnIpFirstEstablished(listaFileUsed);
 			if(sVpnIp!=null){
 				((ClientApplicationOVPN)this.getApplicationObject()).setVpnIpEstablished(sVpnIp);
 				
-				//DAS IST NICHT AUSSAGEKR�FTIG. DIE VPN-VERBINDUNG KANN �BER EINEN GANZ ANDEREN PORT HERGESTELLT WORDEN SEIN !!! this.sPortVPN = objStarter.getVpnPort();	
+				//DAS IST NICHT AUSSAGEKRAEFTIG. DIE VPN-VERBINDUNG KANN UEBER EINEN GANZ ANDEREN PORT HERGESTELLT WORDEN SEIN !!! this.sPortVPN = objStarter.getVpnPort();	
 				this.logMessageString("A connection with an VPN target ip is still established: " + ((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished() + ". Quitting."); //+ ":" + this.getVpnPortEstablished() + ". Quitting.")
 				
-				//NEU: HERAUSFINDEN, �BER WELCHEN PORT DIE VERBINDUNG ERSTELLT WORDEN IST.
+				//NEU: HERAUSFINDEN, UEBER WELCHEN PORT DIE VERBINDUNG ERSTELLT WORDEN IST.
 				//TODO Das ist technisch, hinter einer Firewall, nicht so einfach zu realisieren.
 				
 				//Momentan wird das noch als Fehler ausgegeben.
 				//TODO Ggf. sollte diese IP dann lediglich aus der Lister der aufzubauenden VPN-Verbindungen herausgenommen werden. 
 				//            Diese IP sollte dann dem Frontend als eine vorhandene Verbindung mitgeteilt werden, obwohl z.B. der Status noch auf "Verbiinden" steht.
-				//            Die noch unverbundenen VPN-Verbindungen sollten dann versucht werden zu verbinden (was aber nur mit einem Timeout sinnvoll erscheint, sonst bekommt man ggf. nie das Frontend auf den "gr�nen"-Status.
+				//            Die noch unverbundenen VPN-Verbindungen sollten dann versucht werden zu verbinden (was aber nur mit einem Timeout sinnvoll erscheint, sonst bekommt man ggf. nie das Frontend auf den "gruenen"-Status.
 				ExceptionZZZ ez = new ExceptionZZZ(this.getMessageStringCurrent(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;	
 			}else{
 				this.logMessageString("No connection with OVPN is established, till now.");//DER PORT IST NICHT AUSSAGEKR�FTIG + ":" + objStarter.getVpnPort();							
 			}
-			
 		
-			
-						
 			//+++ AUFBAUEN DER LISTE DER ZU STARTENDEN KONFIGURATIONEN, dabei wieder von den Files ausgehen.
 			//TODO: Ggf. diejenigen Verbindungen herausnehmen, die schon konfiguriert sind. 
-			ArrayList listaStarter = new ArrayList(listaFileUsed.size());			//Hier sollen diejenigen rein, die dann versucht werden sollen herzustellen.
+			ArrayList<ClientConfigStarterOVPN> listaStarter = new ArrayList(listaFileUsed.size());			//Hier sollen diejenigen rein, die dann versucht werden sollen herzustellen.
 			for(int icount = 0; icount < listaFileUsed.size(); icount++){
 				File objFileConfig2start = (File) listaFileUsed.get(icount);
 				ClientConfigStarterOVPN objStarter = new ClientConfigStarterOVPN(objKernel, this, objFileConfig2start, null);
 				listaStarter.add(icount, objStarter);					
 			}//END For
-					
-			//+++ Noch keine Verbindung/Noch fehlende Verbindungen, dann wird es aber Zeit verschiedene Threads damit zu beauftragen
-			this.logMessageString("Trying to establish a new connection with every OVPN-configuration-file. Starting threads.");
-		
-			//Starten der Threads, mit denen die OVPN-Processe gestartet werden sollen
-			Thread[] threadaOVPN = new Thread[listaStarter.size()];
-			ProcessWatchRunnerZZZ[] runneraOVPN = new ProcessWatchRunnerZZZ[listaStarter.size()];	
-			int iNumberOfProcessStarted = 0;
-			for(int icount = 0; icount < listaStarter.size(); icount++){	
-				ClientConfigStarterOVPN objStarter = (ClientConfigStarterOVPN)listaStarter.get(icount);
-				Process objProcess = objStarter.requestStart();
-				if(objProcess==null){
-					//Hier nicht abbrechen, sondern die Verarbeitung bei der n�chsten Datei fortf�hren
-					this.logMessageString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"'");
-				}else{	
-					
-					//NEU: Einen anderen Thread zum "Monitoren" des Inputstreams des Processes verwenden. Dadurch werden die anderen Prozesse nicht angehalten.
-					 runneraOVPN[icount] =new ProcessWatchRunnerZZZ(objKernel, objProcess,icount, null);
-					 threadaOVPN[icount] = new Thread(runneraOVPN[icount]);					
-					 threadaOVPN[icount].start();
-					 iNumberOfProcessStarted++;	
-					//Das blaeht das Log unnoetig auf .... this.logStatusString("Finished starting thread # " + icount + " for establishing connection.");
-				}				
-			}//END for
-			this.logMessageString("Finished starting " + iNumberOfProcessStarted + " threads for establishing connection.");
+			this.setClientConfigStarterList(listaStarter);
 			
-			//###############################################################################
-			//+++ Monitoren der Threads, die versuchen eine Verbindung aufzubauen.
-			//ENDLOSSCHLEIFE: DIE ANDEREN THREAD LAUFEN JA NOCH !!!
-			//TODO: Timeout f�r threads programmieren, die sich einfach nicht beenden wollen.
-			//TODO GOON: Die Thread-Objekte und das Monitor-Objekt in die Config-Starter-Klasse integrieren.
-			ArrayList listaIntegerFinished = new ArrayList();
-			boolean[] baRunnerOVPNEndedMessage = new boolean[listaStarter.size()];  //Hier werden die beendeten Procese vermerkt.					
-			for(int icount=0; icount < listaStarter.size(); icount++){     
-				baRunnerOVPNEndedMessage[icount]=false;
-			}
-			do{		
-					//#########################################################
-				    //A) Beobachten der Threads, mit denen OVPN-gestartet werden soll					
-						for(int icount = 0; icount < runneraOVPN.length; icount++){
-							ProcessWatchRunnerZZZ runnerOVPN = runneraOVPN[icount];
-							if(runnerOVPN == null){
-								if(baRunnerOVPNEndedMessage[icount] !=false){ //Ziel: Unn�tigen Output vermeiden
-									//+++ Die Runner, die beendet worden sind und einen Fehler zur�ckgemeldet haben vermerken. Die brauchen dann ja nicht mehr angepingt zu werden.
-									this.logMessageString("Runner # " + icount + " was set to  null.");
-									baRunnerOVPNEndedMessage[icount] = true;
-								}
-							}else{								
-								if(runnerOVPN.getFlag("hasError")==true && runnerOVPN.bEnded == true){
-//									+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die auf einen Fehler gelaufen sind
-									this.logMessageString("Thread # " + icount + " could not create a connection. Ending thread with ERROR reported. For more details look at the log file.");
-						
-									ClientConfigStarterOVPN objStarter = (ClientConfigStarterOVPN) listaStarter.get(icount);
-									if(objStarter.isProcessAlive()==true) objStarter.requestStop(); //Den Prozess beenden								
-															
-									threadaOVPN[icount].interrupt();
-									runneraOVPN[icount]=null;
-									
-									Integer intTemp = new Integer(icount);
-									listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll
-								}else if(runnerOVPN.getFlag("hasError")==false && runnerOVPN.bEnded == true){
-//									//+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die einfach nur so beendet worden sind
-									//       Merke: Falls ein openvpn.exe die connection geschaft hat, wird dieser auf jeden Fall nicht beendet.
-									this.logMessageString("Thread # " + icount + " could not create a connection. Ending thread. For more details look at the log file.");
-									
-									ClientConfigStarterOVPN objStarter = (ClientConfigStarterOVPN) listaStarter.get(icount);
-									if(objStarter.isProcessAlive()==true) objStarter.requestStop(); //Den Prozess beenden								
-															
-									threadaOVPN[icount].interrupt();
-									runneraOVPN[icount]=null;
-									
-									Integer intTemp = new Integer(icount);
-									listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll
-								}else{
-									//Das bl�ht das Log unn�tig auf .... this.logStatusString("Thread # " + icount + " not jet ended or has reported an error.");									
-								}
-							}//END if (runnnerOVPN==null
-						}//END for
-						
-						//########################################################################
-						//B) Pingen der gew�nschten Zieladressen hinsichtlich der Erreichbarkeit
-						
-						//Erstellen der Arraylist, die zu Pingen ist. D.h.  von den listaStarter die Positionen die in listaIntegerRemoved drinstehen abziehen.
-						ArrayList listaFileNotFinished = new ArrayList();
-						for(int icount3=0; icount3 < listaStarter.size(); icount3++){	
-							//Diejenigen Starter, die schon vorzeitig beendet wurden hier herausfiltern. Den Rest anpingen
-							Integer intTemp = new Integer(icount3);
-							if(!listaIntegerFinished.contains(intTemp)){			
-								File objFileConfig = (File) listaFileUsed.get(icount3);							
-								listaFileNotFinished.add(objFileConfig);
-							}//END if
-						}//END For
-						
-						//Das Pr�fen auf Erreichbarkeit
-						//In this.scanVPNIPFirstEstablished wird schon eine Schleife durchgef�hrt......     for(int icount3=0; icount3 < listaFileNotFinished.size(); icount3++){	
-							//1. Diese ArrayList der StarterObjecte nun hinsichtlich der VPN-IP-Erreichbarkeit scannen.
-							this.logMessageString("Checking success. Pinging all not jet finished configurations for the configured vpn-ip."); //DEN PORT ZU PINGEN IST QUATSCH  + ":" + objStarter.getVpnPort();					
-							String sIP = this.scanVpnIpFirstEstablished(listaFileNotFinished);
-							
-							//2.Falls eine der konfigurierten Adressen erreichbar ist: Flag "Connected" setzen. Alle anderen Processe zum Verbindungsaufbau stoppen.
-							//TODO: Sollen alle Verbindungen aufgebaut werden, dann lediglich aus der Liste herausnehmen. Nat�rlich daf�r sorgen, dass das Frontend �ber die neue VPN M�glichkeit informiert wird. 
-							if(sIP!=null){
-								((ClientApplicationOVPN)this.getApplicationObject()).setVpnIpEstablished(sIP);  //Wichtig: Die erreichbare IP - Adresse f�r das Frontend greifbar machen.
-								//this.sPortVPN = objStarter.getVpnPort();	
-								this.logMessageString( "Connection successfully established with '"+ ((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished() +"'"); //Der Port ist nicht aussagekr�ftig !!! + ":" + this.getVpnPortEstablished() + "'";)					
-								bReturn = true;					
-								this.setFlag("isconnected", bReturn);  //DAS SOLL DANN z.B: dem Frontend sagen, dass die Verbindung steht.
-								
-								
-								//Nun diejenigen Threads beenden, die ungleich der Gefundenen Konfigurationsdatei sind
-								ClientConfigFileZZZ objFileConfig = this.getFileConfigReached();
-								if(objFileConfig!=null){
-									File objFile = objFileConfig.getFileConfig();
-									String sPath = objFile.getPath();
-									
-									//Alle noch nicht beendeten Prozesse beenden, AUSSER dort ist die gefundene Konfiguration verwendet.
-									for(int icount2=0;icount2<runneraOVPN.length; icount2++){
-										Integer intTemp = new Integer(icount2);
-										if(!listaIntegerFinished.contains(intTemp)){
-											
-											ClientConfigStarterOVPN objStarter = (ClientConfigStarterOVPN) listaStarter.get(icount2);
-											File objFileStarter = objStarter.getFileConfigOvpn();
-											String sPathStarter = objFileStarter.getPath();
-											if(sPath.equalsIgnoreCase(sPathStarter) == false){											
-												this.logMessageString("Requesting to end thread # " + icount2);							
-													
-												//TODO GOON: VERSUCHE DEN STEUERCODE F�R "BEENDEN" ZU SENDEN, DAS GEHT ABER NOCH NICHT
-												runneraOVPN[icount2].sendStringToProcess("hard");   //???????
-												runneraOVPN[icount2].setFlag("StopRequested", true); // DAMIT WIRD DAS RUNNER OBJEKT ANGEHALTEN SICH SELBST ZU BEENDEN
-																																		
-												objStarter.requestStop(); //!!! TODO GOON: Ich schaffe es nicht den Process zu beenden !!! Darum werden z.B. beim Beenden des Frontend-Clients alle prozesse desn Namens "openvpn.exe" beendet. 
-												threadaOVPN[icount2].interrupt();
-												//runneraOVPN[icount2]=null;
-													
-												listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll
-											}//END 	if(sPath.equalsIgnoreCase(sPathStarter) == false){
-										}//END if
-									}//End for
-								}		
-								//5. Endlosschleife erfolgreich verlassen. Nicht main: verlassen, da ist noch viel zu tun !!!							
-								break connmain;
-							}else{
-								String stemp = "";
-								for(int icount2=0; icount2 < listaFileNotFinished.size(); icount2++){
-									File objFileConfig = (File) listaFileNotFinished.get(icount2);
-									if(stemp.equals("")){
-										stemp = objFileConfig.getPath();
-									}else{
-										stemp = stemp + "; " + objFileConfig.getPath();
-									}
-								}								
-								this.logMessageString( "No connection estblished till now based upon the file(s) '"+ stemp +"'");																				
-							}//END if sIP != null																
-					//}//END for
-			}while(true);			
+			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.			
+			this.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+			
+			//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.									
+		   bReturn = true;
+			
+		   //#### Das Starten des Monitoren ueber eine Thread wurde verschoben nach clientMain.connect()
+		   
 		}//END connmainmain;
-		
-		
-		
-		///##########################################################
-		//Sollen die Ports der Gegenseite "gescannt" werden ?
-if(this.isPortScanEnabled()==true){
-		
-		//Nun die zur Verf�gung stehenden Ports erfassen	
-		//1. VPN-Ports
-		IKernelConfigSectionEntryZZZ entryPortLow=objKernel.getParameterByProgramAlias("OVPN","ProgPortScan","VPNPortLow");
-		String sPortLow=entryPortLow.getValue();
-		IKernelConfigSectionEntryZZZ entryPortHigh=objKernel.getParameterByProgramAlias("OVPN", "ProgPortScan", "VPNPortHigh");
-		String sPortHigh = entryPortHigh.getValue();
-		if(sPortLow!=null && sPortHigh != null){ 
-			//1. VPN-Ports
-			this.logMessageString( "Scanning ports on VPN-IP-Adress: " +  ((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished());	
-			this.scanVpnPortAll(((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished(), sPortLow, sPortHigh);
-			this.logMessageString( "VPN-IP-Port scan finished.");	
-		}else{
-			this.logMessageString( "VPN-IP-Port scan not properly configured: Ports missing.");	
-		}
-		
-		
-	//		2. Remote-Ports
-			if(this.getFlag("useproxy")==true){
-				((ClientApplicationOVPN)this.getApplicationObject()).setRemotePortScanned("Proxy/Firewall make port scan obsolete.");
-			}else{
-				this.logMessageString( "Scanning ports on Remote-IP-Adress: " +  ((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished());	
-				sPortLow=objKernel.getParameterByProgramAlias("OVPN","ProgPortScan","RemotePortLow").getValue();
-				sPortHigh=objKernel.getParameterByProgramAlias("OVPN", "ProgPortScan", "RemoteProtHigh").getValue();
-				if(sPortLow!=null && sPortHigh != null){  
-					this.scanRemotePortAll(((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished(), sPortLow, sPortHigh);				
-					this.logMessageString( "Remote-IP-Port scan finished.");	
-				}else{
-					this.logMessageString( "Remote-IP-Port scan not properly configured: Ports missing.");	
-				}//END if(sRemotePortLow!=null && sRemotePortHigh != null){  			
-			}//END if getFlag("useProxy")
-		
-	//########################################
-	//Merke: Das Frontend wird nun ggf. einen Thread starten, der die Verbindung �berwacht
-			this.setFlag("PortScanAllFinished", true);	
-		}//END if(this.isPortScanEnabled()){
+	
 	}//END main
 		if(bReturn == true){
 			this.logMessageString( "Finished everything: 'Start successfull case'.");	
@@ -721,7 +484,22 @@ if(this.isPortScanEnabled()==true){
 	
 	
 	
-	
+	public boolean isStartingOnLaunch() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			check:{
+				if(this.objKernel==null) break main;				
+			}//END check:
+		
+		//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht. 
+		String stemp = this.objKernel.getParameter("StartingOnLaunch").getValue();
+		if(stemp==null) break main;
+		if(stemp.equals("1")){
+			bReturn = true;
+		}
+		}//END main
+		return bReturn;
+	}	
 
 	public boolean isConnectOnStart() throws ExceptionZZZ{
 		boolean bReturn = false;
@@ -766,6 +544,21 @@ if(this.isPortScanEnabled()==true){
 	public void setFileConfigReached(ClientConfigFileZZZ objFileConfig){
 		this.objFileConfigReached = objFileConfig;
 	}
+	
+	public ArrayList<ClientConfigStarterOVPN> getClientConfigStarterList() {
+		return this.listaClientConfigStarter;
+	}
+	public void setClientConfigStarterList(ArrayList<ClientConfigStarterOVPN> listaClientConfigStarter) {
+		this.listaClientConfigStarter = listaClientConfigStarter;
+	}
+	
+	public ArrayList<ClientConfigStarterOVPN> getClientConfigStarterRunningList() {
+		return this.listaClientConfigStarterRunning;
+	}
+	public void setClientConfigStarterRunningList(ArrayList<ClientConfigStarterOVPN> listaClientConfigStarter) {
+		this.listaClientConfigStarterRunning = listaClientConfigStarter;
+	}
+	
 
 	//#####################################################
 	//### IStatusLocalUserZZZ
@@ -1010,34 +803,34 @@ if(this.isPortScanEnabled()==true){
 	}
 
 
-	//### aus ISenderObjectStatusLocalSetOVPN
-	/* (non-Javadoc)
-	 * @see use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN#fireEvent(use.openvpn.server.status.IEventObjectStatusLocalSetOVPN)
-	 */
-	@Override
-	public void fireEvent(IEventObjectStatusLocalSetOVPN event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
-		this.getListenerRegisteredAll().remove(objEventListener);
-	}
-
-
-
-	@Override
-	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
-		this.getListenerRegisteredAll().add(objEventListener);
-	}
-
-	@Override
-	public ArrayList<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ {
-		return this.getSenderStatusLocalUsed().getListenerRegisteredAll();
-	}
+//	//### aus ISenderObjectStatusLocalSetOVPN
+//	/* (non-Javadoc)
+//	 * @see use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN#fireEvent(use.openvpn.server.status.IEventObjectStatusLocalSetOVPN)
+//	 */
+//	@Override
+//	public void fireEvent(IEventObjectStatusLocalSetOVPN event) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//
+//
+//	@Override
+//	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
+//		this.getListenerRegisteredAll().remove(objEventListener);
+//	}
+//
+//
+//
+//	@Override
+//	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
+//		this.getListenerRegisteredAll().add(objEventListener);
+//	}
+//
+//	@Override
+//	public ArrayList<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ {
+//		return this.getSenderStatusLocalUsed().getListenerRegisteredAll();
+//	}
 
 
 	//### aus IEventBrokerStatusLocalSetUserOVPN
@@ -1079,9 +872,11 @@ if(this.isPortScanEnabled()==true){
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 		//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 		public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+			ISLAUNCHED("isLaunched", "Trayicon wurde gestarted.",""),
 			ISSTARTED("isstarted","Client ist gestartet",""),
 			ISSTARTING("isstarting","Client startet...",""),
 			ISCONNECTING("isconnecting","Client verbindet sich...",""),
+			WATCHRUNNERSTARTED("watchrunnerstarted","Verbindungsaufbaueversuch - Thread zum Monitoren des Batch-Processes gestartet",""),
 			ISCONNECTED("isconnected","Client ist verbunden",""),
 			PortScanAllFinished("portscanallfinished","xyz Fragezeichen",""),
 			HASERROR("haserror","Ein Fehler ist aufgetreten","");

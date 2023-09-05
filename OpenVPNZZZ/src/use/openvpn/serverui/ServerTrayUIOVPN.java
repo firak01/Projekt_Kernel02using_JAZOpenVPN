@@ -340,16 +340,21 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 	public boolean start() throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
+			check:{
+			if(this.getServerBackendObject()==null)break main;
+			}
+			
 			//Wenn das so ohne Thread gestartet wird, dann reagiert der Tray auf keine weiteren Clicks.
 			//Z.B. den Status anzuzeigen.
 			//this.getServerBackendObject().start(this);
 			
 			//Also dies über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
 			//Problem dabei: Der SystemTray wird nicht aktualisiert.
-			Thread objThreadConfig = new Thread(this.getServerBackendObject());
-			objThreadConfig.start();
+			Thread objThreadMain = new Thread(this.getServerBackendObject());
+			objThreadMain.start();
 			
-		}
+			bReturn = true;
+		}//end main:
 		return bReturn;
 	}
 
@@ -394,13 +399,13 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 				//Merke: Dieser Monitor Thread muss mit dem Starten der einzelnen Unterthreads solange warten, bis das ServerMainZZZ-Object in seinem Flag anzeigt, dass es fertig mit dem Start ist.
 				
 				
-					Thread objThreadMonitor = new Thread(objMonitor);
-					objThreadMonitor.start();
-					//this.objServerBackend.setFlag("islistening", true);												
+				Thread objThreadMonitor = new Thread(objMonitor);
+				objThreadMonitor.start();
+				
+				//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
+				this.objServerBackend.setStatusLocal(ServerMainOVPN.STATUSLOCAL.ISLISTENING, true);
 					
-					//Merke: Wenn über das enum der setFlag gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
-					this.objServerBackend.setStatusLocal(ServerMainOVPN.STATUSLOCAL.ISLISTENING, true);
-					//this.switchStatus(ServerTrayStatusZZZ.ServerTrayStatusTypeZZZ.LISTENING);
+				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISCONNECTED" gesetzt und ein Event geworfen.
 				
 				bReturn = true;
 			}catch(ExceptionZZZ ez){
@@ -718,6 +723,7 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 			//String sMessage = objStatusEnum.getStatusMessage();
 			//System.out.println(ReflectCodeZZZ.getPositionCurrent()+": " + sMessage);			
 
+			//Die Stati vom Backend-Objekt mit dem TrayIcon mappen
 			if(ServerMainOVPN.STATUSLOCAL.ISLAUNCHED==objStatusEnum) {
 				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.NEW);				
 			}else if(ServerMainOVPN.STATUSLOCAL.ISSTARTING==objStatusEnum) {

@@ -17,8 +17,10 @@ import javax.swing.JPopupMenu;
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
+import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
+import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.ClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.IClientMainOVPN;
@@ -27,6 +29,10 @@ import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.IConstantClientOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
+import use.openvpn.server.ServerMainOVPN;
+import use.openvpn.serverui.ServerMonitorRunnerOVPN;
+import use.openvpn.serverui.ServerTrayMenuZZZ;
+import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
@@ -95,6 +101,15 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			JMenuItem menueeintrag2 = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START.getMenu());
 			menu.add(menueeintrag2);
 			menueeintrag2.addActionListener(this);
+			
+			
+			JMenuItem menueeintrag2b = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.CONNECT.getMenu());
+			menu.add(menueeintrag2b);
+			menueeintrag2b.addActionListener(this);
+			
+			JMenuItem menueeintrag2c = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.WATCH.getMenu());
+			menu.add(menueeintrag2c);
+			menueeintrag2c.addActionListener(this);
 			
 			JMenuItem menueeintrag3 = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.LOG.getMenu());
             menu.add(menueeintrag3);
@@ -306,20 +321,44 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return bReturn;
 	}
 
+	public boolean start() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			check:{
+			if(this.getClientBackendObject()==null)break main;
+			}
+
+			//Wenn das so ohne Thread gestartet wird, dann reagiert der Tray auf keine weiteren Clicks.
+			//Z.B. den Status anzuzeigen.
+			//this.getClientBackendObject().start(this);
+			
+			//Also dies über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+			//Problem dabei: Der SystemTray wird nicht aktualisiert.
+			Thread objThreadMain = new Thread(this.getClientBackendObject());
+			objThreadMain.start();
+				
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
+			
+				
+	
 	
 	public boolean connect(){
 		boolean bReturn = false;
 		main:{
-			try{
+			try{ 
 				check:{
-				if(this.objClientBackend==null)break main;
+				if(this.getClientBackendObject()==null)break main;
 				}
-			
-				ClientMonitorRunnerZZZ objMonitor = this.getMonitorObject(); 
+				
+				ClientMonitorRunnerZZZ objMonitor = this.getMonitorObject();
 				if(objMonitor==null) break main;
 				
 				boolean bStarted = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTED);
 				if(!bStarted) {
+					
 					boolean bStarting = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING);
 					if(!bStarting) {	
 						objMonitor.setStatusString("Client not starting.");
@@ -330,32 +369,113 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					break main;
 				}
 				
-				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.				
-				//DIES ueber einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
-//				Thread objThreadConfig = new Thread(this.objClientBackend);
-//				objThreadConfig.start();
+				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
+				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
 				
+				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+				//Thread objThreadConfig = new Thread(this.getServerBackendObject());
+				//objThreadConfig.start();
+
+				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
 				//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.
 				//Merke: Dieser Monitor Thread muss mit dem Starten der einzelnen Unterthreads solange warten, bis das ServerMainZZZ-Object in seinem Flag anzeigt, dass es fertig mit dem Start ist.
+				
+				//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
+				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
+								
 				Thread objThreadMonitor = new Thread(objMonitor);
 				objThreadMonitor.start();
+								
+				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISCONNECTED" gesetzt und ein Event geworfen.
 				
-				//Merke: Wenn über das enum der setFlag gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
-				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
-											
 				bReturn = true;
 			}catch(ExceptionZZZ ez){
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.
 				try {
+					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
+					ez.printStackTrace();
+					String stemp = ez.getDetailAllLast();
+					this.getKernelObject().getLogObject().WriteLineDate(stemp);
+					System.out.println(ez.getDetailAllLast());
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.ERROR);
-				} catch (ExceptionZZZ e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (ExceptionZZZ ez2) {
+					System.out.println(ez.getDetailAllLast());
+					ez2.printStackTrace();					
 				}
 			}		
 		}
-		return bReturn;
+		return bReturn;		
 	}
+	
+	public boolean watch(){
+		boolean bReturn = false;
+		main:{
+			try{ 
+				check:{
+				if(this.getClientBackendObject()==null)break main;
+				}
+				
+				ClientMonitorRunnerZZZ objMonitor = this.getMonitorObject();
+				if(objMonitor==null) break main;
+				
+				boolean bStarted = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTED);
+				if(!bStarted) {
+					
+					boolean bStarting = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING);
+					if(!bStarting) {	
+						objMonitor.setStatusString("Client not starting.");
+						break main;
+					}
+					
+					objMonitor.setStatusString("Client not finished starting. Waiting for process?");
+					break main;
+				}
+				
+				
+				boolean bConnecting = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING) ;
+				if(!bConnecting) {
+					objMonitor.setStatusString("Client not connecting.");
+					break main;
+				}
+				
+				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);
+				
+				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
+				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
+				
+				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+				//Thread objThreadConfig = new Thread(this.getServerBackendObject());
+				//objThreadConfig.start();
+
+				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
+				//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.
+				//Merke: Dieser Monitor Thread muss mit dem Starten der einzelnen Unterthreads solange warten, bis das ServerMainZZZ-Object in seinem Flag anzeigt, dass es fertig mit dem Start ist.
+				
+				//Merke: Der MonitorThread wurde schon beim Verbinden gestartet. ... Diesen weiternutzen.
+				//Thread objThreadMonitor = new Thread(objMonitor);
+				//objThreadMonitor.start();
+				
+				//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
+				//this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
+					
+				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISCONNECTED" gesetzt und ein Event geworfen.								
+				bReturn = true;
+			}catch(ExceptionZZZ ez){
+				try {
+					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
+					ez.printStackTrace();
+					String stemp = ez.getDetailAllLast();
+					this.getKernelObject().getLogObject().WriteLineDate(stemp);
+					System.out.println(ez.getDetailAllLast());
+					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.ERROR);
+				} catch (ExceptionZZZ ez2) {
+					System.out.println(ez.getDetailAllLast());
+					ez2.printStackTrace();					
+				}
+			}		
+		}
+		return bReturn;		
+	}
+	
 	
 	/** Reads a status string from the ServerMonitor-Object-Thread
 	* @return String
@@ -536,7 +656,11 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.END.getMenu())){
 					this.unload();	
 				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START.getMenu())){
+					this.start();
+				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.CONNECT.getMenu())) {
 					this.connect();
+				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.WATCH.getMenu())) {
+					this.watch();	
 				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.LOG.getMenu())){
 					//JOptionPane pane = new JOptionPane();
 					String stemp = this.readLogString();
@@ -695,20 +819,25 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				//String sMessage = objStatusEnum.getStatusMessage();
 				//System.out.println(ReflectCodeZZZ.getPositionCurrent()+": " + sMessage);			
 
-				TODOGOON20230823;//Alle Stati erfassen
+				//Die Stati vom Backend-Objekt mit dem TrayIcon mappen
 				if(ClientMainOVPN.STATUSLOCAL.ISLAUNCHED==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.NEW);				
 				}else if(ClientMainOVPN.STATUSLOCAL.ISSTARTING==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.STARTING);
 				}else if(ClientMainOVPN.STATUSLOCAL.ISSTARTED==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.STARTED);
-				}else if(ClientMainOVPN.STATUSLOCAL.ISLISTENING==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.LISTENING);
-				}else if(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED==objStatusEnum) {
+				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTING==objStatusEnum) {
+					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTING);
+				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTED==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
+//			}else if(ClientMainOVPN.STATUSLOCAL.PortScanAllFinished==objStatusEnum) {
+//					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
 				}else if(ClientMainOVPN.STATUSLOCAL.HASERROR==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.ERROR);
 				}else {
+					String sLog = "Der Status wird nicht behandelt - '"+objStatusEnum.getAbbreviation()+"'.";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);
 					break main;
 				}
 							

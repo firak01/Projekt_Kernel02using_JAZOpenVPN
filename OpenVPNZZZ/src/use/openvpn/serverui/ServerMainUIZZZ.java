@@ -84,8 +84,7 @@ public class ServerMainUIZZZ extends ObjectZZZ implements IConstantServerOVPN , 
 						//Konfigurierbar: Beim Starten schon connecten						
 						 btemp = this.objServerMain.isListenOnStart();
 						if(btemp==true){
-							objServerTray.listen();
-							bReturn = true;
+							bReturn = objServerTray.listen();
 							break main;
 						}else{
 							bReturn = true;

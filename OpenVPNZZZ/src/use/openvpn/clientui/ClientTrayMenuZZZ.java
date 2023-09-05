@@ -54,6 +54,8 @@ public class ClientTrayMenuZZZ implements Serializable{
 	//ALIAS("Uniquename","Menuepunkt-Text","Beschreibung, wird nicht genutzt....",)
 	public enum ClientTrayMenuTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{		
 		START("start","Starten",""),
+		CONNECT("connect","Verbinden",""),
+		WATCH("watch","Verbindung pruefen",""),
 		LOG("log","Client Log ansehen",""),
 		ADJUSTMENT("adjustment","Einstellungen",""),
 		PAGE_IP_READ("page_ip_read","IP aus remote Page auslesen",""),		

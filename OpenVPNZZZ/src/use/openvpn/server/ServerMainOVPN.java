@@ -86,7 +86,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		boolean bReturn = false;
 		main:{						
 			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
-			this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.ISSTARTING, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+			this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.ISSTARTING, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert worden ist und dann sich passend einstellen kann.
 									
 			//1. Diverse Dinge mit WMI testen.
 			KernelWMIZZZ objWMI = new KernelWMIZZZ(objKernel, null);
@@ -286,7 +286,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 					 threadaOVPN[icount].start();
 					 iNumberOfProcessStarted++;	
 					//Das blaeht das Log unnoetig auf .... zum Test aber i.o.
-					 this.logMessageString("Finished starting thread # " + icount + " for listening to connection.");
+					 this.logMessageString("Finished starting thread # " + icount + " for watching the connection.");
 					 this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.					
 				}				
 			}//END for
@@ -776,7 +776,8 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			ISSTARTING("isstarting","Server startet. Warte ggfs. auf Task",""),		
 			ISSTARTED("isstarted","OVPN Konfigurationen gebaut und Server gestartet",""),
 			ISLISTENING("islistening","Server wartet auf Verbindung",""),
-			WATCHRUNNERSTARTED("watchrunnerstarted","Thread zur Verbindungsprüfung gestartet",""),
+			WATCHRUNNERSTARTED("watchrunnerstarted","Thread zur Verbindungspruefung gestartet",""),
+			ISSTOPPED("isstopped","Server wurde gestoppt",""),
 			HASERROR("haserror","Ein Fehler ist aufgetreten","");
 						
 			

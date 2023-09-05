@@ -1,4 +1,4 @@
-package use.openvpn;
+package use.openvpn.client.process;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,7 +8,7 @@ import java.io.OutputStreamWriter;
 
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
-
+import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
@@ -26,8 +26,9 @@ import basic.zKernel.KernelUseObjectZZZ;
  * @author 0823
  *
  */
-public class ProcessWatchRunnerZZZ extends KernelUseObjectZZZ implements Runnable{
+public class ProcessWatchRunnerZZZ extends KernelUseObjectZZZ implements Runnable, IEventBrokerStatusLocalSetUserOVPN{
 	private Process objProcess=null; //Der externe process, der hierdurch "gemonitored" werden soll
+	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
 	private int iNumber=0;
 	public  boolean bEnded = false;
@@ -82,30 +83,31 @@ public class ProcessWatchRunnerZZZ extends KernelUseObjectZZZ implements Runnabl
 			
 			//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
 			do{
-				//System.out.println("FGLTEST01");
-				//Wichtig: Man muss wohl zuallererst den InputStream abgreifen, damit der Process weiterlaufen kann.
-				this.writeOutputToLog();		
+				this.writeErrorToLog();
+				if(this.getFlag("hasError")) break;
+
+				this.writeOutputToLog();		//Man muss wohl erst den InputStream abgreifen, damit der Process weiterlaufen kann.
 				if(this.getFlag("hasConnection")) {
 					sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
 					this.logLineDate(sLog);						
 					break;
 				}
 				
-				
-				//System.out.println("FGLTEST02");
-				this.writeErrorToLog();
-				if(this.getFlag("hasError")) break;
-
-				
 				//TODOGOON: Diese Klasse als Abstracte Klasse anbieten, mit den einfachsten Flags.
 				            //Dann ein ProzessWatchRunnerOVPN estellen
-				            //und die run-Methode ueberschreiben.		
+				            //und die run-Methode ueberschreiben.
+				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+				//Dann erzeuge den Event und feuer ihn ab.
+				//Merke: Nun aber ueber das enum			
+				if(this.objEventStatusLocalBroker!=null) {
+					IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,ClientMainOVPN.STATUSLOCAL.ISCONNECTED, true);
+					this.objEventStatusLocalBroker.fireEvent(event);
+				}			
 				
 				//TODOGOON: Und Statt des FlagHandling localStatus verwenden...
 				
 				//Nach irgendeiner Ausgabe enden ist hier falsch, in einer abstrakten Klasse vielleicht richtig, quasi als Muster.
 				//if(this.getFlag("hasOutput")) break;
-				//System.out.println("FGLTEST03");
 				try {
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
@@ -223,7 +225,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		
 			BufferedReader in = new BufferedReader( new InputStreamReader(objProcess.getInputStream()) );
 				for ( String s; (s = in.readLine()) != null; ){
-				    System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": "+ s );
+				    //System.out.println( s );
 					this.getLogObject().WriteLine(this.getNumber() +"#"+ s);
 					this.setFlag("hasOutput", true);
 					
@@ -380,5 +382,28 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 	 */
 	public int getNumber(){
 		return this.iNumber;
+	}
+
+	//### aus IEventBrokerStatusLocalSetUserOVPN
+	@Override
+	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+		return this.objEventStatusLocalBroker;
+	}
+
+	@Override
+	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+		this.objEventStatusLocalBroker = objEventSender;
+	}
+
+	@Override
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		
 	}
 }//END class
