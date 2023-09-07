@@ -506,11 +506,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 	/* (non-Javadoc)
 	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
 	Flags used: 
-	- hasError
-	- hasOutput
-	- hasInput
-	- stoprequested
-	 */
+	- connectionrunnerstarted	 */
 	public boolean getFlag(String sFlagName){
 		boolean bFunction = false;
 		main:{
@@ -523,20 +519,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 			if(stemp.equals("connectionrunnerstarted")){
 				bFunction = bFlagConnectionRunnerStarted;
 				break main;
-			}
-			
-			/*else if(stemp.equals("hasoutput")){
-				bFunction = bFlagHasOutput;
-				break main;
-			}else if(stemp.equals("hasinput")){
-				bFunction = bFlagHasInput;
-				break main;
-			}else if(stemp.equals("stoprequested")){
-				bFunction = bFlagStopRequested;
-				break main;
-			}
-			*/
-	
+			}		
 		}//end main:
 		return bFunction;
 	}
@@ -553,31 +536,16 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 		main:{			
 			if(StringZZZ.isEmpty(sFlagName)) break main;
 			bFunction = super.setFlag(sFlagName, bFlagValue);
-		if(bFunction==true) break main;
-		
-		//setting the flags of this object
-		String stemp = sFlagName.toLowerCase();
-		if(stemp.equals("connectionrunnerstarted")){
-			bFlagConnectionRunnerStarted = bFlagValue;
-			bFunction = true;
-			break main;
-
-		}
-		/*else if(stemp.equals("hasoutput")){
-			bFlagHasOutput = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("hasinput")){
-			bFlagHasInput = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("stoprequested")){
-			bFlagStopRequested = bFlagValue;
-			bFunction = true;
-			break main;
-		}
-		*/
-
+			if(bFunction==true) break main;
+			
+			//setting the flags of this object
+			String stemp = sFlagName.toLowerCase();
+			if(stemp.equals("connectionrunnerstarted")){
+				bFlagConnectionRunnerStarted = bFlagValue;
+				bFunction = true;
+				break main;
+	
+			}
 		}//end main:
 		return bFunction;
 	}

@@ -49,14 +49,11 @@ public class EventObjectStatusLocalSetOVPN extends EventObjectStatusLocalSetZZZ 
 	
 	@Override
 	public ExceptionZZZ getExceptionObject() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setExceptionObject(ExceptionZZZ objException) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	

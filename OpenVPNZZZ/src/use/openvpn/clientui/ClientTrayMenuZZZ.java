@@ -89,18 +89,12 @@ public class ClientTrayMenuZZZ implements Serializable{
 	/* Die in dieser Methode verwendete Klasse für den ...TypeZZZ muss immer angepasst werden. */
 	@SuppressWarnings("rawtypes")
 	public static <E> EnumSet getEnumSet() {
-		
-	 //Merke: Das wird anders behandelt als FLAGZ Enumeration.
-		//String sFilterName = "FLAGZ"; /
-		//...
-		//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
-		
+				
 		//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
 		Class<ClientTrayMenuTypeZZZ> enumClass = ClientTrayMenuTypeZZZ.class;
 		EnumSet<ClientTrayMenuTypeZZZ> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 		
-		for(Object obj : ClientTrayMenuTypeZZZ.class.getEnumConstants()){
-			//System.out.println(obj + "; "+obj.getClass().getName());
+		for(Object obj : ClientTrayMenuTypeZZZ.class.getEnumConstants()){		
 			set.add((ClientTrayMenuTypeZZZ) obj);
 		}
 		return set;

@@ -56,12 +56,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 			//Dafür sorgen, dass der Event nur 1x geworfen wird, wenn der vorherige Event der gleich war.
 			IEventObjectStatusLocalSetOVPN eventPrevious = this.getEventPrevious();
 			if(eventPrevious!=null) {
-				System.out.println("FGLTEST00: Test auf previous Event: A="+event.toString()+" | B="+eventPrevious.toString());
 				if(eventPrevious.equals(event))break main;
-				System.out.println("FGLTEST01: Kein previous Event: A="+event.toString()+" | B="+eventPrevious.toString());
-				System.out.println("FGLTEST02: event.getStatusText()=" + event.getStatusText());
-				if(event.getStatusText().equals(eventPrevious.getStatusText()) && event.getStatusValue()==eventPrevious.getStatusValue()) break main;
-				System.out.println("FGLTEST03: event.getStatusValue()=" + event.getStatusValue());
 			}
 			this.setEventPrevious(event);
 			
@@ -72,15 +67,13 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 					try {
 						boolean bStatusLocalChanged = l.statusLocalChanged(event);
 						if(bStatusLocalChanged) {
-							System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat Flag '" + event.getStatusText() + "' gesetzt." );
+							System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat LocalStatus '" + event.getStatusText() + "' gesetzt." );
 						}					
-					} catch (ExceptionZZZ ez) {
-						//Z.B. falls es das Flag hier nicht gibt, wird die ggfs. die Exception weitergeworfen.
+					} catch (ExceptionZZZ ez) {					
 						System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " throws Exception " + ez.getDetailAllLast() );					
 					}
 				}
 			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

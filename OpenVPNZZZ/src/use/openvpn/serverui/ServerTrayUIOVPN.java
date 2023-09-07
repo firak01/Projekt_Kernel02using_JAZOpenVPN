@@ -21,6 +21,7 @@ import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
 import use.openvpn.client.ClientConfigFileZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.ServerMainOVPN.STATUSLOCAL;
@@ -503,7 +504,7 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 		main:{
 			check:{
 				if (this.objServerBackend == null){
-					sReturn = "Not yet tried to connect";
+					sReturn = ServerMainOVPN.STATUSLOCAL.ISLAUNCHED.getStatusMessage() + "(objServerBackend NULL case)";
 					break main;
 				}
 			}//END check:

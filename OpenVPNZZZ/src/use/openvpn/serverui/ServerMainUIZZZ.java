@@ -26,7 +26,7 @@ import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
 import basic.zKernel.flag.ISenderObjectFlagZsetZZZ;
 import custom.zKernel.LogZZZ;
 
-public class ServerMainUIZZZ extends ObjectZZZ implements IConstantServerOVPN , ISenderObjectFlagZsetZZZ{
+public class ServerMainUIZZZ implements IConstantZZZ{
 			private IKernelZZZ objKernel=null;
 			private ServerMainOVPN objServerMain = null;
 			private ServerTrayUIOVPN objServerTray=null;
@@ -108,30 +108,5 @@ public class ServerMainUIZZZ extends ObjectZZZ implements IConstantServerOVPN , 
 					}//END main:
 				System.out.println("finished starting trayicon.");
 				return bReturn;			
-			}
-
-			@Override
-			public void fireEvent(IEventObjectFlagZsetZZZ event) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void removeListenerObjectFlagZset(IListenerObjectFlagZsetZZZ objEventListener) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void addListenerObjectFlagZset(IListenerObjectFlagZsetZZZ objEventListener) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public ArrayList<IListenerObjectFlagZsetZZZ> getListenerRegisteredAll() {
-				// TODO Auto-generated method stub
-				return null;
-			}									
-
+			}						
 }//END class

@@ -42,32 +42,19 @@ public class ClientTrayStatusMappedValueZZZ implements Serializable{
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### String fullName, String abbreviation
 	//#######################################################
-//	    public enum STATUS{
-//			NEW,STARTING,STARTED,LISTENING,CONNECTED,INTERRUPTED,STOPPED,ERROR
-//		}
-		//Ersetzt durch enum, die Bedeutung bleibt 
-//		public static final int iSTATUS_NEW = 0;                       //Wenn das SystemTry-icon neu ist 
-//		public static final int iSTATUS_STARTING = 1;               //Die OVPN-Konfiguration wird gesucht und die Processe werden mit diesen Konfigurationen gestartet.
-//		public static final int iSTATUS_STARTED = 2;
-//		public static final int iSTATUS_LISTENING = 3;               //Die OVPN-Processe laufen.
-//		public static final int iSTATUS_CONNECTED = 4;            //Falls sich ein Client per vpn mit dem Server verbunden hat und erreichbar ist
-//		public static final int iSTATUS_INTERRUPTED = 5;          //Falls der Client wieder nicht erreichbar ist. Das soll aber keine Fehlermeldung in dem Sinne sein, sondern nur anzeigen, dass mal ein Client verbunden war.
-//		                                                                                      //Dies wird auch angezeigt, wenn z.B. die Netzwerkverbindung unterbrochen worden ist.
-//		public static final int iSTATUS_STOPPED = 6; 				 //Wenn kein OVPN-Prozess mehr l�uft.
-//		public static final int iSTATUS_ERROR = 7;
-					
-	    
-	    
-	    
+
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Menuepunkt-Text","Icon-Dateiname","Beschreibung, wird nicht genutzt....",)
 	public enum ClientTrayStatusTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		NEW("new","","icons8-networking-64_black_bgGray.png", ""),			
-		STARTING("starting","","icons8-networking-64_black.png",""),	
+		STARTING("starting","","icons8-networking-64_yellow.png",""),	
 		STARTED("started","","icons8-networking-64_black_bgYellow.png",""),
-		CONNECTING("connecting","","icons8-networking-64_yellow.png",""),
-		WATCHING("watching","","pill-button-yellow_benji_01.png",""),
-		CONNECTED("connected","","pill-button-blue_benji_01.png",""),
+		CONNECTING("connecting","","icons8-networking-64_blue.png",""),
+		CONNECTED("connected","","icons8-networking-64_black_bgBlueLight.png",""),
+		
+		WATCHING("watching","","icons8-networking-64_greenLight.png",""),
+		WATCHED("watched","","icons8-networking-64_black_bgGreen.png",""),
+		
 		INTERRUPTED("interrupted","","pill-button-purple_benji_01.png",""),
 		STOPPED("stopped","","Green Metallic_32.png",""),		
 		ERROR("error","","pill-button-red_benji_01.png",""),

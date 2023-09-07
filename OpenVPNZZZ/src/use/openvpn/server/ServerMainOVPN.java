@@ -19,6 +19,7 @@ import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientConfigTemplateUpdaterZZZ;
+import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.server.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
@@ -305,14 +306,20 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			boolean bStarted = this.start();
 		} catch (ExceptionZZZ ez) {
 			try {
-				this.setFlag("haserror", true);
-				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
+				String sLog = ez.getDetailAllLast();
+				this.logMessageString("An error happend: '" + sLog + "'");
+				this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.HASERROR, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+				
+			} catch (ExceptionZZZ e1) {				
 				System.out.println(ez.getDetailAllLast());
-			} catch (ExceptionZZZ e) {				
-				System.out.println(ez.getDetailAllLast());
-				e.printStackTrace();
+				e1.printStackTrace();
 			}
-			
+			try {
+				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
+			} catch (ExceptionZZZ e1) {
+				System.out.println(e1.getDetailAllLast());
+				e1.printStackTrace();
+			}
 		}
 	}
 	

@@ -256,17 +256,21 @@ private String sPortVPN = null;
 	 */
 	public void run() {
 		try {
-			this.start();
-		} catch (ExceptionZZZ e) {
+			boolean bStarted = this.start();
+		} catch (ExceptionZZZ ez) {
 			try {
-				this.setFlag("haserror", true);
+				String sLog = ez.getDetailAllLast();
+				this.logMessageString("An error happend: '" + sLog + "'");
+				this.setStatusLocal(ClientMainOVPN.STATUSLOCAL.HASERROR, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+				
 			} catch (ExceptionZZZ e1) {				
+				System.out.println(ez.getDetailAllLast());
 				e1.printStackTrace();
 			}
 			try {
-				this.getKernelObject().getLogObject().WriteLineDate(e.getDetailAllLast());
+				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
 			} catch (ExceptionZZZ e1) {
-				System.out.println(e.getDetailAllLast());
+				System.out.println(e1.getDetailAllLast());
 				e1.printStackTrace();
 			}
 		}
@@ -802,37 +806,6 @@ private String sPortVPN = null;
 		return bReturn;
 	}
 
-
-//	//### aus ISenderObjectStatusLocalSetOVPN
-//	/* (non-Javadoc)
-//	 * @see use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN#fireEvent(use.openvpn.server.status.IEventObjectStatusLocalSetOVPN)
-//	 */
-//	@Override
-//	public void fireEvent(IEventObjectStatusLocalSetOVPN event) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//
-//
-//	@Override
-//	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
-//		this.getListenerRegisteredAll().remove(objEventListener);
-//	}
-//
-//
-//
-//	@Override
-//	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
-//		this.getListenerRegisteredAll().add(objEventListener);
-//	}
-//
-//	@Override
-//	public ArrayList<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ {
-//		return this.getSenderStatusLocalUsed().getListenerRegisteredAll();
-//	}
-
-
 	//### aus IEventBrokerStatusLocalSetUserOVPN
 	@Override
 	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
@@ -847,14 +820,10 @@ private String sPortVPN = null;
 		return this.objEventStatusLocalBroker;
 	}
 
-
-
 	@Override
 	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
 		this.objEventStatusLocalBroker = objEventStatusLocalBroker;
 	}
-
-
 
 	@Override
 	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
@@ -872,14 +841,14 @@ private String sPortVPN = null;
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 		//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 		public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-			ISLAUNCHED("isLaunched", "Trayicon wurde gestarted.",""),
-			ISSTARTED("isstarted","Client ist gestartet",""),
-			ISSTARTING("isstarting","Client startet...",""),
-			ISCONNECTING("isconnecting","Client verbindet sich...",""),
-			WATCHRUNNERSTARTED("watchrunnerstarted","Verbindungsaufbaueversuch - Thread zum Monitoren des Batch-Processes gestartet",""),
-			ISCONNECTED("isconnected","Client ist verbunden",""),
-			PortScanAllFinished("portscanallfinished","xyz Fragezeichen",""),
-			HASERROR("haserror","Ein Fehler ist aufgetreten","");
+			ISLAUNCHED("isLaunched", "Trayicon wurde gestarted (ClientMain.STATUSLOCAL)",""),
+			ISSTARTED("isstarted","Client ist gestartet (ClientMain.STATUSLOCAL)",""),
+			ISSTARTING("isstarting","Client startet... (ClientMain.STATUSLOCAL)",""),
+			ISCONNECTING("isconnecting","Client verbindet sich... (ClientMain.STATUSLOCAL)",""),
+			WATCHRUNNERSTARTED("watchrunnerstarted","Verbindungsaufbaueversuch - Thread zum Monitoren des Batch-Processes gestartet (ClientMain.STATUSLOCAL)",""),
+			ISCONNECTED("isconnected","Client ist verbunden (ClientMain.STATUSLOCAL)",""),
+			PortScanAllFinished("portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
+			HASERROR("haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");
 							
 		private String sAbbreviation,sStatusMessage,sDescription;
 

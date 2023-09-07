@@ -216,41 +216,41 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return objReturn;
 	}
 	
-	public static String getStatusStringByStatus(Enum enumSTATUS) throws ExceptionZZZ{
-		String sReturn=null;
-		main:{
-			
-			//TODO: Diese Strings müssen aus dem enum kommen
-			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Status="+enumSTATUS.name();			
-			System.out.println(sLog);
-			String a = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "NEW");
-			String c = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "CONNECTING");
-			String b = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "STARTING");
-			String d = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "CONNECTED");
-			String e = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "INTERRUPTED");
-			String f = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "DISCONNCTED");
-			String g = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "ERROR");
-			if(enumSTATUS.name().equalsIgnoreCase(a)){ 			
-				sReturn = "Not yet started.";
-			}else if(enumSTATUS.name().equalsIgnoreCase(b)) {
-				sReturn = "Starting ...";
-			}else if(enumSTATUS.name().equalsIgnoreCase(c)) {
-				sReturn = "Listening for Connection.";
-			}else if(enumSTATUS.name().equalsIgnoreCase(d)) {
-				sReturn = "Connected.";
-			}else if(enumSTATUS.name().equalsIgnoreCase(e)) {
-				sReturn = "Connection ended or interrupted.";
-			}else if(enumSTATUS.name().equalsIgnoreCase(f)) {
-				sReturn = "Stopped listening.";
-			}else if(enumSTATUS.name().equalsIgnoreCase(g)) {
-				sReturn = "ERROR.";			
-			}else{ 
-				sReturn = "... Status not handled ...";
-				break main;
-			}
-		}//end main:
-		return sReturn;
-	}
+//	public static String getStatusStringByStatus(Enum enumSTATUS) throws ExceptionZZZ{
+//		String sReturn=null;
+//		main:{
+//			
+//			//TODO: Diese Strings müssen aus dem enum kommen
+//			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Status="+enumSTATUS.name();			
+//			System.out.println(sLog);
+//			String a = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "NEW");
+//			String c = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "CONNECTING");
+//			String b = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "STARTING");
+//			String d = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "CONNECTED");
+//			String e = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "INTERRUPTED");
+//			String f = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "DISCONNCTED");
+//			String g = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "ERROR");
+//			if(enumSTATUS.name().equalsIgnoreCase(a)){ 			
+//				sReturn = "Not yet started.";
+//			}else if(enumSTATUS.name().equalsIgnoreCase(b)) {
+//				sReturn = "Starting ...";
+//			}else if(enumSTATUS.name().equalsIgnoreCase(c)) {
+//				sReturn = "Listening for Connection.";
+//			}else if(enumSTATUS.name().equalsIgnoreCase(d)) {
+//				sReturn = "Connected.";
+//			}else if(enumSTATUS.name().equalsIgnoreCase(e)) {
+//				sReturn = "Connection ended or interrupted.";
+//			}else if(enumSTATUS.name().equalsIgnoreCase(f)) {
+//				sReturn = "Stopped listening.";
+//			}else if(enumSTATUS.name().equalsIgnoreCase(g)) {
+//				sReturn = "ERROR.";			
+//			}else{ 
+//				sReturn = "... Status not handled ...";
+//				break main;
+//			}
+//		}//end main:
+//		return sReturn;
+//	}
 		
 	public boolean switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
 		boolean bReturn = false;
@@ -501,7 +501,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			String stemp = null;
 			check:{
 				if (this.objClientBackend == null || this.objClientBackend.getConfigChooserObject()==null || this.objClientBackend.getApplicationObject()==null){
-					sReturn = "Not yet tried to connect";
+					sReturn = ClientMainOVPN.STATUSLOCAL.ISLAUNCHED.getStatusMessage() + "(readStatusDetailString - objects NULL case)";
 					break main;
 				}
 			}//END check
@@ -605,7 +605,8 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		main:{
 			check:{
 				if (this.objClientBackend == null){
-					sReturn = "Not yet tried to connect";
+					sReturn = ClientMainOVPN.STATUSLOCAL.ISLAUNCHED.getStatusMessage() + "(objClientBackend NULL case)";
+					
 						break main;
 				}
 			}//END check:
