@@ -30,7 +30,7 @@ import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
-public class ClientMonitorRunnerZZZ extends KernelUseObjectZZZ implements Runnable,IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
+public class ClientThreadConnectionVpnIpMonitorZZZ extends KernelUseObjectZZZ implements Runnable,IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
 	private ClientMainOVPN objMain = null;
 	private ClientTrayUIZZZ objTray = null;
 	
@@ -47,7 +47,7 @@ public class ClientMonitorRunnerZZZ extends KernelUseObjectZZZ implements Runnab
 	//private int iStatusSet = 0;  //Der Status, der schon im Tray gesetzt ist. Damit er nicht permanent neu gesetzt wird.
 	private boolean bFlagConnectionRunnerStarted=false;
 	
-public ClientMonitorRunnerZZZ(IKernelZZZ objKernel, ClientTrayUIZZZ objTray, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
+public ClientThreadConnectionVpnIpMonitorZZZ(IKernelZZZ objKernel, ClientTrayUIZZZ objTray, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 	super(objKernel);
 	ConfigMonitorRunnerNew_(objTray, objConfig, saFlagControl);
 }

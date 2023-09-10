@@ -61,7 +61,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 
 	private SystemTray objTray = null;
 	private TrayIcon objTrayIcon = null;
-	private ClientMonitorRunnerZZZ  objMonitor = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verf�gung, bzw. �ndert das TrayIcon selbst.
+	private ClientThreadProcessWatchMonitorZZZ  objMonitor = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verf�gung, bzw. �ndert das TrayIcon selbst.
 	private ClientMainOVPN objClientBackend = null;
 	
 	//TODOGOON 20210210: Realisiere die Idee
@@ -177,7 +177,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientMonitorRunner-Object";
 			System.out.println(sLog);
 			this.getLogObject().WriteLineDate(sLog);
-			this.objMonitor = new ClientMonitorRunnerZZZ(this.getKernelObject(), this, this.objClientBackend, null);
+			this.objMonitor = new ClientThreadProcessWatchMonitorZZZ(this.getKernelObject(), this, this.objClientBackend, null);
 			this.getClientBackendObject().registerForStatusLocalEvent(this.objMonitor);
 			
 			//Monitor noch nicht starten!!!
@@ -353,7 +353,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				if(this.getClientBackendObject()==null)break main;
 				}
 				
-				ClientMonitorRunnerZZZ objMonitor = this.getMonitorObject();
+				ClientThreadProcessWatchMonitorZZZ objMonitor = this.getMonitorObject();
 				if(objMonitor==null) break main;
 				
 				boolean bStarted = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTED);
@@ -383,8 +383,8 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
 				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
 								
-				Thread objThreadMonitor = new Thread(objMonitor);
-				objThreadMonitor.start();
+				Thread objThreadMonitorThread = new Thread(objMonitor);
+				objThreadMonitorThread.start();
 								
 				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISCONNECTED" gesetzt und ein Event geworfen.
 				
@@ -414,7 +414,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				if(this.getClientBackendObject()==null)break main;
 				}
 				
-				ClientMonitorRunnerZZZ objMonitor = this.getMonitorObject();
+				ClientThreadProcessWatchMonitorZZZ objMonitor = this.getMonitorObject();
 				if(objMonitor==null) break main;
 				
 				boolean bStarted = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTED);
@@ -635,10 +635,10 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return this.objTrayIcon;
 	}
 	
-	public ClientMonitorRunnerZZZ  getMonitorObject(){
+	public ClientThreadProcessWatchMonitorZZZ  getMonitorObject(){
 		return this.objMonitor;
 	}
-	public void setMonitorObject(ClientMonitorRunnerZZZ objMonitor){
+	public void setMonitorObject(ClientThreadProcessWatchMonitorZZZ objMonitor){
 		this.objMonitor = objMonitor;
 	}
 	

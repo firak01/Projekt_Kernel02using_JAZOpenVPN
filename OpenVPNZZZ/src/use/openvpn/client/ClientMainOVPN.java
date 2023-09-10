@@ -495,12 +495,18 @@ private String sPortVPN = null;
 				if(this.objKernel==null) break main;				
 			}//END check:
 		
-		//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht. 
-		String stemp = this.objKernel.getParameter("StartingOnLaunch").getValue();
-		if(stemp==null) break main;
-		if(stemp.equals("1")){
-			bReturn = true;
-		}
+		boolean bProof = this.proofFlagSetBefore(IClientMainOVPN.FLAGZ.LAUNCHONSTART.name());
+		if(bProof) {
+			bReturn = this.getFlag(IClientMainOVPN.FLAGZ.LAUNCHONSTART.name());
+		}else {
+			//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht. 
+			String stemp = this.objKernel.getParameter("StartingOnLaunch").getValue();
+			if(stemp==null) break main;
+			if(stemp.equals("1")){
+				bReturn = true;
+			}
+			this.setFlag(IClientMainOVPN.FLAGZ.LAUNCHONSTART, bReturn);
+		}//end if
 		}//END main
 		return bReturn;
 	}	
@@ -512,12 +518,19 @@ private String sPortVPN = null;
 				if(this.objKernel==null) break main;				
 			}//END check:
 		
-		//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enth�lt, die wie der Application - Key aussieht. 
-		String stemp = this.objKernel.getParameter("ConnectOnStart").getValue();
-		if(stemp==null) break main;
-		if(stemp.equals("1")){
-			bReturn = true;
-		}
+			boolean bProof = this.proofFlagSetBefore(IClientMainOVPN.FLAGZ.CONNECTONSTART.name());
+			if(bProof) {
+				bReturn = this.getFlag(IClientMainOVPN.FLAGZ.CONNECTONSTART.name());				
+			}else {
+			
+				//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht. 
+				String stemp = this.objKernel.getParameter("ConnectOnStart").getValue();
+				if(stemp==null) break main;
+				if(stemp.equals("1")){
+					bReturn = true;
+				}
+				bReturn = this.setFlag(IClientMainOVPN.FLAGZ.CONNECTONSTART,bReturn);
+			}//end if
 		}//END main
 		return bReturn;
 	}
@@ -529,13 +542,19 @@ private String sPortVPN = null;
 				if(this.objKernel==null) break main;				
 			}//END check:
 		
-			//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enth�lt, die wie der Application - Key aussieht. 
-			String sPortScanEnabled = objKernel.getParameter("PortScanEnabled").getValue();
-			if(!StringZZZ.isEmpty(sPortScanEnabled)){
-				if(sPortScanEnabled=="1"){
-					bReturn = true;
-				}//END if sPortScanEnabled=="1"
-			}//END if(!StringZZZ.isEmpty(sPortScanEnabled)){			
+			boolean bProof = this.proofFlagSetBefore(IClientMainOVPN.FLAGZ.ENABLEPORTSCAN.name());
+			if(bProof) {
+				bReturn = this.getFlag(IClientMainOVPN.FLAGZ.ENABLEPORTSCAN.name());
+			}else {					
+				//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht. 
+				String sPortScanEnabled = objKernel.getParameter("PortScanEnabled").getValue();
+				if(!StringZZZ.isEmpty(sPortScanEnabled)){
+					if(sPortScanEnabled=="1"){
+						bReturn = true;
+					}//END if sPortScanEnabled=="1"
+				}//END if(!StringZZZ.isEmpty(sPortScanEnabled)){
+				this.setFlag(IClientMainOVPN.FLAGZ.ENABLEPORTSCAN, bReturn);
+			}//end if
 		}//END main
 		return bReturn;
 	}	
