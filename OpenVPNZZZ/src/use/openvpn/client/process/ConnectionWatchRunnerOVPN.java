@@ -1,4 +1,4 @@
-package use.openvpn.clientui;
+package use.openvpn.client.process;
 
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
@@ -16,13 +16,13 @@ import basic.zKernel.net.client.KernelPingHostZZZ;
  * @author 0823
  *
  */
-public class OVPNConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implements Runnable{
+public class ConnectionWatchRunnerOVPN extends KernelUseObjectZZZ implements Runnable{
 	private String sIP = null;
 	private String sPort = null;
 	
 	private boolean bFlagConnectionBroken = false;
 	
-public OVPNConnectionWatchRunnerZZZ(IKernelZZZ objKernel, String sIP, String sPort, String[] saFlagControl) throws ExceptionZZZ{
+public ConnectionWatchRunnerOVPN(IKernelZZZ objKernel, String sIP, String sPort, String[] saFlagControl) throws ExceptionZZZ{
 	super(objKernel);
 	OVPNConnectionWatchRunnerNew_(sIP, sPort, saFlagControl);
 }

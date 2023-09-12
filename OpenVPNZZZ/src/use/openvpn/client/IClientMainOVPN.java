@@ -6,7 +6,7 @@ import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 
 public interface IClientMainOVPN extends IStatusLocalUserZZZ, IEventBrokerStatusLocalSetUserOVPN{
 	public enum FLAGZ{
-		LAUNCHONSTART, ENABLEPORTSCAN, USEPROXY, DUMMY
+		LAUNCHONSTART, CONNECTONSTART, ENABLEPORTSCAN, USEPROXY, DUMMY
 	}
 
 //  In ClientMainZZZ verschoben als ClientMainStatusTypeZZZ interne enum-Klasse

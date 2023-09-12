@@ -1,6 +1,5 @@
-package use.openvpn.clientui;
+package use.openvpn.client.process;
 
-import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
@@ -30,7 +29,7 @@ import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
-public class ClientThreadProcessWatchMonitorZZZ extends KernelUseObjectZZZ implements Runnable,IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
+public class ClientThreadProcessWatchMonitorOVPN extends KernelUseObjectZZZ implements Runnable,IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
 	private ClientMainOVPN objMain = null;
 	private ClientTrayUIZZZ objTray = null;
 	
@@ -38,7 +37,7 @@ public class ClientThreadProcessWatchMonitorZZZ extends KernelUseObjectZZZ imple
 	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
 	private String sWatchRunnerStatusPrevious = new String("");    //den vorherigen Status festhalten, damit z.B. nicht immer wieder das Icon geholt wird.
 	
-	private OVPNConnectionWatchRunnerZZZ  objWatchRunner = null;
+	private ConnectionWatchRunnerOVPN  objWatchRunner = null;
 	private Thread objWatchThread = null;
 	
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
@@ -47,7 +46,7 @@ public class ClientThreadProcessWatchMonitorZZZ extends KernelUseObjectZZZ imple
 	//private int iStatusSet = 0;  //Der Status, der schon im Tray gesetzt ist. Damit er nicht permanent neu gesetzt wird.
 	private boolean bFlagConnectionRunnerStarted=false;
 	
-public ClientThreadProcessWatchMonitorZZZ(IKernelZZZ objKernel, ClientTrayUIZZZ objTray, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
+public ClientThreadProcessWatchMonitorOVPN(IKernelZZZ objKernel, ClientTrayUIZZZ objTray, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 	super(objKernel);
 	ConfigMonitorRunnerNew_(objTray, objConfig, saFlagControl);
 }
@@ -99,7 +98,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 	 				
 	 				//Starten der Threads, mit denen die OVPN-Processe gestartet werden sollen
 	 				Thread[] threadaOVPN = new Thread[listaStarter.size()];
-	 				ProcessWatchRunnerZZZ[] runneraOVPN = new ProcessWatchRunnerZZZ[listaStarter.size()];	
+	 				ProcessWatchRunnerOVPN[] runneraOVPN = new ProcessWatchRunnerOVPN[listaStarter.size()];	
 	 				int iNumberOfProcessStarted = 0;
 	 				for(int icount = 0; icount < listaStarter.size(); icount++){
 	 					iNumberOfProcessStarted++;	
@@ -111,7 +110,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 	 					}else{	
 	 						
 	 						//NEU: Einen anderen Thread zum "Monitoren" des Inputstreams des Processes verwenden. Dadurch werden die anderen Prozesse nicht angehalten.
-	 						 runneraOVPN[icount] =new ProcessWatchRunnerZZZ(objKernel, objProcess,iNumberOfProcessStarted, null);
+	 						 runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, null);
 	 						 threadaOVPN[icount] = new Thread(runneraOVPN[icount]);					
 	 						 threadaOVPN[icount].start();	 						 
 	 						this.objMain.logMessageString("Finished starting thread #" + iNumberOfProcessStarted + " von " + listaStarter.size() + " for watching connection.");
@@ -139,7 +138,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
  					do{			 							
  						//A) Beobachten der Threads, mit denen OVPN-gestartet werden soll						 						    
 						for(int icount2 = 0; icount2 < runneraOVPN.length; icount2++){
-							ProcessWatchRunnerZZZ runnerOVPN = runneraOVPN[icount2];
+							ProcessWatchRunnerOVPN runnerOVPN = runneraOVPN[icount2];
 							if(runnerOVPN == null){
 								if(baRunnerOVPNEndedMessage[icount2] !=false){ //Ziel: Unn�tigen Output vermeiden
 									//+++ Die Runner, die beendet worden sind und einen Fehler zurueckgemeldet haben vermerken. Die brauchen dann ja nicht mehr angepingt zu werden.

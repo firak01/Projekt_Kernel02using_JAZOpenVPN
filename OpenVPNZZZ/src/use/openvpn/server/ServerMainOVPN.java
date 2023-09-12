@@ -15,11 +15,11 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
 import use.openvpn.serverui.ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
-import use.openvpn.ProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientConfigTemplateUpdaterZZZ;
 import use.openvpn.client.ClientMainOVPN;
+import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.server.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
@@ -265,7 +265,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			//##########################################################################################
 			//+++ Diese OVPN-Konfigurationsfiles zum Starten der VPN-Verbindung verwenden !!!
 			Thread[] threadaOVPN = new Thread[listaFileConfigUsed.size()];
-			ProcessWatchRunnerZZZ[] runneraOVPN = new ProcessWatchRunnerZZZ[listaFileConfigUsed.size()];	
+			ProcessWatchRunnerOVPN[] runneraOVPN = new ProcessWatchRunnerOVPN[listaFileConfigUsed.size()];	
 			int iNumberOfProcessStarted = 0;
 			for(int icount=0; icount <= listaFileConfigUsed.size()-1; icount++){
 				File objFileConfigOvpn = (File) listaFileConfigUsed.get(icount);
@@ -282,7 +282,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 					this.addProcessStarter(objStarter);
 					
 					//NEU: Einen anderen Thread zum "Monitoren" des Inputstreams des Processes verwenden. Dadurch werden die anderen Prozesse nicht angehalten.
-					 runneraOVPN[icount] =new ProcessWatchRunnerZZZ(objKernel, objProcessTemp,icount, null);
+					 runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcessTemp,icount, null);
 					 threadaOVPN[icount] = new Thread(runneraOVPN[icount]);					
 					 threadaOVPN[icount].start();
 					 iNumberOfProcessStarted++;	

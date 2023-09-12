@@ -19,7 +19,7 @@ import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.FileFilterConfigOVPN;
-import use.openvpn.ProcessWatchRunnerZZZ;
+import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
