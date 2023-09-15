@@ -17,6 +17,7 @@ import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
 import use.openvpn.serverui.ServerTrayUIOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.process.IProcessWatchRunnerZZZ;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -200,7 +201,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 									baRunnerOVPNEndedMessage[icount2] = true;
 								}
 							}else{								
-								if(runnerOVPN.getFlag("hasError")==true && runnerOVPN.bEnded == true){
+								if(runnerOVPN.getFlag("hasError")==true && runnerOVPN.getFlag(IProcessWatchRunnerZZZ.FLAGZ.ENDED) == true){
 //					 							+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die auf einen Fehler gelaufen sind
 									this.objMain.logMessageString("Thread # " + (icount2+1) + " could not create a connection. Ending thread with ERROR reported. For more details look at the log file.");
 						
@@ -212,7 +213,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 									
 									Integer intTemp = new Integer(icount2);
 									listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll
-								}else if(runnerOVPN.getFlag("hasError")==false && runnerOVPN.bEnded == true){
+								}else if(runnerOVPN.getFlag("hasError")==false && runnerOVPN.getFlag(IProcessWatchRunnerZZZ.FLAGZ.ENDED) == true){
 //					 							//+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die einfach nur so beendet worden sind
 									//       Merke: Falls ein openvpn.exe die connection geschaft hat, wird dieser auf jeden Fall nicht beendet.
 									this.objMain.logMessageString("Thread # " + (icount2+1) + " could not create a connection. Ending thread. For more details look at the log file.");

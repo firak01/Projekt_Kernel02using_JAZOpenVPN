@@ -657,15 +657,15 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	 * @return
 	 * @throws ExceptionZZZ 
 	 */
-	public String[] getStatusLocal(boolean bValueToSearchFor) throws ExceptionZZZ{
-		return this.getStatusLocal_(bValueToSearchFor, false);
+	public String[] getStatusLocal(boolean bStatusValueToSearchFor) throws ExceptionZZZ{
+		return this.getStatusLocal_(bStatusValueToSearchFor, false);
 	}
 	
-	public String[] getStatusLocal(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
-		return this.getStatusLocal_(bValueToSearchFor, bLookupExplizitInHashMap);
+	public String[] getStatusLocal(boolean bStatusValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
+		return this.getStatusLocal_(bStatusValueToSearchFor, bLookupExplizitInHashMap);
 	}
 	
-	private String[]getStatusLocal_(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
+	private String[]getStatusLocal_(boolean bStatusValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
 		String[] saReturn = null;
 		main:{
 			ArrayList<String>listasTemp=new ArrayList<String>();
@@ -679,7 +679,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				Set<String> setKey = hmStatus.keySet();
 				for(String sKey : setKey){
 					boolean btemp = hmStatus.get(sKey);
-					if(btemp==bValueToSearchFor){
+					if(btemp==bStatusValueToSearchFor){
 						listasTemp.add(sKey);
 					}
 				}
@@ -693,7 +693,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				//Lösung:  Statt dessen explitzit über die HashMap der gesetzten Werte gehen....						
 				for(String sStatus : saStatus){
 					boolean btemp = this.getStatusLocal(sStatus);
-					if(btemp==bValueToSearchFor ){ //also 'true'
+					if(btemp==bStatusValueToSearchFor ){ //also 'true'
 						listasTemp.add(sStatus);
 					}
 				}

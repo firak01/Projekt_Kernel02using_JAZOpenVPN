@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
+import basic.zKernel.process.IProcessWatchRunnerZZZ;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
@@ -45,8 +46,9 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{
 			do{
 				//System.out.println("FGLTEST01");
 				//Wichtig: Man muss wohl zuallererst den InputStream abgreifen, damit der Process weiterlaufen kann.
-				this.writeOutputToLog();		
-				if(this.getFlag("hasConnection")) {
+				this.writeOutputToLog();
+				boolean bHasConnection = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.HASCONNECTION);
+				if(bHasConnection) {
 					sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
 					this.logLineDate(sLog);						
 					break;
@@ -55,7 +57,8 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{
 				
 				//System.out.println("FGLTEST02");
 				this.writeErrorToLog();
-				if(this.getFlag("hasError")) break;
+				boolean bError = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.HASERROR);
+				if(bError) break;
 
 				//TODOGOON: Und Statt des FlagHandling localStatus verwenden...
 				
@@ -69,9 +72,10 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{
 					throw ez;
 				}
 				
-				if( this.getFlag("stoprequested")==true) break;					
+				boolean bStopRequested = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.STOPREQUEST);
+				if(bStopRequested) break;					
 		}while(true);
-		this.bEnded = true;
+		this.setFlag(IProcessWatchRunnerZZZ.FLAGZ.ENDED, true);
 		this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
 					
 		}catch(ExceptionZZZ ez){
@@ -228,8 +232,11 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 	public boolean analyseInputLineCustom(String sLine) throws ExceptionZZZ {
 		boolean bReturn = false;
 		
+		int iProcess = this.getNumber();
+		String sLog = " Process#: " + iProcess + " - sLine=" + sLine;
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 		if(StringZZZ.contains(sLine,"TCP connection established with")) {
-			this.setFlag("hasConnection", true);
+			this.setFlag(IProcessWatchRunnerZZZ.FLAGZ.HASCONNECTION, true);
 			bReturn = true;
 		}
 		

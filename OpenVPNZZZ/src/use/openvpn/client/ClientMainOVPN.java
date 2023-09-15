@@ -591,14 +591,14 @@ private String sPortVPN = null;
 	 * @see basic.zKernel.status.IStatusLocalUserZZZ#getStatusLocal(java.lang.Enum)
 	 */
 	@Override
-	public boolean getStatusLocal(Enum enumStatusIn) throws ExceptionZZZ {
+	public boolean getStatusLocal(Enum objEnumStatusIn) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
-			if(enumStatusIn==null) {
+			if(objEnumStatusIn==null) {
 				break main;
 			}
 			
-			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
 			String sStatusName = enumStatus.name();
 			if(StringZZZ.isEmpty(sStatusName)) break main;
 										
@@ -651,13 +651,13 @@ private String sPortVPN = null;
 
 
 	@Override
-	public boolean[] setStatusLocal(Enum[] objaEnumStatus, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean[] setStatusLocal(Enum[] objaEnumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean[] baReturn=null;
 		main:{
-			if(!ArrayUtilZZZ.isEmpty(objaEnumStatus)) {
-				baReturn = new boolean[objaEnumStatus.length];
+			if(!ArrayUtilZZZ.isEmpty(objaEnumStatusIn)) {
+				baReturn = new boolean[objaEnumStatusIn.length];
 				int iCounter=-1;
-				for(Enum objEnumStatus:objaEnumStatus) {
+				for(Enum objEnumStatus:objaEnumStatusIn) {
 					iCounter++;
 					boolean bReturn = this.setStatusLocal(objEnumStatus, bStatusValue);
 					baReturn[iCounter]=bReturn;
@@ -724,15 +724,15 @@ private String sPortVPN = null;
 	}
 	
 	@Override
-	public boolean[] setStatusLocal(String[] saStatus, boolean bValue) throws ExceptionZZZ {
+	public boolean[] setStatusLocal(String[] saStatusName, boolean bStatusValue) throws ExceptionZZZ {
 		boolean[] baReturn=null;
 		main:{
-			if(!StringArrayZZZ.isEmptyTrimmed(saStatus)) {
-				baReturn = new boolean[saStatus.length];
+			if(!StringArrayZZZ.isEmptyTrimmed(saStatusName)) {
+				baReturn = new boolean[saStatusName.length];
 				int iCounter=-1;
-				for(String sStatusName:saStatus) {
+				for(String sStatusName:saStatusName) {
 					iCounter++;
-					boolean bReturn = this.setStatusLocal(sStatusName, bValue);
+					boolean bReturn = this.setStatusLocal(sStatusName, bStatusValue);
 					baReturn[iCounter]=bReturn;
 				}
 			}
