@@ -187,6 +187,19 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 									System.out.println("ClientMonitorRunnerThread: InterruptedExceptionError");
 									e.printStackTrace();
 								}
+								
+								//Wie an die sVpnIp rankommen.... Das geht über das ApplicationObjekt des erfolgreichen starters.								
+								ClientConfigStarterOVPN objStarter2 = (ClientConfigStarterOVPN) listaStarter.get(icount2);
+								String sVpnIp = objStarter2.getMainObject().getApplicationObject().getVpnIpRemote();
+								
+								String sLog = "Verbunden mit remote VPNIP='"+sVpnIp+"'";
+								this.objMain.logMessageString("Thread # " + (icount2+1) + " " + sLog);;
+								
+								//Nun die als "verbunden" gekennzeichnete IP an das ApplicationObjekt übergben.
+								objStarter2.getMainObject().getApplicationObject().setVpnIpRemoteEstablished(sVpnIp);
+								
+								TODOGOON20230916; //Dieser Wert wird aber vom Tray nicht erkannt / kommt im Backen objekt dort nicht an.
+								
 								//Einen Event werfen, der dann das Icon im Menue-Tray aendert, etc....
 								//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
 								//Dann erzeuge den Event und feuer ihn ab.

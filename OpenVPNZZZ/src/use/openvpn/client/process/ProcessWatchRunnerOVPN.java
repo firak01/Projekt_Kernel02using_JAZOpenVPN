@@ -5,11 +5,17 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.EnumSet;
+import java.util.HashMap;
 
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
+import basic.zKernel.process.ProcessWatchRunnerZZZ;
+import basic.zKernel.process.AbstractProcessWatchRunnerZZZ.STATUSLOCAL;
+import basic.zKernel.status.EventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
@@ -17,6 +23,7 @@ import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
@@ -114,16 +121,8 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{
 //			}else if(stemp.equals("hasconnection")) {
 //				bFunction = bFlagHasConnection;
 //				break main;
-//			}else if(stemp.equals("hasoutput")){
-//				bFunction = bFlagHasOutput;
-//				break main;
-//			}else if(stemp.equals("hasinput")){
-//				bFunction = bFlagHasInput;
-//				break main;
-//			}else if(stemp.equals("stoprequested")){
-//				bFunction = bFlagStopRequested;
-//				break main;
 //			}
+			
 		}//end main:
 		return bFunction;
 	}
@@ -153,18 +152,6 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{
 //			break main;
 //		}else if(stemp.equals("hasconnection")) {
 //			bFlagHasConnection = bFlagValue;
-//			bFunction = true;
-//			break main;
-//		}else if(stemp.equals("hasoutput")){
-//			bFlagHasOutput = bFlagValue;
-//			bFunction = true;
-//			break main;
-//		}else if(stemp.equals("hasinput")){
-//			bFlagHasInput = bFlagValue;
-//			bFunction = true;
-//			break main;
-//		}else if(stemp.equals("stoprequested")){
-//			bFlagStopRequested = bFlagValue;
 //			bFunction = true;
 //			break main;
 //		}
@@ -245,4 +232,182 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 	
 	//###### GETTER / SETTER
 	//sind eher in der Abstrakten Klasse
+	
+	//++++++ StatusLocal
+		@Override
+		public boolean getStatusLocal(Enum objEnumStatusIn) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(objEnumStatusIn==null) {
+					break main;
+				}
+				
+				//Merke: Bei einer anderen Klasse, die dieses DesingPattern nutzt, befindet sich der STATUSLOCAL in einer anderen Klasse
+				ProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
+				String sStatusName = enumStatus.name();
+				if(StringZZZ.isEmpty(sStatusName)) break main;
+											
+				HashMap<String, Boolean> hmFlag = this.getHashMapStatusLocal();
+				Boolean objBoolean = hmFlag.get(sStatusName.toUpperCase());
+				if(objBoolean==null){
+					bFunction = false;
+				}else{
+					bFunction = objBoolean.booleanValue();
+				}
+								
+			}	// end main:
+			
+			return bFunction;	
+		}
+		
+		@Override
+		public boolean setStatusLocal(Enum objEnumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(objEnumStatusIn==null) {
+					break main;
+				}
+			//return this.getStatusLocal(objEnumStatus.name());
+			//Nein, trotz der Redundanz nicht machen, da nun der Event anders gefeuert wird, nämlich über das enum
+			
+		    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
+		    ProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
+			String sStatusName = enumStatus.name();
+			bFunction = this.proofStatusLocalExists(sStatusName);															
+			if(bFunction == true){
+				
+				//Setze das Flag nun in die HashMap
+				HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+				hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+			
+				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+				//Dann erzeuge den Event und feuer ihn ab.
+				//Merke: Nun aber ueber das enum			
+				if(this.objEventStatusLocalBroker!=null) {
+					IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,enumStatus, bStatusValue);
+					this.objEventStatusLocalBroker.fireEvent(event);
+				}			
+				bFunction = true;								
+			}										
+		}	// end main:
+		return bFunction;
+		}
+		
+		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		//DIE INTERNE ENUM-KLASSE FUER STATUSLOCAL.
+		//Merke1: Diese könnte auch in eine extra Klasse ausgelagert werden (z.B. um es in einer Datenbank mit Hibernate zu persistieren.
+		//        Für die Auslagerung als extra Klasse, s.: EnumSetMappedTestTypeZZZ
+		//Merke2: Ohne diese interne Enum-Klasse würde das Enum der abstrakten Elternklasse genommen werden
+		//++++++++++++++++++++++++
+			
+		//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
+			//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
+			public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{	
+				ISSTARTED("isstarted","ProcessWatchRunner",""),
+				HASCONNECTION("hasconnection","ProcessWatchRunner ist mit dem Process verbunden",""),
+				HASOUTPUT("hasoutput","Prozess hat Output",""),
+				HASINPUT("hasinput","Prozess hat Input",""),
+				ISSTOPPED("isended","ProcessWatchRunner ist beendet",""),
+				HASERROR("haserror","Ein Fehler ist aufgetreten","");
+											
+			private String sAbbreviation,sStatusMessage,sDescription;
+
+			//#############################################
+			//#### Konstruktoren
+			//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
+			//In der Util-Klasse habe ich aber einen Workaround gefunden.
+			STATUSLOCAL(String sAbbreviation, String sStatusMessage, String sDescription) {
+			    this.sAbbreviation = sAbbreviation;
+			    this.sStatusMessage = sStatusMessage;
+			    this.sDescription = sDescription;
+			}
+
+			public String getAbbreviation() {
+			 return this.sAbbreviation;
+			}
+			
+			public String getStatusMessage() {
+				 return this.sStatusMessage;
+			}
+			
+			public EnumSet<?>getEnumSetUsed(){
+				return STATUSLOCAL.getEnumSet();
+			}
+
+			/* Die in dieser Methode verwendete Klasse für den ...TypeZZZ muss immer angepasst werden. */
+			@SuppressWarnings("rawtypes")
+			public static <E> EnumSet getEnumSet() {
+				
+			 //Merke: Das wird anders behandelt als FLAGZ Enumeration.
+				//String sFilterName = "FLAGZ"; /
+				//...
+				//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
+				
+				//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
+				Class<STATUSLOCAL> enumClass = STATUSLOCAL.class;
+				EnumSet<STATUSLOCAL> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
+				
+				//Merke: In einer anderen Klasse, die dieses DesingPattern nutzt, befinden sich die Enums in einer anderen Klasse
+				for(Object obj : ProcessWatchRunnerOVPN.class.getEnumConstants()){
+					//System.out.println(obj + "; "+obj.getClass().getName());
+					set.add((STATUSLOCAL) obj);
+				}
+				return set;
+				
+			}
+
+			//TODO: Mal ausprobieren was das bringt
+			//Convert Enumeration to a Set/List
+			private static <E extends Enum<E>>EnumSet<E> toEnumSet(Class<E> enumClass,long vector){
+				  EnumSet<E> set=EnumSet.noneOf(enumClass);
+				  long mask=1;
+				  for (  E e : enumClass.getEnumConstants()) {
+				    if ((mask & vector) == mask) {
+				      set.add(e);
+				    }
+				    mask<<=1;
+				  }
+				  return set;
+				}
+
+			//+++ Das könnte auch in einer Utility-Klasse sein.
+			//the valueOfMethod <--- Translating from DB
+			public static STATUSLOCAL fromAbbreviation(String s) {
+			for (STATUSLOCAL state : values()) {
+			   if (s.equals(state.getAbbreviation()))
+			       return state;
+			}
+			throw new IllegalArgumentException("Not a correct abbreviation: " + s);
+			}
+
+			//##################################################
+			//#### Folgende Methoden bring Enumeration von Hause aus mit. 
+					//Merke: Diese Methoden können aber nicht in eine abstrakte Klasse verschoben werden, zum daraus Erben. Grund: Enum erweitert schon eine Klasse.
+			@Override
+			public String getName() {	
+				return super.name();
+			}
+
+			@Override
+			public String toString() {//Mehrere Werte mit # abtennen
+			    return this.sAbbreviation+"="+this.sDescription;
+			}
+
+			@Override
+			public int getIndex() {
+				return ordinal();
+			}
+
+			//### Folgende Methoden sind zum komfortablen Arbeiten gedacht.
+			@Override
+			public int getPosition() {
+				return getIndex()+1; 
+			}
+
+			@Override
+			public String getDescription() {
+				return this.sDescription;
+			}
+			//+++++++++++++++++++++++++
+			}//End internal Enum Class
 }//END class

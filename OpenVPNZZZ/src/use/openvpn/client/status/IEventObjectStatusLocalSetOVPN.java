@@ -5,4 +5,5 @@ import use.openvpn.client.ClientMainOVPN;
 
 public interface IEventObjectStatusLocalSetOVPN extends IEventObjectStatusLocalSetZZZ{
 	public ClientMainOVPN.STATUSLOCAL getStatusEnum();
+
 }

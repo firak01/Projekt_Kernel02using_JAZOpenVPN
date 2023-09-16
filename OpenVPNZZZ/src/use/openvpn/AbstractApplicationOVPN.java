@@ -15,6 +15,7 @@ public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IAppl
 	private String sProxyHost = null;
 	private String sProxyPort = null;	
 	private String sVpnIpRemote = null;
+	private String sVpnIpRemoteEstablished = null; //die VpnIp mit der aktuell die Verbindung existiert (diese IP wird dann ggfs. auch mit ping ueberwacht)
 	private String sVpnIpLocal = null;
 	private String sIPLocal = null;
 	private String sIPIni = null;
@@ -197,6 +198,13 @@ public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IAppl
 		}
 		public void setVpnIpRemote(String sVpnIpRemote) {
 			this.sVpnIpRemote = sVpnIpRemote;
+		}
+				
+		public String getVpnIpRemoteEstablished() throws ExceptionZZZ {			
+			return this.sVpnIpRemoteEstablished;
+		}
+		public void setVpnIpRemoteEstablished(String sVpnIpRemote) {
+			this.sVpnIpRemoteEstablished = sVpnIpRemote;
 		}
 		
 		public String getVpnIpLocal() throws ExceptionZZZ {

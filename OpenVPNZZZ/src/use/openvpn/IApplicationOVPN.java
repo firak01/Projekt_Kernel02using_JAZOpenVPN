@@ -17,5 +17,8 @@ public interface IApplicationOVPN extends IMainUserOVPN{
 	String getTapAdapterUsed() throws ExceptionZZZ;
 
 	String getVpnIpRemote() throws ExceptionZZZ;
+	
+	String getVpnIpRemoteEstablished() throws ExceptionZZZ;
+	public void setVpnIpRemoteEstablished(String sVpnIp);
 
 }

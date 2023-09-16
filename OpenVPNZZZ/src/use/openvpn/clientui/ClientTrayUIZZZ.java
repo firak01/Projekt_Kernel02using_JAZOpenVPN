@@ -545,7 +545,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			sReturn = sReturn + "Remote IP: '" + stemp + "'\n";
 		}
 		 
-		if(this.objClientBackend.isPortScanEnabled()==true){
+		if(this.objClientBackend.isPortScanEnabled()==true){			 
 			stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getRemotePortScanned();
 			if(stemp == null){
 				sReturn = sReturn + "Remote Port(s): Not yet scanned.\n";
@@ -555,7 +555,8 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			}
 		}
 		
-		//VPNIP
+		//VPNIP, wird extra an die VpnIpEstablished-Property uebergeben, wenn eine Verbindung festgestellt wird.
+		//this.getClientMainObject().getApplicationObject().getVpnIpRemote() //Das wäre aber noch keine erstellte Verbindung, sondern eher nur das Ziel.
 		stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getVpnIpEstablished();
 		if(stemp == null){
 			sReturn = sReturn + "Remote VPN-IP: Not yet connected.\n";
@@ -831,6 +832,13 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTING==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTING);
 				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTED==objStatusEnum) {
+					
+					//Gibt es leider nicht eventStatusLocalSet.getSource();
+					//Also die verbundene IP aus dem Event holen.
+					//String sVpnIp = eventStatusLocalSet.getVpnIpEstablished();
+					//((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).setVpnIpEstablished(sVpnIp);
+					
+					
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
 //			}else if(ClientMainOVPN.STATUSLOCAL.PortScanAllFinished==objStatusEnum) {
 //					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
