@@ -54,25 +54,7 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 		}//END main:
 		return sReturn;
 	}
-	
-	public String readVpnIpRemote() throws ExceptionZZZ{
-		String sReturn = null;
-		main:{
-			IKernelZZZ objKernel = this.getKernelObject();
-			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigValues","VpnIpRemote").getValue();					
-		}//END main:
-		return sReturn;
-	}
-	
-	public String readVpnIpLocal() throws ExceptionZZZ{
-		String sReturn = null;
-		main:{
-			IKernelZZZ objKernel = this.getKernelObject();
-			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigValues","VpnIpLocal").getValue();					
-		}//END main:
-		return sReturn;
-	}
-	
+		
 	public String readTapAdapterUsed() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
@@ -201,16 +183,7 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	public void setRemotePortScanned(String sPortRemoteScanned) {
 		this.sPortRemoteScanned = sPortRemoteScanned;
 	}
-	
-	//Achtung: Im Gegensatz zu sIPRemote ist das f�r jede Konfiguration verschieden. Darf also nur dann gesetzt werden, wenn die Verbindung erfolgreich hergestellt wurde.
-	public String getVpnIpEstablished(){
-		return this.sIPVPN;
-	}
-	public void setVpnIpEstablished(String sIPVPN) {
-		this.sIPVPN = sIPVPN;
-	}
-	
-	
+		
 	/**This is a string filled by a port-scanner, after the connection was established.
 	 * This string is read out by the fronteend ui - class to set the status.
 	 * @return String

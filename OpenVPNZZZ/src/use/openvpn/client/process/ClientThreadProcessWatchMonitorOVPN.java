@@ -196,9 +196,8 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 								this.objMain.logMessageString("Thread # " + (icount2+1) + " " + sLog);;
 								
 								//Nun die als "verbunden" gekennzeichnete IP an das ApplicationObjekt übergben.
-								objStarter2.getMainObject().getApplicationObject().setVpnIpRemoteEstablished(sVpnIp);
-								
-								TODOGOON20230916; //Dieser Wert wird aber vom Tray nicht erkannt / kommt im Backen objekt dort nicht an.
+								objStarter2.getMainObject().getApplicationObject().setVpnIpRemoteEstablished(sVpnIp);								
+								//Dieser Wert wird aber vom Tray nicht erkannt / kommt im Backen objekt dort nicht an, darum das Application-Objekt noch dem Event explizit uebergeben.
 								
 								//Einen Event werfen, der dann das Icon im Menue-Tray aendert, etc....
 								//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
@@ -206,6 +205,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 								//Merke: Nun aber ueber das enum								
 								if(this.getSenderStatusLocalUsed()!=null) {
 									IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,ClientMainOVPN.STATUSLOCAL.ISCONNECTED, true);
+									event.setApplicationObjectUsed(objStarter2.getMainObject().getApplicationObject());
 									this.getSenderStatusLocalUsed().fireEvent(event);
 								}		 
 								

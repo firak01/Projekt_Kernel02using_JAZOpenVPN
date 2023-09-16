@@ -203,10 +203,10 @@ private String sPortVPN = null;
 			this.logMessageString("Checking if any OVPN connection is still established.");
 			String sVpnIp = this.scanVpnIpFirstEstablished(listaFileUsed);
 			if(sVpnIp!=null){
-				((ClientApplicationOVPN)this.getApplicationObject()).setVpnIpEstablished(sVpnIp);
+				((ClientApplicationOVPN)this.getApplicationObject()).setVpnIpRemoteEstablished(sVpnIp);
 				
 				//DAS IST NICHT AUSSAGEKRAEFTIG. DIE VPN-VERBINDUNG KANN UEBER EINEN GANZ ANDEREN PORT HERGESTELLT WORDEN SEIN !!! this.sPortVPN = objStarter.getVpnPort();	
-				this.logMessageString("A connection with an VPN target ip is still established: " + ((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished() + ". Quitting."); //+ ":" + this.getVpnPortEstablished() + ". Quitting.")
+				this.logMessageString("A connection with an VPN target ip is still established: " + ((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpRemoteEstablished() + ". Quitting."); //+ ":" + this.getVpnPortEstablished() + ". Quitting.")
 				
 				//NEU: HERAUSFINDEN, UEBER WELCHEN PORT DIE VERBINDUNG ERSTELLT WORDEN IST.
 				//TODO Das ist technisch, hinter einer Firewall, nicht so einfach zu realisieren.

@@ -5,6 +5,7 @@ import java.util.EventObject;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zKernel.status.EventObjectStatusLocalSetZZZ;
+import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.ServerMainOVPN.STATUSLOCAL;
@@ -18,7 +19,9 @@ import use.openvpn.server.ServerMainOVPN.STATUSLOCAL;
  */
 public class EventObjectStatusLocalSetOVPN extends EventObjectStatusLocalSetZZZ implements IEventObjectStatusLocalSetOVPN{
 	private ClientMainOVPN.STATUSLOCAL objStatusEnum=null;
-		
+	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
+	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
+	
 	/** In dem Konstruktor wird neben der ID dieses Events auch der identifizierende Name der neu gewaehlten Komponente �bergeben.
 	 * @param source
 	 * @param iID
@@ -33,11 +36,25 @@ public class EventObjectStatusLocalSetOVPN extends EventObjectStatusLocalSetZZZ 
 		this.objStatusEnum=objStatusEnum;
 	}
 	
+	
+	//### Aus Interface
 	@Override
 	public ClientMainOVPN.STATUSLOCAL getStatusEnum() {
 		return this.objStatusEnum;
 	}
 	
+	@Override
+	public IApplicationOVPN getApplicationObjectUsed() {
+		return this.objApplication;
+	}
+
+	@Override
+	public void setApplicationObjectUsed(IApplicationOVPN objApplication) {
+		this.objApplication = objApplication;
+	}
+
+	
+	//++++++++++
 	@Override
 	public String getStatusText(){
 		if(this.objStatusEnum==null) {
@@ -47,6 +64,8 @@ public class EventObjectStatusLocalSetOVPN extends EventObjectStatusLocalSetZZZ 
 		}
 	}
 	
+	
+	//++++++++
 	@Override
 	public ExceptionZZZ getExceptionObject() {
 		return null;
@@ -55,7 +74,5 @@ public class EventObjectStatusLocalSetOVPN extends EventObjectStatusLocalSetZZZ 
 	@Override
 	public void setExceptionObject(ExceptionZZZ objException) {
 	}
-
-	
 }
 

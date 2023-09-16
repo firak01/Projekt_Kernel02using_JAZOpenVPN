@@ -17,6 +17,7 @@ import javax.swing.JPopupMenu;
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
+import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
@@ -501,7 +502,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		main:{
 			String stemp = null;
 			check:{
-				if (this.objClientBackend == null || this.objClientBackend.getConfigChooserObject()==null || this.objClientBackend.getApplicationObject()==null){
+				if (this.getClientBackendObject() == null || this.getClientBackendObject().getConfigChooserObject()==null || this.getClientBackendObject().getApplicationObject()==null){
 					sReturn = ClientMainOVPN.STATUSLOCAL.ISLAUNCHED.getStatusMessage() + "(readStatusDetailString - objects NULL case)";
 					break main;
 				}
@@ -513,7 +514,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}else{
 			//20200114: Erweiterung - Angabe des Rechnernamens
 			try {				
-					String sServerOrClient = this.objClientBackend.getConfigChooserObject().getOvpnContextUsed();
+					String sServerOrClient = this.getClientBackendObject().getConfigChooserObject().getOvpnContextUsed();
 					sReturn = sReturn + sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
 			} catch (UnknownHostException e) {				
 				e.printStackTrace();
@@ -524,13 +525,13 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			sReturn = sReturn + "STATUS: " + sStatusString + "\n";
 		}
 		
-		if(this.objClientBackend.getFlag("useProxy")==true){
-			sReturn = sReturn + "Proxy: " + this.objClientBackend.getApplicationObject().getProxyHost() + ":" + this.objClientBackend.getApplicationObject().getProxyPort() + "\n"; 					
+		if(this.getClientBackendObject().getFlag("useProxy")==true){
+			sReturn = sReturn + "Proxy: " + this.getClientBackendObject().getApplicationObject().getProxyHost() + ":" + this.objClientBackend.getApplicationObject().getProxyPort() + "\n"; 					
 		}else{
 			sReturn = sReturn + "No proxy.\n";
 		}
 		
-		stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getURL2Parse();
+		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getURL2Parse();
 		if(stemp==null){
 			sReturn = sReturn + "Parsed URL: NOT RECEIVED\n";
 		}else{
@@ -538,26 +539,26 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}
 		
 		//REMOTE
-		stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getIpRemote();
+		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getIpRemote();
 		if(stemp==null){
 			sReturn = sReturn + "Remote IP: Not found on URL.\n";
 		}else{
 			sReturn = sReturn + "Remote IP: '" + stemp + "'\n";
 		}
 		 
-		if(this.objClientBackend.isPortScanEnabled()==true){			 
-			stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getRemotePortScanned();
+		if(this.getClientBackendObject().isPortScanEnabled()){			 
+			stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getRemotePortScanned();
 			if(stemp == null){
 				sReturn = sReturn + "Remote Port(s): Not yet scanned.\n";
 			}else{
-				stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getRemotePortScanned();
+				stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getRemotePortScanned();
 				sReturn = sReturn + "Remote Port(s):" + stemp+"\n";
 			}
 		}
 		
 		//VPNIP, wird extra an die VpnIpEstablished-Property uebergeben, wenn eine Verbindung festgestellt wird.
 		//this.getClientMainObject().getApplicationObject().getVpnIpRemote() //Das wäre aber noch keine erstellte Verbindung, sondern eher nur das Ziel.
-		stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getVpnIpEstablished();
+		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnIpRemoteEstablished();
 		if(stemp == null){
 			sReturn = sReturn + "Remote VPN-IP: Not yet connected.\n";
 		}else{
@@ -568,31 +569,31 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			*/
 		}
 		
-		if(this.objClientBackend.isPortScanEnabled()==true){
-			stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getVpnPortScanned();
+		if(this.getClientBackendObject().isPortScanEnabled()==true){
+			stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnPortScanned();
 			if(stemp == null){
 				sReturn = sReturn + "Remote VPN-IP Port(s): Not yet scanned.\n";
 			}else{
-				stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getVpnPortScanned();
+				stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnPortScanned();
 				sReturn = sReturn + "Remote VPN-IP Port(s):" + stemp+"\n";
 			}
 		}
 		
-		String sTap = this.objClientBackend.getApplicationObject().getTapAdapterUsed();
+		String sTap = this.getClientBackendObject().getApplicationObject().getTapAdapterUsed();
 		if(sTap==null){
 			sTap = "-> TAP Adapter: Not defined in Kernel Ini-File.";
 		}else{
 			sTap = "-> TAP Adapter: '" + sTap + "'";
 		}
 		
-		stemp = ((ClientApplicationOVPN)this.objClientBackend.getApplicationObject()).getVpnIpLocal();
+		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnIpLocal();
 		if(stemp==null){
 			sReturn = sReturn + "Local VPN-IP: Not defined in Kernel Ini-File.\n\t\t" + sTap + "\n";
 		}else{
 			sReturn = sReturn + "Local VPN-IP: '" + stemp + "'\n\t\t" + sTap + "\n";
 		}
 		
-		stemp = this.objClientBackend.getApplicationObject().getIpLocal();
+		stemp = this.getClientBackendObject().getApplicationObject().getIpLocal();
 		if(stemp==null){
 			sReturn = sReturn + "Local IP: Not availabel.\n";
 		}else{
@@ -606,14 +607,14 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		String sReturn = "";
 		main:{
 			check:{
-				if (this.objClientBackend == null){
+				if (this.getClientBackendObject() == null){
 					sReturn = ClientMainOVPN.STATUSLOCAL.ISLAUNCHED.getStatusMessage() + "(objClientBackend NULL case)";
 					
 						break main;
 				}
 			}//END check:
 		
-		ArrayList listaLogString = this.objClientBackend.getMessageStringAll();
+		ArrayList listaLogString = this.getClientBackendObject().getMessageStringAll();
 		if(listaLogString.isEmpty()){
 			if (this.objClientBackend == null){
 					sReturn = "No log string available.";
@@ -832,14 +833,16 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTING==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTING);
 				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTED==objStatusEnum) {
-					
-					//Gibt es leider nicht eventStatusLocalSet.getSource();
-					//Also die verbundene IP aus dem Event holen.
-					//String sVpnIp = eventStatusLocalSet.getVpnIpEstablished();
-					//((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).setVpnIpEstablished(sVpnIp);
-					
-					
+				
+					//Ggfs. vorhandene Aenderungen aus dem Backend-Application-Objekt des Events holen, bzw. hier das ganze Backen-Objekt austauschen
+					//Dann kann sich z.B. die Datailinfo-box die aktuellsten Werte daraus holen.
+					IApplicationOVPN objApplicationUsed = eventStatusLocalSet.getApplicationObjectUsed();
+					if(objApplicationUsed!=null) {
+						this.getClientBackendObject().setApplicationObject(objApplicationUsed);
+					}
 					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
+					
+					
 //			}else if(ClientMainOVPN.STATUSLOCAL.PortScanAllFinished==objStatusEnum) {
 //					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
 				}else if(ClientMainOVPN.STATUSLOCAL.HASERROR==objStatusEnum) {
