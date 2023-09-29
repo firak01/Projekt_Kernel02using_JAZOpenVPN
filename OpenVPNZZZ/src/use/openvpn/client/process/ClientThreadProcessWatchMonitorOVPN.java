@@ -17,6 +17,7 @@ import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
 import use.openvpn.serverui.ServerTrayUIOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
 
 import java.io.File;
@@ -34,18 +35,13 @@ public class ClientThreadProcessWatchMonitorOVPN extends KernelUseObjectZZZ impl
 	private ClientMainOVPN objMain = null;
 	private ClientTrayUIZZZ objTray = null;
 	
-	private HashMap hmWatchRunnerStatus = new HashMap(); //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
 	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
 	private String sWatchRunnerStatusPrevious = new String("");    //den vorherigen Status festhalten, damit z.B. nicht immer wieder das Icon geholt wird.
 	
-	private ConnectionWatchRunnerOVPN  objWatchRunner = null;
-	private Thread objWatchThread = null;
+//	private ConnectionWatchRunnerOVPN  objWatchRunner = null;
+//	private Thread objWatchThread = null;
 	
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
-	
-	
-	//private int iStatusSet = 0;  //Der Status, der schon im Tray gesetzt ist. Damit er nicht permanent neu gesetzt wird.
-	private boolean bFlagConnectionRunnerStarted=false;
 	
 public ClientThreadProcessWatchMonitorOVPN(IKernelZZZ objKernel, ClientTrayUIZZZ objTray, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 	super(objKernel);
@@ -89,7 +85,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 			}//END check:
 		   
 			
-			boolean bConnected= false;			
+//			boolean bConnected= false;			
 								
 				//######### 20230826 Verschoben aus ClientMainOVPN.start(), durch das Aufteilen sind mehrere Prozesse parallel moeglich.					
  				//+++ Noch keine Verbindung/Noch fehlende Verbindungen, dann wird es aber Zeit verschiedene Threads damit zu beauftragen
@@ -148,10 +144,10 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 								this.objMain.logMessageString("Runner # " + (icount2+1) + " was set to  null.");
 								baRunnerOVPNEndedMessage[icount2] = true;
 							}
-						}else{
-							boolean bHasError = runnerOVPN.getFlag(IProcessWatchRunnerZZZ.FLAGZ.HASERROR);
-							boolean bEnded = runnerOVPN.getFlag(IProcessWatchRunnerZZZ.FLAGZ.ENDED);
-							boolean bHasConnection = runnerOVPN.getFlag(IProcessWatchRunnerZZZ.FLAGZ.HASCONNECTION);
+						}else{							
+							boolean bHasError = runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR);
+							boolean bEnded = runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED);
+							boolean bHasConnection = runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
 							if(bHasError && bEnded){
 					 			
 								//+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die auf einen Fehler gelaufen sind
@@ -309,11 +305,11 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 			if(bFunction==true) break main;
 		
 			//getting the flags of this object
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("connectionrunnerstarted")){
-				bFunction = bFlagConnectionRunnerStarted;
-				break main;
-			}		
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("connectionrunnerstarted")){
+//				bFunction = bFlagConnectionRunnerStarted;
+//				break main;
+//			}		
 		}//end main:
 		return bFunction;
 	}
@@ -333,13 +329,13 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 			if(bFunction==true) break main;
 			
 			//setting the flags of this object
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("connectionrunnerstarted")){
-				bFlagConnectionRunnerStarted = bFlagValue;
-				bFunction = true;
-				break main;
-	
-			}
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("connectionrunnerstarted")){
+//				bFlagConnectionRunnerStarted = bFlagValue;
+//				bFunction = true;
+//				break main;
+//	
+//			}
 		}//end main:
 		return bFunction;
 	}

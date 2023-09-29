@@ -43,48 +43,43 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{
 		
 		main:{
 			try{
-			check:{
+				String sLog = "ProcessWatchRunner #"+ this.getNumber() + " started.";
+				this.logLineDate(sLog);
 				
-			}//END check:
-			String sLog = "ProcessWatchRunner #"+ this.getNumber() + " started.";
-			this.logLineDate(sLog);
-			
-			//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
-			do{
-				//System.out.println("FGLTEST01");
-				//Wichtig: Man muss wohl zuallererst den InputStream abgreifen, damit der Process weiterlaufen kann.
-				this.writeOutputToLog();
-				boolean bHasConnection = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.HASCONNECTION);
-				if(bHasConnection) {
-					sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
-					this.logLineDate(sLog);						
-					break;
-				}
-				
-				
-				//System.out.println("FGLTEST02");
-				this.writeErrorToLog();
-				boolean bError = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.HASERROR);
-				if(bError) break;
-
-				//TODOGOON: Und Statt des FlagHandling localStatus verwenden...
-				
-				//Nach irgendeiner Ausgabe enden ist hier falsch, in einer abstrakten Klasse vielleicht richtig, quasi als Muster.
-				//if(this.getFlag("hasOutput")) break;
-				//System.out.println("FGLTEST03");
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					ExceptionZZZ ez = new ExceptionZZZ("An InterruptedException happened: '" + e.getMessage() + "''", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}
-				
-				boolean bStopRequested = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.STOPREQUEST);
-				if(bStopRequested) break;					
-		}while(true);
-		this.setFlag(IProcessWatchRunnerZZZ.FLAGZ.ENDED, true);
-		this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
+				//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
+				do{
+					//System.out.println("FGLTEST01");
+					//Wichtig: Man muss wohl zuallererst den InputStream abgreifen, damit der Process weiterlaufen kann.
+					this.writeOutputToLog();				
+					boolean bHasConnection = this.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
+					if(bHasConnection) {
+						sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
+						this.logLineDate(sLog);						
+						break;
+					}
 					
+					
+					//System.out.println("FGLTEST02");
+					this.writeErrorToLog();				
+					boolean bError = this.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR);
+					if(bError) break;
+	
+					//Nach irgendeiner Ausgabe enden ist hier falsch, in einer abstrakten Klasse vielleicht richtig, quasi als Muster.
+					//if(this.getFlag("hasOutput")) break;
+					//System.out.println("FGLTEST03");
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						ExceptionZZZ ez = new ExceptionZZZ("An InterruptedException happened: '" + e.getMessage() + "''", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+						throw ez;
+					}
+					
+					boolean bStopRequested = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.STOPREQUEST);//Merke: Das ist eine Anweisung und kein Status. Darum bleibt es beim Flag.
+					if(bStopRequested) break;					
+			}while(true);
+			this.setStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED,true);
+			this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
+						
 		}catch(ExceptionZZZ ez){
 			try {
 				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
@@ -223,7 +218,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		String sLog = " Process#: " + iProcess + " - sLine=" + sLine;
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
 		if(StringZZZ.contains(sLine,"TCP connection established with")) {
-			this.setFlag(IProcessWatchRunnerZZZ.FLAGZ.HASCONNECTION, true);
+			this.setStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, true);
 			bReturn = true;
 		}
 		
@@ -293,121 +288,4 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		return bFunction;
 		}
 		
-		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		//DIE INTERNE ENUM-KLASSE FUER STATUSLOCAL.
-		//Merke1: Diese könnte auch in eine extra Klasse ausgelagert werden (z.B. um es in einer Datenbank mit Hibernate zu persistieren.
-		//        Für die Auslagerung als extra Klasse, s.: EnumSetMappedTestTypeZZZ
-		//Merke2: Ohne diese interne Enum-Klasse würde das Enum der abstrakten Elternklasse genommen werden
-		//++++++++++++++++++++++++
-			
-		//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
-			//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
-			public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{	
-				ISSTARTED("isstarted","ProcessWatchRunner",""),
-				HASCONNECTION("hasconnection","ProcessWatchRunner ist mit dem Process verbunden",""),
-				HASOUTPUT("hasoutput","Prozess hat Output",""),
-				HASINPUT("hasinput","Prozess hat Input",""),
-				ISSTOPPED("isended","ProcessWatchRunner ist beendet",""),
-				HASERROR("haserror","Ein Fehler ist aufgetreten","");
-											
-			private String sAbbreviation,sStatusMessage,sDescription;
-
-			//#############################################
-			//#### Konstruktoren
-			//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-			//In der Util-Klasse habe ich aber einen Workaround gefunden.
-			STATUSLOCAL(String sAbbreviation, String sStatusMessage, String sDescription) {
-			    this.sAbbreviation = sAbbreviation;
-			    this.sStatusMessage = sStatusMessage;
-			    this.sDescription = sDescription;
-			}
-
-			public String getAbbreviation() {
-			 return this.sAbbreviation;
-			}
-			
-			public String getStatusMessage() {
-				 return this.sStatusMessage;
-			}
-			
-			public EnumSet<?>getEnumSetUsed(){
-				return STATUSLOCAL.getEnumSet();
-			}
-
-			/* Die in dieser Methode verwendete Klasse für den ...TypeZZZ muss immer angepasst werden. */
-			@SuppressWarnings("rawtypes")
-			public static <E> EnumSet getEnumSet() {
-				
-			 //Merke: Das wird anders behandelt als FLAGZ Enumeration.
-				//String sFilterName = "FLAGZ"; /
-				//...
-				//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
-				
-				//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
-				Class<STATUSLOCAL> enumClass = STATUSLOCAL.class;
-				EnumSet<STATUSLOCAL> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
-				
-				//Merke: In einer anderen Klasse, die dieses DesingPattern nutzt, befinden sich die Enums in einer anderen Klasse
-				for(Object obj : ProcessWatchRunnerOVPN.class.getEnumConstants()){
-					//System.out.println(obj + "; "+obj.getClass().getName());
-					set.add((STATUSLOCAL) obj);
-				}
-				return set;
-				
-			}
-
-			//TODO: Mal ausprobieren was das bringt
-			//Convert Enumeration to a Set/List
-			private static <E extends Enum<E>>EnumSet<E> toEnumSet(Class<E> enumClass,long vector){
-				  EnumSet<E> set=EnumSet.noneOf(enumClass);
-				  long mask=1;
-				  for (  E e : enumClass.getEnumConstants()) {
-				    if ((mask & vector) == mask) {
-				      set.add(e);
-				    }
-				    mask<<=1;
-				  }
-				  return set;
-				}
-
-			//+++ Das könnte auch in einer Utility-Klasse sein.
-			//the valueOfMethod <--- Translating from DB
-			public static STATUSLOCAL fromAbbreviation(String s) {
-			for (STATUSLOCAL state : values()) {
-			   if (s.equals(state.getAbbreviation()))
-			       return state;
-			}
-			throw new IllegalArgumentException("Not a correct abbreviation: " + s);
-			}
-
-			//##################################################
-			//#### Folgende Methoden bring Enumeration von Hause aus mit. 
-					//Merke: Diese Methoden können aber nicht in eine abstrakte Klasse verschoben werden, zum daraus Erben. Grund: Enum erweitert schon eine Klasse.
-			@Override
-			public String getName() {	
-				return super.name();
-			}
-
-			@Override
-			public String toString() {//Mehrere Werte mit # abtennen
-			    return this.sAbbreviation+"="+this.sDescription;
-			}
-
-			@Override
-			public int getIndex() {
-				return ordinal();
-			}
-
-			//### Folgende Methoden sind zum komfortablen Arbeiten gedacht.
-			@Override
-			public int getPosition() {
-				return getIndex()+1; 
-			}
-
-			@Override
-			public String getDescription() {
-				return this.sDescription;
-			}
-			//+++++++++++++++++++++++++
-			}//End internal Enum Class
 }//END class

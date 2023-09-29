@@ -17,6 +17,7 @@ import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
 import use.openvpn.serverui.ServerTrayUIOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
 
 import java.io.File;
@@ -34,18 +35,13 @@ public class ClientThreadConnectionVpnIpMonitorZZZ extends KernelUseObjectZZZ im
 	private ClientMainOVPN objMain = null;
 	private ClientTrayUIZZZ objTray = null;
 	
-	private HashMap hmWatchRunnerStatus = new HashMap(); //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
 	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
 	private String sWatchRunnerStatusPrevious = new String("");    //den vorherigen Status festhalten, damit z.B. nicht immer wieder das Icon geholt wird.
 	
-	private ConnectionWatchRunnerOVPN  objWatchRunner = null;
-	private Thread objWatchThread = null;
+//	private ConnectionWatchRunnerOVPN  objWatchRunner = null;
+//	private Thread objWatchThread = null;
 	
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
-	
-	
-	//private int iStatusSet = 0;  //Der Status, der schon im Tray gesetzt ist. Damit er nicht permanent neu gesetzt wird.
-	private boolean bFlagConnectionRunnerStarted=false;
 	
 public ClientThreadConnectionVpnIpMonitorZZZ(IKernelZZZ objKernel, ClientTrayUIZZZ objTray, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 	super(objKernel);
@@ -200,8 +196,8 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 									this.objMain.logMessageString("Runner # " + (icount2+1) + " was set to  null.");
 									baRunnerOVPNEndedMessage[icount2] = true;
 								}
-							}else{								
-								if(runnerOVPN.getFlag("hasError")==true && runnerOVPN.getFlag(IProcessWatchRunnerZZZ.FLAGZ.ENDED) == true){
+							}else{																
+								if(runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR) && runnerOVPN.getStatusLocal(AbstractProcessWatchRunnerZZZ.STATUSLOCAL.ISSTOPPED)){
 //					 							+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die auf einen Fehler gelaufen sind
 									this.objMain.logMessageString("Thread # " + (icount2+1) + " could not create a connection. Ending thread with ERROR reported. For more details look at the log file.");
 						
@@ -212,8 +208,8 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 									runneraOVPN[icount2]=null;
 									
 									Integer intTemp = new Integer(icount2);
-									listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll
-								}else if(runnerOVPN.getFlag("hasError")==false && runnerOVPN.getFlag(IProcessWatchRunnerZZZ.FLAGZ.ENDED) == true){
+									listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll								
+								}else if(!runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR) && runnerOVPN.getStatusLocal(AbstractProcessWatchRunnerZZZ.STATUSLOCAL.ISSTOPPED)){
 //					 							//+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die einfach nur so beendet worden sind
 									//       Merke: Falls ein openvpn.exe die connection geschaft hat, wird dieser auf jeden Fall nicht beendet.
 									this.objMain.logMessageString("Thread # " + (icount2+1) + " could not create a connection. Ending thread. For more details look at the log file.");
@@ -227,7 +223,7 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 									Integer intTemp = new Integer(icount2);
 									listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll
 									
-								}else if(runnerOVPN.getFlag("hasConnection")){
+								}else if(runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION)){
 									this.objMain.logMessageString("Thread # " + (icount2+1) + " has connection.");
 									try {
 										Thread.sleep(lThreadSleepTime);
@@ -515,11 +511,11 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 			if(bFunction==true) break main;
 		
 			//getting the flags of this object
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("connectionrunnerstarted")){
-				bFunction = bFlagConnectionRunnerStarted;
-				break main;
-			}		
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("connectionrunnerstarted")){
+//				bFunction = bFlagConnectionRunnerStarted;
+//				break main;
+//			}		
 		}//end main:
 		return bFunction;
 	}
@@ -539,13 +535,13 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 			if(bFunction==true) break main;
 			
 			//setting the flags of this object
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("connectionrunnerstarted")){
-				bFlagConnectionRunnerStarted = bFlagValue;
-				bFunction = true;
-				break main;
-	
-			}
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("connectionrunnerstarted")){
+//				bFlagConnectionRunnerStarted = bFlagValue;
+//				bFunction = true;
+//				break main;
+//	
+//			}
 		}//end main:
 		return bFunction;
 	}
