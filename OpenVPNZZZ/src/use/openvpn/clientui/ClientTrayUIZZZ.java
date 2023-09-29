@@ -179,7 +179,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientMonitorRunner-Object";
 			System.out.println(sLog);
 			this.getLogObject().WriteLineDate(sLog);
-			this.objMonitor = new ClientThreadProcessWatchMonitorOVPN(this.getKernelObject(), this, this.objClientBackend, null);
+			this.objMonitor = new ClientThreadProcessWatchMonitorOVPN(this.getKernelObject(), this.getClientBackendObject(), null);
 			this.getClientBackendObject().registerForStatusLocalEvent(this.objMonitor);
 			
 			//Monitor noch nicht starten!!!
@@ -408,6 +408,10 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return bReturn;		
 	}
 	
+	/** Hiermit wird der Prozess gestartet, der die erfolgreiche Verbindung permanent mit einem PING ueberwacht.
+	 * @return
+	 * @author Fritz Lindhauer, 29.09.2023, 17:09:11
+	 */
 	public boolean watch(){
 		boolean bReturn = false;
 		main:{
@@ -441,6 +445,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				
 				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);
 				
+				TODOGOON20230929;
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
 				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
 				

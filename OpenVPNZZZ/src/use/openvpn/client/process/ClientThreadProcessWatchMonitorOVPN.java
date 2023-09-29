@@ -33,7 +33,6 @@ import basic.zKernel.KernelUseObjectZZZ;
 
 public class ClientThreadProcessWatchMonitorOVPN extends KernelUseObjectZZZ implements Runnable,IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
 	private ClientMainOVPN objMain = null;
-	private ClientTrayUIZZZ objTray = null;
 	
 	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
 	private String sWatchRunnerStatusPrevious = new String("");    //den vorherigen Status festhalten, damit z.B. nicht immer wieder das Icon geholt wird.
@@ -43,12 +42,12 @@ public class ClientThreadProcessWatchMonitorOVPN extends KernelUseObjectZZZ impl
 	
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
-public ClientThreadProcessWatchMonitorOVPN(IKernelZZZ objKernel, ClientTrayUIZZZ objTray, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
+public ClientThreadProcessWatchMonitorOVPN(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 	super(objKernel);
-	ConfigMonitorRunnerNew_(objTray, objConfig, saFlagControl);
+	ConfigMonitorRunnerNew_(objConfig, saFlagControl);
 }
 
-private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
+private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
 	main:{
 		
 		check:{
@@ -68,7 +67,6 @@ private void ConfigMonitorRunnerNew_(ClientTrayUIZZZ objTray, ClientMainOVPN obj
 		
 						
 			this.objMain = objMain;
-			this.objTray = objTray;
 		}//End check
 
 	}//END main
