@@ -20,25 +20,11 @@ import javax.swing.JTextField;
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
-import use.openvpn.client.ClientConfigFileZZZ;
-import use.openvpn.client.ClientMainOVPN;
-import use.openvpn.server.IServerMainOVPN;
-import use.openvpn.server.ServerMainOVPN;
-import use.openvpn.server.ServerMainOVPN.STATUSLOCAL;
-import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
-import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
-import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
-import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
-import use.openvpn.serverui.component.FTPCredentials.IConstantProgramFTPCredentialsOVPN;
-import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetUtilZZZ;
-import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
-import basic.zBasic.util.file.JarEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -47,12 +33,19 @@ import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
-import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
-import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
-import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.util.JTextFieldHelperZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
+import use.openvpn.client.ClientConfigFileZZZ;
+import use.openvpn.server.IServerMainOVPN;
+import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
+import use.openvpn.server.ServerMainOVPN;
+import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
+import use.openvpn.serverui.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
+import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
+import use.openvpn.serverui.component.FTPCredentials.IConstantProgramFTPCredentialsOVPN;
+import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 
 public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListener, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN {		
 	private static final long serialVersionUID = 4170579821557468353L;
@@ -240,13 +233,13 @@ public class ServerTrayUIOVPN extends KernelUseObjectZZZ implements ActionListen
 			//TODO: Diese Strings müssen aus dem enum kommen
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Status="+enumSTATUS.name();			
 			System.out.println(sLog);
-			String a = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.class, "NEW");
-			String b = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.class, "STARTING");
-			String c = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.class, "LISTENING");
-			String d = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.class, "CONNECTED");
-			String e = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.class, "INTERRUPTED");
-			String f = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.class, "STOPPED");
-			String g = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.class, "ERROR");
+			String a = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusTypeZZZ.class, "NEW");
+			String b = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusTypeZZZ.class, "STARTING");
+			String c = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusTypeZZZ.class, "LISTENING");
+			String d = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusTypeZZZ.class, "CONNECTED");
+			String e = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusTypeZZZ.class, "INTERRUPTED");
+			String f = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusTypeZZZ.class, "STOPPED");
+			String g = EnumSetUtilZZZ.readEnumConstant_NameValue(ServerTrayStatusTypeZZZ.class, "ERROR");
 			if(enumSTATUS.name().equalsIgnoreCase(a)){ 			
 				sReturn = "Not yet started.";
 			}else if(enumSTATUS.name().equalsIgnoreCase(b)) {

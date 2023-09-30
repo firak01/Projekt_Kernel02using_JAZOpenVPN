@@ -8,7 +8,7 @@ import basic.zKernel.status.EventObjectStatusLocalSetZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.server.ServerMainOVPN;
-import use.openvpn.server.ServerMainOVPN.STATUSLOCAL;
+
 /** 
  * Merke: Der gleiche "Design Pattern" wird auch im UI - Bereich fuer Komponenten verwendet ( package basic.zKernelUI.component.model; )  
  *        Dann erweitert die Event-Klasse aber EventObjekt.

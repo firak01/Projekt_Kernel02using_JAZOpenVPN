@@ -22,12 +22,14 @@ import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
-import use.openvpn.client.ClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.client.IClientMainOVPN;
+import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
+import use.openvpn.clientui.IClientStatusMappedValueZZZ.ClientTrayStatusTypeZZZ;
+import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
 import use.openvpn.clientui.IConstantClientOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
@@ -100,32 +102,32 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			
 			JPopupMenu menu = new JPopupMenu();
 			
-			JMenuItem menueeintrag2 = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START.getMenu());
+			JMenuItem menueeintrag2 = new JMenuItem(ClientTrayMenuTypeZZZ.START.getMenu());
 			menu.add(menueeintrag2);
 			menueeintrag2.addActionListener(this);
 			
 			
-			JMenuItem menueeintrag2b = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.CONNECT.getMenu());
+			JMenuItem menueeintrag2b = new JMenuItem(ClientTrayMenuTypeZZZ.CONNECT.getMenu());
 			menu.add(menueeintrag2b);
 			menueeintrag2b.addActionListener(this);
 			
-			JMenuItem menueeintrag2c = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.WATCH.getMenu());
+			JMenuItem menueeintrag2c = new JMenuItem(ClientTrayMenuTypeZZZ.WATCH.getMenu());
 			menu.add(menueeintrag2c);
 			menueeintrag2c.addActionListener(this);
 			
-			JMenuItem menueeintrag3 = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.LOG.getMenu());
+			JMenuItem menueeintrag3 = new JMenuItem(ClientTrayMenuTypeZZZ.LOG.getMenu());
             menu.add(menueeintrag3);
 			menueeintrag3.addActionListener(this);
 			
-			JMenuItem menueeintrag4 = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.ADJUSTMENT.getMenu());
+			JMenuItem menueeintrag4 = new JMenuItem(ClientTrayMenuTypeZZZ.ADJUSTMENT.getMenu());
 			menu.add(menueeintrag4);
 			menueeintrag4.addActionListener(this);
 			
-			JMenuItem menueeintragFTP = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PAGE_IP_READ.getMenu());
+			JMenuItem menueeintragFTP = new JMenuItem(ClientTrayMenuTypeZZZ.PAGE_IP_READ.getMenu());
             menu.add(menueeintragFTP);
 			menueeintragFTP.addActionListener(this);
 						
-			JMenuItem menueeintrag = new JMenuItem(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.END.getMenu());	
+			JMenuItem menueeintrag = new JMenuItem(ClientTrayMenuTypeZZZ.END.getMenu());	
 			menu.add(menueeintrag);		
 			menueeintrag.addActionListener(this);
 			
@@ -168,7 +170,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			});
 			*/
 
-			ImageIcon objIcon = this.getImageIconByStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.NEW);			
+			ImageIcon objIcon = this.getImageIconByStatus(ClientTrayStatusTypeZZZ.NEW);			
 			this.objTrayIcon = new TrayIcon(objIcon, "OVPNConnector", menu);
 			this.objTrayIcon.addActionListener(this);			
 			this.objTray.addTrayIcon(this.objTrayIcon);
@@ -188,7 +190,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}//END main
 	}
 		
-	public static ImageIcon getImageIconByStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ enumSTATUS)throws ExceptionZZZ{	
+	public static ImageIcon getImageIconByStatus(ClientTrayStatusTypeZZZ enumSTATUS)throws ExceptionZZZ{	
 		ImageIcon objReturn = null;
 		main:{
 			URL url = null;
@@ -254,7 +256,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 //		return sReturn;
 //	}
 		
-	public boolean switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
+	public boolean switchStatus(ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
 		boolean bReturn = false;
 		main:{
 			//ImageIcon aendern
@@ -398,7 +400,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					String stemp = ez.getDetailAllLast();
 					this.getKernelObject().getLogObject().WriteLineDate(stemp);
 					System.out.println(ez.getDetailAllLast());
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.ERROR);
+					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {
 					System.out.println(ez.getDetailAllLast());
 					ez2.printStackTrace();					
@@ -445,7 +447,8 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				
 				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);
 				
-				TODOGOON20230929;
+				//TODOGOON20230929;
+				
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
 				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
 				
@@ -473,7 +476,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					String stemp = ez.getDetailAllLast();
 					this.getKernelObject().getLogObject().WriteLineDate(stemp);
 					System.out.println(ez.getDetailAllLast());
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.ERROR);
+					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {
 					System.out.println(ez.getDetailAllLast());
 					ez2.printStackTrace();					
@@ -662,20 +665,20 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			try{
 				String sCommand = arg0.getActionCommand();
 				//System.out.println("Action to perform: " + sCommand);
-				if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.END.getMenu())){
+				if(sCommand.equals(ClientTrayMenuTypeZZZ.END.getMenu())){
 					this.unload();	
-				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START.getMenu())){
+				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.START.getMenu())){
 					this.start();
-				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.CONNECT.getMenu())) {
+				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.CONNECT.getMenu())) {
 					this.connect();
-				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.WATCH.getMenu())) {
+				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.WATCH.getMenu())) {
 					this.watch();	
-				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.LOG.getMenu())){
+				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.LOG.getMenu())){
 					//JOptionPane pane = new JOptionPane();
 					String stemp = this.readLogString();
 					//this.getTrayIconObject() ist keine Component ????
 					JOptionPane.showMessageDialog(null, stemp, "Log der Verbindung", JOptionPane.INFORMATION_MESSAGE );
-				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.ADJUSTMENT.getMenu())) {
+				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.ADJUSTMENT.getMenu())) {
 					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
 					//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
 					
@@ -719,7 +722,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						ez.printStackTrace();
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 					}				
-				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PAGE_IP_READ.getMenu())) {
+				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.PAGE_IP_READ.getMenu())) {
 					
 					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
 					//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
@@ -763,7 +766,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 						ez.printStackTrace();
 						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
 					}
-				}else if(sCommand.equals(ClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.DETAIL.getMenu())){			//"PressAction": DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein für das Clicken AUF das Icon.		
+				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.DETAIL.getMenu())){			//"PressAction": DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein für das Clicken AUF das Icon.		
 					String stemp = this.readStatusDetailString();
 					if(stemp!= null){
 						if(objTrayIcon!=null) objTrayIcon.displayMessage("Status der Verbindung.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
@@ -789,7 +792,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					e1.printStackTrace();
 				}
 				try {
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.ERROR);
+					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ e2) {
 					System.out.println(e2.getDetailAllLast());
 					e2.printStackTrace();
@@ -830,13 +833,13 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 
 				//Die Stati vom Backend-Objekt mit dem TrayIcon mappen
 				if(ClientMainOVPN.STATUSLOCAL.ISLAUNCHED==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.NEW);				
+					this.switchStatus(ClientTrayStatusTypeZZZ.NEW);				
 				}else if(ClientMainOVPN.STATUSLOCAL.ISSTARTING==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.STARTING);
+					this.switchStatus(ClientTrayStatusTypeZZZ.STARTING);
 				}else if(ClientMainOVPN.STATUSLOCAL.ISSTARTED==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.STARTED);
+					this.switchStatus(ClientTrayStatusTypeZZZ.STARTED);
 				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTING==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTING);
+					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTING);
 				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTED==objStatusEnum) {
 				
 					//Ggfs. vorhandene Aenderungen aus dem Backend-Application-Objekt des Events holen, bzw. hier das ganze Backen-Objekt austauschen
@@ -845,13 +848,13 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					if(objApplicationUsed!=null) {
 						this.getClientBackendObject().setApplicationObject(objApplicationUsed);
 					}
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
+					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTED);
 					
 					
 //			}else if(ClientMainOVPN.STATUSLOCAL.PortScanAllFinished==objStatusEnum) {
 //					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
 				}else if(ClientMainOVPN.STATUSLOCAL.HASERROR==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.ERROR);
+					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
 				}else {
 					String sLog = "Der Status wird nicht behandelt - '"+objStatusEnum.getAbbreviation()+"'.";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
