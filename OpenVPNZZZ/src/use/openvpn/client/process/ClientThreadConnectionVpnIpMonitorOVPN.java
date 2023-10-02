@@ -31,7 +31,7 @@ import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
-public class ClientThreadConnectionVpnIpMonitorZZZ extends KernelUseObjectZZZ implements Runnable,IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
+public class ClientThreadConnectionVpnIpMonitorOVPN extends KernelUseObjectZZZ implements Runnable,IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
 	private ClientMainOVPN objMain = null;
 	
 	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
@@ -42,7 +42,7 @@ public class ClientThreadConnectionVpnIpMonitorZZZ extends KernelUseObjectZZZ im
 	
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
-public ClientThreadConnectionVpnIpMonitorZZZ(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
+public ClientThreadConnectionVpnIpMonitorOVPN(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 	super(objKernel);
 	ConfigMonitorRunnerNew_(objConfig, saFlagControl);
 }
@@ -547,15 +547,37 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 	//aus IListenerObjectStatusLocalSetZZZ
 	@Override
 	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-		//Lies den Status (geworfen vom Backend aus)
-		String sStatus = eventStatusLocalSet.getStatusText();
+		boolean bReturn = false;
+		main:{		
+			//Falls nicht zuständig, mache nix
+		    boolean bProof = this.isStatusLocalRelevant(eventStatusLocalSet);
+			if(!bProof) break main;
+		    
+			//Lies den Status (geworfen vom Backend aus)
+			String sStatus = eventStatusLocalSet.getStatusText();
 		
-		//übernimm den Status
-		this.setStatusString(sStatus);
+			//übernimm den Status
+			this.setStatusString(sStatus);
 		
-		return true;
+			bReturn = true;
+		}//end main:
+		return bReturn;
 	}
 
+	@Override
+	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn = false;
+		
+		main:{
+			String sAbr = eventStatusLocalSet.getStatusAbbreviation();
+			if(!StringZZZ.startsWith(sAbr, "watchrunner")) break main;
+			
+			bReturn = true;			
+		}//end main:
+		
+		return bReturn;
+	}
+	
 	//### aus ISenderObjectStatusLocalSetUserOVPN
 	@Override
 	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
@@ -566,4 +588,5 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
 		this.objMain.setSenderStatusLocalUsed(objEventSender);
 	}
+
 }//END class

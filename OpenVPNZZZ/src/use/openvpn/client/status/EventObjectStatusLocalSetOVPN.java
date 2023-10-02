@@ -22,13 +22,20 @@ public class EventObjectStatusLocalSetOVPN extends EventObjectStatusLocalSetZZZ 
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
 	
+	private String sStatusAbbreviation = null;
+	
 	/** In dem Konstruktor wird neben der ID dieses Events auch der identifizierende Name der neu gewaehlten Komponente �bergeben.
 	 * @param source
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
 	 */
 	public EventObjectStatusLocalSetOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
+		super(source,iID,sStatusText,bStatusValue);		
+	}
+	
+	public EventObjectStatusLocalSetOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);
+		this.sStatusAbbreviation = sStatusAbbreviation;
 	}
 	
 	public EventObjectStatusLocalSetOVPN(Object source, int iID,  ClientMainOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) {
@@ -53,6 +60,16 @@ public class EventObjectStatusLocalSetOVPN extends EventObjectStatusLocalSetZZZ 
 		this.objApplication = objApplication;
 	}
 
+	
+	//+++++++++++
+	@Override
+	public String getStatusAbbreviation(){
+		if(this.objStatusEnum==null) {
+			return this.sStatusAbbreviation;
+		}else {
+			return this.objStatusEnum.getAbbreviation();
+		}
+	}
 	
 	//++++++++++
 	@Override

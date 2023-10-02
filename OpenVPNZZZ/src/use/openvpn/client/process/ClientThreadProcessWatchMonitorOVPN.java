@@ -37,9 +37,6 @@ public class ClientThreadProcessWatchMonitorOVPN extends KernelUseObjectZZZ impl
 	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
 	private String sWatchRunnerStatusPrevious = new String("");    //den vorherigen Status festhalten, damit z.B. nicht immer wieder das Icon geholt wird.
 	
-//	private ConnectionWatchRunnerOVPN  objWatchRunner = null;
-//	private Thread objWatchThread = null;
-	
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
 public ClientThreadProcessWatchMonitorOVPN(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
@@ -289,6 +286,21 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 		}
 		return bReturn;
 	}
+	
+	
+	@Override
+	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn = false;
+		
+		main:{
+			String sAbr = eventStatusLocalSet.getStatusAbbreviation();
+			if(!StringZZZ.startsWith(sAbr, "isconnect")) break main;
+			
+			bReturn = true;			
+		}//end main:
+		
+		return bReturn;
+	}
 
 	//###### FLAGS
 	/* (non-Javadoc)
@@ -341,13 +353,21 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 	//aus IListenerObjectStatusLocalSetZZZ
 	@Override
 	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-		//Lies den Status (geworfen vom Backend aus)
-		String sStatus = eventStatusLocalSet.getStatusText();
+		boolean bReturn = false;
 		
-		//übernimm den Status
-		this.setStatusString(sStatus);
-		
-		return true;
+		main:{
+			//Falls nicht zuständig, mache nix
+		    boolean bProof = this.isStatusLocalRelevant(eventStatusLocalSet);
+			if(!bProof) break main;
+			
+			//Lies den Status (geworfen vom Backend aus)
+			String sStatus = eventStatusLocalSet.getStatusText();
+			
+			//übernimm den Status
+			this.setStatusString(sStatus);
+			
+		}//end main:
+		return bReturn;
 	}
 
 	//### aus ISenderObjectStatusLocalSetUserOVPN
@@ -360,4 +380,6 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
 		this.objMain.setSenderStatusLocalUsed(objEventSender);
 	}
+
+
 }//END class

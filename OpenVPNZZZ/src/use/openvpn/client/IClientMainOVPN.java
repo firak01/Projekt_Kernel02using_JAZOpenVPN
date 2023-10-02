@@ -21,11 +21,15 @@ public interface IClientMainOVPN extends IStatusLocalUserZZZ, IEventBrokerStatus
 		//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 		public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			ISLAUNCHED("isLaunched", "Trayicon wurde gestarted (ClientMain.STATUSLOCAL)",""),
-			ISSTARTED("isstarted","Client ist gestartet (ClientMain.STATUSLOCAL)",""),
 			ISSTARTING("isstarting","Client startet... (ClientMain.STATUSLOCAL)",""),
+			ISSTARTED("isstarted","Client ist gestartet (ClientMain.STATUSLOCAL)",""),			
+			ISCONNECTNEW("isconnectnew","Clientverbingung noch nicht gestartet. (ClientMain.STATUSLOCAL)",""),
 			ISCONNECTING("isconnecting","Client verbindet sich... (ClientMain.STATUSLOCAL)",""),
-			WATCHRUNNERSTARTED("watchrunnerstarted","Verbindungsaufbaueversuch - Thread zum Monitoren des Batch-Processes gestartet (ClientMain.STATUSLOCAL)",""),
 			ISCONNECTED("isconnected","Client ist verbunden (ClientMain.STATUSLOCAL)",""),
+			WATCHRUNNERNEW("watchrunnernew","Verbindungsaufbauversuch - Thread zum Monitoren der Verbingung noch nicht gestartet (ClientMain.STATUSLOCAL)",""),
+			WATCHRUNNERSTARTING("watchrunnerstarting","Verbindungsaufbauversuch - Thread zum Monitoren der Verbindung startet (ClientMain.STATUSLOCAL)",""),
+			WATCHRUNNERSTARTED("watchrunnerstarted","Verbindungsaufbauversuch - Thread zum Monitoren der Verbindung erfolgreich gestartet (ClientMain.STATUSLOCAL)",""),
+			
 			PortScanAllFinished("portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
 			HASERROR("haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");
 							

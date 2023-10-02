@@ -9,4 +9,6 @@ public interface IEventObjectStatusLocalSetOVPN extends IEventObjectStatusLocalS
 	
 	public IApplicationOVPN getApplicationObjectUsed(); 
 	public void setApplicationObjectUsed(IApplicationOVPN objApplication);
+
+	String getStatusAbbreviation();
 }
