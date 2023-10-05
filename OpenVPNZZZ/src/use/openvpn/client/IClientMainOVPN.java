@@ -20,15 +20,15 @@ public interface IClientMainOVPN extends IStatusLocalUserZZZ, IEventBrokerStatus
 		//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 		//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 		public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-			ISSTARTNEW("isstartnew", "CLIENT: Noch nicht gestarted.",""),
+			ISSTARTNEW("isstartnew", "CLIENT: Nicht gestarted",""),
 			ISSTARTING("isstarting","CLIENT: Startet...",""),
-			ISSTARTED("isstarted","CLIENT: Ist gestartet.",""),			
-			ISCONNECTNEW("isconnectnew","OVPN: Noch nicht gestartet.",""),
+			ISSTARTED("isstarted","CLIENT: Gestartet",""),			
+			ISCONNECTNEW("isconnectnew","OVPN: Nicht gestartet",""),
 			ISCONNECTING("isconnecting","OVPN: Startet...",""),
-			ISCONNECTED("isconnected","OVPN: Ist verbunden.",""),
-			WATCHRUNNERNEW("watchrunnernew","CONNECTION: Thread zum Monitoren der Verbingung noch nicht gestartet.",""),
-			WATCHRUNNERSTARTING("watchrunnerstarting","CONNECTION: Thread zum Monitoren der Verbindung startet...",""),
-			WATCHRUNNERSTARTED("watchrunnerstarted","CONNECTION: Thread zum Monitoren der Verbindung erfolgreich gestartet.",""),
+			ISCONNECTED("isconnected","OVPN: Verbunden",""),
+			WATCHRUNNERNEW("watchrunnernew","CONN: MonitorThread nicht gestartet",""),
+			WATCHRUNNERSTARTING("watchrunnerstarting","CONN: MonitorThread startet...",""),
+			WATCHRUNNERSTARTED("watchrunnerstarted","CONN: MonitorThread gestartet",""),
 			
 			PortScanAllFinished("portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
 			HASERROR("haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");

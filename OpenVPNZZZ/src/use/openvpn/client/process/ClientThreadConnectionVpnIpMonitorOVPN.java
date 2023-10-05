@@ -32,13 +32,10 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
 public class ClientThreadConnectionVpnIpMonitorOVPN extends KernelUseObjectZZZ implements Runnable,IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
-	private ClientMainOVPN objMain = null;
+	protected ClientMainOVPN objMain = null;
 	
-	private String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
-	private String sWatchRunnerStatusPrevious = new String("");    //den vorherigen Status festhalten, damit z.B. nicht immer wieder das Icon geholt wird.
-	
-//	private ConnectionWatchRunnerOVPN  objWatchRunner = null;
-//	private Thread objWatchThread = null;
+	protected String sWatchRunnerStatus = new String("");            //Das wird hier gefuellt und kann vom Tray-Objekt bei Bedarf ausgelesen werden.
+	protected String sWatchRunnerStatusPrevious = new String("");    //den vorherigen Status festhalten, damit z.B. nicht immer wieder das Icon geholt wird.
 	
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
@@ -77,206 +74,28 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 	 */
 	public void run() {		
 		main:{
-		try {
-			check:{
-				if(this.objMain==null) break main;
-			}//END check:
-		   
+			try {
+				check:{
+					if(this.objMain==null) break main;
+				}//END check:
+			   								
+				do {			 								
+					//B) Pingen der gewuenschten Zieladressen hinsichtlich der Erreichbarkeit VORBEREITEN	 													
+					//Verwende nicht das File-Objekt, sondern das Konfigurations-Objekt.
+					ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = this.objMain.getClientConfigStarterRunningList();
+					for(int icount3=0; icount3 < listaClientConfigStarterRunning.size(); icount3++){	
+						
+						TODOGOON20231005;//Nun die Verbindungen anpingen.
+						System.out.println("..."+icount3+"...");
+					
+					}//END For
+					boolean bMonitorThreadStarted = this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+					
+				}while(true);	
 			
-			boolean bConnected= false;			
 			
-			//20230830: Das soll in keiner Schleife passieren... das Monitoren der Verbindung passiert in einem extra Menüpunkt
-//			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": In run()-Schleife.";			
-//			do{			
-//				System.out.println(sLog);
-//				this.getLogObject().WriteLineDate(sLog);
-//			
-//				//Zuerst mal pruefen, ob der ClientMain-Prozess erfolgreich abgeschlossen worden ist.
-//				//Hier wird der Status String initialisiert. Sonst geht nix.
-//				if(objMain.getStatusLocal(ClientMainOVPN.STATUSLOCAL.HASERROR)){				
-//					String sWatchRunnerStatus = ClientTrayUIZZZ.getStatusStringByStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.ERROR);
-//					if(this.isStatusChanged(sWatchRunnerStatus)) {
-//						this.setStatusString(sWatchRunnerStatus);
-//					}					
-//					break main;
-//				}
-//										
-//				bConnected = objMain.getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTED);
-//				if(bConnected){											
-//					//Nun erst, nachdem man den Verbindungsaufbau bestaetigt hat, die VPN-IP anpingen
-//					//Aber auch nur einen Thread starten !!!
-//					if(this.getFlag("ConnectionRunnerStarted")==false){ //DIe Theorie besagt, dass dies erst nach abschluss der Portscanns starten sollte, aber das dauert wohl zu lange. && objConfig.getFlag("PortScanAllFinished")==true){
-//						//Den Runner starten ....							
-//						String sIP = ((ClientApplicationOVPN)objMain.getApplicationObject()).getVpnIpRemote();
-//						
-//							String sPort = ((ClientApplicationOVPN)objMain.getApplicationObject()).readVpnPort2Check();									
-//							this.objWatchRunner = new OVPNConnectionWatchRunnerZZZ(this.getKernelObject(), sIP, sPort, null);
-//						
-//						this.objWatchThread = new Thread(objWatchRunner);
-//						this.objWatchThread.start();
-//						this.setFlag("ConnectionRunnerStarted", true);
-//					}//END if flagget "ConnectionRunnerStarted;
-//					
-//					//... das normale Connection-Image-Setzen.
-//					if(this.getStatusString().equalsIgnoreCase(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED.getName())){
-//						objTray.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
-//					}		
-//				}//END if bConneced == true
-//					
-				
-//				if(this.getFlag("ConnectionRunnerStarted")){
-//						//Den Runner ueberwachen....
-//						//System.out.println("wache");
-//						if(this.objWatchRunner.getFlag("ConnectionBroken")){
-//							//System.out.println("verbindung unterbrochen.");
-//							//... das Icon "Verbindung-Unterbrochen" setzen
-//							if(this.getStatusString().equalsIgnoreCase(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.INTERRUPTED.getName())){
-//								objTray.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.INTERRUPTED);								
-//								break main;
-//							}							
-//						}	
-//				 }else{
-					 
-					//######### 20230826 Verschoben aus ClientMainOVPN.start()					
-	 				//+++ Noch keine Verbindung/Noch fehlende Verbindungen, dann wird es aber Zeit verschiedene Threads damit zu beauftragen
-	 				this.objMain.logMessageString("Trying to establish a new connection with every OVPN-configuration-file. Starting threads.");
-	 			
-	 				ArrayList<ClientConfigStarterOVPN> listaStarter = this.objMain.getClientConfigStarterList();
-	 				
-	 				//Starten der Threads, mit denen die OVPN-Processe gestartet werden sollen
-	 				Thread[] threadaOVPN = new Thread[listaStarter.size()];
-	 				ProcessWatchRunnerOVPN[] runneraOVPN = new ProcessWatchRunnerOVPN[listaStarter.size()];	
-	 				int iNumberOfProcessStarted = 0;
-	 				for(int icount = 0; icount < listaStarter.size(); icount++){
-	 					iNumberOfProcessStarted++;	
-	 					ClientConfigStarterOVPN objStarter = (ClientConfigStarterOVPN)listaStarter.get(icount);
-	 					Process objProcess = objStarter.requestStart();
-	 					if(objProcess==null){
-	 						//Hier nicht abbrechen, sondern die Verarbeitung bei der n�chsten Datei fortf�hren
-	 						this.objMain.logMessageString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"' for thread #" + iNumberOfProcessStarted + " von " + listaStarter.size());
-	 					}else{	
-	 						
-	 						//NEU: Einen anderen Thread zum "Monitoren" des Inputstreams des Processes verwenden. Dadurch werden die anderen Prozesse nicht angehalten.
-	 						 runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, null);
-	 						 threadaOVPN[icount] = new Thread(runneraOVPN[icount]);					
-	 						 threadaOVPN[icount].start();	 						 
-	 						this.objMain.logMessageString("Finished starting thread #" + iNumberOfProcessStarted + " von " + listaStarter.size() + " for watching connection.");
-	 					}
-	 				}//END for	
-	 					
- 					
- 					this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
- 					
- 					//############################################################################### 					
- 					//TODO: Timeout fuer threads programmieren, die sich einfach nicht beenden wollen.
- 					//TODO GOON: Die Thread-Objekte und das Monitor-Objekt in die Config-Starter-Klasse integrieren.
- 					ArrayList listaIntegerFinished = new ArrayList();
- 					boolean[] baRunnerOVPNEndedMessage = new boolean[listaStarter.size()];  //Hier werden die beendeten Procese vermerkt.					
- 					for(int icount2=0; icount2 < listaStarter.size(); icount2++){     
- 						baRunnerOVPNEndedMessage[icount2]=false;
- 					}
-	 				 	 	
-	 					
-	 					
-	 				//#########################################################
- 					//+++ Monitoren der Threads, die versuchen eine Verbindung aufzubauen.
- 					//ENDLOSSCHLEIFE: Die Thread, die die Batch starten laufen noch!! Diese beobachten.             
- 					//Merke: Wird der Thread (cmd.exe) per Task Manager geschlossen, so bekommt das der Monitor-Thread nicht mit.
- 					//       
- 					long lThreadSleepTime=5000;
- 					do{			 							
- 						//A) Beobachten der Threads, mit denen OVPN-gestartet werden soll						 						    
-						for(int icount2 = 0; icount2 < runneraOVPN.length; icount2++){
-							ProcessWatchRunnerOVPN runnerOVPN = runneraOVPN[icount2];
-							if(runnerOVPN == null){
-								if(baRunnerOVPNEndedMessage[icount2] !=false){ //Ziel: Unn�tigen Output vermeiden
-									//+++ Die Runner, die beendet worden sind und einen Fehler zurueckgemeldet haben vermerken. Die brauchen dann ja nicht mehr angepingt zu werden.
-									this.objMain.logMessageString("Runner # " + (icount2+1) + " was set to  null.");
-									baRunnerOVPNEndedMessage[icount2] = true;
-								}
-							}else{																
-								if(runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR) && runnerOVPN.getStatusLocal(AbstractProcessWatchRunnerZZZ.STATUSLOCAL.ISSTOPPED)){
-//					 							+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die auf einen Fehler gelaufen sind
-									this.objMain.logMessageString("Thread # " + (icount2+1) + " could not create a connection. Ending thread with ERROR reported. For more details look at the log file.");
-						
-									ClientConfigStarterOVPN objStarter2 = (ClientConfigStarterOVPN) listaStarter.get(icount2);
-									if(objStarter2.isProcessAlive()==true) objStarter2.requestStop(); //Den Prozess beenden								
-															
-									threadaOVPN[icount2].interrupt();
-									runneraOVPN[icount2]=null;
-									
-									Integer intTemp = new Integer(icount2);
-									listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll								
-								}else if(!runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR) && runnerOVPN.getStatusLocal(AbstractProcessWatchRunnerZZZ.STATUSLOCAL.ISSTOPPED)){
-//					 							//+++ Diejenigen Processe aus den zu verarbeitenden (und wichtig: aud der Liste der anzupingenden ips) herausnehmen, die einfach nur so beendet worden sind
-									//       Merke: Falls ein openvpn.exe die connection geschaft hat, wird dieser auf jeden Fall nicht beendet.
-									this.objMain.logMessageString("Thread # " + (icount2+1) + " could not create a connection. Ending thread. For more details look at the log file.");
-									
-									ClientConfigStarterOVPN objStarter2 = (ClientConfigStarterOVPN) listaStarter.get(icount2);
-									if(objStarter2.isProcessAlive()==true) objStarter2.requestStop(); //Den Prozess beenden								
-															
-									threadaOVPN[icount2].interrupt();
-									runneraOVPN[icount2]=null;
-									
-									Integer intTemp = new Integer(icount2);
-									listaIntegerFinished.add(intTemp);						//Festhalten, welche der Positionen entfernt werden soll
-									
-								}else if(runnerOVPN.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION)){
-									this.objMain.logMessageString("Thread # " + (icount2+1) + " has connection.");
-									try {
-										Thread.sleep(lThreadSleepTime);
-									} catch (InterruptedException e) {
-										System.out.println("ClientMonitorRunnerThread: InterruptedExceptionError");
-										e.printStackTrace();
-									}
-									//Einen Event werfen, der dann das Icon im Menue-Tray aendert, etc....
-									//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
-									//Dann erzeuge den Event und feuer ihn ab.
-									//Merke: Nun aber ueber das enum								
-									if(this.getSenderStatusLocalUsed()!=null) {
-										IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,ClientMainOVPN.STATUSLOCAL.ISCONNECTED, true);
-										this.getSenderStatusLocalUsed().fireEvent(event);
-									}		 
-									
-								}else{	 											
-									try {
-										//Das blaeht das Log unnoetig auf .... 
-										this.objMain.logMessageString("Thread # " + (icount2+1) + " not jet ended or has reported an error.");
-										Thread.sleep(lThreadSleepTime);
-									} catch (InterruptedException e) {
-										System.out.println("ClientMonitorRunnerThread: InterruptedExceptionError");
-										e.printStackTrace();
-									}
-								}
-							}//END if (runnnerOVPN==null
-						}//END for
-							 								
-						//B) Pingen der gewuenschten Zieladressen hinsichtlich der Erreichbarkeit VORBEREITEN	 								
-						//    Erstellen der Arraylist, die zu Pingen ist. D.h.  von den listaStarter die Positionen die in listaIntegerRemoved drinstehen abziehen.
-						//ArrayList<File> listaFileNotFinished = new ArrayList<File>();
-						
-						//Verwende nicht das File-Objekt, sondern das Konfigurations-Objekt.
-						ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = new ArrayList<ClientConfigStarterOVPN>();
-						for(int icount3=0; icount3 < listaStarter.size(); icount3++){	
-							//Diejenigen Starter, die schon vorzeitig beendet wurden hier herausfiltern. Den Rest anpingen
-							Integer intTemp = new Integer(icount3);
-							if(!listaIntegerFinished.contains(intTemp)){			
-								
-								//Verwende nicht das File-Objekt, sondern das Konfigurations-Objekt zum "Speichern".
-								listaClientConfigStarterRunning.add(listaStarter.get(icount3));
-							}//END if
-						}//END For
-						
-//	 								TODOGOON20230827;//Diese Liste ist für das Scannen der IP wichtig. Es ist die Liste der "noch übrigen"/"erfolgreichen" Verbindungen.
-						                 //Diese Liste in das Main-Objekt wegsichern... getter/setter dafür erstellen.
-						this.objMain.setClientConfigStarterRunningList(listaClientConfigStarterRunning);	 									 								
- 					}while(true);				 						 					
- 					//##################################
+			//##################################
 
-	 					
-	 					
-	 					
-	 					
 	 					//### Aus clientMonitorRunner... vom Ende
 	 						//########################################################################
 	 						//TODOGOON20230827;//C) Das eigentliche Pingen mit dem OVPNConnectionWatchRunnerZZZ in einen eigenen Menüpunkt unterbringen.
@@ -441,11 +260,12 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 //					e.printStackTrace();
 //				}
 			//}while(true);
-		}catch(ExceptionZZZ ez){
-			System.out.println(ez.getDetailAllLast());
-		}
-	}//END main:
-	
+			
+			}catch(ExceptionZZZ ez){
+				System.out.println(ez.getDetailAllLast());
+			}
+		}//END main:
+		
 	}//END run
 	
 	

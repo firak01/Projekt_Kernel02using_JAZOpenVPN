@@ -457,14 +457,14 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				
 				boolean bConnecting = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING) ;
 				if(!bConnecting) {
-					objMonitor.setStatusString("Client not connecting.");
+					objMonitor.setStatusString("OVPN not connecting.");
 					break main;
 				}
 				
-				TODOGOON20231005;//Warum ist hier der Status nicht auf ISCONNECTED ????
+				//TODOGOON20231005;//Warum ist hier der Status nicht auf ISCONNECTED ????
 				boolean bConnected = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTED) ;
 				if(!bConnected) {
-					objMonitor.setStatusString("Client not connected.");
+					objMonitor.setStatusString("OVPN not connected.");
 					break main;
 				}
 				
@@ -603,31 +603,33 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		if(this.getClientBackendObject().getFlag("useProxy")==true){
 			sReturn = sReturn + "Proxy: " + this.getClientBackendObject().getApplicationObject().getProxyHost() + ":" + this.objClientBackend.getApplicationObject().getProxyPort() + "\n"; 					
 		}else{
-			sReturn = sReturn + "No proxy.\n";
+			//sReturn = sReturn + "No proxy.\n";
 		}
 		
 		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getURL2Parse();
 		if(stemp==null){
-			sReturn = sReturn + "Parsed URL: NOT RECEIVED\n";
+			sReturn = sReturn + "URL: NOT RECEIVED\n";
 		}else{
-			sReturn = sReturn + "Parsed URL: '" + stemp + "'\n";
+			stemp = StringZZZ.right("http://" + stemp, "http://", false);
+			stemp = StringZZZ.abbreviateDynamic(stemp,40);
+			sReturn = sReturn + "URL: " + stemp + "\n";
 		}
 		
 		//REMOTE
 		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getIpRemote();
 		if(stemp==null){
-			sReturn = sReturn + "Remote IP: Not found on URL.\n";
-		}else{
-			sReturn = sReturn + "Remote IP: '" + stemp + "'\n";
+			sReturn = sReturn + "Remote IP: Not found on URL.|";
+		}else{			
+			sReturn = sReturn + "Remote IP: " + stemp + "|";
 		}
 		 
 		if(this.getClientBackendObject().isPortScanEnabled()){			 
 			stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getRemotePortScanned();
 			if(stemp == null){
-				sReturn = sReturn + "Remote Port(s): Not yet scanned.\n";
+				sReturn = sReturn + "->Port(s): Not yet scanned.\n";
 			}else{
 				stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getRemotePortScanned();
-				sReturn = sReturn + "Remote Port(s):" + stemp+"\n";
+				sReturn = sReturn + "->Port(s):" + stemp+"\n";
 			}
 		}
 		
@@ -635,9 +637,9 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		//this.getClientMainObject().getApplicationObject().getVpnIpRemote() //Das wäre aber noch keine erstellte Verbindung, sondern eher nur das Ziel.
 		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnIpRemoteEstablished();
 		if(stemp == null){
-			sReturn = sReturn + "Remote VPN-IP: Not yet connected.\n";
+			sReturn = sReturn + "->VPN-IP: Not connected.\n";
 		}else{
-			sReturn = sReturn + "Remote VPN-IP: " + stemp + "\n";
+			sReturn = sReturn + "->VPN-IP: " + stemp + "\n";
 			/* Logischer Fehler: Wenn die VPN-Verbindung erstellt worden ist, dann ist ggf. auch ein anderer Port "anpingbar" per meinem JavaPing.
 			stemp = this.objConfig.getVpnPortEstablished();
 			sReturn = sReturn + ":" + stemp;
@@ -647,49 +649,40 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		if(this.getClientBackendObject().isPortScanEnabled()==true){
 			stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnPortScanned();
 			if(stemp == null){
-				sReturn = sReturn + "Remote VPN-IP Port(s): Not yet scanned.\n";
+				sReturn = sReturn + "->VPN-IP Port(s): Not scanned.\n";
 			}else{
 				stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnPortScanned();
-				sReturn = sReturn + "Remote VPN-IP Port(s):" + stemp+"\n";
+				sReturn = sReturn + "->VPN-IP Port(s):" + stemp+"\n";
 			}
-		}
-		
-		String sTap = this.getClientBackendObject().getApplicationObject().getTapAdapterUsed();
-		if(sTap==null){
-			sTap = "-> TAP Adapter: Not defined in Kernel Ini-File.";
-		}else{
-			sTap = "-> TAP Adapter: '" + sTap + "'";
-		}
-		
-		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnIpLocal();
-		if(stemp==null){
-			sReturn = sReturn + "Local VPN-IP: Not defined in Kernel Ini-File.\n\t\t" + sTap + "\n";
-		}else{
-			sReturn = sReturn + "Local VPN-IP: '" + stemp + "'\n\t\t" + sTap + "\n";
 		}
 		
 		stemp = this.getClientBackendObject().getApplicationObject().getIpLocal();
 		if(stemp==null){
-			sReturn = sReturn + "Local IP: Not availabel.\n";
+			sReturn = sReturn + "Local IP: Not availabel.|";
 		}else{
-			sReturn = sReturn + "Local IP: '" + stemp + "'\n";
+			sReturn = sReturn + "Local IP: " + stemp + "|";
 		}
+		
+		String sTap = this.getClientBackendObject().getApplicationObject().getTapAdapterUsed();
+		if(sTap==null){
+			sTap = "->TAP: Not defined in Kernel Ini-File.";
+		}else{
+			sTap = "->TAP: " + sTap + "";
+		}
+		
+		stemp = ((ClientApplicationOVPN)this.getClientBackendObject().getApplicationObject()).getVpnIpLocal();
+		if(stemp==null){
+			sReturn = sReturn + "->VPN-IP: Not defined in Kernel Ini-File.|" + sTap + "\n";
+		}else{
+			sReturn = sReturn + "->VPN-IP: " + stemp + "\n\t" + sTap + "\n";
+		}
+		
 		
 		String sStatusConnectionMonitorString = this.readConnectionMonitorStatusString();
 		if(StringZZZ.isEmpty(sStatusConnectionMonitorString)){
 			sReturn = sReturn + ClientMainOVPN.STATUSLOCAL.WATCHRUNNERNEW.getStatusMessage() + "\n";
 			break main;
-		}else{
-			//20200114: Erweiterung - Angabe des Rechnernamens
-			try {				
-					String sServerOrClient = this.getClientBackendObject().getConfigChooserObject().getOvpnContextUsed();
-					sReturn = sReturn + sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
-			} catch (UnknownHostException e) {				
-				e.printStackTrace();
-				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
-				throw ez;
-			}
-			
+		}else{			
 			sReturn = sReturn + sStatusConnectionMonitorString + "\n";
 		}
 		
