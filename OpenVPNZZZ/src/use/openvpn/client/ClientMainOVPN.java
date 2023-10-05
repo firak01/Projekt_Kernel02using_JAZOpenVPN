@@ -192,7 +192,7 @@ private String sPortVPN = null;
 			if(listaFileUsed.isEmpty()){
 				this.logMessageString("No valid remote connection available. Quitting.");
 			
-				ExceptionZZZ ez = new ExceptionZZZ(this.getMessageStringCurrent(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+				ExceptionZZZ ez = new ExceptionZZZ(this.getStatusString(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;	
 			}
 			
@@ -214,7 +214,7 @@ private String sPortVPN = null;
 				//TODO Ggf. sollte diese IP dann lediglich aus der Lister der aufzubauenden VPN-Verbindungen herausgenommen werden. 
 				//            Diese IP sollte dann dem Frontend als eine vorhandene Verbindung mitgeteilt werden, obwohl z.B. der Status noch auf "Verbiinden" steht.
 				//            Die noch unverbundenen VPN-Verbindungen sollten dann versucht werden zu verbinden (was aber nur mit einem Timeout sinnvoll erscheint, sonst bekommt man ggf. nie das Frontend auf den "gruenen"-Status.
-				ExceptionZZZ ez = new ExceptionZZZ(this.getMessageStringCurrent(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+				ExceptionZZZ ez = new ExceptionZZZ(this.getStatusString(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;	
 			}else{
 				this.logMessageString("No connection with OVPN is established, till now.");//DER PORT IST NICHT AUSSAGEKR�FTIG + ":" + objStarter.getVpnPort();							
@@ -229,6 +229,9 @@ private String sPortVPN = null;
 				listaStarter.add(icount, objStarter);					
 			}//END For
 			this.setClientConfigStarterList(listaStarter);
+			
+			//Da der Client nicht auf sich selbst "hoert", hier den Status selbst direkt setzen.
+			this.setStatusString(ClientMainOVPN.STATUSLOCAL.ISSTARTED.getStatusMessage());
 			
 			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.			
 			this.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
@@ -453,7 +456,7 @@ private String sPortVPN = null;
 		if(listaUnique.isEmpty()){
 			this.logMessageString("No valid 'unique' remote connection availabe. Quitting.");
 		
-			ExceptionZZZ ez = new ExceptionZZZ(this.getMessageStringCurrent(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+			ExceptionZZZ ez = new ExceptionZZZ(this.getStatusString(), iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 			throw ez;	
 		}
 		
@@ -574,6 +577,10 @@ private String sPortVPN = null;
 	public void setClientConfigStarterRunningList(ArrayList<ClientConfigStarterOVPN> listaClientConfigStarter) {
 		this.listaClientConfigStarterRunning = listaClientConfigStarter;
 	}
+	
+	
+	
+
 	
 
 	//#####################################################
@@ -817,6 +824,28 @@ private String sPortVPN = null;
 		}//end main:
 		return bReturn;
 	}
+	
+	
+	//### Aus IListenerObjectStatusLocalSetOVPN
+	//Der Client selbst "hoert" nicht auch Statusaenderungen, wie z.B. aktuell schon der Tray.
+	
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+	 */
+//	@Override
+//	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+//		boolean bReturn = false;
+//		
+//		main:{
+//			String sAbr = eventStatusLocalSet.getStatusAbbreviation();
+//			if(!StringZZZ.startsWith(sAbr, "isconnect")) break main;
+//			
+//			bReturn = true;			
+//		}//end main:
+//		
+//		return bReturn;
+//	}
+
 
 	//### aus IEventBrokerStatusLocalSetUserOVPN
 	@Override

@@ -110,7 +110,7 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
  				}//END for	
  					
 				
-				boolean bStatusLocalExists = this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+				boolean bStatusLocalExists = this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
 				
 				
 				

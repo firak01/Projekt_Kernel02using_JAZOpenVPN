@@ -20,15 +20,15 @@ public interface IClientMainOVPN extends IStatusLocalUserZZZ, IEventBrokerStatus
 		//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 		//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 		public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-			ISLAUNCHED("isLaunched", "Trayicon wurde gestarted (ClientMain.STATUSLOCAL)",""),
-			ISSTARTING("isstarting","Client startet... (ClientMain.STATUSLOCAL)",""),
-			ISSTARTED("isstarted","Client ist gestartet (ClientMain.STATUSLOCAL)",""),			
-			ISCONNECTNEW("isconnectnew","Clientverbingung noch nicht gestartet. (ClientMain.STATUSLOCAL)",""),
-			ISCONNECTING("isconnecting","Client verbindet sich... (ClientMain.STATUSLOCAL)",""),
-			ISCONNECTED("isconnected","Client ist verbunden (ClientMain.STATUSLOCAL)",""),
-			WATCHRUNNERNEW("watchrunnernew","Verbindungsaufbauversuch - Thread zum Monitoren der Verbingung noch nicht gestartet (ClientMain.STATUSLOCAL)",""),
-			WATCHRUNNERSTARTING("watchrunnerstarting","Verbindungsaufbauversuch - Thread zum Monitoren der Verbindung startet (ClientMain.STATUSLOCAL)",""),
-			WATCHRUNNERSTARTED("watchrunnerstarted","Verbindungsaufbauversuch - Thread zum Monitoren der Verbindung erfolgreich gestartet (ClientMain.STATUSLOCAL)",""),
+			ISSTARTNEW("isstartnew", "CLIENT: Noch nicht gestarted.",""),
+			ISSTARTING("isstarting","CLIENT: Startet...",""),
+			ISSTARTED("isstarted","CLIENT: Ist gestartet.",""),			
+			ISCONNECTNEW("isconnectnew","OVPN: Noch nicht gestartet.",""),
+			ISCONNECTING("isconnecting","OVPN: Startet...",""),
+			ISCONNECTED("isconnected","OVPN: Ist verbunden.",""),
+			WATCHRUNNERNEW("watchrunnernew","CONNECTION: Thread zum Monitoren der Verbingung noch nicht gestartet.",""),
+			WATCHRUNNERSTARTING("watchrunnerstarting","CONNECTION: Thread zum Monitoren der Verbindung startet...",""),
+			WATCHRUNNERSTARTED("watchrunnerstarted","CONNECTION: Thread zum Monitoren der Verbindung erfolgreich gestartet.",""),
 			
 			PortScanAllFinished("portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
 			HASERROR("haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");

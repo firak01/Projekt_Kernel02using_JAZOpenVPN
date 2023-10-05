@@ -279,12 +279,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			if(objIcon==null)break main;
 			
 			this.getTrayIconObject().setIcon(objIcon);
-
-//          Der Monitor aendert den Status String selbst, aufgrund des vom Backend geworfenen Ereignisses			
-//			String sStatus = this.getStatusStringByStatus(enumSTATUS);
-//			if(this.getMonitorObject()!=null) {
-//				this.getMonitorObject().setStatusString(sStatus);
-//			}
+			
 			bReturn = true;
 		}//END main:
 		return bReturn;
@@ -351,6 +346,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			//Z.B. den Status anzuzeigen.
 			//this.getClientBackendObject().start(this);
 			
+			//Den StatusString anbieten. Der kann im Tray angezeigt werden, durch Click auf das TraySymbol
+			this.getClientBackendObject().setStatusString(ClientMainOVPN.STATUSLOCAL.ISSTARTING.getStatusMessage());
+		
+			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
+			this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING, true);
+						
 			//Also dies über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
 			//Problem dabei: Der SystemTray wird nicht aktualisiert.
 			Thread objThreadMain = new Thread(this.getClientBackendObject());
@@ -460,6 +461,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					break main;
 				}
 				
+				TODOGOON20231005;//Warum ist hier der Status nicht auf ISCONNECTED ????
 				boolean bConnected = this.getClientBackendObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTED) ;
 				if(!bConnected) {
 					objMonitor.setStatusString("Client not connected.");
@@ -516,6 +518,22 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 	}
 	
 	
+	/** Reads a status string from the Backend-Object-Thread
+	* @return String
+	* 
+	* lindhaueradmin; 10.08.2006 11:32:16
+	 */
+	public String readBackendStatusString(){
+		String sReturn = "";
+		if(this.getClientBackendObject()!=null){
+			sReturn = this.getClientBackendObject().getStatusString();
+		}else {	
+			sReturn = ClientMainOVPN.STATUSLOCAL.ISSTARTNEW.getStatusMessage();//ohne das TrayIcon kann man ja auf nix clicken. Darum gibt es keine frueheren Status.
+		}
+		return sReturn;
+	}
+	
+	
 	/** Reads a status string from the ProcessMonitor-Object-Thread
 	* @return String
 	* 
@@ -551,49 +569,36 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		String sReturn = "";
 		main:{
 			String stemp = null;
-			check:{
-				if (this.getClientBackendObject() == null || this.getClientBackendObject().getConfigChooserObject()==null || this.getClientBackendObject().getApplicationObject()==null){
-					sReturn = ClientMainOVPN.STATUSLOCAL.ISLAUNCHED.getStatusMessage() + "(readStatusDetailString - objects NULL case)";
-					break main;
+			
+			String sStatusClientString = this.readBackendStatusString();
+			if(StringZZZ.isEmpty(sStatusClientString)){
+				sReturn = sReturn + ClientMainOVPN.STATUSLOCAL.ISSTARTNEW.getStatusMessage() + "\n";
+				break main;
+			}else{			
+				sReturn = sReturn + sStatusClientString + "\n";
+			}
+
+		
+			String sStatusProcessMonitorString = this.readProcessMonitorStatusString();
+			if(StringZZZ.isEmpty(sStatusProcessMonitorString)){
+				sReturn = sReturn + ClientMainOVPN.STATUSLOCAL.ISCONNECTNEW.getStatusMessage() + "\n";
+				break main;
+			}else{
+				//20200114: Erweiterung - Angabe des Rechnernamens
+				try {				
+						String sServerOrClient = this.getClientBackendObject().getConfigChooserObject().getOvpnContextUsed();
+						
+						//Falls der Client gestartet wurde, gib den Rechnernamen aus, anstatt einer "ist gestartet" Meldung. Spart Platz.
+						//Also sReturn komplett neu setzen.
+						sReturn = sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
+				} catch (UnknownHostException e) {				
+					e.printStackTrace();
+					ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
+					throw ez;
 				}
-			}//END check
-		
-		String sStatusProcessMonitorString = this.readProcessMonitorStatusString();
-		if(StringZZZ.isEmpty(sStatusProcessMonitorString)){
-			sReturn = sReturn + "PROCESS: " + ClientMainOVPN.STATUSLOCAL.ISCONNECTNEW.getStatusMessage() + "\n";
-		}else{
-			//20200114: Erweiterung - Angabe des Rechnernamens
-			try {				
-					String sServerOrClient = this.getClientBackendObject().getConfigChooserObject().getOvpnContextUsed();
-					sReturn = sReturn + sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
-			} catch (UnknownHostException e) {				
-				e.printStackTrace();
-				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
-				throw ez;
+				
+				sReturn = sReturn + sStatusProcessMonitorString + "\n";
 			}
-			
-			sReturn = sReturn + "PROCESS: " + sStatusProcessMonitorString + "\n";
-		}
-		
-		
-		String sStatusConnectionMonitorString = this.readConnectionMonitorStatusString();
-		if(StringZZZ.isEmpty(sStatusConnectionMonitorString)){
-			sReturn = sReturn + "CONNECTION: " + ClientMainOVPN.STATUSLOCAL.WATCHRUNNERNEW.getStatusMessage() + "\n";
-		}else{
-			//20200114: Erweiterung - Angabe des Rechnernamens
-			try {				
-					String sServerOrClient = this.getClientBackendObject().getConfigChooserObject().getOvpnContextUsed();
-					sReturn = sReturn + sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
-			} catch (UnknownHostException e) {				
-				e.printStackTrace();
-				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
-				throw ez;
-			}
-			
-			sReturn = sReturn + "CONNECTION: " + sStatusConnectionMonitorString + "\n";
-		}
-		
-		
 		
 		if(this.getClientBackendObject().getFlag("useProxy")==true){
 			sReturn = sReturn + "Proxy: " + this.getClientBackendObject().getApplicationObject().getProxyHost() + ":" + this.objClientBackend.getApplicationObject().getProxyPort() + "\n"; 					
@@ -669,6 +674,25 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}else{
 			sReturn = sReturn + "Local IP: '" + stemp + "'\n";
 		}
+		
+		String sStatusConnectionMonitorString = this.readConnectionMonitorStatusString();
+		if(StringZZZ.isEmpty(sStatusConnectionMonitorString)){
+			sReturn = sReturn + ClientMainOVPN.STATUSLOCAL.WATCHRUNNERNEW.getStatusMessage() + "\n";
+			break main;
+		}else{
+			//20200114: Erweiterung - Angabe des Rechnernamens
+			try {				
+					String sServerOrClient = this.getClientBackendObject().getConfigChooserObject().getOvpnContextUsed();
+					sReturn = sReturn + sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
+			} catch (UnknownHostException e) {				
+				e.printStackTrace();
+				ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
+				throw ez;
+			}
+			
+			sReturn = sReturn + sStatusConnectionMonitorString + "\n";
+		}
+		
 		}//END main
 		return sReturn;
 	}
@@ -678,7 +702,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		main:{
 			check:{
 				if (this.getClientBackendObject() == null){
-					sReturn = ClientMainOVPN.STATUSLOCAL.ISLAUNCHED.getStatusMessage() + "(objClientBackend NULL case)";
+					sReturn = ClientMainOVPN.STATUSLOCAL.ISSTARTNEW.getStatusMessage() + "(objClientBackend NULL case)";
 					
 						break main;
 				}
@@ -905,7 +929,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				//System.out.println(ReflectCodeZZZ.getPositionCurrent()+": " + sMessage);			
 
 				//Die Stati vom Backend-Objekt mit dem TrayIcon mappen
-				if(ClientMainOVPN.STATUSLOCAL.ISLAUNCHED==objStatusEnum) {
+				if(ClientMainOVPN.STATUSLOCAL.ISSTARTNEW==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusTypeZZZ.NEW);				
 				}else if(ClientMainOVPN.STATUSLOCAL.ISSTARTING==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusTypeZZZ.STARTING);
@@ -923,6 +947,10 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					}
 					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTED);
 					
+				}else if(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTING==objStatusEnum) {
+					this.switchStatus(ClientTrayStatusTypeZZZ.WATCHING);
+				}else if(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED==objStatusEnum) {
+					this.switchStatus(ClientTrayStatusTypeZZZ.WATCHED);
 					
 //			}else if(ClientMainOVPN.STATUSLOCAL.PortScanAllFinished==objStatusEnum) {
 //					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
@@ -940,6 +968,9 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			return bReturn;
 		}
 
+		/* (non-Javadoc)
+		 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+		 */
 		@Override
 		public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 			
