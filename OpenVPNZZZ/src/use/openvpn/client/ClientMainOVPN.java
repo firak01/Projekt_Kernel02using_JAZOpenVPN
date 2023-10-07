@@ -19,6 +19,7 @@ import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.FileFilterConfigOVPN;
+import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
@@ -33,9 +34,8 @@ import use.openvpn.server.ServerMainOVPN;
  * @author 0823
  *
  */
-public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN{	
-	private HashMap<String, Boolean>hmStatusLocal = new HashMap<String, Boolean>(); //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
-	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN{		
+	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 		
 	private ClientConfigFileZZZ objFileConfigReached = null;
 	private ArrayList<ClientConfigStarterOVPN> listaClientConfigStarter = null; //Liste der Batches, die OVPN starten mit den Konfigurationen.
@@ -583,40 +583,31 @@ private String sPortVPN = null;
 
 	
 
+		
+	
+	//### Aus IListenerObjectStatusLocalSetOVPN
+	//Der Client selbst "hoert" nicht auch Statusaenderungen, wie z.B. aktuell schon der Tray.
+	
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+	 */
+//	@Override
+//	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+//		boolean bReturn = false;
+//		
+//		main:{
+//			String sAbr = eventStatusLocalSet.getStatusAbbreviation();
+//			if(!StringZZZ.startsWith(sAbr, "isconnect")) break main;
+//			
+//			bReturn = true;			
+//		}//end main:
+//		
+//		return bReturn;
+//	}
+
+
 	//#####################################################
 	//### IStatusLocalUserZZZ
-	/** DIESE METHODEN MUSS IN ALLEN KLASSEN VORHANDEN SEIN - über Vererbung -, DIE IHREN STATUS SETZEN WOLLEN*/
-
-	/* (non-Javadoc)
-	 * @see basic.zKernel.status.IStatusLocalUserZZZ#getStatusLocal(java.lang.Enum)
-	 */
-	@Override
-	public boolean getStatusLocal(Enum objEnumStatusIn) throws ExceptionZZZ {
-		boolean bFunction = false;
-		main:{
-			if(objEnumStatusIn==null) {
-				break main;
-			}
-			
-			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
-			String sStatusName = enumStatus.name();
-			if(StringZZZ.isEmpty(sStatusName)) break main;
-										
-			HashMap<String, Boolean> hmFlag = this.getHashMapStatusLocal();
-			Boolean objBoolean = hmFlag.get(sStatusName.toUpperCase());
-			if(objBoolean==null){
-				bFunction = false;
-			}else{
-				bFunction = objBoolean.booleanValue();
-			}
-							
-		}	// end main:
-		
-		return bFunction;	
-	}
-
-	
-
 	@Override
 	public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
@@ -624,7 +615,9 @@ private String sPortVPN = null;
 			if(enumStatusIn==null) {
 				break main;
 			}
-		//return this.getStatusLocal(objEnumStatus.name());
+			
+		//Wichtig: Man kann nicht einfach auf den String zurück...
+		//return this.setStatusLocal(objEnumStatus.name(),bStatusValue);
 		//Nein, trotz der Redundanz nicht machen, da nun der Event anders gefeuert wird, nämlich über das enum
 		
 	    ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
@@ -647,50 +640,6 @@ private String sPortVPN = null;
 		}										
 	}	// end main:
 	return bFunction;
-	}
-
-
-	@Override
-	public boolean[] setStatusLocal(Enum[] objaEnumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-		boolean[] baReturn=null;
-		main:{
-			if(!ArrayUtilZZZ.isEmpty(objaEnumStatusIn)) {
-				baReturn = new boolean[objaEnumStatusIn.length];
-				int iCounter=-1;
-				for(Enum objEnumStatus:objaEnumStatusIn) {
-					iCounter++;
-					boolean bReturn = this.setStatusLocal(objEnumStatus, bStatusValue);
-					baReturn[iCounter]=bReturn;
-				}
-			}
-		}//end main:
-		return baReturn;
-	}
-
-	
-
-	@Override
-	public boolean proofStatusLocalExists(Enum objEnumStatus) throws ExceptionZZZ {
-		return this.proofStatusLocalExists(objEnumStatus.name());
-	}
-	
-	@Override
-	public boolean getStatusLocal(String sStatusName) throws ExceptionZZZ {
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sStatusName)) break main;
-										
-			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
-			Boolean objBoolean = hmStatus.get(sStatusName.toUpperCase());
-			if(objBoolean==null){
-				bFunction = false;
-			}else{
-				bFunction = objBoolean.booleanValue();
-			}
-							
-		}	// end main:
-		
-		return bFunction;	
 	}
 	
 	@Override
@@ -723,130 +672,6 @@ private String sPortVPN = null;
 		return bFunction;
 	}
 	
-	@Override
-	public boolean[] setStatusLocal(String[] saStatusName, boolean bStatusValue) throws ExceptionZZZ {
-		boolean[] baReturn=null;
-		main:{
-			if(!StringArrayZZZ.isEmptyTrimmed(saStatusName)) {
-				baReturn = new boolean[saStatusName.length];
-				int iCounter=-1;
-				for(String sStatusName:saStatusName) {
-					iCounter++;
-					boolean bReturn = this.setStatusLocal(sStatusName, bStatusValue);
-					baReturn[iCounter]=bReturn;
-				}
-			}
-		}//end main:
-		return baReturn;
-	}
-	
-	@Override
-	public HashMap<String, Boolean> getHashMapStatusLocal() {
-		return this.hmStatusLocal;
-	}
-
-	@Override
-	public void setHashMapStatusLocal(HashMap<String, Boolean> hmStatusLocal) {
-		this.hmStatusLocal = hmStatusLocal;
-	}
-
-	/**Gibt alle möglichen StatusLocal Werte als Array zurück. 
-	 * @return
-	 * @throws ExceptionZZZ 
-	 */
-	@Override
-	public String[] getStatusLocal() throws ExceptionZZZ {
-		String[] saReturn = null;
-		main:{	
-			saReturn = StatusLocalHelperZZZ.getStatusLocalDirectAvailable(this.getClass());				
-		}//end main:
-		return saReturn;
-	}
-	
-	/**Gibt alle "true" gesetzten StatusLocal - Werte als Array zurück. 
-	 * @return
-	 * @throws ExceptionZZZ 
-	 */
-	@Override
-	public String[] getStatusLocal(boolean bValueToSearchFor) throws ExceptionZZZ {
-		return this.getStatusLocal_(bValueToSearchFor, false);
-	}
-	
-	@Override
-	public String[] getStatusLocal(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap)throws ExceptionZZZ {
-		return this.getStatusLocal_(bValueToSearchFor, bLookupExplizitInHashMap);
-	}
-	
-	private String[]getStatusLocal_(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
-		String[] saReturn = null;
-		main:{
-			ArrayList<String>listasTemp=new ArrayList<String>();
-			
-			//FALLUNTERSCHEIDUNG: Alle gesetzten Status werden in der HashMap gespeichert. Aber die noch nicht gesetzten FlagZ stehen dort nicht drin.
-			//                                  Diese kann man nur durch Einzelprüfung ermitteln.
-			if(bLookupExplizitInHashMap) {
-				HashMap<String,Boolean>hmStatus=this.getHashMapStatusLocal();
-				if(hmStatus==null) break main;
-				
-				Set<String> setKey = hmStatus.keySet();
-				for(String sKey : setKey){
-					boolean btemp = hmStatus.get(sKey);
-					if(btemp==bValueToSearchFor){
-						listasTemp.add(sKey);
-					}
-				}
-			}else {
-				//So bekommt man alle Flags zurück, also auch die, die nicht explizit true oder false gesetzt wurden.						
-				String[]saStatus = this.getStatusLocal();
-				
-				//20211201:
-				//Problem: Bei der Suche nach true ist das egal... aber bei der Suche nach false bekommt man jedes der Flags zurück,
-				//         auch wenn sie garnicht gesetzt wurden.
-				//Lösung:  Statt dessen explitzit über die HashMap der gesetzten Werte gehen....						
-				for(String sStatus : saStatus){
-					boolean btemp = this.getStatusLocal(sStatus);
-					if(btemp==bValueToSearchFor ){ //also 'true'
-						listasTemp.add(sStatus);
-					}
-				}
-			}
-			saReturn = listasTemp.toArray(new String[listasTemp.size()]);
-		}//end main:
-		return saReturn;
-	}
-	
-	@Override
-	public boolean proofStatusLocalExists(String sStatusName) throws ExceptionZZZ {
-		boolean bReturn = false;
-		main:{
-			if(StringZZZ.isEmpty(sStatusName))break main;
-			bReturn = StatusLocalHelperZZZ.proofStatusLocalDirectExists(this.getClass(), sStatusName);				
-		}//end main:
-		return bReturn;
-	}
-	
-	
-	//### Aus IListenerObjectStatusLocalSetOVPN
-	//Der Client selbst "hoert" nicht auch Statusaenderungen, wie z.B. aktuell schon der Tray.
-	
-	/* (non-Javadoc)
-	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
-	 */
-//	@Override
-//	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-//		boolean bReturn = false;
-//		
-//		main:{
-//			String sAbr = eventStatusLocalSet.getStatusAbbreviation();
-//			if(!StringZZZ.startsWith(sAbr, "isconnect")) break main;
-//			
-//			bReturn = true;			
-//		}//end main:
-//		
-//		return bReturn;
-//	}
-
-
 	//### aus IEventBrokerStatusLocalSetUserOVPN
 	@Override
 	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {

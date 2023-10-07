@@ -63,14 +63,14 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 			try {
 				for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 					IListenerObjectStatusLocalSetOVPN l = (IListenerObjectStatusLocalSetOVPN) this.getListenerRegisteredAll().get(i);				
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " - object (d.h. this - object) fired: " + i);
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " - object (d.h. this - object) fired: " + i);
 					try {
 						boolean bStatusLocalChanged = l.statusLocalChanged(event);
 						if(bStatusLocalChanged) {
-							System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat LocalStatus '" + event.getStatusText() + "' gesetzt." );
+							System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat LocalStatus '" + event.getStatusText() + "' gesetzt." );
 						}					
 					} catch (ExceptionZZZ ez) {					
-						System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " throws Exception " + ez.getDetailAllLast() );					
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " throws Exception " + ez.getDetailAllLast() );					
 					}
 				}
 			} catch (ExceptionZZZ e) {

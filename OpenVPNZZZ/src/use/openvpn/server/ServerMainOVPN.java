@@ -717,6 +717,24 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		}//end main:
 		return bReturn;
 	}
+	
+	@Override
+	public boolean proofStatusLocalChanged(Enum objEnumStatus, boolean bValue) throws ExceptionZZZ {
+		return this.proofStatusLocalChanged(objEnumStatus.name(), bValue);
+	}
+
+	@Override
+	public boolean proofStatusLocalChanged(String sStatusName, boolean bValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName))break main;
+			
+			HashMap<String,Boolean>hmStatusLocal = this.getHashMapStatusLocal();
+			bReturn = StatusLocalHelperZZZ.proofStatusLocalChanged(hmStatusLocal, sStatusName, bValue);
+			
+		}//end main:
+		return bReturn;
+	}
 
 	//### aus ISenderObjectStatusLocalSetOVPN
 	/* (non-Javadoc)

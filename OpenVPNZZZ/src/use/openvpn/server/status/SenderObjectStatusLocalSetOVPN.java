@@ -60,15 +60,15 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 			try {
 				for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 					IListenerObjectStatusLocalSetOVPN l = (IListenerObjectStatusLocalSetOVPN) this.getListenerRegisteredAll().get(i);				
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " - object (d.h. this - object) fired: " + i);
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " - object (d.h. this - object) fired: " + i);
 					try {
 						boolean bStatusLocalChanged = l.statusLocalChanged(event);
 						if(bStatusLocalChanged) {
-							System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat Flag '" + event.getStatusText() + "' gesetzt." );
+							System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat Flag '" + event.getStatusText() + "' gesetzt." );
 						}					
 					} catch (ExceptionZZZ ez) {
 						//Z.B. falls es das Flag hier nicht gibt, wird die ggfs. die Exception weitergeworfen.
-						System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " throws Exception " + ez.getDetailAllLast() );					
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " throws Exception " + ez.getDetailAllLast() );					
 					}
 				}
 			} catch (ExceptionZZZ e) {

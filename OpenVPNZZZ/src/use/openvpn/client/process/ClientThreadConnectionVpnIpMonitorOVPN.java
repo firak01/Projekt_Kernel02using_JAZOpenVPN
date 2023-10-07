@@ -75,24 +75,28 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 	public void run() {		
 		main:{
 			try {
-				check:{
-					if(this.objMain==null) break main;
-				}//END check:
-			   								
-				do {			 								
-					//B) Pingen der gewuenschten Zieladressen hinsichtlich der Erreichbarkeit VORBEREITEN	 													
-					//Verwende nicht das File-Objekt, sondern das Konfigurations-Objekt.
-					ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = this.objMain.getClientConfigStarterRunningList();
-					for(int icount3=0; icount3 < listaClientConfigStarterRunning.size(); icount3++){	
+				try {
+					check:{
+						if(this.objMain==null) break main;
+					}//END check:
+				   								
+					do {			 								
+						//B) Pingen der gewuenschten Zieladressen hinsichtlich der Erreichbarkeit VORBEREITEN	 													
+						//Verwende nicht das File-Objekt, sondern das Konfigurations-Objekt.
+						ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = this.objMain.getClientConfigStarterRunningList();
+						for(int icount3=0; icount3 < listaClientConfigStarterRunning.size(); icount3++){	
+							
+							System.out.println("..."+(icount3+1)+". Verbindung...");
+							Thread.sleep(50000);
+							
+							//TODOGOON20231005;//Nun die Verbindungen anpingen.
+							
 						
-						TODOGOON20231005;//Nun die Verbindungen anpingen.
-						System.out.println("..."+icount3+"...");
-					
-					}//END For
-					boolean bMonitorThreadStarted = this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
-					
-				}while(true);	
-			
+						}//END For
+						boolean bMonitorThreadStarted = this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+						
+					}while(true);	
+				
 			
 			//##################################
 
@@ -261,9 +265,14 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 //				}
 			//}while(true);
 			
-			}catch(ExceptionZZZ ez){
-				System.out.println(ez.getDetailAllLast());
+			
+			} catch (InterruptedException e) {
+				ExceptionZZZ ez = new ExceptionZZZ(e);
+				throw ez;
 			}
+		}catch(ExceptionZZZ ez){
+			System.out.println(ez.getDetailAllLast());
+		}
 		}//END main:
 		
 	}//END run
@@ -383,7 +392,12 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 		}//end main:
 		return bReturn;
 	}
+	
+	
 
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+	 */
 	@Override
 	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;

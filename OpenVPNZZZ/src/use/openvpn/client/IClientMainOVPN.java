@@ -8,7 +8,7 @@ import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
 
-public interface IClientMainOVPN extends IStatusLocalUserZZZ, IEventBrokerStatusLocalSetUserOVPN{
+public interface IClientMainOVPN extends IEventBrokerStatusLocalSetUserOVPN{
 	public enum FLAGZ{
 		LAUNCHONSTART, CONNECTONSTART, ENABLEPORTSCAN, USEPROXY, DUMMY
 	}

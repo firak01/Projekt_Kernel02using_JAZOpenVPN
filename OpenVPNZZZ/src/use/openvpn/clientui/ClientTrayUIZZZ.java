@@ -935,8 +935,25 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					//Ggfs. vorhandene Aenderungen aus dem Backend-Application-Objekt des Events holen, bzw. hier das ganze Backen-Objekt austauschen
 					//Dann kann sich z.B. die Datailinfo-box die aktuellsten Werte daraus holen.
 					IApplicationOVPN objApplicationUsed = eventStatusLocalSet.getApplicationObjectUsed();
-					if(objApplicationUsed!=null) {
+					if(objApplicationUsed==null) {						
+						String sLog = ReflectCodeZZZ.getPositionCurrent()+": Kein Application-Objekt aus dem Event erhalten.";
+						System.out.println(sLog);
+						this.getClientBackendObject().logMessageString(sLog);
+					}else {
 						this.getClientBackendObject().setApplicationObject(objApplicationUsed);
+
+						//################################
+						//Merke: Dieser Wert kommt beim Setzen im ClientThreadProcessWatchMonitor in diesem Backenobjekt nicht an.
+						//       Darum explizit holen und setzen.
+						String sVpnIp = this.getClientBackendObject().getApplicationObject().getVpnIpRemote();
+												
+						String sLog = ReflectCodeZZZ.getPositionCurrent()+": Verbunden mit remote VPNIP='"+sVpnIp+"'";
+						System.out.println(sLog);
+						this.getClientBackendObject().logMessageString(sLog);
+						
+						//Nun die als "verbunden" gekennzeichnete IP an das ApplicationObjekt uebergben.
+						this.getClientBackendObject().getApplicationObject().setVpnIpRemoteEstablished(sVpnIp);
+						//################################
 					}
 					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTED);
 					

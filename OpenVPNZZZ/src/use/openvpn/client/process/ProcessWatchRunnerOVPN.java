@@ -43,14 +43,15 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{
 		
 		main:{
 			try{
-				String sLog = "ProcessWatchRunner #"+ this.getNumber() + " started.";
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumber();
+				System.out.println(sLog);
 				this.logLineDate(sLog);
 				
 				//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
 				do{
 					//System.out.println("FGLTEST01");
 					//Wichtig: Man muss wohl zuallererst den InputStream abgreifen, damit der Process weiterlaufen kann.
-					this.writeOutputToLog();				
+					this.writeOutputToLogPLUSanalyse();				
 					boolean bHasConnection = this.getStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
 					if(bHasConnection) {
 						sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
@@ -215,8 +216,9 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		boolean bReturn = false;
 		
 		int iProcess = this.getNumber();
-		String sLog = " Process#: " + iProcess + " - sLine=" + sLine;
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
+		String sLog = ReflectCodeZZZ.getPositionCurrent() +  " Process#" + iProcess + ": sLine=" + sLine;		
+		System.out.println(sLog);
+		this.logLineDate(sLog);
 		if(StringZZZ.contains(sLine,"TCP connection established with")) {
 			this.setStatusLocal(ProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, true);
 			bReturn = true;
@@ -269,21 +271,42 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		    ProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
 			String sStatusName = enumStatus.name();
 			bFunction = this.proofStatusLocalExists(sStatusName);															
-			if(bFunction == true){
+			if(bFunction){
 				
-				//Setze das Flag nun in die HashMap
-				HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
-				hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+				bFunction = this.proofStatusLocalChanged(sStatusName, bStatusValue);
+				if(bFunction) {
+					//Setze das Flag nun in die HashMap
+					HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+					hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+				
+					//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+					//Dann erzeuge den Event und feuer ihn ab.
+					//Merke: Nun aber ueber das enum			
+					if(this.objEventStatusLocalBroker!=null) {
+						IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,enumStatus, bStatusValue);
+						
+						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumber() + " fires event '" + enumStatus.getAbbreviation() + "'";
+						System.out.println(sLog);
+						this.logLineDate(sLog);
+						this.objEventStatusLocalBroker.fireEvent(event);
+					}else {
+						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumber() + " would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
+						System.out.println(sLog);
+						this.logLineDate(sLog);
+					}
+					bFunction = true;
+				}else{
+					//Mache nix, auch nix protokollieren, da sich nix geaendert hat.
+				}//StatusLocalChanged
+			}else {
+					
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumber() + " would like to fire event, but this status is not available: '" + sStatusName + "'";
+				System.out.println(sLog);
+				this.logLineDate(sLog);
+				
+				bFunction = false;				
+			}//StatusLocalExists
 			
-				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
-				//Dann erzeuge den Event und feuer ihn ab.
-				//Merke: Nun aber ueber das enum			
-				if(this.objEventStatusLocalBroker!=null) {
-					IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,enumStatus, bStatusValue);
-					this.objEventStatusLocalBroker.fireEvent(event);
-				}			
-				bFunction = true;								
-			}										
 		}	// end main:
 		return bFunction;
 		}
