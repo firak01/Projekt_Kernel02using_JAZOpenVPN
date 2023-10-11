@@ -5,10 +5,11 @@ import java.util.EnumSet;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zKernel.status.IStatusLocalUserZZZ;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
+import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
 
-public interface IClientMainOVPN extends IEventBrokerStatusLocalSetUserOVPN{
+public interface IClientMainOVPN extends IEventBrokerStatusLocalSetUserOVPN, IListenerObjectStatusLocalSetOVPN{
 	public enum FLAGZ{
 		LAUNCHONSTART, CONNECTONSTART, ENABLEPORTSCAN, USEPROXY, DUMMY
 	}

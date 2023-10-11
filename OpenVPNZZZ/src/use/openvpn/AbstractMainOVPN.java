@@ -10,6 +10,7 @@ import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
+import basic.zKernel.KernelUseObjectWithStatusZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
@@ -17,7 +18,7 @@ import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
-public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Runnable,IMainOVPN{
+public abstract class AbstractMainOVPN extends KernelUseObjectWithStatusZZZ implements Runnable,IMainOVPN{
 	protected IApplicationOVPN objApplication = null;
 	protected ConfigChooserOVPN objConfigChooser = null;
 	protected IConfigMapper4TemplateOVPN objConfigMapper = null;
@@ -28,11 +29,7 @@ public abstract class AbstractMainOVPN extends KernelUseObjectZZZ implements Run
 	
 	protected String sMessage = null; //wird als Protokoll verwendet
 	protected ArrayList<String> listaMessage = new ArrayList<String>(); //Hierueber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
-	                                                                   //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen k�nnen.
-	
-	protected HashMap<String, Boolean>hmStatusLocal = new HashMap<String, Boolean>(); //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
-	
-	
+		
 	public AbstractMainOVPN(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, saFlagControl);
 	}

@@ -17,8 +17,6 @@ public interface ISenderObjectStatusLocalSetOVPN{
 	public void setEventPrevious(IEventObjectStatusLocalSetOVPN event);
 	
 	public abstract void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;
-
-	public abstract void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;
-	
+	public abstract void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;	
 	public abstract ArrayList<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ;
 }

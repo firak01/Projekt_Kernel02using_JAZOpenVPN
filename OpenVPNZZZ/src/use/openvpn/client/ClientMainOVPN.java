@@ -22,6 +22,7 @@ import use.openvpn.FileFilterConfigOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
@@ -34,7 +35,7 @@ import use.openvpn.server.ServerMainOVPN;
  * @author 0823
  *
  */
-public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN{		
+public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,IEventBrokerStatusLocalSetUserOVPN{		
 	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 		
 	private ClientConfigFileZZZ objFileConfigReached = null;
@@ -675,8 +676,6 @@ private String sPortVPN = null;
 	//### aus IEventBrokerStatusLocalSetUserOVPN
 	@Override
 	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
-		//TODO: Entweder diese LocalStatus-Klassen allgemeingueltig machen
-		//      ODER das gleiche Package für den Client machen.
 		if(this.objEventStatusLocalBroker==null) {
 			//++++++++++++++++++++++++++++++
 			//Nun geht es darum den Sender fuer Aenderungen an den Flags zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
@@ -699,6 +698,21 @@ private String sPortVPN = null;
 	@Override
 	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
+	}
+
+
+    //### aus IListenerObjectStatusLocalSetOVPN,
+	@Override
+	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		return this.isStatusChanged(eventStatusLocalSet.getStatusText());
+	}
+
+	@Override
+	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		//fuer das Backend ist erst einmal jeder event relevant
+		//darum nur die Aenderung pruefen.
+		return this.isStatusChanged(eventStatusLocalSet.getStatusText());
+		
 	}
 	
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++

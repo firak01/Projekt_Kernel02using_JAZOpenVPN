@@ -18,8 +18,5 @@ import basic.zBasic.ExceptionZZZ;
 public interface IEventBrokerStatusLocalSetUserOVPN extends ISenderObjectStatusLocalSetUserOVPN {	
 	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;
 	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;
-	
-	//20230730 Besonderheit: Setze ein Flag per beliebiges Enum. Damit wird das Enum an den Event weitergegeben und es können noch weitere Informationen des Enum ubergeben werden.
-	boolean setFlag(Enum enumFlag, boolean bFlagValue) throws ExceptionZZZ;
 }
 

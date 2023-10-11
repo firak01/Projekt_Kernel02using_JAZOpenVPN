@@ -24,6 +24,7 @@ import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.process.ClientThreadConnectionVpnIpMonitorOVPN;
 import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
+import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.client.IClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
@@ -183,9 +184,11 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientThreadProcessWatchMonitorOVPN-Object";
 			System.out.println(sLog);
 			this.getLogObject().WriteLineDate(sLog);
-			this.objMonitorProcess = new ClientThreadProcessWatchMonitorOVPN(this.getKernelObject(), this.getClientBackendObject(), null);
-			this.getClientBackendObject().registerForStatusLocalEvent(this.objMonitorProcess);
-			
+			String[] saFlag = {IClientThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION.name()};
+			this.objMonitorProcess = new ClientThreadProcessWatchMonitorOVPN(this.getKernelObject(), this.getClientBackendObject(), saFlag);
+			this.getClientBackendObject().registerForStatusLocalEvent(this.objMonitorProcess);//Den Thread am Main-Backend-Objekt registrieren
+			this.objMonitorProcess.registerForStatusLocalEvent(this); //Den Tray am MonitorProcess registrieren
+			this.objMonitorProcess.registerForStatusLocalEvent(this.getClientBackendObject()); //Das Main-Backend-Objekt am MonitorProcess registrieren
 			//Monitor noch nicht starten!!!
 			//Thread objThreadProcessMonitor = new Thread(this.objMonitorProcess);
 			//objThreadProcessMonitor.start();
