@@ -15,7 +15,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.component.AbstractKernelProgramZZZ;
 import basic.zKernel.html.TagInputZZZ;
 import basic.zKernel.html.TagTypeInputZZZ;
@@ -249,7 +249,7 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 
 
 	/**
-	 * @see zzzKernel.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
 	 * @param sFlagName
 	 * Flags used:<CR>
 	 * - isconnected

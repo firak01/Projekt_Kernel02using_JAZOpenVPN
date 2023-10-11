@@ -15,6 +15,8 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.net.client.KernelPortScanHostZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
@@ -41,12 +43,11 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	private ClientConfigFileZZZ objFileConfigReached = null;
 	private ArrayList<ClientConfigStarterOVPN> listaClientConfigStarter = null; //Liste der Batches, die OVPN starten mit den Konfigurationen.
 	private ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = null; //Liste der Batches, die OVPN starten mit den Konfigurationen, die noch laufen, also gestartet worden sind.
-	//Nein, jetzt aus der ClientConfigStarterRunning - Liste die Konfiguartionsdateien holen.... private ArrayList<File>listaFileConnectionToMonitor = null;                 //Liste der Konfigurationsdateien, die übrig bleiben, also gestartet worden sind.
 	
-/*STEHEN LASSEN: DIE PROBLEMATIK IST, DAS NICHT NACHVOLLZIEHBAR IST, �BER WELCHEN PORT DIE VPN-VERBINDUNG HERGESTELLT WURDE 
- * Zumindest nicht PER PING-BEFEHL !!!
-private String sPortVPN = null;
-*/
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//Merke: Das komplexere enum STATUSLOCAL in das Interface IClientMain verschoben, s. auch enum FLAGZ
+	//       Dort ist es flexibler einbindbar, als hier in Form einer internen Klasse.
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
 	public ClientMainOVPN(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,saFlagControl);
@@ -714,10 +715,62 @@ private String sPortVPN = null;
 		return this.isStatusChanged(eventStatusLocalSet.getStatusText());
 		
 	}
-	
-	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//Merke: Das komplexere enum STATUSLOCAL in das Interface IClientMain verschoben, s. auch enum FLAGZ
-	//       Dort ist es flexibler einbindbar, als hier in Form einer internen Klasse.
-	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+	//### STATUSLOCALZZZ - Events noch nicht definiert
+	@Override
+	public void fireEvent(IEventObjectStatusLocalSetZZZ event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public ArrayList getListenerRegisteredAll() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public IEventObjectStatusLocalSetZZZ getEventPrevious() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public void setEventPrevious(IEventObjectStatusLocalSetZZZ event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }//END class
 

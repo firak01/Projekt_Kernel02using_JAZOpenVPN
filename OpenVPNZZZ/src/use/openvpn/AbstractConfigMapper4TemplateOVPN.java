@@ -8,7 +8,7 @@ import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.server.ServerConfigMapper4TemplateOVPN;
 

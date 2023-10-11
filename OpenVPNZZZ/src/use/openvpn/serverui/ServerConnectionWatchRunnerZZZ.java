@@ -6,7 +6,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import use.openvpn.server.ServerConfigFileOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import basic.zKernel.KernelZZZ;
@@ -20,7 +20,7 @@ import basic.zKernel.KernelZZZ;
  * @author 0823
  *
  */
-public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implements Runnable{
+public class ServerConnectionWatchRunnerZZZ extends AbstractKernelUseObjectZZZ implements Runnable{
 	private ServerConfigFileOVPN objFileConfigServer = null;
 	private ServerConfigStarterOVPN objProcessStarter = null;
 	private String sTargetIP = "";
@@ -198,7 +198,7 @@ public class ServerConnectionWatchRunnerZZZ extends KernelUseObjectZZZ implement
 
 
 	/**
-	 * @see zzzKernel.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
 	 * @param sFlagName
 	 * Flags used:<CR>
 	 * - isconnected

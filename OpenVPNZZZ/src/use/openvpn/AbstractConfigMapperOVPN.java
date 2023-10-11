@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 
-public abstract class AbstractConfigMapperOVPN extends KernelUseObjectZZZ implements IConfigMapperOVPN, IMainUserOVPN{
+public abstract class AbstractConfigMapperOVPN extends AbstractKernelUseObjectZZZ implements IConfigMapperOVPN, IMainUserOVPN{
 	private IMainOVPN objMain = null;
 		
 	public AbstractConfigMapperOVPN(IKernelZZZ objKernel, IMainOVPN objMain) throws ExceptionZZZ {

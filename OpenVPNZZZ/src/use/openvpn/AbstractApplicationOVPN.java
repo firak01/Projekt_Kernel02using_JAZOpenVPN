@@ -5,11 +5,11 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import use.openvpn.server.ServerMainOVPN;
 
-public class AbstractApplicationOVPN extends KernelUseObjectZZZ implements IApplicationOVPN{
+public class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implements IApplicationOVPN{
 	protected IMainOVPN objMain = null;
 	
 	protected String sProxyHost = null;

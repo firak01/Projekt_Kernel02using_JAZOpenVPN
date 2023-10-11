@@ -2,29 +2,21 @@ package use.openvpn.serverui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
-import use.openvpn.client.ClientMainOVPN;
-import use.openvpn.server.status.EventObjectStatusLocalSetOVPN;
-import use.openvpn.clientui.ClientTrayUIZZZ;
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
+import basic.zKernel.IKernelZZZ;
+import basic.zKernel.flag.IFlagZUserZZZ;
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
+import use.openvpn.server.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalSetUserOVPN;
-import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
-import basic.zKernel.net.client.KernelPingHostZZZ;
-import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
-import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
-import basic.zKernel.KernelZZZ;
-import basic.zKernel.flag.IFlagZUserZZZ;
 
 /**This class watches the ServerMainZZZ-class and the ServerConnectionListenerRuner-objects.
  * This class runs in a seperate thread, so the TrayIcon stays "clickable", that means that clicking on the icon will be processed.
@@ -32,7 +24,7 @@ import basic.zKernel.flag.IFlagZUserZZZ;
  * @author 0823
  *
  */
-public class ServerMonitorRunnerOVPN extends KernelUseObjectZZZ implements Runnable, IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
+public class ServerMonitorRunnerOVPN extends AbstractKernelUseObjectZZZ implements Runnable, IListenerObjectStatusLocalSetOVPN, ISenderObjectStatusLocalSetUserOVPN{
 	private ServerMainOVPN objServerMain = null;
 	private ServerTrayUIOVPN objTray = null;
 	

@@ -52,29 +52,36 @@ import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
-public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListener ,IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN {
-//	public static final int iSTATUS_NEW = 0;	
-//	public static final int iSTATUS_CONNECTING = 1;
-//	public static final int iSTATUS_FAILED = 2;	
-//	public static final int iSTATUS_CONNECTED = 3;		
-//	public static final int iSTATUS_INTERRUPTED = 4;	
-//	public static final int iSTATUS_DISCONNECTED = 5;
-//	public static final int iSTATUS_ERROR = 6;
-//	private String sStatusString = null;
-
+/** Der Icon unter Windows in der TaskLeiste.
+ *  Aus ihm heraus werden:
+ *  - ueber ein wechselndes Icon der aktuelle Status angezeigt.
+ *  - die einzelnen Schritte gestartet
+ *  - der Status im Detail angezeigt
+ *  
+ *  Merke: 
+ *  Dieser Tray ist an den verschiedenen Monitor-Objekten, die den LocalStatus nutzen registriert.
+ *  Er reagiert auf Events, die er empfaengt.
+ *  Selbst hat der ClientTray keinen LocalStatus und feuert daher auch keine Events ab.
+ *   
+ * @author Fritz Lindhauer, 11.10.2023, 07:46:15
+ * 
+ */
+public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements ActionListener ,IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN {
 	private SystemTray objTray = null;
 	private TrayIcon objTrayIcon = null;
+	private ClientMainOVPN objClientBackend = null;
+	
+	//Die Objekte an die sich der Tray registriert und auf deren LocalStauts - Events er hoert.
 	private ClientThreadProcessWatchMonitorOVPN  objMonitorProcess = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verf�gung, bzw. �ndert das TrayIcon selbst.
 	private ClientThreadConnectionVpnIpMonitorOVPN  objMonitorConnection = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verf�gung, bzw. �ndert das TrayIcon selbst.
-	private ClientMainOVPN objClientBackend = null;
 	
 	//TODOGOON 20210210: Realisiere die Idee
 	//Idee: In ClientMainUI eine/verschiedene HashMaps anbieten, in die dann diese Container-Objekte kommen.
 	//      Dadurch muss man sie nicht als Variable deklarieren und kann dynamischer neue Dialogboxen, etc. hinzufügen.
-	//Ziel diese hier als Varible zu deklarieren ist: Die Dialogbox muss nicht immer wieder neu erstellt werden.
+	//Ziel diese hier als Variable zu deklarieren ist: Die Dialogbox muss nicht immer wieder neu erstellt werden.
 	private KernelJDialogExtendedZZZ dlgIPExternal=null;
 	private KernelJDialogExtendedZZZ dlgAdjustment=null;
 	
@@ -149,7 +156,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			//Kein actionListener für Dummy Eintrag
 			
 			
-			/* das scheint dann doch nicht notwendig zu sein !!!
+			/* Spezielle Mouse-Listener sind nicht notwendig, aber moeglich !!!
 			menueeintrag.addMouseListener(new MouseAdapter(){
 				public void mouseReleased(MouseEvent me){
 					System.out.println("mausi released");
@@ -160,13 +167,9 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 				public void mouseClicked(MouseEvent me){
 					System.out.println("mausi clicked");
 				}
-				
-				//Das wird erkannt
 				public void mouseEntered(MouseEvent me){
 					System.out.println("mausi entered");
-				}
-				
-				//
+				}				
 				public void mouseExited(MouseEvent me){
 					System.out.println("mausi exited");
 				}
@@ -237,47 +240,16 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}//END main:
 		return objReturn;
 	}
-	
-//	public static String getStatusStringByStatus(Enum enumSTATUS) throws ExceptionZZZ{
-//		String sReturn=null;
-//		main:{
-//			
-//			//TODO: Diese Strings müssen aus dem enum kommen
-//			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Status="+enumSTATUS.name();			
-//			System.out.println(sLog);
-//			String a = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "NEW");
-//			String c = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "CONNECTING");
-//			String b = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "STARTING");
-//			String d = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "CONNECTED");
-//			String e = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "INTERRUPTED");
-//			String f = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "DISCONNCTED");
-//			String g = EnumSetUtilZZZ.readEnumConstant_NameValue(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.class, "ERROR");
-//			if(enumSTATUS.name().equalsIgnoreCase(a)){ 			
-//				sReturn = "Not yet started.";
-//			}else if(enumSTATUS.name().equalsIgnoreCase(b)) {
-//				sReturn = "Starting ...";
-//			}else if(enumSTATUS.name().equalsIgnoreCase(c)) {
-//				sReturn = "Listening for Connection.";
-//			}else if(enumSTATUS.name().equalsIgnoreCase(d)) {
-//				sReturn = "Connected.";
-//			}else if(enumSTATUS.name().equalsIgnoreCase(e)) {
-//				sReturn = "Connection ended or interrupted.";
-//			}else if(enumSTATUS.name().equalsIgnoreCase(f)) {
-//				sReturn = "Stopped listening.";
-//			}else if(enumSTATUS.name().equalsIgnoreCase(g)) {
-//				sReturn = "ERROR.";			
-//			}else{ 
-//				sReturn = "... Status not handled ...";
-//				break main;
-//			}
-//		}//end main:
-//		return sReturn;
-//	}
-		
+			
+	/** Aendere das ImageIcon je nach dem uebergebenen enum des StatusTyps. 
+	 * @param enumSTATUS
+	 * @return
+	 * @throws ExceptionZZZ
+	 * @author Fritz Lindhauer, 11.10.2023, 07:56:09
+	 */
 	public boolean switchStatus(ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
 		boolean bReturn = false;
-		main:{
-			//ImageIcon aendern
+		main:{			
 			ImageIcon objIcon = this.getImageIconByStatus(enumSTATUS);
 			if(objIcon==null)break main;
 			
@@ -288,9 +260,6 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		return bReturn;
 	}
 	
-
-	
-
 	/**Adds an icon ito the systemtray. 
 	 * Right click on the item to show available menue entries.
 	 * @return boolean
@@ -305,9 +274,7 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 		}//END main:
 		return bReturn;
 	}
-
 	
-
 	/**Removes the icon from the systemtray
 	 * AND removes any running "openvpn.exe" processes. (or how the exe-file is named)
 	 * @return boolean
@@ -355,27 +322,22 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
 			this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING, true);
 						
-			//Also dies über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
-			//Problem dabei: Der SystemTray wird nicht aktualisiert.
+			//Den Staart ueber einen extra Thread durchfuehren, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!			
 			Thread objThreadMain = new Thread(this.getClientBackendObject());
 			objThreadMain.start();
-				
+			//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISSTARTED" gesetzt und ein Event geworfen.
+			
 			bReturn = true;
 		}//end main:
 		return bReturn;
 	}
-			
 				
-	
-	
 	public boolean connect(){
 		boolean bReturn = false;
 		main:{
 			try{ 
-				check:{
 				if(this.getClientBackendObject()==null)break main;
-				}
-				
+								
 				ClientThreadProcessWatchMonitorOVPN objMonitor = this.getProcessMonitorObject();
 				if(objMonitor==null) break main;
 				
@@ -392,23 +354,12 @@ public class ClientTrayUIZZZ extends KernelUseObjectZZZ implements ActionListene
 					break main;
 				}
 				
-				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
-				//this.objServerBackend = (ServerMainZZZ) this.getServerBackendObject().getApplicationObject(); //new ServerMainZZZ(this.getKernelObject(), null);
-				
-				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
-				//Thread objThreadConfig = new Thread(this.getServerBackendObject());
-				//objThreadConfig.start();
-
-				//DIES über einen extra thread tun, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!
-				//Merke: Es ist nun Aufgabe des Frontends einen Thread zu starten, der den Verbindungsaufbau und das "aktiv sein" der Processe monitored.
-				//Merke: Dieser Monitor Thread muss mit dem Starten der einzelnen Unterthreads solange warten, bis das ServerMainZZZ-Object in seinem Flag anzeigt, dass es fertig mit dem Start ist.
-				
+				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.								
 				//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
 				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
 								
 				Thread objThreadMonitorThread = new Thread(objMonitor);
-				objThreadMonitorThread.start();
-								
+				objThreadMonitorThread.start();							
 				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISCONNECTED" gesetzt und ein Event geworfen.
 				
 				bReturn = true;

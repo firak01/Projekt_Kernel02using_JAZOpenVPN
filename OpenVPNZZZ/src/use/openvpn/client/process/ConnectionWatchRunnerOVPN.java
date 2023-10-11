@@ -6,7 +6,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 
 /**This runner-class is used for a thread started by the thread clientMonitorRunner.
@@ -16,7 +16,7 @@ import basic.zKernel.net.client.KernelPingHostZZZ;
  * @author 0823
  *
  */
-public class ConnectionWatchRunnerOVPN extends KernelUseObjectZZZ implements Runnable{
+public class ConnectionWatchRunnerOVPN extends AbstractKernelUseObjectZZZ implements Runnable{
 	private String sIP = null;
 	private String sPort = null;
 	
@@ -156,7 +156,7 @@ private void OVPNConnectionWatchRunnerNew_(String sIP, String sPort, String[] sa
 	
 	
 	/**
-	 * @see zzzKernel.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
 	 * @param sFlagName
 	 * Flags used:<CR>
 	 	- ConnectionBroken

@@ -18,9 +18,9 @@ import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileTextParserZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 
-public abstract class AbstractConfigTemplateUpdaterOVPN extends KernelUseObjectZZZ implements IConfigTemplateUpdaterOVPN, IMainUserOVPN, IConfigMapper4TemplateUserOVPN {
+public abstract class AbstractConfigTemplateUpdaterOVPN extends AbstractKernelUseObjectZZZ implements IConfigTemplateUpdaterOVPN, IMainUserOVPN, IConfigMapper4TemplateUserOVPN {
 private IMainOVPN objMain = null;
 private File objFileTemplate=null;
 private File objFileUsed = null;

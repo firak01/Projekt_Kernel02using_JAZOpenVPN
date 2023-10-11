@@ -36,12 +36,12 @@ import basic.zBasic.util.file.zip.ZipEntryFilter;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.file.ini.KernelZFormulaIni_EmptyZZZ;
 import basic.zKernel.file.ini.KernelZFormulaIni_NullZZZ;
 
-public class ConfigChooserOVPN extends KernelUseObjectZZZ implements IApplicationUserOVPN{
+public class ConfigChooserOVPN extends AbstractKernelUseObjectZZZ implements IApplicationUserOVPN{
 	private IApplicationOVPN objApplication = null;
 	private File objFileDirExe = null;
 	private File objFileDirExeRoot = null;

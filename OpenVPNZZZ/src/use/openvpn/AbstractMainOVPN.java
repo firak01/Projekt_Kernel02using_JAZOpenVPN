@@ -10,15 +10,15 @@ import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectWithStatusZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
-public abstract class AbstractMainOVPN extends KernelUseObjectWithStatusZZZ implements Runnable,IMainOVPN{
+public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusZZZ implements Runnable,IMainOVPN{
 	protected IApplicationOVPN objApplication = null;
 	protected ConfigChooserOVPN objConfigChooser = null;
 	protected IConfigMapper4TemplateOVPN objConfigMapper = null;

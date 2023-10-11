@@ -21,12 +21,12 @@ import basic.zBasic.util.abstractList.HashtableZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.txt.TxtReaderZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 
-public class ConfigFileTemplateReadmeOVPN extends KernelUseObjectZZZ{
+public class ConfigFileTemplateReadmeOVPN extends AbstractKernelUseObjectZZZ{
 	public static String sFILE_TEMPLATE_PREFIX="readme_";
 	public static String sFILE_TEMPLATE_SUFFIX="_server_directory_clientconfig";
 	private File fileTemplateReadme=null;

@@ -2,7 +2,7 @@ package use.openvpn.server;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import use.openvpn.AbstractApplicationOVPN;
 import use.openvpn.IMainOVPN;

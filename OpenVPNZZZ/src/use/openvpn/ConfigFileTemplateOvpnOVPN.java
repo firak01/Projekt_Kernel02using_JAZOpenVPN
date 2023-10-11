@@ -14,12 +14,12 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 
-public class ConfigFileTemplateOvpnOVPN extends KernelUseObjectZZZ{
+public class ConfigFileTemplateOvpnOVPN extends AbstractKernelUseObjectZZZ{
 	public static String sFILE_TEMPLATE_PREFIX="template_";
 	public static String sFILE_TEMPLATE_SUFFIX="";
 	private File objFileConfig;

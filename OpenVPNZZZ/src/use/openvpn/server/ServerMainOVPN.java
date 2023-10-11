@@ -52,7 +52,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.FileTextWriterZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 
 public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
@@ -787,6 +787,43 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	@Override
 	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
+	}
+
+	@Override
+	public void fireEvent(IEventObjectStatusLocalSetZZZ event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IEventObjectStatusLocalSetZZZ getEventPrevious() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setEventPrevious(IEventObjectStatusLocalSetZZZ event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
 	}
 		
 	

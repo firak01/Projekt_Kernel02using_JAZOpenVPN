@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
@@ -17,17 +18,20 @@ import basic.zKernel.process.AbstractProcessWatchRunnerZZZ.STATUSLOCAL;
 import basic.zKernel.status.EventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 
 /**This class receives the stream from a process, which was started by the ConfigStarterZZZ class.
  * This is necessary, because the process will only goon working, if the streams were "catched" by a target.
@@ -35,7 +39,9 @@ import basic.zKernel.KernelUseObjectZZZ;
  * @author 0823
  *
  */
-public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{	
+public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implements IEventBrokerStatusLocalSetUserOVPN{	
+	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+	
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber, String[] saFlag) throws ExceptionZZZ{
 		super(objKernel, objProcess, iNumber, saFlag);
 	}
@@ -125,7 +131,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ{
 	}
 
 	/**
-	 * @see zzzKernel.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
 	 * @param sFlagName
 	 * Flags used:<CR>
 	 	- hasError
@@ -284,7 +290,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 					//Dann erzeuge den Event und feuer ihn ab.
 					//Merke: Nun aber ueber das enum			
 					if(this.objEventStatusLocalBroker!=null) {
-						IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,enumStatus, bStatusValue);
+						IEventObjectStatusLocalSetOVPN event = new EventObjectStatusLocalSetOVPN(this,1,sStatusName, bStatusValue);
 						
 						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumber() + " fires event '" + enumStatus.getAbbreviation() + "'";
 						System.out.println(sLog);
@@ -312,6 +318,73 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		return bFunction;
 		}
 
-		
-		
+		@Override
+		public void fireEvent(IEventObjectStatusLocalSetZZZ event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public ArrayList getListenerRegisteredAll() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IEventObjectStatusLocalSetZZZ getEventPrevious() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setEventPrevious(IEventObjectStatusLocalSetZZZ event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+			if(this.objEventStatusLocalBroker==null) {
+				//++++++++++++++++++++++++++++++
+				//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
+				ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
+				this.objEventStatusLocalBroker = objSenderStatusLocal;
+			}
+			return this.objEventStatusLocalBroker;
+		}
+
+		@Override
+		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+			this.objEventStatusLocalBroker = objEventSender;
+		}
+
+		@Override
+		public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+			this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
+		}
+
+		@Override
+		public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+			this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
+		}		
 }//END class

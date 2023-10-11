@@ -21,12 +21,12 @@ import basic.zBasic.util.abstractList.HashtableZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.txt.TxtReaderZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 
-public class ConfigFileTemplateBatchOVPN extends KernelUseObjectZZZ{
+public class ConfigFileTemplateBatchOVPN extends AbstractKernelUseObjectZZZ{
 	public static String sFILE_TEMPLATE_PREFIX="template_";
 	public static String sFILE_TEMPLATE_SUFFIX="_starter";
 	private File fileTemplateBatch=null;
