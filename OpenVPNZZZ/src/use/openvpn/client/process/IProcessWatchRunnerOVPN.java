@@ -1,40 +1,48 @@
-package use.openvpn.client;
+package use.openvpn.client.process;
 
 import java.util.EnumSet;
 
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.process.IProcessWatchRunnerZZZ;
+import basic.zKernel.status.IEventBrokerStatusLocalSetUserZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IStatusLocalUserZZZ;
-import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
-import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
+import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
+import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
-public interface IClientMainOVPN {
+public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	public enum FLAGZ{
-		LAUNCHONSTART, CONNECTONSTART, ENABLEPORTSCAN, USEPROXY, DUMMY
+		DUMMY
 	}
 	
-	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//Merke: Das enum ist im Interface besser aufgehoben, als z.B. in einer internen enum-Klasse.
-		
-	//Merke: Alle Properties des enum müssen im Konstruktor sein, um die Enumeration so zu definieren.
+	boolean getFlag(FLAGZ objEnumFlag);
+	boolean setFlag(FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ;
+	boolean[] setFlag(FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ;
+	boolean proofFlagExists(FLAGZ objEnumFlag) throws ExceptionZZZ;
+	boolean proofFlagSetBefore(FLAGZ objEnumFlag) throws ExceptionZZZ;
+	
+	
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW("isstartnew", "CLIENT: Nicht gestarted",""),
-		ISSTARTING("isstarting","CLIENT: Startet...",""),
-		ISSTARTED("isstarted","CLIENT: Gestartet",""),			
-		ISCONNECTNEW("isconnectnew","OVPN: Nicht gestartet",""),
-		ISCONNECTING("isconnecting","OVPN: Startet...",""),
-		ISCONNECTED("isconnected","OVPN: Verbunden",""),
-		WATCHRUNNERNEW("watchrunnernew","CONN: MonitorThread nicht gestartet",""),
-		WATCHRUNNERSTARTING("watchrunnerstarting","CONN: MonitorThread startet...",""),
-		WATCHRUNNERSTARTED("watchrunnerstarted","CONN: MonitorThread gestartet",""),
-		
-		PortScanAllFinished("portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
-		HASERROR("haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");
-						
+		ISSTARTED("isstarted","ProcessWatchRunner",""),
+		HASCONNECTION("hasconnection","ProcessWatchRunner ist mit dem Process verbunden",""),
+		HASOUTPUT("hasoutput","Prozess hat Output",""),
+		HASINPUT("hasinput","Prozess hat Input",""),
+		ISSTOPPED("isended","ProcessWatchRunner ist beendet",""),
+		HASERROR("haserror","Ein Fehler ist aufgetreten","");
+									
+								
 		private String sAbbreviation,sStatusMessage,sDescription;
-
+	
 		//#############################################
 		//#### Konstruktoren
 		//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
@@ -44,7 +52,7 @@ public interface IClientMainOVPN {
 		    this.sStatusMessage = sStatusMessage;
 		    this.sDescription = sDescription;
 		}
-
+	
 		public String getAbbreviation() {
 		 return this.sAbbreviation;
 		}
@@ -56,7 +64,7 @@ public interface IClientMainOVPN {
 		public EnumSet<?>getEnumSetUsed(){
 			return STATUSLOCAL.getEnumSet();
 		}
-
+	
 		/* Die in dieser Methode verwendete Klasse für den ...TypeZZZ muss immer angepasst werden. */
 		@SuppressWarnings("rawtypes")
 		public static <E> EnumSet getEnumSet() {
@@ -70,14 +78,14 @@ public interface IClientMainOVPN {
 			Class<STATUSLOCAL> enumClass = STATUSLOCAL.class;
 			EnumSet<STATUSLOCAL> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 			
-			for(Object obj : ClientTrayMenuTypeZZZ.class.getEnumConstants()){
+			for(Object obj : ServerTrayMenuTypeZZZ.class.getEnumConstants()){
 				//System.out.println(obj + "; "+obj.getClass().getName());
 				set.add((STATUSLOCAL) obj);
 			}
 			return set;
 			
 		}
-
+	
 		//TODO: Mal ausprobieren was das bringt
 		//Convert Enumeration to a Set/List
 		private static <E extends Enum<E>>EnumSet<E> toEnumSet(Class<E> enumClass,long vector){
@@ -91,7 +99,7 @@ public interface IClientMainOVPN {
 			  }
 			  return set;
 			}
-
+	
 		//+++ Das könnte auch in einer Utility-Klasse sein.
 		//the valueOfMethod <--- Translating from DB
 		public static STATUSLOCAL fromAbbreviation(String s) {
@@ -101,7 +109,7 @@ public interface IClientMainOVPN {
 		}
 		throw new IllegalArgumentException("Not a correct abbreviation: " + s);
 		}
-
+	
 		//##################################################
 		//#### Folgende Methoden bring Enumeration von Hause aus mit. 
 				//Merke: Diese Methoden können aber nicht in eine abstrakte Klasse verschoben werden, zum daraus Erben. Grund: Enum erweitert schon eine Klasse.
@@ -109,27 +117,27 @@ public interface IClientMainOVPN {
 		public String getName() {	
 			return super.name();
 		}
-
+	
 		@Override
 		public String toString() {//Mehrere Werte mit # abtennen
 		    return this.sAbbreviation+"="+this.sDescription;
 		}
-
+	
 		@Override
 		public int getIndex() {
 			return ordinal();
 		}
-
+	
 		//### Folgende Methoden sind zum komfortablen Arbeiten gedacht.
 		@Override
 		public int getPosition() {
 			return getIndex()+1; 
 		}
-
+	
 		@Override
 		public String getDescription() {
 			return this.sDescription;
 		}
-	//+++++++++++++++++++++++++
+		//+++++++++++++++++++++++++
 	}//End internal Class
 }

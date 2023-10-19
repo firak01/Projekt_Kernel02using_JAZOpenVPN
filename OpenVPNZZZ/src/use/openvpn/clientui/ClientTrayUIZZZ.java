@@ -28,6 +28,7 @@ import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.client.IClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
+import use.openvpn.client.status.IEventObject4ProcessWatchMonitorStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.IClientStatusMappedValueZZZ.ClientTrayStatusTypeZZZ;
@@ -46,6 +47,7 @@ import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
@@ -72,7 +74,7 @@ import basic.zWin32.com.wmi.KernelWMIZZZ;
 public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements ActionListener ,IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN {
 	private SystemTray objTray = null;
 	private TrayIcon objTrayIcon = null;
-	private ClientMainOVPN objClientBackend = null;
+	private ClientMainOVPN objMain = null;
 	
 	//Die Objekte an die sich der Tray registriert und auf deren LocalStauts - Events er hoert.
 	private ClientThreadProcessWatchMonitorOVPN  objMonitorProcess = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verf�gung, bzw. �ndert das TrayIcon selbst.
@@ -99,7 +101,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 						ExceptionZZZ ez = new ExceptionZZZ("ClientMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
 					   throw ez;		 
 				}else{
-					this.objClientBackend = objClientMain;
+					this.objMain = objClientMain;
 				}
 			}//End check
 			
@@ -188,10 +190,20 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			System.out.println(sLog);
 			this.getLogObject().WriteLineDate(sLog);
 			String[] saFlag = {IClientThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION.name()};
+			
+			//#################
+			//Registriere das ClientTray-Objekt fuer Aenderungen an den ServerMain-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
+			this.getClientBackendObject().registerForFlagEvent(this);
+						
+			//Registriere das ServerTray-Objekt fuer Aenderung am ServerMain-Objekt-Status. Das garantiert, das der Tray auch auf Änderungen des Status reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
+			this.getClientBackendObject().registerForStatusLocalEvent(this);
+			
+			//#################
+            //Definiere einen Monitor, der die OVPN-Watch Processe beobachtet (die ihren jeweiligen, eigentlichen OVPN.exe Process beobachten)		
 			this.objMonitorProcess = new ClientThreadProcessWatchMonitorOVPN(this.getKernelObject(), this.getClientBackendObject(), saFlag);
-			this.getClientBackendObject().registerForStatusLocalEvent(this.objMonitorProcess);//Den Thread am Main-Backend-Objekt registrieren
-			this.objMonitorProcess.registerForStatusLocalEvent(this); //Den Tray am MonitorProcess registrieren
+			this.getClientBackendObject().registerForStatusLocalEvent(this.objMonitorProcess);//Den Thread am Main-Backend-Objekt registrieren			
 			this.objMonitorProcess.registerForStatusLocalEvent(this.getClientBackendObject()); //Das Main-Backend-Objekt am MonitorProcess registrieren
+			
 			//Monitor noch nicht starten!!!
 			//Thread objThreadProcessMonitor = new Thread(this.objMonitorProcess);
 			//objThreadProcessMonitor.start();
@@ -313,19 +325,10 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			}
 
 			//Wenn das so ohne Thread gestartet wird, dann reagiert der Tray auf keine weiteren Clicks.
-			//Z.B. den Status anzuzeigen.
-			//this.getClientBackendObject().start(this);
-			
-			//Den StatusString anbieten. Der kann im Tray angezeigt werden, durch Click auf das TraySymbol
-			this.getClientBackendObject().setStatusString(ClientMainOVPN.STATUSLOCAL.ISSTARTING.getStatusMessage());
-		
-			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
-			this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING, true);
-						
+			//Z.B. den Status anzuzeigen.			
 			//Den Staart ueber einen extra Thread durchfuehren, damit z.B. das Anclicken des SystemTrays mit der linken Maustaste weiterhin funktioniert !!!			
 			Thread objThreadMain = new Thread(this.getClientBackendObject());
 			objThreadMain.start();
-			//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISSTARTED" gesetzt und ein Event geworfen.
 			
 			bReturn = true;
 		}//end main:
@@ -353,11 +356,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					objMonitor.setStatusString("Client not finished starting. Waiting for process?");
 					break main;
 				}
-				
-				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.								
-				//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
-				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
-								
+												
 				Thread objThreadMonitorThread = new Thread(objMonitor);
 				objThreadMonitorThread.start();							
 				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISCONNECTED" gesetzt und ein Event geworfen.
@@ -422,7 +421,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					break main;
 				}
 				
-				this.objClientBackend.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTING, true);
+				this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTING, true);
 				
 				Thread objConnectionMonitorThread = new Thread(objMonitor);
 				objConnectionMonitorThread.start();
@@ -524,6 +523,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		main:{
 			String stemp = null;
 			
+			//Merke: der BackendStausString wird von den Events, die er empfaengt gefuettert.
 			String sStatusClientString = this.readBackendStatusString();
 			if(StringZZZ.isEmpty(sStatusClientString)){
 				sReturn = sReturn + ClientMainOVPN.STATUSLOCAL.ISSTARTNEW.getStatusMessage() + "\n";
@@ -538,24 +538,25 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				sReturn = sReturn + ClientMainOVPN.STATUSLOCAL.ISCONNECTNEW.getStatusMessage() + "\n";
 				break main;
 			}else{
+				//Falls der Client gestrtet wurde, hole die Statusmeldung aus dem Backend-Objekt. Also neu setzen.
+				sStatusProcessMonitorString = this.getClientBackendObject().getStatusString() + "\n";
+								
 				//20200114: Erweiterung - Angabe des Rechnernamens
-				try {				
-						String sServerOrClient = this.getClientBackendObject().getConfigChooserObject().getOvpnContextUsed();
-						
-						//Falls der Client gestartet wurde, gib den Rechnernamen aus, anstatt einer "ist gestartet" Meldung. Spart Platz.
-						//Also sReturn komplett neu setzen.
-						sReturn = sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
+				try {																
+					//Falls der Client gestartet wurde, gib den Rechnernamen aus, anstatt einer "ist gestartet" Meldung. Spart Platz.
+					String sServerOrClient = this.getClientBackendObject().getConfigChooserObject().getOvpnContextUsed();					
+					sReturn = sServerOrClient.toUpperCase() + ": " + InetAddress.getLocalHost().getHostName() + "\n";
 				} catch (UnknownHostException e) {				
 					e.printStackTrace();
 					ExceptionZZZ ez = new ExceptionZZZ("Fehler bei Ermittlung des Rechnernames", iERROR_RUNTIME, (Object)this, (Exception)e);
 					throw ez;
 				}
 				
-				sReturn = sReturn + sStatusProcessMonitorString + "\n";
+				sReturn = sStatusProcessMonitorString + sReturn;
 			}
-		
+					
 		if(this.getClientBackendObject().getFlag("useProxy")==true){
-			sReturn = sReturn + "Proxy: " + this.getClientBackendObject().getApplicationObject().getProxyHost() + ":" + this.objClientBackend.getApplicationObject().getProxyPort() + "\n"; 					
+			sReturn = sReturn + "Proxy: " + this.getClientBackendObject().getApplicationObject().getProxyHost() + ":" + this.objMain.getApplicationObject().getProxyPort() + "\n"; 					
 		}else{
 			//sReturn = sReturn + "No proxy.\n";
 		}
@@ -657,7 +658,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		
 		ArrayList listaLogString = this.getClientBackendObject().getMessageStringAll();
 		if(listaLogString.isEmpty()){
-			if (this.objClientBackend == null){
+			if (this.objMain == null){
 					sReturn = "No log string available.";
 					break main;
 			}
@@ -694,10 +695,10 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 	}
 	
 	public void setClientBackendObject(IClientMainOVPN objClientBackend){
-		this.objClientBackend = (ClientMainOVPN) objClientBackend;
+		this.objMain = (ClientMainOVPN) objClientBackend;
 	}
 	public ClientMainOVPN getClientBackendObject(){
-		return this.objClientBackend;
+		return this.objMain;
 	}
 	
 //FGL Es scheint so als geht das nicht mit extra Klassen.
@@ -859,22 +860,108 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		@Override
 		public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 			boolean bReturn=false;
-			main:{
+			main:{	
+				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Der Status eine Objekts auf den der Tray hoert hat sich geaendert.";
+				System.out.println(sLog);
+				this.getClientBackendObject().logMessageString(sLog);
+				
+				IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
+				if(enumStatus==null) {
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
+					System.out.println(sLog);
+					this.getClientBackendObject().logMessageString(sLog);							
+					break main;
+				}
+				
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen.";
+				System.out.println(sLog);
+				this.getClientBackendObject().logMessageString(sLog);
+				
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+eventStatusLocalSet.getStatusEnum().getClass()+"'";
+				System.out.println(sLog);
+				this.getClientBackendObject().logMessageString(sLog);	
+				
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + eventStatusLocalSet.getStatusEnum().getAbbreviation()+"'";
+				System.out.println(sLog);
+				this.getClientBackendObject().logMessageString(sLog);
+				
+				/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
+			 	class Animal { }
+				class Dog2 extends Animal {
+					static void method(Animal j) {
+					if(j instanceof Dog2){
+					Dog2 d=(Dog2)j;//downcasting
+					System.out.println(“downcasting done”);
+					}
+					}
+					public static void main (String [] args) {
+					Animal j=new Dog2();
+					Dog2.method(j);
+					}
+				}
+			 */
+				
+				
+				if(eventStatusLocalSet.getStatusEnum() instanceof IClientMainOVPN.STATUSLOCAL){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() +" :FGLTEST 01");
+					bReturn = this.statusLocalChangedMainEvent_(eventStatusLocalSet);
+					break main;
+					
+				}
+//				else if(eventStatusLocalSet.getStatusEnum() instanceof IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL) {
+//					System.out.println(ReflectCodeZZZ.getPositionCurrent() +" :FGLTEST 02");
+//					bReturn = this.statusLocalChangedMonitorEvent_(eventStatusLocalSet);
+//					break main;
+//				}
+				else {	
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() +" :FGLTEST ELSE");
+					
+				}											
+				bReturn = true;
+			}//end main:
+			return bReturn;
+		}
+		/** Merke: Diese private Methode wird nach ausführlicher Prüfung aufgerufen, daher hier mehr noetig z.B.:
+		 * - Keine Pruefung auf NULLL
+		 * - kein instanceof 
+		 * @param eventStatusLocalSet
+		 * @return
+		 * @throws ExceptionZZZ
+		 * @author Fritz Lindhauer, 19.10.2023, 09:43:19
+		 */
+		private boolean statusLocalChangedMainEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+			boolean bReturn=false;
+			main:{	
+				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Fuer MainEvent.";
+				System.out.println(sLog);
+				this.getClientBackendObject().logMessageString(sLog);
+				
+				IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
 				STATUSLOCAL objStatusEnum = (STATUSLOCAL) eventStatusLocalSet.getStatusEnum();
 				if(objStatusEnum==null) break main;
-				
+					
 				//Falls nicht zuständig, mache nix
-			    boolean bProof = this.isStatusLocalRelevant(eventStatusLocalSet);
+				boolean bProof = this.isEventStatusLocalRelevant(eventStatusLocalSet);
 				if(!bProof) break main;
-				
+					
 				boolean bStatusValue = eventStatusLocalSet.getStatusValue();
 				if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
-				
-				//20230818: Die Meldungen werden nun direkt aus dem ServerMonitor-Objekt ausgelesen, welches sich auch am BackenServer - Registriert hat.
-				//Nimm erst einmal die Meldung vom Server entgegen.
-				//String sMessage = objStatusEnum.getStatusMessage();
-				//System.out.println(ReflectCodeZZZ.getPositionCurrent()+": " + sMessage);			
-
+					
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
+				System.out.println(sLog);
+				this.getClientBackendObject().logMessageString(sLog);	
+					
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
+				System.out.println(sLog);
+				this.getClientBackendObject().logMessageString(sLog);
+					
+				boolean bRelevant = this.isStatusLocalRelevant(enumStatus);
+				if(!bRelevant) {
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"' ist nicht relevant. Breche ab.";
+					System.out.println(sLog);
+					this.getClientBackendObject().logMessageString(sLog);
+				}														
+	
 				//Die Stati vom Backend-Objekt mit dem TrayIcon mappen
 				if(ClientMainOVPN.STATUSLOCAL.ISSTARTNEW==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusTypeZZZ.NEW);				
@@ -883,60 +970,134 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				}else if(ClientMainOVPN.STATUSLOCAL.ISSTARTED==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusTypeZZZ.STARTED);
 				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTING==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTING);
+						this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTING);
 				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTED==objStatusEnum) {
-				
-					//Ggfs. vorhandene Aenderungen aus dem Backend-Application-Objekt des Events holen, bzw. hier das ganze Backen-Objekt austauschen
-					//Dann kann sich z.B. die Datailinfo-box die aktuellsten Werte daraus holen.
-					IApplicationOVPN objApplicationUsed = eventStatusLocalSet.getApplicationObjectUsed();
-					if(objApplicationUsed==null) {						
-						String sLog = ReflectCodeZZZ.getPositionCurrent()+": Kein Application-Objekt aus dem Event erhalten.";
-						System.out.println(sLog);
-						this.getClientBackendObject().logMessageString(sLog);
-					}else {
-						this.getClientBackendObject().setApplicationObject(objApplicationUsed);
-
-						//################################
-						//Merke: Dieser Wert kommt beim Setzen im ClientThreadProcessWatchMonitor in diesem Backenobjekt nicht an.
-						//       Darum explizit holen und setzen.
-						String sVpnIp = this.getClientBackendObject().getApplicationObject().getVpnIpRemote();
-												
-						String sLog = ReflectCodeZZZ.getPositionCurrent()+": Verbunden mit remote VPNIP='"+sVpnIp+"'";
-						System.out.println(sLog);
-						this.getClientBackendObject().logMessageString(sLog);
-						
-						//Nun die als "verbunden" gekennzeichnete IP an das ApplicationObjekt uebergben.
-						this.getClientBackendObject().getApplicationObject().setVpnIpRemoteEstablished(sVpnIp);
-						//################################
-					}
 					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTED);
-					
+			
+		
 				}else if(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTING==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusTypeZZZ.WATCHING);
 				}else if(ClientMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusTypeZZZ.WATCHED);
-					
-//			}else if(ClientMainOVPN.STATUSLOCAL.PortScanAllFinished==objStatusEnum) {
-//					this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
+						
+//				}else if(ClientMainOVPN.STATUSLOCAL.PortScanAllFinished==objStatusEnum) {
+//						this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
 				}else if(ClientMainOVPN.STATUSLOCAL.HASERROR==objStatusEnum) {
 					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
 				}else {
-					String sLog = "Der Status wird nicht behandelt - '"+objStatusEnum.getAbbreviation()+"'.";
+					sLog = "Der Status wird nicht behandelt - '"+objStatusEnum.getAbbreviation()+"'.";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 					this.logLineDate(sLog);
 					break main;
 				}
-							
+				
 				bReturn = true;
 			}//end main:
 			return bReturn;
+		}
+
+//		/** Merke: Diese private Methode wird nach ausführlicher Prüfung aufgerufen, daher hier mehr noetig z.B.:
+//		 * - Keine Pruefung auf NULLL
+//		 * - kein instanceof 
+//		 * @param eventStatusLocalSet
+//		 * @return
+//		 * @throws ExceptionZZZ
+//		 * @author Fritz Lindhauer, 19.10.2023, 09:43:19
+//		 */
+//		private boolean statusLocalChangedMonitorEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+//			boolean bReturn=false;
+//			main:{	
+//				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Fuer MonitorEvent.";
+//				System.out.println(sLog);
+//				this.getClientBackendObject().logMessageString(sLog);
+//				
+//				IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
+//				IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL objStatusEnum = (IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL) eventStatusLocalSet.getStatusEnum();
+//				if(objStatusEnum==null) break main;
+//					
+//				//Falls nicht zuständig, mache nix
+//				boolean bProof = this.isEventStatusLocalRelevant(eventStatusLocalSet);
+//				if(!bProof) break main;
+//					
+//				boolean bStatusValue = eventStatusLocalSet.getStatusValue();
+//				if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+//					
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
+//				System.out.println(sLog);
+//				this.getClientBackendObject().logMessageString(sLog);	
+//					
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
+//				System.out.println(sLog);
+//				this.getClientBackendObject().logMessageString(sLog);
+//					
+//				boolean bRelevant = this.isStatusLocalRelevant(enumStatus);
+//				if(!bRelevant) {
+//					sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"' ist nicht relevant. Breche ab.";
+//					System.out.println(sLog);
+//					this.getClientBackendObject().logMessageString(sLog);
+//				}														
+//	
+//				//Die Stati vom Backend-Objekt mit dem TrayIcon mappen
+//				if(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISCONNECTING==objStatusEnum) {
+//					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTING);				
+//				}else if(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISCONNECTED==objStatusEnum) {
+//					//this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTED);
+//					
+//					//Ggfs. vorhandene Aenderungen aus dem Backend-Application-Objekt des Events holen, bzw. hier das ganze Backen-Objekt austauschen
+//					//Dann kann sich z.B. die Datailinfo-box die aktuellsten Werte daraus holen.
+//					IApplicationOVPN objApplicationUsed = eventStatusLocalSet.getApplicationObjectUsed();
+//					if(objApplicationUsed==null) {						
+//						sLog = ReflectCodeZZZ.getPositionCurrent()+": Kein Application-Objekt aus dem Event erhalten.";
+//						System.out.println(sLog);
+//						this.getClientBackendObject().logMessageString(sLog);
+//					}else {
+//						this.getClientBackendObject().setApplicationObject(objApplicationUsed);
+//
+//						//################################
+//						//Merke: Dieser Wert kommt beim Setzen im ClientThreadProcessWatchMonitor in diesem Backenobjekt nicht an.
+//						//       Darum explizit holen und setzen.
+//						String sVpnIp = this.getClientBackendObject().getApplicationObject().getVpnIpRemote();
+//												
+//						sLog = ReflectCodeZZZ.getPositionCurrent()+": Verbunden mit remote VPNIP='"+sVpnIp+"'";
+//						System.out.println(sLog);
+//						this.getClientBackendObject().logMessageString(sLog);
+//						
+//						//Nun die als "verbunden" gekennzeichnete IP an das ApplicationObjekt uebergben.
+//						this.getClientBackendObject().getApplicationObject().setVpnIpRemoteEstablished(sVpnIp);
+//						//################################
+//					}
+//					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTED);
+//					
+//				}else if(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.HASERROR==objStatusEnum) {
+//					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
+//				}else {
+//					sLog = "Der Status wird nicht behandelt - '"+objStatusEnum.getAbbreviation()+"'.";
+//					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+//					this.logLineDate(sLog);
+//					break main;
+//				}
+//				
+//				bReturn = true;
+//			}//end main:
+//			return bReturn;
+//		}
+		
+		/** analog zu
+		 * basic.zKernel.status.IStatusLocalUserZZZ#isStatusLocalRelevant
+		 * aber da der Tray keinen eigenen Status hat, bleibt das nur drin, um codeSnipptes 1:1 uebernehmen zu koennen.
+		 * @param enumStatus
+		 * @return
+		 * @author Fritz Lindhauer, 18.10.2023, 08:48:37
+		 */
+		public boolean isStatusLocalRelevant(IEnumSetMappedZZZ enumStatus) {
+			return true;
 		}
 
 		/* (non-Javadoc)
 		 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 		 */
 		@Override
-		public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		public boolean isEventStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 			
 			//fuer den Tray ist jeder Status relevant. 
 			return true;

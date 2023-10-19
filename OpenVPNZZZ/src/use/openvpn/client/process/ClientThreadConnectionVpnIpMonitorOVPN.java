@@ -3,7 +3,7 @@ package use.openvpn.client.process;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
-import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
@@ -379,7 +379,7 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 		boolean bReturn = false;
 		main:{		
 			//Falls nicht zuständig, mache nix
-		    boolean bProof = this.isStatusLocalRelevant(eventStatusLocalSet);
+		    boolean bProof = this.isEventStatusLocalRelevant(eventStatusLocalSet);
 			if(!bProof) break main;
 		    
 			//Lies den Status (geworfen vom Backend aus)
@@ -399,7 +399,7 @@ private void ConfigMonitorRunnerNew_(ClientMainOVPN objMain, String[] saFlagCont
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		
 		main:{

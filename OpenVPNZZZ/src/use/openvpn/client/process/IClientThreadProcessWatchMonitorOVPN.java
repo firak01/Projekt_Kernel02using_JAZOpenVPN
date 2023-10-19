@@ -19,6 +19,7 @@ public interface IClientThreadProcessWatchMonitorOVPN {
 	public enum FLAGZ{
 		DUMMY,END_ON_CONNECTION
 	}
+
 	
 	boolean getFlag(FLAGZ objEnumFlag);
 	boolean setFlag(FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ;
@@ -34,13 +35,17 @@ public interface IClientThreadProcessWatchMonitorOVPN {
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISLAUNCHED("islaunched","TODO-Anpassen",""),
-		ISSTARTING("isstarting","TODO-Anpassen",""),		
-		ISSTARTED("isstarted","TODO-Anpassen",""),
-		ISLISTENING("islistening","TODO-Anpassen",""),
-		WATCHRUNNERSTARTED("watchrunnerstarted","TODO-Anpassen",""),
-		ISSTOPPED("isstopped","TODO-Anpassen",""),
-		HASERROR("haserror","TODO-Anpassen","");
+		ISLAUNCHED("islaunched","TODO-Anpassen1",""),
+		ISSTARTING("isstarting","TODO-Anpassen2",""),		
+		ISSTARTED("isstarted","TODO-Anpassen3",""),
+		ISCONNECTING("isconnecting","TODO-Anpassen4",""),
+		ISCONNECTED("isconnected","OVPN: Monitor verbunden",""),
+		
+		
+		ISLISTENING("islistening","TODO-Anpassen6",""),
+		WATCHRUNNERSTARTED("watchrunnerstarted","TODO-Anpassen7",""),
+		ISSTOPPED("isstopped","TODO-Anpassen8",""),
+		HASERROR("haserror","TODO-Anpassen9","");
 								
 		private String sAbbreviation,sStatusMessage,sDescription;
 	

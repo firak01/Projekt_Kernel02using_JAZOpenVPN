@@ -738,5 +738,10 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 		}//end main:
 		return bReturn;
 	}
+
+	@Override
+	public boolean isEventStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		return true;
+	}
 }//END Class
 

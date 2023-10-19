@@ -6,6 +6,6 @@ import basic.zBasic.ExceptionZZZ;
 
 public interface IListenerObjectStatusLocalSetOVPN extends EventListener{
 	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ;
-	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ;
+	public boolean isEventStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ;
 	
 }

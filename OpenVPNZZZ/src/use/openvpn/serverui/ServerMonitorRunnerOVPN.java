@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -208,7 +209,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 					}
 				}//END for
 										
-				TODOGOON20230903;//Einen Event werfen und damit den ICONTRAY ändern
+				//TODOGOON20230903;//Einen Event werfen und damit den ICONTRAY ändern
 				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
 				//Dann erzeuge den Event und feuer ihn ab.
 				//Merke: Nun aber ueber das enum			
@@ -441,5 +442,27 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
 		this.objServerMain.setSenderStatusLocalUsed(objEventSender);
 	}
+
+	public boolean isStatusLocalRelevant(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
+			if(!(objEnum instanceof IServerMainOVPN.STATUSLOCAL) ){
+				String sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus wird wg. unpassender Klasse ignoriert.";
+				System.out.println(sLog);
+				//this.objMain.logMessageString(sLog);
+				break main;
+			}		
+			bReturn = true;
+
+		}//end main:
+		return bReturn;
+	}
+
+	@Override
+	public boolean isEventStatusLocalRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		return true;
+	}
+	
 
 }//END class

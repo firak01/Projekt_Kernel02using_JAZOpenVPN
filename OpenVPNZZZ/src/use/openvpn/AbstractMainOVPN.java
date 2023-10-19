@@ -15,7 +15,7 @@ import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
-import use.openvpn.client.status.EventObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
 public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusZZZ implements Runnable,IMainOVPN{
@@ -177,20 +177,6 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	
 	
 	//####### aus IStatusLocalUserZZZ
-	@Override
-	public HashMap<String, Boolean> getHashMapStatusLocal() {
-		return this.hmStatusLocal;
-	}
-
-	@Override
-	public void setHashMapStatusLocal(HashMap<String, Boolean> hmStatusLocal) {
-		this.hmStatusLocal = hmStatusLocal;
-	}
-	
-	//#####################################################
-		//### IStatusLocalUserZZZ
-		/** DIESE METHODEN MUSS IN ALLEN KLASSEN VORHANDEN SEIN - über Vererbung -, DIE IHREN STATUS SETZEN WOLLEN*/
-
 		/* (non-Javadoc)
 		 * @see basic.zKernel.status.IStatusLocalUserZZZ#getStatusLocal(java.lang.Enum)
 		 */

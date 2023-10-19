@@ -17,6 +17,8 @@ import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigMapper4TemplateOVPN;
 import use.openvpn.client.ClientConfigTemplateUpdaterZZZ;
 import use.openvpn.client.ClientMainOVPN;
+import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
+import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.server.status.EventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
@@ -30,7 +32,8 @@ import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.flag.ISenderObjectFlagZsetZZZ;
 import basic.zKernel.flag.KernelSenderObjectFlagZsetZZZ;
 import basic.zKernel.flag.json.FlagZHelperZZZ;
-import basic.zKernel.status.EventObjectStatusLocalSetZZZ;
+import basic.zKernel.process.IProcessWatchRunnerZZZ;
+import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
@@ -58,12 +61,10 @@ import basic.zWin32.com.wmi.KernelWMIZZZ;
 public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	private ArrayList<File> listaConfigFile = null;
 
-	private String sMessageCurrent = null; //Hierueber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
 	private ArrayList listaMessage = new ArrayList(); //Hierueber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
     																	//Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
 	private ArrayList listaConfigStarter = new ArrayList(); //Hieruwber werden alle Prozesse, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.	
-	private HashMap<String, Boolean>hmStatusLocal = new HashMap<String, Boolean>(); //Ziel: Das Frontend soll so Infos im laufende Prozess per Button-Click abrufen koennen.
-
+	
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
 	public ServerMainOVPN(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
@@ -280,8 +281,10 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 					this.addProcessStarter(objStarter);
 					
 					//NEU: Einen anderen Thread zum "Monitoren" des Inputstreams des Processes verwenden. Dadurch werden die anderen Prozesse nicht angehalten.
-					 runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcessTemp,icount, null);
-					 threadaOVPN[icount] = new Thread(runneraOVPN[icount]);					
+					//TEST, Flagübergabe
+					//runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcessTemp,icount, IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name());					
+					runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcessTemp,icount, (String[])null);
+					threadaOVPN[icount] = new Thread(runneraOVPN[icount]);					
 					 threadaOVPN[icount].start();
 					 iNumberOfProcessStarted++;	
 					//Das blaeht das Log unnoetig auf .... zum Test aber i.o.
@@ -321,18 +324,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		}
 	}
 	
-	/** Adds a line to the status arraylist. This status is used to enable the frontend-client to show a log dialogbox.
-	 * Remark: This method does not write anything to the kernel-log-file. 
-	* @param sStatus 
-	* 
-	* lindhaueradmin; 13.07.2006 08:34:56
-	 */
-	public void addMessageString(String sMessage){
-		if(sMessage!=null){
-			this.sMessageCurrent = sMessage;
-			this.listaMessage.add(sMessage);
-		}
-	}
+	
 	
 	/**Adds a line to the status arraylist PLUS writes a line to the kernel-log-file.
 	 * Remark: The status arraylist is used to enable the frontend-client to show a log dialogbox.
@@ -370,29 +362,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		ArrayList<String>listas=strStatus.getArrayList();
 		this.logMessageString(listas);
 	}
-	
-	/**This status is a type of "Log".
-	 * This is the last entry.
-	 * This is filled by ".addStatusString(...)"
-	 * @return String
-	 *
-	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
-	 */
-	public String getMessageStringCurrent(){
-		return this.sMessageCurrent;
-	}
-
-	/**This status is a type of "Log".
-	 * This are all entries.
-	 * This is filled by ".addStatusString(...)"
-	 * @return String
-	 *
-	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
-	 */
-	public ArrayList getMessageStringAll(){
-		return this.listaMessage;
-	}
-	
+		
 	 public  boolean addProcessStarter(ServerConfigStarterOVPN objStarter){
 		 boolean bReturn = false;
 		 main:{
@@ -509,8 +479,26 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		return bFunction;	
 	}
 	
-	@Override
+	@Override 
 	public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			//Setze die Message, die beim Click auf den Tray angezeigt werden könnte
+			String sStatusMessage = enumStatus.getStatusMessage();
+			this.setStatusString(sStatusMessage);
+			
+			bFunction = this.setStatusLocal(enumStatus, sStatusMessage, bStatusValue);
+		}//end main:
+		return bFunction;
+	}
+	
+	@Override
+	public boolean setStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -629,16 +617,6 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		return baReturn;
 	}
 		
-	@Override
-	public HashMap<String, Boolean>getHashMapStatusLocal(){
-		return this.hmStatusLocal;
-	}
-	
-	@Override
-	public void setHashMapStatusLocal(HashMap<String, Boolean> hmStatusLocal) {
-		this.hmStatusLocal = hmStatusLocal;
-	}
-	
 	/**Gibt alle möglichen StatusLocal Werte als Array zurück. 
 	 * @return
 	 * @throws ExceptionZZZ 
@@ -788,43 +766,21 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
 	}
-
-	@Override
-	public void fireEvent(IEventObjectStatusLocalSetZZZ event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener)
-			throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetZZZ objEventListener) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public IEventObjectStatusLocalSetZZZ getEventPrevious() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setEventPrevious(IEventObjectStatusLocalSetZZZ event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isStatusLocalRelevant(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-		
 	
+	@Override
+	public boolean isStatusLocalRelevant(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
+			if(!(objEnum instanceof IServerMainOVPN.STATUSLOCAL) ){
+				String sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus wird wg. unpassender Klasse ignoriert.";
+				System.out.println(sLog);
+				//this.objMain.logMessageString(sLog);
+				break main;
+			}		
+			bReturn = true;
+
+		}//end main:
+		return bReturn;
+	}
 }//END class

@@ -51,14 +51,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 				
 				//20210402: Hier soll auch im Log die Verarbeitung des 'vererbenden' Kommandozeilenparameters -z ersichtlich sein.
 				//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
-				this.objClientTray = new ClientTrayUIZZZ(objKernel, this.objClientMain, (String[]) null);
-
-				//Registriere das ClientTray-Objekt fuer Aenderungen an den ServerMain-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
-				this.objClientMain.registerForFlagEvent(this.objClientTray);
-				
-				//Registriere das ServerTray-Objekt fuer Aenderung am ServerMain-Objekt-Status. Das garantiert, das der Tray auch auf Änderungen des Status reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
-				this.objClientMain.registerForStatusLocalEvent(this.objClientTray);
-				
+				this.objClientTray = new ClientTrayUIZZZ(objKernel, this.objClientMain, (String[]) null);		
 				bReturn = objClientTray.load();
 				
 				//Konfigurierbar: Beim Launch der Applikation schon starten
