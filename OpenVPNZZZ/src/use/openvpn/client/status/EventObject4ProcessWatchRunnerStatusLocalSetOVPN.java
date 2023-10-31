@@ -9,6 +9,7 @@ import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import use.openvpn.IApplicationOVPN;
+import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
@@ -27,10 +28,14 @@ public class EventObject4ProcessWatchRunnerStatusLocalSetOVPN  extends AbstractE
 	private IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
+	private ClientConfigStarterOVPN objStarter=null;
+	private int iIndex = -1;
 	
 	//Merke: Diese Strings sind wichtig für das Interface und kommen nicht aus der abstrakten Klasse
 	private String sStatusAbbreviation=null;
 	private String sStatusMessage=null;
+	
+	
 	
 	/** In dem Konstruktor wird neben der ID dieses Events auch der identifizierende Name der neu gewaehlten Komponente �bergeben.
 	 * @param source
@@ -50,7 +55,18 @@ public class EventObject4ProcessWatchRunnerStatusLocalSetOVPN  extends AbstractE
 		super(source,iID,"",bStatusValue);
 		this.objStatusEnum=objStatusEnum;
 	}
-		
+	
+	//### Speziell für OVPN wichtig	
+	@Override
+	public void setClientConfigStarterObjectUsed(ClientConfigStarterOVPN objStarter) {
+		this.objStarter = objStarter;
+	}
+	
+	@Override
+	public ClientConfigStarterOVPN getClientConfigStarterObjectUsed() {
+		return this.objStarter;
+	}
+	
 	//### Aus Interface
 	/* (non-Javadoc)
 	 * @see basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ#getStatusEnum()
@@ -147,4 +163,3 @@ public class EventObject4ProcessWatchRunnerStatusLocalSetOVPN  extends AbstractE
 	   return this.getStatusText().hashCode();
    }
 }
-

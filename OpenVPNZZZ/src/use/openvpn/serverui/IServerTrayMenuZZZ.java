@@ -15,7 +15,7 @@ public interface IServerTrayMenuZZZ {
 			END("end","Beenden",""),
 			START("start","Starten",""),		
 			LISTEN("listen","Auf Verbindung warten",""),
-			LOG("log","Server Log ansehen",""),
+			PROTOCOL("protocol","Server Protokol ansehen",""),
 			DETAIL("detail","PressAction",""),
 			PAGE_IP_UPLOAD("page_ip_upload","IP Page hochladen",""),
 			FTP_CREDENTIALS("ftp_credentials","FTP Anmeldedaten","");				

@@ -6,26 +6,21 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
-import basic.zKernel.process.IProcessWatchRunnerZZZ;
 import basic.zKernel.status.IEventBrokerStatusLocalSetUserZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IStatusLocalUserZZZ;
-import use.openvpn.client.ClientConfigStarterOVPN;
+import use.openvpn.client.IClientMainUserOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
 import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
-public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
-	//### Spezielle OVPN - Methoden
-	public ClientConfigStarterOVPN getClientConfigStarterObject();
-	public void setClientConfigStarterObject(ClientConfigStarterOVPN objStarter);
-	
-	//##############################
+public interface IClientThreadVpnIpPingerOVPN extends IClientMainUserOVPN{
 	public enum FLAGZ{
-		DUMMY
+		DUMMY,END_ON_CONNECTION
 	}
+
 	
 	boolean getFlag(FLAGZ objEnumFlag);
 	boolean setFlag(FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ;
@@ -35,28 +30,31 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	
 	
 	
-	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++
+	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW("isstartnew","ProcessWatchRunner: Nicht gestartet",""),
-		ISSTARING("isstarting","ProcessWatchRunner: Startet...",""),
-		ISSTARTED("isstarted","ProcessWatchRunner: Gestartet",""),
+		ISSTARTNEW("isstartnew","PING: Nicht gestarted",""),
+		ISSTARTING("isstarting","PING: Startet...",""),		
+		ISSTARTED("isstarted","PING: Gestarted",""),
 		
-		HASOUTPUT("hasoutput","Prozess hat Output",""),
-		HASCONNECTION("hasconnection","Process meldet eine Verbindung zu OVPN",""),
-		HASCONNECTIONLOST("hasconnectionlost","Process meldet ein Reset der Verbindung zu OVPN",""),
-		HASINPUT("hasinput","Prozess hat Input",""),
+		ISCONNECTNEW("isconnectnew","PING: Nicht verbunden",""),
+		ISCONNECTING("isconnecting","PING: Verbinde...",""),
+		ISCONNECTED("isconnected","PING: Verbunden",""),
 		
-		ISSTOPPED("isended","ProcessWatchRunner: Beendet",""),
-		HASERROR("haserror","ProcessWatchRunner: Fehler","");
-									
-								
+		ISSTOPPED("isstopped","PING: Gestoppt",""),
+		HASERROR("haserror","PING: Fehler",""),
+		HASCLIENTNOTSTARTING("hasclientnotstarting","PING: Client nicht gestarted",""),
+		HASCLIENTNOTSTARTED("hasclientnotstarted","PING: Client nicht fertig mit Start. Wartet auf Process?",""),
+		HASCLIENTNOTCONNECTED("hasclientnotconnected","PING: Client nicht verbunden.","");
+		
 		private String sAbbreviation,sStatusMessage,sDescription;
 	
 		//#############################################
 		//#### Konstruktoren
-		//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
+		//Merke: Enums haben keinen public Konstruktor, können also nicht instiantiiert werden, z.B. durch Java-Reflektion.
 		//In der Util-Klasse habe ich aber einen Workaround gefunden.
 		STATUSLOCAL(String sAbbreviation, String sStatusMessage, String sDescription) {
 		    this.sAbbreviation = sAbbreviation;

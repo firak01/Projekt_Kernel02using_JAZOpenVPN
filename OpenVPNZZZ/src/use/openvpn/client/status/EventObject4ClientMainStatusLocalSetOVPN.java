@@ -9,6 +9,7 @@ import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import use.openvpn.IApplicationOVPN;
+import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 import use.openvpn.server.ServerMainOVPN;
@@ -25,6 +26,7 @@ public class EventObject4ClientMainStatusLocalSetOVPN  extends AbstractEventObje
 	private ClientMainOVPN.STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
+	ClientConfigStarterOVPN objStarter=null;
 	
 	//Merke: Diese Strings sind wichtig für das Interface und kommen nicht aus der abstrakten Klasse
 	private String sStatusAbbreviation=null;
@@ -69,7 +71,17 @@ public class EventObject4ClientMainStatusLocalSetOVPN  extends AbstractEventObje
 	public void setApplicationObjectUsed(IApplicationOVPN objApplication) {
 		this.objApplication = objApplication;
 	}
-
+	
+	@Override
+	public void setClientConfigStarterObjectUsed(ClientConfigStarterOVPN objStarter) {
+		this.objStarter = objStarter;
+	}
+	
+	@Override
+	public ClientConfigStarterOVPN getClientConfigStarterObjectUsed() {
+		return this.objStarter;
+	}
+	
 	/* (non-Javadoc)
 	 * @see use.openvpn.client.status.IEventObjectStatusLocalSetOVPN#getStatusAbbreviation()
 	 */

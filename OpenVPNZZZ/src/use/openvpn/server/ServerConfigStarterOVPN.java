@@ -30,13 +30,16 @@ import basic.zKernel.AbstractKernelUseObjectZZZ;
 public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{	
 	public static final String sBATCH_STARTER_PREFIX="starter_";
 	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel, objMain, objFileConfigOvpn, "0", saFlagControl);
+		super(objKernel, objMain, -1, objFileConfigOvpn, "0", saFlagControl);
 	}
-	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileConfigOvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel, objMain, objFileConfigOvpn, sMyAlias, saFlagControl);
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, int iIndex, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objMain, iIndex, objFileConfigOvpn, "0", saFlagControl);
 	}
-	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain,  File objFileTemplateBatch, File objFileConfigOvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel, objMain, objFileTemplateBatch, objFileConfigOvpn, sMyAlias, saFlagControl);
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, int iIndex, File objFileConfigOvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objMain, iIndex, objFileConfigOvpn, sMyAlias, saFlagControl);
+	}
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain,  int iIndex, File objFileTemplateBatch, File objFileConfigOvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objMain, iIndex, objFileTemplateBatch, objFileConfigOvpn, sMyAlias, saFlagControl);
 	}
 	
 	/**Choose this constructor, if a you don�t want to use the .getNumber() - Method.
@@ -46,8 +49,8 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	 * @param saFlagControl
 	 * @throws ExceptionZZZ
 	 */
-	public ServerConfigStarterOVPN(IKernelZZZ objKernel, ServerMainOVPN objServer, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel,(IMainOVPN) objServer, objFileTemplateBatch, objFileConfigOvpn, "-1", saFlagControl);
+	public ServerConfigStarterOVPN(IKernelZZZ objKernel, ServerMainOVPN objServer, int iIndex, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel,(IMainOVPN) objServer, iIndex, objFileTemplateBatch, objFileConfigOvpn, "-1", saFlagControl);
 	}
 			
 	public Process requestStart() throws ExceptionZZZ{

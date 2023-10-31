@@ -78,10 +78,10 @@ private FileTextParserZZZ objParser = null;
 				if(hmLine==null && objConfigMapper!=null) {
 					this.setConfigMapperObject(objConfigMapper);
 					
-					this.getMainObject().logMessageString( "Creating new configuration file - line(s) by IConfigMapperObject.");
+					this.getMainObject().logProtocolString( "Creating new configuration file - line(s) by IConfigMapperObject.");
 					hmLine = this.getConfigMapperObject().readTaskHashMap();					
 				}else {
-					this.getMainObject().logMessageString( "Creating new configuration file - line(s) by Hashmap direct.");
+					this.getMainObject().logProtocolString( "Creating new configuration file - line(s) by Hashmap direct.");
 				}				
 				if(hmLine.isEmpty()){
 					ExceptionZZZ ez = new ExceptionZZZ("HashMap containing the updated lines.", iERROR_PARAMETER_EMPTY, this, ReflectCodeZZZ.getMethodCurrentName());

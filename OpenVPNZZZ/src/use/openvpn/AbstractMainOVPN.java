@@ -23,12 +23,8 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	protected ConfigChooserOVPN objConfigChooser = null;
 	protected IConfigMapper4TemplateOVPN objConfigMapper = null;
 	
-	
-	protected String sMainStatus = null; //Hierueber kann das Frontend abfragen, was gerade in der Methode "start()" so passiert.
-	protected String sMainStatusPrevious = null;
-	
-	protected String sMessage = null; //wird als Protokoll verwendet
-	protected ArrayList<String> listaMessage = new ArrayList<String>(); //Hierueber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
+	protected String sProtocol= null; //wird als Protokoll verwendet
+	protected ArrayList<String> listaProtocol = new ArrayList<String>(); //Hierueber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
 		
 	public AbstractMainOVPN(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, saFlagControl);
@@ -36,18 +32,18 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	
 	/**Adds a line to the status arraylist PLUS writes a line to the kernel-log-file.
 	 * Remark: The status arraylist is used to enable the frontend-client to show a log dialogbox.
-	* @param sMessage 
+	* @param sProtocol 
 	* 
 	* lindhaueradmin; 13.07.2006 08:38:51
 	 * @throws ExceptionZZZ 
 	 */
-	public void logMessageString(String sMessage) throws ExceptionZZZ{
-		if(sMessage!=null){
-			this.addMessageString(sMessage);
+	public void logProtocolString(String sProtocol) throws ExceptionZZZ{
+		if(sProtocol!=null){
+			this.addProtocolString(sProtocol);
 			
 			IKernelZZZ objKernel = this.getKernelObject();
 			if(objKernel!= null){
-				objKernel.getLogObject().WriteLineDate(sMessage);
+				objKernel.getLogObject().WriteLineDate(sProtocol);
 			}
 		}
 	}
@@ -58,10 +54,10 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	* 
 	* lindhaueradmin; 13.07.2006 08:34:56
 	 */
-	public void addMessageString(String sMessage){
-		if(sMessage!=null){
-			this.sMessage = sMessage;
-			this.listaMessage.add(sMessage);
+	public void addProtocolString(String sProtocol){
+		if(sProtocol!=null){
+			this.sProtocol = sProtocol;
+			this.listaProtocol.add(sProtocol);
 		}
 	}
 	
@@ -71,45 +67,15 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		return AbstractMainOVPN.sJAR_FILE_USED;
 	}
 	
-	
-	//#####################################################
-	//### Verwalte den eigenen Status String...
-	public String getStatusString(){
-		return this.sMainStatus;
-	}
-	public void setStatusString(String sStatus) {
-		
-		main:{
-			String sStatusPrevious = this.getStatusString();
-			if(sStatus == null) {
-				if(sStatusPrevious==null)break main;
-			}
-			
-			if(!sStatus.equals(sStatusPrevious)) {
-				String sStatusCurrent = this.getStatusString();
-				this.sMainStatus = sStatus;
-				this.setStatusPrevious(sStatusCurrent);
-			}
-		}//end main:
-	
-	}
-	
-	public String getStatusPreviousString() {
-		return this.sMainStatusPrevious;
-	}
-	public void setStatusPrevious(String sStatusPrevious) {
-		this.sMainStatusPrevious = sStatusPrevious;
-	}
-	
 	public boolean isStatusChanged(String sStatusString) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			if(sStatusString == null) {
-				bReturn = this.getStatusString()==null;
+				bReturn = this.getStatusLocalString()==null;
 				break main;
 			}
 			
-			if(!sStatusString.equals(this.getStatusString())) {
+			if(!sStatusString.equals(this.getStatusLocalString())) {
 				bReturn = true;
 			}
 		}//end main:
@@ -129,8 +95,8 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	 *
 	 * javadoc created by: 0823, 17.07.2006 - 09:00:55
 	 */
-	public ArrayList getMessageStringAll(){
-		return this.listaMessage;
+	public ArrayList getProtocolStringAll(){
+		return this.listaProtocol;
 	}
 	
 
@@ -280,7 +246,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		 * @throws ExceptionZZZ 
 		 */
 		@Override
-		public String[] getStatusLocal() throws ExceptionZZZ {
+		public String[] getStatusLocalAll() throws ExceptionZZZ {
 			String[] saReturn = null;
 			main:{	
 				saReturn = StatusLocalHelperZZZ.getStatusLocalDirectAvailable(this.getClass());				
@@ -322,7 +288,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 					}
 				}else {
 					//So bekommt man alle Flags zurück, also auch die, die nicht explizit true oder false gesetzt wurden.						
-					String[]saStatus = this.getStatusLocal();
+					String[]saStatus = this.getStatusLocalAll();
 					
 					//20211201:
 					//Problem: Bei der Suche nach true ist das egal... aber bei der Suche nach false bekommt man jedes der Flags zurück,

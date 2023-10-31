@@ -1,15 +1,24 @@
 package use.openvpn.client;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zKernel.net.client.IMainZZZ;
 import basic.zKernel.status.IStatusLocalUserZZZ;
+import use.openvpn.IMainOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
 import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
 
-public interface IClientMainOVPN {
+public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetUserOVPN{
+	//Spezielle ClientOVPN - Methoden
+	public ArrayList<ClientConfigStarterOVPN> getClientConfigStarterList();
+	public ArrayList<ClientConfigStarterOVPN> getClientConfigStarterRunningList();
+	
+	//#################################
 	public enum FLAGZ{
 		LAUNCHONSTART, CONNECTONSTART, ENABLEPORTSCAN, USEPROXY, DUMMY
 	}
@@ -19,16 +28,22 @@ public interface IClientMainOVPN {
 		
 	//Merke: Alle Properties des enum müssen im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
+	
+	//TODOGOON: eigentlich müssen die Text-Werte aus den enums der anderen Objekte.STATUSLOCAL kommen. 
 	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW("isstartnew", "CLIENT: Nicht gestarted",""),
-		ISSTARTING("isstarting","CLIENT: Startet...",""),
-		ISSTARTED("isstarted","CLIENT: Gestartet",""),			
-		ISCONNECTNEW("isconnectnew","OVPN: Nicht gestartet",""),
-		ISCONNECTING("isconnecting","OVPN: Startet...",""),
-		ISCONNECTED("isconnected","OVPN: Verbunden",""),
-		WATCHRUNNERNEW("watchrunnernew","CONN: MonitorThread nicht gestartet",""),
-		WATCHRUNNERSTARTING("watchrunnerstarting","CONN: MonitorThread startet...",""),
-		WATCHRUNNERSTARTED("watchrunnerstarted","CONN: MonitorThread gestartet",""),
+		ISSTARTNEW("isstartnew", "CLIENT: Nicht gestarted1",""),
+		ISSTARTING("isstarting","CLIENT: Startet...2",""),
+		ISSTARTED("isstarted","CLIENT: Gestartet3",""),			
+		ISCONNECTNEW("isconnectnew","OVPN: Nicht gestartet4",""),
+		ISCONNECTING("isconnecting","OVPN: Startet...5",""),
+		ISCONNECTED("isconnected","OVPN: Verbunden6",""),
+		ISCONNECTINTERUPPTED("isconnectinterrupted","OVPN: Verbingungsunterbrechung6b",""),
+		ISPINGNEW("ispingnew","PING: Thread nicht gestartet7",""),
+		ISPINGSTARTING("ispingstarting","PING: Thread startet...8",""),
+		ISPINGSTARTED("ispingstarted","PING: Thread gestartet9",""),
+		ISPINGCONNECTING("ispingconnecting","PING: Verbinde...10",""),
+		ISPINGCONNECTED("ispingconnected","PING: Verbunden11",""),
+		ISPINGSTOPPED("ispingstopped","PING: Thread gestoppt12",""),
 		
 		PortScanAllFinished("portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
 		HASERROR("haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");

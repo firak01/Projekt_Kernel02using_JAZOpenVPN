@@ -16,9 +16,12 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 
 
-public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{	
-	public ClientConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objClient, File objFile, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel, objClient, objFile, sMyAlias, saFlagControl);
+public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
+	public ClientConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objMain, -1, objFileConfigOvpn, "0", saFlagControl);
+	}
+	public ClientConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objClient, int iIndex, File objFile, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objClient, iIndex, objFile, sMyAlias, saFlagControl);
 	}
 	
 	/**Choose this constructor, if a you don�t want to use the .getNumber() - Method.
@@ -28,8 +31,8 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	 * @param saFlagControl
 	 * @throws ExceptionZZZ
 	 */
-	public ClientConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objClient, File objFile, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel, objClient, objFile, "-1", saFlagControl);
+	public ClientConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objClient, int iIndex, File objFile, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel, objClient, iIndex, objFile, "-1", saFlagControl);
 	}
 			
 	public Process requestStart() throws ExceptionZZZ{

@@ -29,17 +29,19 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 	private File objFileTemplateBatch=null;
 	private Process objProcess=null;
 	private String sMyAlias = "-1";
+	private int iIndex = -1;
+	
 	private boolean bFlagByBatch = false;
 	String sOvpnContextClientOrServer=null;
 		
-	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileOConfigvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, int iIndex, File objFileOConfigvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigStarterNew_(objMain, sMyAlias, null, objFileOConfigvpn, saFlagControl);
+		ConfigStarterNew_(objMain, sMyAlias, iIndex, null,objFileOConfigvpn, saFlagControl);
 	}
 	
-	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileTemplateBatch, File objFileOConfigvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, int iIndex, File objFileTemplateBatch, File objFileOConfigvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigStarterNew_(objMain, sMyAlias, objFileTemplateBatch, objFileOConfigvpn, saFlagControl);
+		ConfigStarterNew_(objMain, sMyAlias, iIndex, objFileTemplateBatch, objFileOConfigvpn, saFlagControl);
 	}
 	
 	/**Choose this constructor, if a you don�t want to use the .getNumber() - Method.
@@ -49,12 +51,12 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 	 * @param saFlagControl
 	 * @throws ExceptionZZZ
 	 */
-	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, int iIndex, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
-		ConfigStarterNew_(objMain, "-1", objFileTemplateBatch, objFileConfigOvpn, saFlagControl);
+		ConfigStarterNew_(objMain, "-1", iIndex, objFileTemplateBatch, objFileConfigOvpn, saFlagControl);
 	}
 	
-	private void ConfigStarterNew_(IMainOVPN objMain, String sMyAlias, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
+	private void ConfigStarterNew_(IMainOVPN objMain, String sMyAlias, int iIndex, File objFileTemplateBatch, File objFileConfigOvpn, String[] saFlagControl) throws ExceptionZZZ{
 		main:{
 				 
 			check:{
@@ -97,6 +99,7 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 				
 				
 				this.sMyAlias = sMyAlias;
+				this.iIndex = iIndex;
 				
 				String sOvpnContextClientOrServer = StringZZZ.left(objFileConfigOvpn.getName(), "_");
 				this.setOvpnContextUsed(sOvpnContextClientOrServer);
@@ -204,6 +207,17 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 	public String getAlias(){
 		return this.sMyAlias;
 	}
+	public void setAlias(String sAlias) {
+		this.sMyAlias = sAlias;
+	}
+	
+	public int getIndex() {
+		return this.iIndex;
+	}
+	public void setIndex(int iIndex) {
+		this.iIndex = iIndex;
+	}
+	
 	
 	public String getOvpnContextUsed() {
 		return this.sOvpnContextClientOrServer;

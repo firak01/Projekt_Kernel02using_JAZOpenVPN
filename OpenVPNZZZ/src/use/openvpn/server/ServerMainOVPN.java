@@ -115,7 +115,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "OVPN seems not to be installed. '" + objChooser.readDirectoryConfigPath() + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}
-			this.logMessageString("Open VPN installed and not yet running. Continue starting process.");
+			this.logProtocolString("Open VPN installed and not yet running. Continue starting process.");
 			
 			//2.  Läuft schon ein  benötigter anderer Prozesss
 			 //+++++++++++++++++++++++++++++++			
@@ -148,14 +148,14 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 						}
 					}//bProof == false
 				}while(bProof==false);
-				this.logMessageString("Depending process '" + sDominoCaption + "' running. Continue starting process.");
+				this.logProtocolString("Depending process '" + sDominoCaption + "' running. Continue starting process.");
 			}//END if sDominoCaption isempty
 			
 			
 			//+++++++++++++++++++++++++++++++++++++++++
 			//3. OVPN Dateien fertig machen
 			//TODO Dies in eine Methode "find fileConfigAvailableAndConfigured"
-			this.logMessageString("Searching for configuration template files '*.ovpn'"); //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.			
+			this.logProtocolString("Searching for configuration template files '*.ovpn'"); //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.			
 			
 			//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 						
 			//Die Konfigurations-Template Dateien finden
@@ -169,7 +169,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No configuration file (ending .ovpn) was found in the directory: '" + sDirectoryConfigPath + "'", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}else{
-				this.logMessageString(objaFileConfigTemplate.length + " configuration TEMPLATE file(s) was (were) found in the directory: '" + sDirectoryConfigPath + "'");  //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.
+				this.logProtocolString(objaFileConfigTemplate.length + " configuration TEMPLATE file(s) was (were) found in the directory: '" + sDirectoryConfigPath + "'");  //Darueber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			}
 			
 			//####################################################################
@@ -177,13 +177,13 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 					
 			//+++ A) Vorbereitung			
 			//+++ 1. Die früher mal verwendeten Dateien entfernen
-			this.logMessageString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
+			this.logProtocolString("Removing former configuration file(s)."); //Dar�ber kann dann ggf. ein Frontend den laufenden Process beobachten.
 			ReferenceArrayZZZ<String> strUpdate=new ReferenceArrayZZZ<String>(null);
 			int itemp = objChooser.removeFileConfigUsed(null,strUpdate);			
 			this.logMessageString(strUpdate);
 			
 			//+++ B) Die gefundenen Werte überall eintragen: IN neue Dateien
-			this.logMessageString("Creating new configuration-file(s) from template-file(s), using new line(s)");					
+			this.logProtocolString("Creating new configuration-file(s) from template-file(s), using new line(s)");					
 			//ArrayList listaFileConfig = new ArrayList(objaFileConfigTemplate.length);
 			for(int icount = 0; icount <= objaFileConfigTemplate.length-1; icount++){	
 				File fileConfigTemplateOvpnUsed = objaFileConfigTemplate[icount];
@@ -194,18 +194,18 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				ServerConfigTemplateUpdaterOVPN objUpdater = new ServerConfigTemplateUpdaterOVPN(objKernel, this, objChooser, objMapper, null);
 				File objFileNew = objUpdater.refreshFileUsed(fileConfigTemplateOvpnUsed);	
 				if(objFileNew==null){
-					this.logMessageString("Unable to create 'used file' file base on template template: '" + objaFileConfigTemplate[icount].getPath() + "'");					
+					this.logProtocolString("Unable to create 'used file' file base on template template: '" + objaFileConfigTemplate[icount].getPath() + "'");					
 				}else{
 					
 					boolean btemp = objUpdater.update(objFileNew, true); //Bei false werden also auch Zeilen automatisch hinzugefügt, die nicht im Template sind. Z.B. Proxy-Einstellungen.
 					if(btemp==true){
-						this.logMessageString( "'Used file' successfully created for template: '" + objaFileConfigTemplate[icount].getPath() + "'");
+						this.logProtocolString( "'Used file' successfully created for template: '" + objaFileConfigTemplate[icount].getPath() + "'");
 		
 						//+++ Nun dieses used-file dem Array hinzufuegen, dass fuer den Start der OVPN-Verbindung verwendet wird.
 						//listaFileConfig.add(objUpdater.getFileUsed());
 						this.getConfigFileObjectsAll().add(objUpdater.getFileUsed());
 					}else{
-						this.logMessageString( "'Used file' not processed, based upon: '" + objaFileConfigTemplate[icount].getPath() + "'");					
+						this.logProtocolString( "'Used file' not processed, based upon: '" + objaFileConfigTemplate[icount].getPath() + "'");					
 					}	
 				}
 			}//end for
@@ -239,7 +239,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				}//END for
 			}//END if
 			if(listaFileConfigUsed.size()==0){
-				this.logMessageString("No configuration available which is configured in Kernel Ini File for Program 'ProgConfigHandler' and Property 'ConfigFile'.");
+				this.logProtocolString("No configuration available which is configured in Kernel Ini File for Program 'ProgConfigHandler' and Property 'ConfigFile'.");
 				bReturn = false;
 				break main;
 			}else{
@@ -252,7 +252,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 						stemp = stemp + "; " + objFileTemp.getName();	
 					}					 
 				}//END for
-				this.logMessageString("Finally used configuration  file(s): " + stemp);
+				this.logProtocolString("Finally used configuration  file(s): " + stemp);
 			}
 			
 			//#############
@@ -271,12 +271,12 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				String sAlias = Integer.toString(icount);
 				String[] saTemp = {"ByBatch"}; //Weil auf dem Server der endgültige auszuführende Befehl über eine Batch gegeben werden muss. Herausgefunden durch Try and Error.				
 				File objFileTemplateBatch = objChooser.findFileConfigBatchTemplateFirst();				
-				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, objFileTemplateBatch, objFileConfigOvpn, sAlias, saTemp);
-				this.logMessageString("Requesting start of process #"+ icount + " (File: " + objFileConfigOvpn.getName() + ")");				
+				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, icount, objFileTemplateBatch, objFileConfigOvpn, sAlias, saTemp);
+				this.logProtocolString("Requesting start of process #"+ icount + " (File: " + objFileConfigOvpn.getName() + ")");				
 				Process objProcessTemp = objStarter.requestStart();			
 				if(objProcessTemp==null){
 					//Hier nicht abbrechen, sondern die Verarbeitung bei der naechsten Datei fortfuehren
-					this.logMessageString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"'");
+					this.logProtocolString( "Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"'");
 				}else{			
 					this.addProcessStarter(objStarter);
 					
@@ -288,7 +288,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 					 threadaOVPN[icount].start();
 					 iNumberOfProcessStarted++;	
 					//Das blaeht das Log unnoetig auf .... zum Test aber i.o.
-					 this.logMessageString("Finished starting thread # " + icount + " for watching the connection.");
+					 this.logProtocolString("Finished starting thread # " + icount + " for watching the connection.");
 					 this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.WATCHRUNNERSTARTED, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.					
 				}				
 			}//END for
@@ -308,7 +308,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		} catch (ExceptionZZZ ez) {
 			try {
 				String sLog = ez.getDetailAllLast();
-				this.logMessageString("An error happend: '" + sLog + "'");
+				this.logProtocolString("An error happend: '" + sLog + "'");
 				this.setStatusLocal(ServerMainOVPN.STATUSLOCAL.HASERROR, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
 				
 			} catch (ExceptionZZZ e1) {				
@@ -333,9 +333,9 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	* lindhaueradmin; 13.07.2006 08:38:51
 	 * @throws ExceptionZZZ 
 	 */
-	public void logMessageString(String sMessage) throws ExceptionZZZ{
+	public void logProtocolString(String sMessage) throws ExceptionZZZ{
 		if(sMessage!=null){
-			this.addMessageString(sMessage);
+			this.addProtocolString(sMessage);
 			
 			IKernelZZZ objKernel = this.getKernelObject();
 			if(objKernel!= null){
@@ -348,7 +348,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		if(saMessage!=null) {
 			int iMax = Array.getLength(saMessage)-1;
 			for(int icount=0;icount<=iMax;icount++) {
-				this.logMessageString(saMessage[icount]);
+				this.logProtocolString(saMessage[icount]);
 			}
 		}		
 	}
@@ -488,17 +488,41 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			}
 			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
-			//Setze die Message, die beim Click auf den Tray angezeigt werden könnte
-			String sStatusMessage = enumStatus.getStatusMessage();
-			this.setStatusString(sStatusMessage);
-			
-			bFunction = this.setStatusLocal(enumStatus, sStatusMessage, bStatusValue);
+			bFunction = this.setStatusLocal(enumStatus, null, bStatusValue);
+		}//end main:
+		return bFunction;
+	}
+	
+	@Override 
+	public boolean setStatusLocal(Enum enumStatusIn, int iIndex, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+								
+			bFunction = this.setStatusLocal(enumStatus, iIndex, null, bStatusValue);
+		}//end main:
+		return bFunction;
+	}
+	
+	@Override 
+	public boolean setStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+								
+			bFunction = this.setStatusLocal(enumStatus, -1, sStatusMessage, bStatusValue);
 		}//end main:
 		return bFunction;
 	}
 	
 	@Override
-	public boolean setStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocal(Enum enumStatusIn, int iIndex, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -515,7 +539,21 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			//Setze das Flag nun in die HashMap
 			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
 			hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
-		
+			this.setStatusLocalEnum(enumStatus);
+			
+			String sStatusMessageToSet = enumStatus.getStatusMessage();
+			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
+			System.out.println(sLog);
+			this.logProtocolString(sLog);
+					
+				//Falls eine Message extra uebergeben worden ist, ueberschreibe...
+				if(sStatusMessage!=null) {
+					sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
+					System.out.println(sLog);
+					this.logProtocolString(sLog);
+					this.setStatusLocalMessage(sStatusMessage);
+				}	
+			
 			//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
 			//Dann erzeuge den Event und feuer ihn ab.
 			//Merke: Nun aber ueber das enum			
@@ -621,7 +659,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	 * @return
 	 * @throws ExceptionZZZ 
 	 */
-	public String[] getStatusLocal() throws ExceptionZZZ{
+	public String[] getStatusLocalAll() throws ExceptionZZZ{
 		String[] saReturn = null;
 		main:{	
 			saReturn = StatusLocalHelperZZZ.getStatusLocalDirectAvailable(this.getClass());				
@@ -661,7 +699,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 				}
 			}else {
 				//So bekommt man alle Flags zurück, also auch die, die nicht explizit true oder false gesetzt wurden.						
-				String[]saStatus = this.getStatusLocal();
+				String[]saStatus = this.getStatusLocalAll();
 				
 				//20211201:
 				//Problem: Bei der Suche nach true ist das egal... aber bei der Suche nach false bekommt man jedes der Flags zurück,
@@ -767,6 +805,45 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
 	}
 	
+	//#############################
+	//#######################################
+		@Override 
+		public String getStatusLocalMessage() {
+			String sReturn = null;
+			main:{
+				if(this.sStatusLocalMessage!=null) {
+					sReturn =  this.sStatusLocalMessage;
+					break main;				
+				}
+				
+				//Merke: Erst in OVPN-Klassen gibt es enum mit Message
+				IServerMainOVPN.STATUSLOCAL objEnum = (IServerMainOVPN.STATUSLOCAL)this.getStatusLocalEnum();
+				if(objEnum!=null) {
+					sReturn = objEnum.getStatusMessage();
+				}			
+			}//end main:
+			return sReturn;
+		}
+
+		@Override
+		public String getStatusLocalMessagePrevious(){
+			String sReturn = null;
+			main:{
+				if(this.sStatusLocalMessage!=null) {
+					sReturn =  this.sStatusLocalMessage;
+					break main;				
+				}
+				
+				//Merke: Erst in OVPN-Klassen gibt es enum mit Message
+				IServerMainOVPN.STATUSLOCAL objEnum = (IServerMainOVPN.STATUSLOCAL)this.getStatusLocalEnumPrevious();
+				if(objEnum!=null) {
+					sReturn = objEnum.getStatusMessage();
+				}			
+			}//end main:
+			return sReturn;
+		}
+		
+	
 	@Override
 	public boolean isStatusLocalRelevant(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
 		boolean bReturn = false;
@@ -783,4 +860,5 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		}//end main:
 		return bReturn;
 	}
+
 }//END class

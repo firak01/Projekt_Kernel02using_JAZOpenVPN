@@ -19,8 +19,8 @@ public interface IClientStatusMappedValueZZZ {
 			CONNECTING("connecting","","icons8-networking-64_blue.png",""),
 			CONNECTED("connected","","icons8-networking-64_black_bgBlueLight.png",""),
 			
-			WATCHING("watching","","icons8-networking-64_greenLight.png",""),
-			WATCHED("watched","","icons8-networking-64_black_bgGreen.png",""),
+			PINGING("pinging","","icons8-networking-64_greenLight.png",""),
+			PINGED("pinged","","icons8-networking-64_black_bgGreen.png",""),
 			
 			INTERRUPTED("interrupted","","pill-button-purple_benji_01.png",""),
 			STOPPED("stopped","","Green Metallic_32.png",""),		

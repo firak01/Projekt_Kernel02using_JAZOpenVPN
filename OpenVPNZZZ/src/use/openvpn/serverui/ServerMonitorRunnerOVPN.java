@@ -168,7 +168,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 							//Das Symbol in der Statuszeile aendern. Eine Connection reicht dazu aus.
 							sStatusTemp = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
 							this.setStatusString(sStatusTemp);
-							this.objTray.getServerBackendObject().logMessageString(icount + "# Connection reported by ServerMonitorRunner to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());							
+							this.objTray.getServerBackendObject().logProtocolString(icount + "# Connection reported by ServerMonitorRunner to " + objWatchTemp.getVpnIpRemote() + ":" +objWatchTemp.getPortString());							
 							//raus wg. Events zum Switchen							this.objTray.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.CONNECTED);
 							//es müsste also sein                                   this.objTray.getServerBackendObject().fireEvent(event);
 						}else if(bConnected == true && objWatchTemp.getFlag("isconnected")==true){
@@ -195,7 +195,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 							//Der Fehler soll abgefangen werden, wenn z.B. das TAP-Defice (virtuelle Netzwerkkarte) nicht gestartet werden kann.
 //							Das Symbol in der Statuszeile �ndern
 							this.sWatchRunnerStatus = ServerTrayUIOVPN.getStatusStringByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);		
-							this.objTray.getServerBackendObject().logMessageString(icount + "# Error reported by ServerMonitorRunner. Canceling application. See log file for details.");
+							this.objTray.getServerBackendObject().logProtocolString(icount + "# Error reported by ServerMonitorRunner. Canceling application. See log file for details.");
 							
 							
 							//Merke: Die hmWathcRunnerStatus - Eintraege bleiben dabei jedoch unber�hrt.

@@ -6,16 +6,18 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.net.client.IMainUserZZZ;
 import basic.zKernel.status.IEventBrokerStatusLocalSetUserZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IStatusLocalUserZZZ;
+import use.openvpn.client.IClientMainUserOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
 import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
-public interface IClientThreadProcessWatchMonitorOVPN {
+public interface IClientThreadProcessWatchMonitorOVPN extends IClientMainUserOVPN {
 	public enum FLAGZ{
 		DUMMY,END_ON_CONNECTION
 	}
@@ -35,18 +37,20 @@ public interface IClientThreadProcessWatchMonitorOVPN {
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISLAUNCHED("islaunched","TODO-Anpassen1",""),
-		ISSTARTING("isstarting","TODO-Anpassen2",""),		
-		ISSTARTED("isstarted","TODO-Anpassen3",""),
-		ISCONNECTING("isconnecting","TODO-Anpassen4",""),
+		ISSTARTNEW("isstartnew","OVPN: Monitor nicht gestartet",""),
+		ISSTARTING("isstarting","OVPN: Monitor startet...",""),		
+		ISSTARTED("isstarted","OVPN: Monitor gestartet",""),
+		ISCONNECTNEW("isconnectnew","OVPN: Monitor nicht verbunden",""),
+		ISCONNECTING("isconnecting","OVPN: Monitor verbindet sich...",""),
 		ISCONNECTED("isconnected","OVPN: Monitor verbunden",""),
+				
+		ISINTERRUPTED("isinterrupted","OVPN: Monitor Verbindungsunterbrechung",""),
+		ISSTOPPED("isstopped","OVPN: Monitor beendet",""),
+				
+		HASERROR("haserror","OVPN: Monitor Fehler",""),		
+		HASCLIENTNOTSTARTING("hasclientnotstarting","OVPN: Client nicht gestarted",""),
+		HASCLIENTNOTSTARTED("hasclientnotstarted","OVPN: Client nicht fertig mit Start. Wartet auf Process?","");		
 		
-		
-		ISLISTENING("islistening","TODO-Anpassen6",""),
-		WATCHRUNNERSTARTED("watchrunnerstarted","TODO-Anpassen7",""),
-		ISSTOPPED("isstopped","TODO-Anpassen8",""),
-		HASERROR("haserror","TODO-Anpassen9","");
-								
 		private String sAbbreviation,sStatusMessage,sDescription;
 	
 		//#############################################

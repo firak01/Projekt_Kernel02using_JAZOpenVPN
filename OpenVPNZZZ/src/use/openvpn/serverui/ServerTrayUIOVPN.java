@@ -120,7 +120,7 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 			menu.add(menueeintrag2b);
 			menueeintrag2b.addActionListener(this);
 			
-			JMenuItem menueeintrag3 = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LOG.getMenu());
+			JMenuItem menueeintrag3 = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PROTOCOL.getMenu());
             menu.add(menueeintrag3);
 			menueeintrag3.addActionListener(this);
 			
@@ -502,7 +502,7 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 				}
 			}//END check:
 		 
-		ArrayList listaLogString = this.objServerBackend.getMessageStringAll();
+		ArrayList listaLogString = this.objServerBackend.getProtocolStringAll();
 		if(listaLogString.isEmpty()){
 			if (this.objServerBackend == null){
 					sReturn = "No log string available.";
@@ -564,7 +564,7 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 				boolean bFlagValue = this.start();					
 			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN.getMenu())) {
 				boolean bFlagValue = this.listen();
-			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LOG.getMenu())){
+			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PROTOCOL.getMenu())){
 				//JOptionPane pane = new JOptionPane();
 				String stemp = this.readLogString();
 				//this.getTrayIconObject() ist keine Component ????

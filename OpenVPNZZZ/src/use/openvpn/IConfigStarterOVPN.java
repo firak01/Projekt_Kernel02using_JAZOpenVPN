@@ -13,6 +13,9 @@ public interface IConfigStarterOVPN {
 	public Process getProcess();		
 	public void setProcess(Process objProcess);
 	public String getAlias();//Ein Alias für die Proces id
+	public void setAlias(String sAlias);
+	public int getIndex();//Ein Index für die Konfiguration
+	public void setIndex(int iIndex);
 	
 	public void setFileTemplateBatch(File objFileTemplateBatch);
 	public File getFileTemplateBatch();

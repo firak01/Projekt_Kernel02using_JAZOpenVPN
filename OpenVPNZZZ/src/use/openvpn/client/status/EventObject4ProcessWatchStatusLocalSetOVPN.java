@@ -2,6 +2,7 @@ package use.openvpn.client.status;
 
 import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
 import use.openvpn.IApplicationOVPN;
+import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 
 /** 
@@ -16,6 +17,8 @@ public class EventObject4ProcessWatchStatusLocalSetOVPN  extends AbstractEventOb
 	private use.openvpn.client.process.IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
+	
+	ClientConfigStarterOVPN objStarter=null;
 	
 	//Merke: Diese Strings sind wichtig für das Interface und kommen nicht aus der abstrakten Klasse
 	private String sStatusAbbreviation=null;
@@ -38,6 +41,17 @@ public class EventObject4ProcessWatchStatusLocalSetOVPN  extends AbstractEventOb
 	public EventObject4ProcessWatchStatusLocalSetOVPN(Object source, int iID,  IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) {
 		super(source,iID,"",bStatusValue);
 		this.objStatusEnum=objStatusEnum;
+	}
+	
+	//### speziell für OVPN
+	@Override
+	public void setClientConfigStarterObjectUsed(ClientConfigStarterOVPN objStarter) {
+		this.objStarter = objStarter;
+	}
+
+	@Override
+	public ClientConfigStarterOVPN getClientConfigStarterObjectUsed() {
+		return this.objStarter;
 	}
 		
 	//### Aus Interface
@@ -133,5 +147,7 @@ public class EventObject4ProcessWatchStatusLocalSetOVPN  extends AbstractEventOb
    public int hashCode() {
 	   return this.getStatusText().hashCode();
    }
+
+
 }
 
