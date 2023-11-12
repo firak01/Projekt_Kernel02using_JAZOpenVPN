@@ -6,11 +6,12 @@ import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zKernel.status.IEventBrokerStatusLocalSetUserZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IStatusLocalUserZZZ;
+import use.openvpn.IMainOVPN;
 import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
-public interface IServerMainOVPN extends IStatusLocalUserZZZ, ISenderObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
 	public enum FLAGZ{
 		DUMMY
 	}

@@ -37,6 +37,7 @@ import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IStatusBooleanZZZ;
 import basic.zKernel.status.IStatusLocalUserZZZ;
 import basic.zKernel.status.KernelSenderObjectStatusLocalSetZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
@@ -488,13 +489,13 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			}
 			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
-			bFunction = this.setStatusLocal(enumStatus, null, bStatusValue);
+			bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
 		}//end main:
 		return bFunction;
 	}
 	
 	@Override 
-	public boolean setStatusLocal(Enum enumStatusIn, int iIndex, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -502,13 +503,13 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			}
 			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 								
-			bFunction = this.setStatusLocal(enumStatus, iIndex, null, bStatusValue);
+			bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, null, bStatusValue);
 		}//end main:
 		return bFunction;
 	}
 	
 	@Override 
-	public boolean setStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -516,13 +517,27 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			}
 			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 								
-			bFunction = this.setStatusLocal(enumStatus, -1, sStatusMessage, bStatusValue);
+			bFunction = this.offerStatusLocal_(-1, enumStatus, sStatusMessage, bStatusValue);
 		}//end main:
 		return bFunction;
 	}
+	
 	
 	@Override
-	public boolean setStatusLocal(Enum enumStatusIn, int iIndex, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+								
+			bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sStatusMessage, bStatusValue);
+		}//end main:
+		return bFunction;
+	}
+	
+	private boolean offerStatusLocal_(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -539,20 +554,32 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 			//Setze das Flag nun in die HashMap
 			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
 			hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
-			this.setStatusLocalEnum(enumStatus);
-			
-			String sStatusMessageToSet = enumStatus.getStatusMessage();
+						
+			String sStatusMessageToSet = null;
+			if(StringZZZ.isEmpty(sStatusMessage)){
+				if(bStatusValue) {
+					sStatusMessageToSet = enumStatus.getStatusMessage();
+				}else {
+					sStatusMessageToSet = "NICHT " + enumStatus.getStatusMessage();
+				}			
+			}else {
+				sStatusMessageToSet = sStatusMessage;
+			}			
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
 			System.out.println(sLog);
 			this.logProtocolString(sLog);
 					
-				//Falls eine Message extra uebergeben worden ist, ueberschreibe...
-				if(sStatusMessage!=null) {
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
-					System.out.println(sLog);
-					this.logProtocolString(sLog);
-					this.setStatusLocalMessage(sStatusMessage);
-				}	
+			//Falls eine Message extra uebergeben worden ist, ueberschreibe...
+			if(sStatusMessage!=null) {
+				sStatusMessageToSet = sStatusMessage;
+				sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
+				System.out.println(sLog);
+				this.logProtocolString(sLog);				
+			}
+			
+			//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
+			this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
+			
 			
 			//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
 			//Dann erzeuge den Event und feuer ihn ab.
@@ -735,12 +762,12 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	}
 	
 	@Override
-	public boolean proofStatusLocalChanged(Enum objEnumStatus, boolean bValue) throws ExceptionZZZ {
-		return this.proofStatusLocalChanged(objEnumStatus.name(), bValue);
+	public boolean proofStatusLocalValueChanged(Enum objEnumStatus, boolean bValue) throws ExceptionZZZ {
+		return this.proofStatusLocalValueChanged(objEnumStatus.name(), bValue);
 	}
 
 	@Override
-	public boolean proofStatusLocalChanged(String sStatusName, boolean bValue) throws ExceptionZZZ {
+	public boolean proofStatusLocalValueChanged(String sStatusName, boolean bValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(StringZZZ.isEmpty(sStatusName))break main;
@@ -806,44 +833,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	}
 	
 	//#############################
-	//#######################################
-		@Override 
-		public String getStatusLocalMessage() {
-			String sReturn = null;
-			main:{
-				if(this.sStatusLocalMessage!=null) {
-					sReturn =  this.sStatusLocalMessage;
-					break main;				
-				}
-				
-				//Merke: Erst in OVPN-Klassen gibt es enum mit Message
-				IServerMainOVPN.STATUSLOCAL objEnum = (IServerMainOVPN.STATUSLOCAL)this.getStatusLocalEnum();
-				if(objEnum!=null) {
-					sReturn = objEnum.getStatusMessage();
-				}			
-			}//end main:
-			return sReturn;
-		}
-
-		@Override
-		public String getStatusLocalMessagePrevious(){
-			String sReturn = null;
-			main:{
-				if(this.sStatusLocalMessage!=null) {
-					sReturn =  this.sStatusLocalMessage;
-					break main;				
-				}
-				
-				//Merke: Erst in OVPN-Klassen gibt es enum mit Message
-				IServerMainOVPN.STATUSLOCAL objEnum = (IServerMainOVPN.STATUSLOCAL)this.getStatusLocalEnumPrevious();
-				if(objEnum!=null) {
-					sReturn = objEnum.getStatusMessage();
-				}			
-			}//end main:
-			return sReturn;
-		}
-		
-	
+	//#######################################	
 	@Override
 	public boolean isStatusLocalRelevant(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
 		boolean bReturn = false;
@@ -860,5 +850,10 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		}//end main:
 		return bReturn;
 	}
-
+	
+	//aus IListenerObjectStatusLocalMapForEventUserZZZ, wg. Abstracter Klasse
+	@Override
+	public HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+		return null;
+	}
 }//END class

@@ -23,6 +23,7 @@ import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
 import use.openvpn.serverui.ServerTrayUIOVPN;
 import basic.zKernel.KernelZZZ;
+import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
@@ -30,6 +31,7 @@ import basic.zKernel.process.IProcessWatchRunnerZZZ;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -42,48 +44,98 @@ import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 
 public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, Runnable,IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+	protected String sModuleName=null;
+	
 	private IClientMainOVPN objMain = null;
 	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
-	//IClientThreadVpnIpPingerOVPN.STATUSLOCAL
+	public ClientThreadVpnIpPingerOVPN(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel);
+		PingerNew_(objConfig, saFlagControl);
+	}
 	
-	
-public ClientThreadVpnIpPingerOVPN(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
-	super(objKernel);
-	PingerNew_(objConfig, saFlagControl);
-}
-
-private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
-	main:{
-		
-		check:{
-	 		
-			if(saFlagControl != null){
-				String stemp; boolean btemp;
-				for(int iCount = 0;iCount<=saFlagControl.length-1;iCount++){
-					stemp = saFlagControl[iCount];
-					btemp = setFlag(stemp, true);
-					if(btemp==false){ 								   
-						   ExceptionZZZ ez = new ExceptionZZZ( stemp, IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
-						   throw ez;		 
+	private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
+		main:{
+			
+			check:{
+		 		
+				if(saFlagControl != null){
+					String stemp; boolean btemp;
+					for(int iCount = 0;iCount<=saFlagControl.length-1;iCount++){
+						stemp = saFlagControl[iCount];
+						btemp = setFlag(stemp, true);
+						if(btemp==false){ 								   
+							   ExceptionZZZ ez = new ExceptionZZZ( stemp, IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 
+							   throw ez;		 
+						}
 					}
+					if(this.getFlag("init")) break main;
 				}
-				if(this.getFlag("init")) break main;
-			}
+									
+				this.objMain = objMain;
+				
+				//Da dies ein KernelProgram ist automatisch das FLAG IKERNELMODULE Setzen!!!				
+				this.setFlag(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+			}//End check
+	
+		}//END main
+	}
+	
+	public boolean isWaitingForClientStart() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			check:{
+				if(this.objKernel==null) break main;				
+			}//END check:
 		
-						
-			this.objMain = objMain;
-		}//End check
-
-	}//END main
-}
+		boolean bProof = this.proofFlagSetBefore(IClientThreadVpnIpPingerOVPN.FLAGZ.WAIT_FOR_CLIENTSTART.name());
+		if(bProof) {
+			bReturn = this.getFlag(IClientThreadVpnIpPingerOVPN.FLAGZ.WAIT_FOR_CLIENTSTART.name());
+		}else {
+			//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht.
+			String sModuleAlias = this.getModuleName();
+			String stemp = this.objKernel.getParameterByModuleAlias(sModuleAlias, "WaitForClientStart").getValue();
+			if(stemp==null) break main;
+			if(stemp.equals("1")){
+				bReturn = true;
+			}
+			this.setFlag(IClientThreadVpnIpPingerOVPN.FLAGZ.WAIT_FOR_CLIENTSTART, bReturn);
+		}//end if
+		}//END main
+		return bReturn;
+	}	
+	
+	public boolean isWaitingForClientConnect() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			check:{
+				if(this.objKernel==null) break main;				
+			}//END check:
+		
+		boolean bProof = this.proofFlagSetBefore(IClientThreadVpnIpPingerOVPN.FLAGZ.WAIT_FOR_CLIENTCONNECT.name());
+		if(bProof) {
+			bReturn = this.getFlag(IClientThreadVpnIpPingerOVPN.FLAGZ.WAIT_FOR_CLIENTCONNECT.name());
+		}else {
+			//Das setzt voraus, das die Kernel-Konfigurationsdatei eine Modul-Section enthaelt, die wie der Application - Key aussieht.
+			String sModuleAlias = this.getModuleName();
+			String stemp = this.objKernel.getParameterByModuleAlias(sModuleAlias,"WaitForClientConnect").getValue();
+			if(stemp==null) break main;
+			if(stemp.equals("1")){
+				bReturn = true;
+			}
+			this.setFlag(IClientThreadVpnIpPingerOVPN.FLAGZ.WAIT_FOR_CLIENTCONNECT, bReturn);
+		}//end if
+		}//END main
+		return bReturn;
+	}	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 *TODO: Die Fehler ins Log-Schreiben.
 	 */
-	public void run() {		
-		main:{
-			try {
+	public void run() {
+		try {
+			main:{			
 				try {
 					check:{
 						if(this.objMain==null) break main;
@@ -95,43 +147,60 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);	
 	 				
-					//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.								
-					//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
+					//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
+					//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
+					//this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISPINGSTARTING, true);								
 					//besser ueber eine geworfenen Event... und nicht direkt: this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
-					this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTING, true);
-					System.out.println("... Starte...");
+					
+					//boolean bStatusLocalSet = this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTING, true);
+					boolean bStatusLocalSet = this.switchStatusLocalAsGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTING, true); //Damit der ISSTOPPED Wert auf jeden Fall auch beseitigt wird
+					if(!bStatusLocalSet) {
+						sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);
+						break main;
+					}
+					
 					do {			 								
 						//B) Pingen der gewuenschten Zieladressen hinsichtlich der Erreichbarkeit VORBEREITEN	 													
 						//Verwende nicht das File-Objekt, sondern das Konfigurations-Objekt.
-						ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = this.getMainObject().getClientConfigStarterRunningList();
+						ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = this.getMainObject().getClientConfigStarterList();
 						if(listaClientConfigStarterRunning==null) {
-							sLog = ReflectCodeZZZ.getPositionCurrent()+": Keine gestarteten Konfigurationen aus OVPN-configuration-file vorhanden. Breche ab.";
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": PING: Keine Konfigurationen aus OVPN-configuration-file vorhanden (NULL). Breche ab.";
 							System.out.println(sLog);
 							this.getMainObject().logProtocolString(sLog);
+							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED, true);
 							break main;
+						}else if(listaClientConfigStarterRunning.size()==0) {
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": PING: Konfigurationen aus OVPN-configuration-file vorhanden (0). Breche ab.";
+							System.out.println(sLog);
+							this.getMainObject().logProtocolString(sLog);
+							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED, true);
+							break main;							
 						}
 						
+						Thread.sleep(10000);							
+						System.out.println("... PING: Starte fuer alle Konfigurationen...");					
+						this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTED, true);										
 						for(int icount3=0; icount3 < listaClientConfigStarterRunning.size(); icount3++){
-							//TODOGOON20231005;//Nun die Verbindungen anpingen.
-							Thread.sleep(10000);							
-							System.out.println("..."+(icount3+1)+". Mache neue Verbindung...");							
-							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTNEW, true);
 							
-							Thread.sleep(10000);														
-							System.out.println("..."+(icount3+1)+". Verbinde...");
+							Thread.sleep(10000);							
+							System.out.println("..."+(icount3+1)+". PING: Mache neue Verbindung...");							
 							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTING, true);
 							
+			
 							Thread.sleep(10000);							
-							System.out.println("..."+(icount3+1)+". Verbunden");							
+							System.out.println("..."+(icount3+1)+". PING: Verbunden");							
 							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTED, true);
 						
 							Thread.sleep(10000);							
-							System.out.println("..."+(icount3+1)+". Beende...");																				
+							System.out.println("..."+(icount3+1)+". Beende...");	
+							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);							
 						}//END For
 
+						Thread.sleep(1000);
 						break;
-					}while(true);	
-					this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
+					}while(true);
 					
 			
 			//##################################
@@ -293,24 +362,23 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 	 									 
 				 //}//END if "ConnectionRunnerStarted"
 				 
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-			//}while(true);
+//			
 			
+					
+					//Damit werden die anderen Statuswerte nicht veraendert. 
+					//Das hat Probleme beim Neustart  this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
+					Thread.sleep(10000);							
+					System.out.println(".... PING: Stoppe");						
+					this.switchStatusLocalAsGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
+				} catch (InterruptedException e) {
+					ExceptionZZZ ez = new ExceptionZZZ(e);
+					throw ez;
+				}				
+			}//END main:
 			
-			} catch (InterruptedException e) {
-				ExceptionZZZ ez = new ExceptionZZZ(e);
-				throw ez;
-			}
 		}catch(ExceptionZZZ ez){
 			System.out.println(ez.getDetailAllLast());
 		}
-		}//END main:
-		
 	}//END run
 	
 	
@@ -328,11 +396,11 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 		boolean bReturn = false;
 		main:{
 			if(sStatusString == null) {
-				bReturn = this.getStatusLocalString()==null;
+				bReturn = this.getStatusLocalAbbreviation()==null;
 				break main;
 			}
 			
-			if(!sStatusString.equals(this.getStatusLocalString())) {
+			if(!sStatusString.equals(this.getStatusLocalAbbreviation())) {
 				bReturn = true;
 			}
 		}//end main:
@@ -392,7 +460,7 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 		return bFunction;
 	}
 
-	//aus IListenerObjectStatusLocalSetZZZ
+	//### aus IListenerObjectStatusLocalSetZZZ
 	@Override
 	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
@@ -401,12 +469,6 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 		    boolean bProof = this.isEventRelevant(eventStatusLocalSet);
 			if(!bProof) break main;
 		    
-			//Lies den Status (geworfen vom Backend aus)
-			String sStatus = eventStatusLocalSet.getStatusText();
-		
-			//übernimm den Status
-			this.setStatusLocalString(sStatus);
-		
 			bReturn = true;
 		}//end main:
 		return bReturn;
@@ -446,6 +508,15 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 			this.getMainObject().logProtocolString(sLog);
 			
 			//+++ Pruefungen
+			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);				
+				break main;
+			}
+					
+			
 			bReturn = this.isStatusChanged(eventStatusLocalSet.getStatusText());
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status nicht geaendert. Breche ab.";
@@ -469,15 +540,7 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 				this.getMainObject().logProtocolString(sLog);				
 				break main;
 			}
-			
-			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
-			if(!bReturn) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
-				break main;
-			}
-						
+				
 			bReturn = true;
 		}//end main:
 		return bReturn;
@@ -493,7 +556,8 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 			if(eventStatusLocalSet==null)break main;
 			
 			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
-			if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+			//Merke: Beim Monitor interessieren auch "false" Werte, um den Status ggfs. wieder zuruecksetzen zu koennen
+			//if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
 			
 			bReturn = true;
 		}
@@ -574,8 +638,7 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 
 	@Override
 	public boolean getFlag(use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.FLAGZ objEnumFlag) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.getFlag(objEnumFlag.name());
 	}
 
 	@Override
@@ -615,9 +678,6 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 	}
 
 	//#############
-			/* (non-Javadoc)
-			 * @see basic.zBasic.AbstractObjectWithStatusZZZ#setStatusLocal(java.lang.Enum, boolean)
-			 */
 			@Override 
 			public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 				boolean bFunction = false;
@@ -627,13 +687,13 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 					}
 					IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
 					
-					bFunction = this.setStatusLocal(enumStatus, null, bStatusValue);
+					bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
 				}//end main:
 				return bFunction;
 			}
 			
 			@Override 
-			public boolean setStatusLocal(Enum enumStatusIn, int iIndex, boolean bStatusValue) throws ExceptionZZZ {
+			public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 				boolean bFunction = false;
 				main:{
 					if(enumStatusIn==null) {
@@ -641,148 +701,133 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 					}
 					IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
 					
-					bFunction = this.setStatusLocal(enumStatus, iIndex, null, bStatusValue);
+					bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, null, bStatusValue);
 				}//end main:
 				return bFunction;
 			}
 			
 			@Override 
-			public boolean setStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+			public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 				boolean bFunction = false;
 				main:{
-					if(enumStatusIn==null) {
-						break main;
-					}
+					if(enumStatusIn==null) break main;
+					
 					IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
 					
-					bFunction = this.setStatusLocal(enumStatus, -1, sStatusMessage, bStatusValue);
+					bFunction = this.offerStatusLocal_(-1, enumStatus, sStatusMessage, bStatusValue);
 				}//end main:
 				return bFunction;
 			}
-			
+								
 			@Override
-			public boolean setStatusLocal(Enum enumStatusIn, int iIndex, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+			public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 				boolean bFunction = false;
 				main:{
-					if(enumStatusIn==null) {
+					if(enumStatusIn==null) break main;
+					
+					IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
+					
+					bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sStatusMessage, bStatusValue);
+				}//end main:
+				return bFunction;
+				
+			}
+						
+			private boolean offerStatusLocal_(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+				boolean bFunction = false;
+				main:{
+					if(enumStatusIn==null) break main;
+									
+				    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
+				    IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
+					String sStatusName = enumStatus.name();
+					bFunction = this.proofStatusLocalExists(sStatusName);															
+					if(!bFunction){
+						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status is not available: '" + sStatusName + "'";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);			
 						break main;
 					}
-				//return this.getStatusLocal(objEnumStatus.name());
-				//Nein, trotz der Redundanz nicht machen, da nun der Event anders gefeuert wird, nämlich über das enum
-				
-			    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
-			    IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
-				String sStatusName = enumStatus.name();
-				bFunction = this.proofStatusLocalExists(sStatusName);															
-				if(!bFunction){
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status is not available: '" + sStatusName + "'";
-					System.out.println(sLog);
-					this.logLineDate(sLog);				
-					break main;
-				}
 					
-				bFunction = this.proofStatusLocalChanged(sStatusName, bStatusValue);
-				if(!bFunction) break main;
+					bFunction = this.proofStatusLocalValueChanged(sStatusName, bStatusValue);
+					if(!bFunction) {
+						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status has not changed: '" + sStatusName + "'";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);
+						break main;
+					}
 				
-				//Setze das Flag nun in die HashMap
-				HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
-				hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+					//++++++++++++++++++++	
+					//Setze den Status nun in die HashMap
+					HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+					hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
 				
-				//Setze nun das Enum, und damit auch die Default-StatusMessage
-				this.setStatusLocalEnum(enumStatus);
-				String sStatusMessageToSet = enumStatus.getStatusMessage();
-				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadProcessWatchMonitor verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				
-				//Falls eine Message extra uebergeben worden ist, ueberschreibe...
-				if(sStatusMessage!=null) {
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMain uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
+					//Den enumStatus als currentStatus im Objekt speichern...
+					//                   dito mit dem "vorherigen Status"
+					//Setze nun das Enum, und damit auch die Default-StatusMessage					
+					String sStatusMessageToSet = null;
+					if(StringZZZ.isEmpty(sStatusMessage)){
+						if(bStatusValue) {
+							sStatusMessageToSet = enumStatus.getStatusMessage();
+						}else {
+							sStatusMessageToSet = "NICHT " + enumStatus.getStatusMessage();
+						}			
+					}else {
+						sStatusMessageToSet = sStatusMessage;
+					}
+					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
 					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);					
-					this.setStatusLocalMessage(sStatusMessage);
-				}
-				
-				
-				//....hier keine Verarbeitung der Startkonfiguration
-				
-				
-				
-				
-				
-				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
-				//Dann erzeuge den Event und feuer ihn ab.	
-				if(this.getSenderStatusLocalUsed()==null) {
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadProcessWatchMonitor for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
+					this.getMainObject().logProtocolString(sLog);
+
+					//Falls eine Message extra uebergeben worden ist, ueberschreibe...
+					if(sStatusMessage!=null) {
+						sStatusMessageToSet = sStatusMessage;
+						sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);				
+					}
+					
+					//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
+					boolean bSuccess = this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
+
+					
+					//....hier keine Verarbeitung der Startkonfiguration
+	
+					//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+					//Dann erzeuge den Event und feuer ihn ab.	
+					if(this.getSenderStatusLocalUsed()==null) {
+						sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);			
+						break main;
+					}
+					
+					//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
+					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
 					System.out.println(sLog);
-					this.logLineDate(sLog);			
-					break main;
-				}
-				
-				//Merke: Nun aber ueber das enum, in dem ja noch viel mehr Informationen stecken können.
-				IEventObject4VpnIpPingerStatusLocalSetOVPN event = new EventObject4VpnIpPingerStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);
-				event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
-				//Kein besonderes Mapping ... if(sStatusName.equalsIgnoreCase(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.STATUSLOCAL.ISSTARTING.getName())){
-							
-				sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger fires event '" + enumStatus.getAbbreviation() + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
-				
-				sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger for Process iIndex= '" + iIndex + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
-				if(iIndex>=0) {
-					event.setClientConfigStarterObjectUsed(this.getMainObject().getClientConfigStarterList().get(iIndex));
-				}
-				
-				sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger fires event '" + enumStatus.getAbbreviation() + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
-				this.getSenderStatusLocalUsed().fireEvent(event);
+					this.getMainObject().logProtocolString(sLog);				
+					IEventObject4VpnIpPingerStatusLocalSetOVPN event = new EventObject4VpnIpPingerStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);
+					event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
+					
+					//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
+					sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger for Process iIndex= '" + iIndexOfProcess + "'";
+					System.out.println(sLog);
+					this.getMainObject().logProtocolString(sLog);
+					if(iIndexOfProcess>=0) {
+						event.setClientConfigStarterObjectUsed(this.getMainObject().getClientConfigStarterList().get(iIndexOfProcess));
+					}
+					
+					sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger fires event '" + enumStatus.getAbbreviation() + "'";
+					System.out.println(sLog);
+					this.getMainObject().logProtocolString(sLog);
+					this.getSenderStatusLocalUsed().fireEvent(event);
 						
-				bFunction = true;	
-			}	// end main:
-			return bFunction;
+					bFunction = true;	
+				}	// end main:
+				return bFunction;
 			}
 
 	//################################
-			@Override 
-			public String getStatusLocalMessage() {
-				String sReturn = null;
-				main:{
-					if(this.sStatusLocalMessage!=null) {
-						sReturn =  this.sStatusLocalMessage;
-						break main;				
-					}
-					
-					//Merke: Erst in OVPN-Klassen gibt es enum mit Message
-					IClientThreadVpnIpPingerOVPN.STATUSLOCAL objEnum = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL)this.getStatusLocalEnum();
-					if(objEnum!=null) {
-						sReturn = objEnum.getStatusMessage();
-					}			
-				}//end main:
-				return sReturn;
-			}
-
-			@Override
-			public String getStatusLocalMessagePrevious(){
-				String sReturn = null;
-				main:{
-					if(this.sStatusLocalMessage!=null) {
-						sReturn =  this.sStatusLocalMessage;
-						break main;				
-					}
-					
-					//Merke: Erst in OVPN-Klassen gibt es enum mit Message
-					IClientThreadVpnIpPingerOVPN.STATUSLOCAL objEnum = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL)this.getStatusLocalEnumPrevious();
-					if(objEnum!=null) {
-						sReturn = objEnum.getStatusMessage();
-					}			
-				}//end main:
-				return sReturn;
-			}
-			
-			
 	@Override
 	public boolean isStatusLocalRelevant(IEnumSetMappedZZZ objEnumStatusIn) throws ExceptionZZZ {
 		boolean bReturn = false;
@@ -833,5 +878,72 @@ private void PingerNew_(ClientMainOVPN objMain, String[] saFlagControl) throws E
 	@Override
 	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
 		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);;
+	}
+	
+	//### Aus IKernelModuleZZZ
+	public String readModuleName() throws ExceptionZZZ {
+		String sReturn = null;
+		main:{
+			sReturn = this.getClass().getName();
+		}//end main:
+		return sReturn;
+	}
+	
+	@Override
+	public String getModuleName() throws ExceptionZZZ{
+		if(StringZZZ.isEmpty(this.sModuleName)) {
+			this.sModuleName = this.readModuleName();
+		}
+		return this.sModuleName;
+	}
+	
+	private void setModuleName(String sModuleName){
+		this.sModuleName=sModuleName;
+	}
+	
+	@Override
+	public boolean getFlag(IKernelModuleZZZ.FLAGZ objEnumFlag) {
+		return this.getFlag(objEnumFlag.name());
+	}
+	@Override
+	public boolean setFlag(IKernelModuleZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+		return this.setFlag(objEnumFlag.name(), bFlagValue);
+	}
+	
+	@Override
+	public boolean[] setFlag(IKernelModuleZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+				baReturn = new boolean[objaEnumFlag.length];
+				int iCounter=-1;
+				for(IKernelModuleZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+					iCounter++;
+					boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+					baReturn[iCounter]=bReturn;
+				}
+			}
+		}//end main:
+		return baReturn;
+	}
+	
+	@Override
+	public boolean proofFlagExists(IKernelModuleZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagExists(objEnumFlag.name());
+	}
+	
+	@Override
+	public boolean proofFlagSetBefore(IKernelModuleZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagSetBefore(objEnumFlag.name());
+	}
+	
+	@Override
+	public void resetModuleUsed() {
+		this.setModuleName(null);
+	}
+	
+	@Override
+	public void reset() {
+		this.resetModuleUsed();
 	}
 }//END class

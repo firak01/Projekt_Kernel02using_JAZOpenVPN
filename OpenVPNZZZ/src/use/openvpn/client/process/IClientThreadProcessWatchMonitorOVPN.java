@@ -40,11 +40,15 @@ public interface IClientThreadProcessWatchMonitorOVPN extends IClientMainUserOVP
 		ISSTARTNEW("isstartnew","OVPN: Monitor nicht gestartet",""),
 		ISSTARTING("isstarting","OVPN: Monitor startet...",""),		
 		ISSTARTED("isstarted","OVPN: Monitor gestartet",""),
-		ISCONNECTNEW("isconnectnew","OVPN: Monitor nicht verbunden",""),
-		ISCONNECTING("isconnecting","OVPN: Monitor verbindet sich...",""),
-		ISCONNECTED("isconnected","OVPN: Monitor verbunden",""),
-				
-		ISINTERRUPTED("isinterrupted","OVPN: Monitor Verbindungsunterbrechung",""),
+		HASPROCESSSTARTNEW("hasprocessnew","OVPN: Prozess nicht gestartet",""),
+		HASPROCESSSTARTING("hasprocessstarting","OVPN: Prozess startet",""),
+		HASPROCESSSTARTED("hasprocessstarted","OVPN: Prozess gestartet",""),
+		HASPROCESSOUTPUT("hasprocessoutput","OVPN: Prozess mit Ausgabe",""),
+		HASPROCESSCONNECTION("hasprocessconnection","OVPN: Process verbunden",""),
+		HASPROCESSCONNECTIONLOST("hasprocessconnectionlost","OVPN: Process Verbindung verloren",""),
+		HASPROCESSERROR("hasprocesserror","OVPN: Process meldet fehler",""),
+		HASPROCESSSTOPPED("hasprocessstopped","OVPN: Process gestoppt",""),
+		
 		ISSTOPPED("isstopped","OVPN: Monitor beendet",""),
 				
 		HASERROR("haserror","OVPN: Monitor Fehler",""),		

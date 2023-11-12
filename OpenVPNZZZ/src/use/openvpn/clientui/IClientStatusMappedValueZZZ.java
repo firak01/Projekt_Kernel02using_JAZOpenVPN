@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 
 public interface IClientStatusMappedValueZZZ {
-	//#######################################################
+		//#######################################################
 		//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 		//### String fullName, String abbreviation
 		//#######################################################
@@ -21,11 +21,15 @@ public interface IClientStatusMappedValueZZZ {
 			
 			PINGING("pinging","","icons8-networking-64_greenLight.png",""),
 			PINGED("pinged","","icons8-networking-64_black_bgGreen.png",""),
+			PINGCONNECTING("pingconnecting","","icons8-networking-64_magenta.png",""),
+			PINGCONNECTED("pingconnected","","icons8-networking-64_black_bgMagentaDark.png",""),
 			
 			INTERRUPTED("interrupted","","pill-button-purple_benji_01.png",""),
 			STOPPED("stopped","","Green Metallic_32.png",""),		
 			ERROR("error","","pill-button-red_benji_01.png",""),
-			FAILED("failed","","pill-button-purple_benji_01.png","");
+			FAILED("failed","","pill-button-purple_benji_01.png",""),
+			
+			PREVIOUSEVENTRTYPE("previouseventrytype","","","Ohne Bild. Wird genutzt, um in einem weiteren Lauf das passende rauszusuchen. Z.B. wenn nach dem Stop ein vorheriger Status verwendet werden soll");
 			
 		private String sAbbreviation,sMenuText, sIconFileName, sDescription;
 

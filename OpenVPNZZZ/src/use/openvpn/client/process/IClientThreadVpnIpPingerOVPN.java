@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.status.IEventBrokerStatusLocalSetUserZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
@@ -16,9 +17,9 @@ import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
-public interface IClientThreadVpnIpPingerOVPN extends IClientMainUserOVPN{
+public interface IClientThreadVpnIpPingerOVPN extends IKernelModuleZZZ, IClientMainUserOVPN{
 	public enum FLAGZ{
-		DUMMY,END_ON_CONNECTION
+		DUMMY,STOPREQUEST, WAIT_FOR_CLIENTSTART, WAIT_FOR_CLIENTCONNECT, END_ON_CONNECTION
 	}
 
 	

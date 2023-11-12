@@ -40,14 +40,13 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		ISSTARTNEW("isstartnew","ProcessWatchRunner: Nicht gestartet",""),
-		ISSTARING("isstarting","ProcessWatchRunner: Startet...",""),
+		ISSTARTING("isstarting","ProcessWatchRunner: Startet...",""),
 		ISSTARTED("isstarted","ProcessWatchRunner: Gestartet",""),
 		
 		HASOUTPUT("hasoutput","Prozess hat Output",""),
 		HASCONNECTION("hasconnection","Process meldet eine Verbindung zu OVPN",""),
 		HASCONNECTIONLOST("hasconnectionlost","Process meldet ein Reset der Verbindung zu OVPN",""),
-		HASINPUT("hasinput","Prozess hat Input",""),
-		
+				
 		ISSTOPPED("isended","ProcessWatchRunner: Beendet",""),
 		HASERROR("haserror","ProcessWatchRunner: Fehler","");
 									

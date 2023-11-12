@@ -45,6 +45,8 @@ import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
+import basic.zKernel.status.IStatusLocalMapForCascadingStatusLocalUserZZZ;
+import basic.zKernel.status.StatusLocalHelperZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -55,6 +57,7 @@ import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
@@ -69,15 +72,19 @@ import basic.zWin32.com.wmi.KernelWMIZZZ;
  *  Dieser Tray ist an den verschiedenen Monitor-Objekten, die den LocalStatus nutzen registriert.
  *  Er reagiert auf Events, die er empfaengt.
  *  Selbst hat der ClientTray keinen LocalStatus und feuert daher auch keine Events ab.
- *   
+ *  
  * @author Fritz Lindhauer, 11.10.2023, 07:46:15
  * 
  */
-public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements ActionListener ,IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN {
+public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements ActionListener ,IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForCascadingStatusLocalUserZZZ {
 	//Merke: Der Tray selbst hat keinen Status.
 	private SystemTray objTray = null;
 	private TrayIcon objTrayIcon = null;
 	private ClientMainOVPN objMain = null;
+	
+	//Wie in AbstractObjectWithStatusListeningZZZ
+	private HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ> hmEnumSet =null; //Hier wird ggfs. der Eigene Status mit dem Status einer anderen Klasse (definiert durch das Interface) gemappt.
+
 	
 	//TODOGOON 20210210: Realisiere die Idee
 	//Idee: In ClientMainUI eine/verschiedene HashMaps anbieten, in die dann diese Container-Objekte kommen.
@@ -324,13 +331,11 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					
 					boolean bStarting = this.getMainObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING);
 					if(!bStarting) {	
-						objMonitor.setStatusLocalEnum(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.HASCLIENTNOTSTARTING);
-						objMonitor.setStatusLocalString("Client not starting.");
+						objMonitor.offerStatusLocalEnum(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.HASCLIENTNOTSTARTING);						
 						break main;
 					}
 					
-					objMonitor.setStatusLocalEnum(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED);
-					objMonitor.setStatusLocalString("Client not finished starting. Waiting for process?");
+					objMonitor.offerStatusLocalEnum(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED);					
 					break main;
 				}
 												
@@ -368,39 +373,43 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					if(this.getMainObject()==null)break main;
 				}
 				
+				//Fuer einen zweiten moelichen Neustart das VpnIpPingerObjekt erst einmal beseitigen.
+				boolean bResetted = this.getMainObject().resetVpnIpPingerObject();
+			
 				ClientThreadVpnIpPingerOVPN objPinger = this.getMainObject().getVpnIpPingerObject();
 				if(objPinger==null) break main;
 				
-				boolean bStarted = this.getMainObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTED);
-				if(!bStarted) {
-					
-					boolean bStarting = this.getMainObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING);
-					if(!bStarting) {	
-						objPinger.setStatusLocalEnum(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTING);
-						objPinger.setStatusLocalString("Client not starting.");
+				boolean bWaitForStart = objPinger.isWaitingForClientStart(); //objPinger.getFlag(IClientThreadVpnIpPingerOVPN.FLAGZ.WAIT_FOR_CLIENTSTART);
+				if(bWaitForStart) {				
+					boolean bMainStarting = this.getMainObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTING);
+					if(!bMainStarting) {					
+						objPinger.offerStatusLocalEnum(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTING);
 						break main;
 					}
 					
-					objPinger.setStatusLocalEnum(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED);
-					objPinger.setStatusLocalString("Client not finished starting. Waiting for process?");
-					break main;
-				}
-								
-				//TODOGOON20231005;//Warum ist hier der Status nicht auf ISCONNECTED ????
-				boolean bConnected = this.getMainObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTED) ;
-				if(!bConnected) {
-					objPinger.setStatusLocalEnum(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTCONNECTED);
-					objPinger.setStatusLocalString("Client not connected.");
-					break main;
-				}
-				
-				this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISPINGSTARTING, true);
+					boolean bMainStarted = this.getMainObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISSTARTED);
+					if(!bMainStarted) {
+						objPinger.offerStatusLocalEnum(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED);
+						break main;
+					}
+					
+						boolean bWaitForConnect = objPinger.isWaitingForClientConnect(); //objPinger.getFlag(IClientThreadVpnIpPingerOVPN.FLAGZ.WAIT_FOR_CLIENTCONNECT);
+						if(bWaitForConnect) {
+						boolean bMainConnected = this.getMainObject().getStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTED) ;
+						if(!bMainConnected) {
+							objPinger.offerStatusLocalEnum(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTCONNECTED);
+							break main;
+						}
+					} //end if bWaitForConnect								
+				}//end if bWaitForStart
 				
 				Thread objThreadPingerThread = new Thread(objPinger);
 				objThreadPingerThread.start();							
-				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISPINGED" gesetzt und ein Event geworfen.
-			
-				bReturn = true;
+				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISPINGED" gesetzt und ein Event geworfen.			
+				bReturn = true;	
+		
+								
+				
 				
 				
 				//TODOGOON20230929;
@@ -623,9 +632,6 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 //				}while(true);				 						 					
 				//##################################
 				
-				
-				
-				bReturn = true;
 			}catch(ExceptionZZZ ez){
 				try {
 					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
@@ -652,7 +658,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 	public String readBackendStatusString(){
 		String sReturn = "";
 		if(this.getMainObject()!=null){
-			sReturn = this.getMainObject().getStatusLocalString();
+			sReturn = this.getMainObject().getStatusLocalAbbreviation();
 		}else {	
 			sReturn = ClientMainOVPN.STATUSLOCAL.ISSTARTNEW.getAbbreviation();//ohne das TrayIcon kann man ja auf nix clicken. Darum gibt es keine frueheren Status.
 		}
@@ -686,7 +692,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			if(this.getMainObject()==null)break main;
 			if(this.getMainObject().getProcessMonitorObject()==null) break main;
 			
-			sReturn = this.getMainObject().getProcessMonitorObject().getStatusLocalString();
+			sReturn = this.getMainObject().getProcessMonitorObject().getStatusLocalAbbreviation();
 		}//end main:
 		return sReturn;
 	}
@@ -718,7 +724,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			if(this.getMainObject()==null)break main;
 			if(this.getMainObject().getVpnIpPingerObject()==null) break main;
 			
-			sReturn = this.getMainObject().getVpnIpPingerObject().getStatusLocalString();
+			sReturn = this.getMainObject().getVpnIpPingerObject().getStatusLocalAbbreviation();
 		}//end main:
 		return sReturn;
 	}
@@ -752,7 +758,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			//Merke: der BackendStausString wird von den Events, die er empfaengt gefuettert.
 			//Hole immer die letzte StatusMeldung...
 			String sStatusClientString = this.readBackendStatusMessage();
-			if(StringZZZ.isEmpty(sStatusClientString)){
+			if(StringZZZ.isEmpty(sStatusClientString)){				
 				sReturn = sReturn + ClientMainOVPN.STATUSLOCAL.ISSTARTNEW.getStatusMessage() + "\n";
 				break main;
 			}else{			
@@ -1152,9 +1158,6 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				boolean bProof = this.isEventRelevant(eventStatusLocalSet);
 				if(!bProof) break main;
 					
-				boolean bStatusValue = eventStatusLocalSet.getStatusValue();
-				if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
-					
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);	
@@ -1163,69 +1166,61 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 					
-				boolean bRelevant = this.isStatusLocalRelevant(enumStatus);
-				if(!bRelevant) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"' ist nicht relevant. Breche ab.";
+				//+++ Weiterverarbeitung des relevantenStatus
+				HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForCascadingStatusLocal();		
+				ClientTrayStatusTypeZZZ objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
+				if(objEnum==null) {
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);
-				}														
-	
-				//Die Stati vom Backend-Objekt mit dem TrayIcon mappen
-				if(ClientMainOVPN.STATUSLOCAL.ISSTARTNEW==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.NEW);				
-				}else if(ClientMainOVPN.STATUSLOCAL.ISSTARTING==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.STARTING);
-				}else if(ClientMainOVPN.STATUSLOCAL.ISSTARTED==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.STARTED);
-					
-					
-				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTING==objStatusEnum) {
-						this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTING);
-				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTED==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTED);
-				}else if(ClientMainOVPN.STATUSLOCAL.ISCONNECTINTERUPPTED==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.INTERRUPTED);
-					
-				}else if(ClientMainOVPN.STATUSLOCAL.ISPINGSTARTING==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.PINGING);
-				}else if(ClientMainOVPN.STATUSLOCAL.ISPINGSTARTED==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.PINGING);
-				}else if(ClientMainOVPN.STATUSLOCAL.ISPINGCONNECTING==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.PINGING);
-				}else if(ClientMainOVPN.STATUSLOCAL.ISPINGCONNECTED==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.PINGED);
-				}else if(ClientMainOVPN.STATUSLOCAL.ISPINGSTOPPED==objStatusEnum) {
-					
+					break main;
+				}								
+				
+				if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
+					//Erneute Verarbeitung mit einem frueheren Status:
+					//Setze den Status auf einen anderen Status zurueck
 					//Frage nach dem Status im Backend nach...
-					//TODOGOON 20231025;// Diese Unterprocesse kommen demnaechst aus dem Hauptobjekt
-					//TODOGOON 20231025;// Enum .getStatusLocalCurrent() ermoeglichen, statt der Stringabfragen.
-					//TODOGOON 20231025;// Ziel...
-					IEnumSetMappedZZZ objStatusLocalCurrent = this.getMainObject().getProcessMonitorObject().getStatusLocalEnum();
-					if (objStatusLocalCurrent==IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISCONNECTED){
-					//... }
-//					
-//					this.getMainObject().getProcessMonitorObject().getStatusLocal(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISCONNECTED);
-//					String sObjectStatusLocalCurrent = this.getMainObject().getProcessMonitorObject().getStatusMessage();
-//					
-//					sLog = ReflectCodeZZZ.getPositionCurrent()+": sObjectStatusLocalCurrent='"+sObjectStatusLocalCurrent+"'";
-//					System.out.println(sLog);
-//					this.getMainObject().logMessageString(sLog);
-//					
-//					if(sObjectStatusLocalCurrent.equalsIgnoreCase(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISCONNECTED.getStatusMessage())) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.CONNECTED);
-					}
-					
-						
-//				}else if(ClientMainOVPN.STATUSLOCAL.PortScanAllFinished==objStatusEnum) {
-//						this.switchStatus(ClientTrayStatusMappedValueZZZ.ClientTrayStatusTypeZZZ.CONNECTED);
-				}else if(ClientMainOVPN.STATUSLOCAL.HASERROR==objStatusEnum) {
-					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
-				}else {
-					sLog = "Der Status wird nicht behandelt - '"+objStatusEnum.getAbbreviation()+"'.";
+					IEnumSetMappedZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
+					sLog = "Der aktuelle Status im Main ist - '" + objStatusLocalCurrent.getAbbreviation()+"'.";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 					this.logLineDate(sLog);
-					break main;
-				}
+				
+					//Mal zu testen schleife......
+					IEnumSetMappedZZZ objStatusLocalPrevious = null;
+					for(int iStepsPrevious = 0;iStepsPrevious<=4;iStepsPrevious++) {
+						objStatusLocalPrevious = (IEnumSetMappedZZZ) this.getMainObject().getStatusLocalEnumPrevious(iStepsPrevious);
+						
+						//TODOGOON20231108;//Irgendwie den letzten vorherigen Status einer anderen Klasse erhalten....
+						//IEnumSetMappedZZZ objStatusLocalPreviousOther = (IEnumSetMapped) this.getMainObject().getStatusLocalEnumPreviousOther(this.getMainObject()......);
+						if(objStatusLocalPrevious==null) {
+							sLog = "Kein entsprechend weit entfernter vorheriger Status vorhanden";
+							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+							this.logLineDate(sLog);
+							break main;
+						}else {
+							
+							//Frage nach dem Status im Backend nach...
+		//					IEnumSetMappedZZZ objStatusLocalPrevious = this.getMainObject().getStatusLocalEnumPrevious();
+							sLog = "Der " + iStepsPrevious + " Schritte vorherige Status im Main ist - '" + objStatusLocalPrevious.getAbbreviation()+"'.";
+							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+							this.logLineDate(sLog);
+							
+							
+						}
+					}//end for
+					
+					if(objStatusLocalPrevious!=null) {
+						objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious);			
+						if(objEnum==null) {
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
+							System.out.println(sLog);
+							this.getMainObject().logProtocolString(sLog);
+							break main;
+						}											
+					}
+					
+				}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {				
+				this.switchStatus(objEnum); //Merke: Der Wert true wird angenommen.
 				
 				bReturn = true;
 			}//end main:
@@ -1318,17 +1313,6 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 //			return bReturn;
 //		}
 		
-		/** analog zu
-		 * basic.zKernel.status.IStatusLocalUserZZZ#isStatusLocalRelevant
-		 * aber da der Tray keinen eigenen Status hat, bleibt das nur drin, um codeSnipptes 1:1 uebernehmen zu koennen.
-		 * @param enumStatus
-		 * @return
-		 * @author Fritz Lindhauer, 18.10.2023, 08:48:37
-		 */
-		public boolean isStatusLocalRelevant(IEnumSetMappedZZZ enumStatus) {
-			return true;
-		}
-
 		/* (non-Javadoc)
 		 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 		 */
@@ -1342,35 +1326,74 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 				
-				IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
-				if(enumStatus==null) {
+				IEnumSetMappedZZZ enumStatusFromEvent = eventStatusLocalSet.getStatusEnum();				
+				if(enumStatusFromEvent==null) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);							
 					break main;
 				}
-								
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen.";
+				
+				boolean bStatusValue = eventStatusLocalSet.getStatusValue();
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 					
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus hat class='"+enumStatusFromEvent.getClass()+"'";
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);	
 					
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus='" + enumStatusFromEvent.getAbbreviation()+"'";
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 				
+				
+				//#### Problemansatz: Mappen des Lokalen Status auf einen Status aus dem Event, verschiedener Klassen.
+				String sStatusAbbreviationLocal = null;
+				IEnumSetMappedZZZ objEnumStatusLocal = null;
+
+				HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForCascadingStatusLocalCustom();
+				objEnumStatusLocal = hm.get(enumStatusFromEvent);					
+				//###############################
+				
+				if(objEnumStatusLocal==null) {
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping nicht mit Wert vorhanden. Damit nicht relevant.";
+					System.out.println(sLog);
+					this.getMainObject().logProtocolString(sLog);
+					break main;
+					//sStatusAbbreviationLocal = enumStatusFromEvent.getAbbreviation();
+				}else {
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping mit Wert vorhanden. Damit relevant.";
+					System.out.println(sLog);
+					this.getMainObject().logProtocolString(sLog);
+					
+					sStatusAbbreviationLocal = objEnumStatusLocal.getAbbreviation();
+				}
+				
 				//+++ Pruefungen
-				//Merke: Der Tray hat keinen Status.
-//				bReturn = this.isStatusChanged(eventStatusLocalSet.getStatusText());
+				bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+				if(!bReturn) {
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
+					System.out.println(sLog);
+					this.getMainObject().logProtocolString(sLog);				
+					break main;
+				}
+				
+// für den Tray nicht relevant
+//				bReturn = this.isStatusLocalChanged(sStatusAbbreviationLocal, bStatusValue);
 //				if(!bReturn) {
 //					sLog = ReflectCodeZZZ.getPositionCurrent()+": Status nicht geaendert. Breche ab.";
 //					System.out.println(sLog);
-//					this.getMainObject().logMessageString(sLog);
+//					this.getMainObject().logProtocolString(sLog);
 //					break main;
+//				}else {
+//					sLog = ReflectCodeZZZ.getPositionCurrent()+": Status geaendert. Mache weiter.";
+//					System.out.println(sLog);
+//					this.getMainObject().logProtocolString(sLog);
 //				}
+				
+				//dito gibt es auch die Methode isStatusLocalRelevant(...) nicht, da der Tray kein AbstractObjectWithStatus ist, er verwaltet halt selbst keinen Status.
+				
 							
 				bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
 				if(!bReturn) {
@@ -1388,13 +1411,14 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					break main;
 				}
 				
-				bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+				bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
 				if(!bReturn) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);				
 					break main;
 				}
+
 							
 				bReturn = true;
 			}//end main:
@@ -1411,9 +1435,6 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			return true;
 		}
 
-		/* (non-Javadoc)
-		 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
-		 */
 		@Override
 		public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 			boolean bReturn = false;
@@ -1421,11 +1442,58 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				if(eventStatusLocalSet==null)break main;
 				
 				boolean bStatusValue = eventStatusLocalSet.getStatusValue();
-				if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+			
+				if(!bStatusValue)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
 				
 				bReturn = true;
 			}
 			return bReturn;
+		}
+
+		@Override
+		public HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForCascadingStatusLocal() {
+			if(this.hmEnumSet==null) {
+				this.hmEnumSet = this.createHashMapEnumSetForCascadingStatusLocalCustom();
+			}
+			return this.hmEnumSet;
+		}
+
+		@Override
+		public void setHashMapEnumSetForCascadingStatusLocal(HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> hmEnumSet) {
+			this.hmEnumSet = hmEnumSet;
+		}
+
+		@Override
+		public HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+			HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>();
+			main:{
+				
+				//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTNEW, ClientTrayStatusTypeZZZ.NEW);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTING, ClientTrayStatusTypeZZZ.STARTING);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTED, ClientTrayStatusTypeZZZ.STARTED);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTING, ClientTrayStatusTypeZZZ.CONNECTING);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTED, ClientTrayStatusTypeZZZ.CONNECTED);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTINTERUPTED, ClientTrayStatusTypeZZZ.INTERRUPTED);
+				
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTARTING, ClientTrayStatusTypeZZZ.PINGING);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTARTED, ClientTrayStatusTypeZZZ.PINGED);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTING, ClientTrayStatusTypeZZZ.PINGCONNECTING);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTED, ClientTrayStatusTypeZZZ.PINGCONNECTED);
+				
+				//++++++++++++++++++++++++
+				//Berechne den wirklichen Typen anschliessend, dynamisch. Es wird auf auf einen vorherigen Event zugegriffen durch eine zweite Abfrage
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTOPPED, ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE);
+				
+				//+++++++++++++++++++++++
+				
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASPINGERROR, ClientTrayStatusTypeZZZ.FAILED);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASERROR, ClientTrayStatusTypeZZZ.ERROR);
+			}//end main:
+			return hmReturn;
 		}
 		
 }//END Class

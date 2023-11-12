@@ -10,15 +10,14 @@ import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
-import basic.zKernel.AbstractKernelUseObjectZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
-public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusZZZ implements Runnable,IMainOVPN{
+public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusListeningZZZ implements Runnable,IMainOVPN {
 	protected IApplicationOVPN objApplication = null;
 	protected ConfigChooserOVPN objConfigChooser = null;
 	protected IConfigMapper4TemplateOVPN objConfigMapper = null;
@@ -67,25 +66,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		return AbstractMainOVPN.sJAR_FILE_USED;
 	}
 	
-	public boolean isStatusChanged(String sStatusString) throws ExceptionZZZ{
-		boolean bReturn = false;
-		main:{
-			if(sStatusString == null) {
-				bReturn = this.getStatusLocalString()==null;
-				break main;
-			}
-			
-			if(!sStatusString.equals(this.getStatusLocalString())) {
-				bReturn = true;
-			}
-		}//end main:
-		if(bReturn) {
-			String sLog = ReflectCodeZZZ.getPositionCurrent()+ ": Status changed to '"+sStatusString+"'";
-			System.out.println(sLog);
-		    this.getLogObject().WriteLineDate(sLog);			
-		}
-		return bReturn;
-	}
+	
 	
 	
 	/**This status is a type of "Log".
@@ -316,23 +297,23 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			return bReturn;
 		}
 		
-		@Override
-		public boolean proofStatusLocalChanged(Enum objEnumStatus, boolean bValue) throws ExceptionZZZ {
-			return this.proofStatusLocalChanged(objEnumStatus.name(), bValue);
-		}
+//		@Override
+//		public boolean proofStatusLocalChanged(Enum objEnumStatus, boolean bValue) throws ExceptionZZZ {
+//			return this.proofStatusLocalChanged(objEnumStatus.name(), bValue);
+//		}
 
-		@Override
-		public boolean proofStatusLocalChanged(String sStatusName, boolean bValue) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				if(StringZZZ.isEmpty(sStatusName))break main;
-				
-				HashMap<String,Boolean>hmStatusLocal = this.getHashMapStatusLocal();
-				bReturn = StatusLocalHelperZZZ.proofStatusLocalChanged(hmStatusLocal, sStatusName, bValue);
-				
-			}//end main:
-			return bReturn;
-		}
+//		@Override
+//		public boolean proofStatusLocalChanged(String sStatusName, boolean bValue) throws ExceptionZZZ {
+//			boolean bReturn = false;
+//			main:{
+//				if(StringZZZ.isEmpty(sStatusName))break main;
+//								
+//				HashMap<String,Boolean>hmStatusLocal = this.getHashMapStatusLocal();
+//				bReturn = StatusLocalHelperZZZ.proofStatusLocalChanged(hmStatusLocal, sStatusName, bValue);
+//				
+//			}//end main:
+//			return bReturn;
+//		}
 
 	
 }

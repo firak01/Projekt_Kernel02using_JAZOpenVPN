@@ -29,23 +29,31 @@ public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetU
 	//Merke: Alle Properties des enum müssen im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	
-	//TODOGOON: eigentlich müssen die Text-Werte aus den enums der anderen Objekte.STATUSLOCAL kommen. 
+	//Merke: Die Message aus anderen Modulen sollte uebernommen werden.
+	//       Die Meldung hier wuerde damit dann ueberschrieben. Daher ist hier solch eine Meldung ueberfluessig, ggfs. ein Fallback.
 	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW("isstartnew", "CLIENT: Nicht gestarted1",""),
-		ISSTARTING("isstarting","CLIENT: Startet...2",""),
-		ISSTARTED("isstarted","CLIENT: Gestartet3",""),			
+		ISSTARTNEW("isstartnew", "CLIENT: Nicht gestarted (ClientMain.STATUSLOCAL)",""),
+		ISSTARTING("isstarting","CLIENT: Startet...(ClientMain.STATUSLOCAL)",""),
+		ISSTARTED("isstarted","CLIENT: Gestartet (ClientMain.STATUSLOCAL)",""),	
+		
 		ISCONNECTNEW("isconnectnew","OVPN: Nicht gestartet4",""),
 		ISCONNECTING("isconnecting","OVPN: Startet...5",""),
 		ISCONNECTED("isconnected","OVPN: Verbunden6",""),
-		ISCONNECTINTERUPPTED("isconnectinterrupted","OVPN: Verbingungsunterbrechung6b",""),
+		ISCONNECTINTERUPTED("isconnectinterrupted","OVPN: Verbingungsunterbrechung6b",""),
+		
 		ISPINGNEW("ispingnew","PING: Thread nicht gestartet7",""),
 		ISPINGSTARTING("ispingstarting","PING: Thread startet...8",""),
 		ISPINGSTARTED("ispingstarted","PING: Thread gestartet9",""),
-		ISPINGCONNECTING("ispingconnecting","PING: Verbinde...10",""),
-		ISPINGCONNECTED("ispingconnected","PING: Verbunden11",""),
-		ISPINGSTOPPED("ispingstopped","PING: Thread gestoppt12",""),
+		ISPINGCONNECTNEW("ispingconnectnew","PING: Veringungsaufbau nicht gestartet10",""),
+		ISPINGCONNECTING("ispingconnecting","PING: Verbinde...11",""),
+		ISPINGCONNECTED("ispingconnected","PING: Verbunden12",""),
+		ISPINGSTOPPED("ispingstopped","PING: Thread gestoppt13",""),
+		HASPINGERROR("haspingerror","PING: Fehler, s. Log14",""),
+		
 		
 		PortScanAllFinished("portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
+		
+		ISSTOPPED("isstopped","CLIENT: Gestoppt",""),
 		HASERROR("haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");
 						
 		private String sAbbreviation,sStatusMessage,sDescription;

@@ -67,7 +67,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 					try {
 						boolean bStatusLocalChanged = l.statusLocalChanged(event);
 						if(bStatusLocalChanged) {
-							System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat LocalStatus '" + event.getStatusText() + "' gesetzt." );
+							System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN for " + l.getClass().getName() + " hat LocalStatusValue '" + event.getStatusValue() + "' fuer externen Event " + event.getStatusText() + "' gesetzt." );
 							
 							
 							
