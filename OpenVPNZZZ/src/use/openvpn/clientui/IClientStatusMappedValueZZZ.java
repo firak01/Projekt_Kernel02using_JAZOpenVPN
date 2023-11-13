@@ -19,10 +19,10 @@ public interface IClientStatusMappedValueZZZ {
 			CONNECTING("connecting","","icons8-networking-64_blue.png",""),
 			CONNECTED("connected","","icons8-networking-64_black_bgBlueLight.png",""),
 			
-			PINGING("pinging","","icons8-networking-64_greenLight.png",""),
-			PINGED("pinged","","icons8-networking-64_black_bgGreen.png",""),
-			PINGCONNECTING("pingconnecting","","icons8-networking-64_magenta.png",""),
-			PINGCONNECTED("pingconnected","","icons8-networking-64_black_bgMagentaDark.png",""),
+			PINGING("pinging","","icons8-networking-64_magenta.png",""),
+			PINGED("pinged","","icons8-networking-64_black_bgMagentaDark.png",""),
+			PINGCONNECTING("pingconnecting","","icons8-networking-64_greenLight.png",""),
+			PINGCONNECTED("pingconnected","","icons8-networking-64_black_bgGreen.png",""),
 			
 			INTERRUPTED("interrupted","","pill-button-purple_benji_01.png",""),
 			STOPPED("stopped","","Green Metallic_32.png",""),		
