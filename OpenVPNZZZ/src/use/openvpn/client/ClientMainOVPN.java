@@ -10,6 +10,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectWithStatusZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -1145,7 +1146,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();
 						
 			//+++++++++++++++++++++
-			HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
 			IClientMainOVPN.STATUSLOCAL objEnum = (IClientMainOVPN.STATUSLOCAL) hmEnum.get(enumStatus);			
 			if(objEnum==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1298,7 +1299,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
 			//+++++++++++++++++++++
-			HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
 			IClientMainOVPN.STATUSLOCAL objEnum = (IClientMainOVPN.STATUSLOCAL) hmEnum.get(enumStatus);			
 			if(objEnum==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1414,7 +1415,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			IEnumSetMappedZZZ objEnumStatusLocal = null;
 
 			//HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForCascadingStatusLocalCustom();
-			HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hm = this.getHashMapEnumSetForCascadingStatusLocal();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hm = this.getHashMapEnumSetForCascadingStatusLocal();
 			objEnumStatusLocal = hm.get(enumStatusFromEvent);					
 			//###############################
 			
@@ -1536,7 +1537,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
+			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
 			bReturn = this.isStatusLocalRelevant(enumStatus);
 			if(!bReturn) break main;
 		}//end main:
@@ -1549,7 +1550,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 * @see basic.zBasic.AbstractObjectWithStatusZZZ#isStatusLocalRelevant(basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ)
 	 */
 	@Override
-	public boolean isStatusLocalRelevant(IEnumSetMappedZZZ objEnumStatusIn) throws ExceptionZZZ {
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(objEnumStatusIn==null) break main;
@@ -1562,8 +1563,8 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 
 	//### aus IListenerObjectStatusLocalMapForEventUserZZZ
 	@Override
-	public HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
-		HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>();
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>();
 		main:{
 			
 			//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 

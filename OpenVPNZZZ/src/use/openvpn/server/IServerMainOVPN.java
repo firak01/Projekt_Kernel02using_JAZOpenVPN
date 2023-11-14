@@ -2,10 +2,7 @@ package use.openvpn.server;
 
 import java.util.EnumSet;
 
-import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import basic.zKernel.status.IEventBrokerStatusLocalSetUserZZZ;
-import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
-import basic.zKernel.status.IStatusLocalUserZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
@@ -21,27 +18,33 @@ public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetO
 	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
-	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISLAUNCHED("islaunched","Trayicon wurde gestartet",""),
-		ISSTARTING("isstarting","Server startet. Warte ggfs. auf Task",""),		
-		ISSTARTED("isstarted","OVPN Konfigurationen gebaut und Server gestartet",""),
-		ISLISTENING("islistening","Server wartet auf Verbindung",""),
-		WATCHRUNNERSTARTED("watchrunnerstarted","Thread zur Verbindungspruefung gestartet",""),
-		ISSTOPPED("isstopped","Server wurde gestoppt",""),
-		HASERROR("haserror","Ein Fehler ist aufgetreten","");
-								
+	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		ISLAUNCHED(4, "islaunched","Trayicon wurde gestartet",""),
+		ISSTARTING(4, "isstarting","Server startet. Warte ggfs. auf Task",""),		
+		ISSTARTED(4, "isstarted","OVPN Konfigurationen gebaut und Server gestartet",""),
+		ISLISTENING(4, "islistening","Server wartet auf Verbindung",""),
+		WATCHRUNNERSTARTED(4, "watchrunnerstarted","Thread zur Verbindungspruefung gestartet",""),
+		ISSTOPPED(4, "isstopped","Server wurde gestoppt",""),
+		HASERROR(4, "haserror","Ein Fehler ist aufgetreten","");
+					
+		private int iStatusGroupId;
 		private String sAbbreviation,sStatusMessage,sDescription;
 	
 		//#############################################
 		//#### Konstruktoren
 		//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
 		//In der Util-Klasse habe ich aber einen Workaround gefunden.
-		STATUSLOCAL(String sAbbreviation, String sStatusMessage, String sDescription) {
+		STATUSLOCAL(int iStatusGroupId, String sAbbreviation, String sStatusMessage, String sDescription) {
+			this.iStatusGroupId = iStatusGroupId;
 		    this.sAbbreviation = sAbbreviation;
 		    this.sStatusMessage = sStatusMessage;
 		    this.sDescription = sDescription;
 		}
 	
+		public int getStatusGroupId() {
+			return this.iStatusGroupId;
+		}
+		
 		public String getAbbreviation() {
 		 return this.sAbbreviation;
 		}

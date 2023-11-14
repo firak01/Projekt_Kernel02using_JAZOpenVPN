@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
@@ -36,33 +37,39 @@ public interface IClientThreadVpnIpPingerOVPN extends IKernelModuleZZZ, IClientM
 	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
-	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW("isstartnew","PING: Nicht gestarted",""),
-		ISSTARTING("isstarting","PING: Startet...",""),		
-		ISSTARTED("isstarted","PING: Gestarted",""),
+	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		ISSTARTNEW(2,"isstartnew","PING: Nicht gestarted",""),
+		ISSTARTING(2,"isstarting","PING: Startet...",""),		
+		ISSTARTED(2,"isstarted","PING: Gestarted",""),
 		
-		ISCONNECTNEW("isconnectnew","PING: Nicht verbunden",""),
-		ISCONNECTING("isconnecting","PING: Verbinde...",""),
-		ISCONNECTED("isconnected","PING: Verbunden",""),
+		ISCONNECTNEW(2,"isconnectnew","PING: Nicht verbunden",""),
+		ISCONNECTING(2,"isconnecting","PING: Verbinde...",""),
+		ISCONNECTED(2,"isconnected","PING: Verbunden",""),
 		
-		ISSTOPPED("isstopped","PING: Gestoppt",""),
-		HASERROR("haserror","PING: Fehler",""),
-		HASCLIENTNOTSTARTING("hasclientnotstarting","PING: Client nicht gestarted",""),
-		HASCLIENTNOTSTARTED("hasclientnotstarted","PING: Client nicht fertig mit Start. Wartet auf Process?",""),
-		HASCLIENTNOTCONNECTED("hasclientnotconnected","PING: Client nicht verbunden.","");
+		ISSTOPPED(2,"isstopped","PING: Gestoppt",""),
+		HASERROR(2,"haserror","PING: Fehler",""),
+		HASCLIENTNOTSTARTING(2,"hasclientnotstarting","PING: Client nicht gestarted",""),
+		HASCLIENTNOTSTARTED(2,"hasclientnotstarted","PING: Client nicht fertig mit Start. Wartet auf Process?",""),
+		HASCLIENTNOTCONNECTED(2,"hasclientnotconnected","PING: Client nicht verbunden.","");
 		
+		private int iGroupId;
 		private String sAbbreviation,sStatusMessage,sDescription;
 	
 		//#############################################
 		//#### Konstruktoren
 		//Merke: Enums haben keinen public Konstruktor, können also nicht instiantiiert werden, z.B. durch Java-Reflektion.
 		//In der Util-Klasse habe ich aber einen Workaround gefunden.
-		STATUSLOCAL(String sAbbreviation, String sStatusMessage, String sDescription) {
+		STATUSLOCAL(int iGroupId, String sAbbreviation, String sStatusMessage, String sDescription) {
+			this.iGroupId = iGroupId;
 		    this.sAbbreviation = sAbbreviation;
 		    this.sStatusMessage = sStatusMessage;
 		    this.sDescription = sDescription;
 		}
 	
+		public int getStatusGroupId() {
+			return this.iGroupId;
+		}
+		
 		public String getAbbreviation() {
 		 return this.sAbbreviation;
 		}

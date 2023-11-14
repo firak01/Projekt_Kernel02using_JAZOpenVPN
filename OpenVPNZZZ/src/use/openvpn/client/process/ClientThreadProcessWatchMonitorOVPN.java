@@ -7,6 +7,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectWithStatusZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
@@ -551,7 +552,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();
 				
 				//+++++++++++++++++++++
-				HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+				HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
 				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL objEnum = (ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL) hmEnum.get(enumStatus);							
 				if(objEnum==null) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -635,7 +636,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 					this.getMainObject().logProtocolString(sLog);
 					
 					String sVpnIp = objApplication.getVpnIpRemote();
-					int iId = eventStatusLocalSet.getID();
+					int iId = eventStatusLocalSet.getProcessID();
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Thread # fuer Event mit der ID" + (iId) + " - Verbindung mit remote VPNIP='"+sVpnIp+"'";
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);										
@@ -649,7 +650,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 					this.getMainObject().logProtocolString(sLog);
 					
 					String sVpnIp = objApplication.getVpnIpRemote();
-					int iId = eventStatusLocalSet.getID();
+					int iId = eventStatusLocalSet.getProcessID();
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Thread # fuer Event mit der ID" + (iId) + " - Verbindung verloren mit remote VPNIP='"+sVpnIp+"'";
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);										
@@ -795,7 +796,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
-				IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
+				IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
 				bReturn = this.isStatusLocalRelevant(enumStatus);
 				if(!bReturn) break main;
 				
@@ -815,7 +816,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		 * @see basic.zBasic.AbstractObjectWithStatusZZZ#isStatusLocalRelevant(basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ)
 		 */
 		@Override
-		public boolean isStatusLocalRelevant(IEnumSetMappedZZZ objEnumStatusIn) throws ExceptionZZZ {
+		public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(objEnumStatusIn==null) break main;
@@ -854,13 +855,13 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	
 	//aus IStatusLocalMapUserZZZ, wg. Abstracter Klasse
 	@Override
-	public HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
 		
 		//Es wird auf Events des ProcessWatchRunnerOVPN gehoert.
 		//Die dort geworfenen Events werden hier auf LokaleEvents gemappt.
 		//Aufbau der Map: Ankommender externer Event = Lokaler Event
 		//Lokale Events, die keine externe Entsprechung haben, tauchen hier nicht auf
-		HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>();
+		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>();
 		main:{
 			
 			//Merke: Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 			

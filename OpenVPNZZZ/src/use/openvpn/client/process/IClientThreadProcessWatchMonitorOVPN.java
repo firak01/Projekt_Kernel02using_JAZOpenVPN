@@ -3,18 +3,8 @@ package use.openvpn.client.process;
 import java.util.EnumSet;
 
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import basic.zKernel.flag.IFlagZUserZZZ;
-import basic.zKernel.net.client.IMainUserZZZ;
-import basic.zKernel.status.IEventBrokerStatusLocalSetUserZZZ;
-import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
-import basic.zKernel.status.IStatusLocalUserZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import use.openvpn.client.IClientMainUserOVPN;
-import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
-import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
 public interface IClientThreadProcessWatchMonitorOVPN extends IClientMainUserOVPN {
@@ -36,37 +26,43 @@ public interface IClientThreadProcessWatchMonitorOVPN extends IClientMainUserOVP
 	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
-	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW("isstartnew","OVPN: Monitor nicht gestartet",""),
-		ISSTARTING("isstarting","OVPN: Monitor startet...",""),		
-		ISSTARTED("isstarted","OVPN: Monitor gestartet",""),
-		HASPROCESSSTARTNEW("hasprocessnew","OVPN: Prozess nicht gestartet",""),
-		HASPROCESSSTARTING("hasprocessstarting","OVPN: Prozess startet",""),
-		HASPROCESSSTARTED("hasprocessstarted","OVPN: Prozess gestartet",""),
-		HASPROCESSOUTPUT("hasprocessoutput","OVPN: Prozess mit Ausgabe",""),
-		HASPROCESSCONNECTION("hasprocessconnection","OVPN: Process verbunden",""),
-		HASPROCESSCONNECTIONLOST("hasprocessconnectionlost","OVPN: Process Verbindung verloren",""),
-		HASPROCESSERROR("hasprocesserror","OVPN: Process meldet fehler",""),
-		HASPROCESSSTOPPED("hasprocessstopped","OVPN: Process gestoppt",""),
+	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		ISSTARTNEW(1,"isstartnew","OVPN: Monitor nicht gestartet",""),
+		ISSTARTING(1,"isstarting","OVPN: Monitor startet...",""),		
+		ISSTARTED(1,"isstarted","OVPN: Monitor gestartet",""),
+		HASPROCESSSTARTNEW(1,"hasprocessnew","OVPN: Prozess nicht gestartet",""),
+		HASPROCESSSTARTING(1,"hasprocessstarting","OVPN: Prozess startet",""),
+		HASPROCESSSTARTED(1,"hasprocessstarted","OVPN: Prozess gestartet",""),
+		HASPROCESSOUTPUT(1,"hasprocessoutput","OVPN: Prozess mit Ausgabe",""),
+		HASPROCESSCONNECTION(1,"hasprocessconnection","OVPN: Process verbunden",""),
+		HASPROCESSCONNECTIONLOST(1,"hasprocessconnectionlost","OVPN: Process Verbindung verloren",""),
+		HASPROCESSERROR(1,"hasprocesserror","OVPN: Process meldet fehler",""),
+		HASPROCESSSTOPPED(1,"hasprocessstopped","OVPN: Process gestoppt",""),
 		
-		ISSTOPPED("isstopped","OVPN: Monitor beendet",""),
+		ISSTOPPED(1,"isstopped","OVPN: Monitor beendet",""),
 				
-		HASERROR("haserror","OVPN: Monitor Fehler",""),		
-		HASCLIENTNOTSTARTING("hasclientnotstarting","OVPN: Client nicht gestarted",""),
-		HASCLIENTNOTSTARTED("hasclientnotstarted","OVPN: Client nicht fertig mit Start. Wartet auf Process?","");		
+		HASERROR(1,"haserror","OVPN: Monitor Fehler",""),		
+		HASCLIENTNOTSTARTING(1,"hasclientnotstarting","OVPN: Client nicht gestarted",""),
+		HASCLIENTNOTSTARTED(1,"hasclientnotstarted","OVPN: Client nicht fertig mit Start. Wartet auf Process?","");		
 		
+		private int iStatusGroupId;
 		private String sAbbreviation,sStatusMessage,sDescription;
 	
 		//#############################################
 		//#### Konstruktoren
 		//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
 		//In der Util-Klasse habe ich aber einen Workaround gefunden.
-		STATUSLOCAL(String sAbbreviation, String sStatusMessage, String sDescription) {
+		STATUSLOCAL(int iStatusGroupId, String sAbbreviation, String sStatusMessage, String sDescription) {
+			this.iStatusGroupId = iStatusGroupId;
 		    this.sAbbreviation = sAbbreviation;
 		    this.sStatusMessage = sStatusMessage;
 		    this.sDescription = sDescription;
 		}
 	
+		public int getStatusGroupId() {
+			return this.iStatusGroupId;
+		}
+		
 		public String getAbbreviation() {
 		 return this.sAbbreviation;
 		}

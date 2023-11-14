@@ -47,6 +47,7 @@ import custom.zUtil.io.FileZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
@@ -835,7 +836,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 	//#############################
 	//#######################################	
 	@Override
-	public boolean isStatusLocalRelevant(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnum) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
@@ -850,10 +851,11 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN{
 		}//end main:
 		return bReturn;
 	}
-	
-	//aus IListenerObjectStatusLocalMapForEventUserZZZ, wg. Abstracter Klasse
+
 	@Override
-	public HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+		// TODO Auto-generated method stub
 		return null;
 	}
+
 }//END class

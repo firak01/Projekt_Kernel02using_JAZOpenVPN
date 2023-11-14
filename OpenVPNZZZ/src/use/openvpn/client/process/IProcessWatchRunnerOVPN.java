@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
@@ -38,31 +39,36 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
-	public enum STATUSLOCAL implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW("isstartnew","ProcessWatchRunner: Nicht gestartet",""),
-		ISSTARTING("isstarting","ProcessWatchRunner: Startet...",""),
-		ISSTARTED("isstarted","ProcessWatchRunner: Gestartet",""),
+	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		ISSTARTNEW(3,"isstartnew","ProcessWatchRunner: Nicht gestartet",""),
+		ISSTARTING(3,"isstarting","ProcessWatchRunner: Startet...",""),
+		ISSTARTED(3,"isstarted","ProcessWatchRunner: Gestartet",""),
 		
-		HASOUTPUT("hasoutput","Prozess hat Output",""),
-		HASCONNECTION("hasconnection","Process meldet eine Verbindung zu OVPN",""),
-		HASCONNECTIONLOST("hasconnectionlost","Process meldet ein Reset der Verbindung zu OVPN",""),
+		HASOUTPUT(3,"hasoutput","Prozess hat Output",""),
+		HASCONNECTION(3,"hasconnection","Process meldet eine Verbindung zu OVPN",""),
+		HASCONNECTIONLOST(3,"hasconnectionlost","Process meldet ein Reset der Verbindung zu OVPN",""),
 				
-		ISSTOPPED("isended","ProcessWatchRunner: Beendet",""),
-		HASERROR("haserror","ProcessWatchRunner: Fehler","");
+		ISSTOPPED(3,"isended","ProcessWatchRunner: Beendet",""),
+		HASERROR(3,"haserror","ProcessWatchRunner: Fehler","");
 									
-								
+		private int iStatusGroupId;			
 		private String sAbbreviation,sStatusMessage,sDescription;
 	
 		//#############################################
 		//#### Konstruktoren
 		//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
 		//In der Util-Klasse habe ich aber einen Workaround gefunden.
-		STATUSLOCAL(String sAbbreviation, String sStatusMessage, String sDescription) {
+		STATUSLOCAL(int iStatusGroupId, String sAbbreviation, String sStatusMessage, String sDescription) {
+			this.iStatusGroupId = iStatusGroupId;
 		    this.sAbbreviation = sAbbreviation;
 		    this.sStatusMessage = sStatusMessage;
 		    this.sDescription = sDescription;
 		}
 	
+		public int getStatusGroupId() {
+			return this.iStatusGroupId;
+		}
+		
 		public String getAbbreviation() {
 		 return this.sAbbreviation;
 		}

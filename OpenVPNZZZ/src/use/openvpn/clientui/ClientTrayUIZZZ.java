@@ -46,10 +46,12 @@ import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
 import basic.zKernel.status.IStatusLocalMapForCascadingStatusLocalUserZZZ;
+import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -76,14 +78,14 @@ import basic.zWin32.com.wmi.KernelWMIZZZ;
  * @author Fritz Lindhauer, 11.10.2023, 07:46:15
  * 
  */
-public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements ActionListener ,IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForCascadingStatusLocalUserZZZ {
+public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements ActionListener ,IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {
 	//Merke: Der Tray selbst hat keinen Status.
 	private SystemTray objTray = null;
 	private TrayIcon objTrayIcon = null;
 	private ClientMainOVPN objMain = null;
 	
 	//Wie in AbstractObjectWithStatusListeningZZZ
-	private HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ> hmEnumSet =null; //Hier wird ggfs. der Eigene Status mit dem Status einer anderen Klasse (definiert durch das Interface) gemappt.
+	private HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ> hmEnumSet =null; //Hier wird ggfs. der Eigene Status mit dem Status einer anderen Klasse (definiert durch das Interface) gemappt.
 
 	
 	//TODOGOON 20210210: Realisiere die Idee
@@ -246,6 +248,14 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		main:{			
 			ImageIcon objIcon = this.getImageIconByStatus(enumSTATUS);
 			if(objIcon==null)break main;
+			
+			//+++++ Test: Logge den Menüpunkt			
+			IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ objEnum = (IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ) enumSTATUS.getAccordingTrayMenuType();
+			String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnum.getMenu();
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			//++++++++++++++++++++++++++++++++
+			
 			
 			this.getTrayIconObject().setIcon(objIcon);
 			
@@ -1166,8 +1176,8 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 					
-				//+++ Weiterverarbeitung des relevantenStatus
-				HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForCascadingStatusLocal();		
+				//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
+				HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForStatusLocal();		
 				ClientTrayStatusTypeZZZ objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
 				if(objEnum==null) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1180,7 +1190,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					//Erneute Verarbeitung mit einem frueheren Status:
 					//Setze den Status auf einen anderen Status zurueck
 					//Frage nach dem Status im Backend nach...
-					IEnumSetMappedZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
+					IEnumSetMappedStatusZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
 					sLog = "Der aktuelle Status im Main ist - '" + objStatusLocalCurrent.getAbbreviation()+"'.";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 					this.logLineDate(sLog);
@@ -1188,7 +1198,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					//Mal zu testen schleife......
 					int iStepsToSearchBackwards=5;
 					boolean bGoon = false;
-					IEnumSetMappedZZZ objStatusLocalPrevious = null;
+					IEnumSetMappedStatusZZZ objStatusLocalPrevious = null;
 					do {					
 					for(int iStepsPrevious = 0;iStepsPrevious<=iStepsToSearchBackwards;iStepsPrevious++) {
 						int iIndex = this.getMainObject().getCircularBufferStatusLocal().computeIndexForStepPrevious(iStepsPrevious);
@@ -1196,7 +1206,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 						this.logLineDate(sLog);
 						
-						objStatusLocalPrevious = (IEnumSetMappedZZZ) this.getMainObject().getStatusLocalEnumPrevious(iStepsPrevious);
+						objStatusLocalPrevious = (IEnumSetMappedStatusZZZ) this.getMainObject().getStatusLocalEnumPrevious(iStepsPrevious);
 						
 						//TODOGOON20231108;//Irgendwie den letzten vorherigen Status einer anderen Klasse erhalten....
 						//IEnumSetMappedZZZ objStatusLocalPreviousOther = (IEnumSetMapped) this.getMainObject().getStatusLocalEnumPreviousOther(this.getMainObject()......);
@@ -1209,11 +1219,9 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 							
 							//Frage nach dem Status im Backend nach...
 		//					IEnumSetMappedZZZ objStatusLocalPrevious = this.getMainObject().getStatusLocalEnumPrevious();
-							sLog = "Der " + iStepsPrevious + " Schritte vorherige Status im Main ist - '" + objStatusLocalPrevious.getAbbreviation()+"'.";
+							sLog = "Der " + iStepsPrevious + " Schritte vorherige Status im Main ist. GroupId/Abbreviation: " + objStatusLocalPrevious.getStatusGroupId() + "/'" + objStatusLocalPrevious.getAbbreviation()+"'.";
 							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-							this.logLineDate(sLog);
-							
-							
+							this.logLineDate(sLog);							
 						}
 					}//end for
 					
@@ -1262,7 +1270,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					}
 					
 					
-				}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {				
+				}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {					
 				this.switchStatus(objEnum); //Merke: Der Wert true wird angenommen.
 				
 				bReturn = true;
@@ -1395,7 +1403,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				String sStatusAbbreviationLocal = null;
 				IEnumSetMappedZZZ objEnumStatusLocal = null;
 
-				HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForCascadingStatusLocalCustom();
+				HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForStatusLocalCustom();
 				objEnumStatusLocal = hm.get(enumStatusFromEvent);					
 				//###############################
 				
@@ -1497,21 +1505,21 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		}
 
 		@Override
-		public HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForCascadingStatusLocal() {
+		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
 			if(this.hmEnumSet==null) {
-				this.hmEnumSet = this.createHashMapEnumSetForCascadingStatusLocalCustom();
+				this.hmEnumSet = this.createHashMapEnumSetForStatusLocalCustom();
 			}
 			return this.hmEnumSet;
 		}
 
 		@Override
-		public void setHashMapEnumSetForCascadingStatusLocal(HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> hmEnumSet) {
+		public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
 			this.hmEnumSet = hmEnumSet;
 		}
 
 		@Override
-		public HashMap<IEnumSetMappedZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
-			HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>();
+		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForStatusLocalCustom() {
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>();
 			main:{
 				
 				//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 
