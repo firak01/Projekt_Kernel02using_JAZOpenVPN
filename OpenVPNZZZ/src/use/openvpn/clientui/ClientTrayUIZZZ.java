@@ -104,8 +104,8 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			check:{
 				if(this.getFlag("init")) break main;
 				if(objClientMain==null){
-						ExceptionZZZ ez = new ExceptionZZZ("ClientMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
-					   throw ez;		 
+					ExceptionZZZ ez = new ExceptionZZZ("ClientMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
+					 throw ez;		 
 				}else{
 					this.objMain = objClientMain;
 				}
@@ -1186,8 +1186,16 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					this.logLineDate(sLog);
 				
 					//Mal zu testen schleife......
+					int iStepsToSearchBackwards=5;
+					boolean bGoon = false;
 					IEnumSetMappedZZZ objStatusLocalPrevious = null;
-					for(int iStepsPrevious = 0;iStepsPrevious<=4;iStepsPrevious++) {
+					do {					
+					for(int iStepsPrevious = 0;iStepsPrevious<=iStepsToSearchBackwards;iStepsPrevious++) {
+						int iIndex = this.getMainObject().getCircularBufferStatusLocal().computeIndexForStepPrevious(iStepsPrevious);
+						sLog = "Vorheriger Status= " + iStepsPrevious + " | Verwendeter Index= " + iIndex;
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+						this.logLineDate(sLog);
+						
 						objStatusLocalPrevious = (IEnumSetMappedZZZ) this.getMainObject().getStatusLocalEnumPrevious(iStepsPrevious);
 						
 						//TODOGOON20231108;//Irgendwie den letzten vorherigen Status einer anderen Klasse erhalten....
@@ -1218,6 +1226,41 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 							break main;
 						}											
 					}
+					
+					//ggfs. noch weiter schrittweise zurück, wenn der vorherige Status ein Steuerevent war...,d.h. ohne Icon
+					if(objStatusLocalPrevious!=null) {
+						objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious);			
+						if(objEnum!=null) {					
+							if(StringZZZ.isEmpty(objEnum.getIconFileName())){
+								iStepsToSearchBackwards=1;
+								
+								sLog = ReflectCodeZZZ.getPositionCurrent()+": Steuerevent als gemappten Status aus dem Event-Objekt erhalten. Gehe noch einen weitere " + iStepsToSearchBackwards + " Schritt(e) zurueck.";
+								System.out.println(sLog);
+								this.getMainObject().logProtocolString(sLog);							
+							}else {
+								bGoon=true;
+							}
+						}
+					}
+															
+					}while(!bGoon);
+					
+					//Das Problem ist nun, das der Event erneut geworfen werden muesste... 
+					//Das Werfen des Events geht aber wohl nur ueber das Hauptobjekt, da man keinen Zugriff auf das Objekt hat, das den Event vorher mal geworfen hat.
+					//this.getMainObject().getSenderStatusLocalUsed().fireEvent(event);
+					
+					//Aber erst einmal den gefundenen Status neu hinzufügen. Damit er auch bei einem weiteren "rueckwaerts Suchen" in der Liste auftaucht.
+					if(objStatusLocalPrevious!=null) {
+//						objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious);			
+//						if(objEnum!=null) {	
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf.";
+							System.out.println(sLog);
+							this.getMainObject().logProtocolString(sLog);	
+						
+							this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious, "", true);
+//						}
+					}
+					
 					
 				}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {				
 				this.switchStatus(objEnum); //Merke: Der Wert true wird angenommen.

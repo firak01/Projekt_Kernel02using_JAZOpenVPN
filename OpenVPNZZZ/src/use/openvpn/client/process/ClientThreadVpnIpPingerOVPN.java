@@ -773,19 +773,15 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 							sStatusMessageToSet = "NICHT " + enumStatus.getStatusMessage();
 						}			
 					}else {
+						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);
+						
 						sStatusMessageToSet = sStatusMessage;
 					}
 					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);
-
-					//Falls eine Message extra uebergeben worden ist, ueberschreibe...
-					if(sStatusMessage!=null) {
-						sStatusMessageToSet = sStatusMessage;
-						sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
-						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);				
-					}
 					
 					//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
 					boolean bSuccess = this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
