@@ -14,18 +14,21 @@ public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetO
 	}
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//Die StatusId für Stati, aus dieser Klasse selbst. Nicht die Stati der anderen Klassen.
+	public static int iSTATUSLOCAL_GROUPID=0;
+			
 	//++++++++++++++++++++++++
 	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISLAUNCHED(4, "islaunched","Trayicon wurde gestartet",""),
-		ISSTARTING(4, "isstarting","Server startet. Warte ggfs. auf Task",""),		
-		ISSTARTED(4, "isstarted","OVPN Konfigurationen gebaut und Server gestartet",""),
-		ISLISTENING(4, "islistening","Server wartet auf Verbindung",""),
-		WATCHRUNNERSTARTED(4, "watchrunnerstarted","Thread zur Verbindungspruefung gestartet",""),
-		ISSTOPPED(4, "isstopped","Server wurde gestoppt",""),
-		HASERROR(4, "haserror","Ein Fehler ist aufgetreten","");
+		ISLAUNCHED(iSTATUSLOCAL_GROUPID, "islaunched","Trayicon wurde gestartet",""),
+		ISSTARTING(iSTATUSLOCAL_GROUPID, "isstarting","Server startet. Warte ggfs. auf Task",""),		
+		ISSTARTED(iSTATUSLOCAL_GROUPID, "isstarted","OVPN Konfigurationen gebaut und Server gestartet",""),
+		ISLISTENING(iSTATUSLOCAL_GROUPID, "islistening","Server wartet auf Verbindung",""),
+		WATCHRUNNERSTARTED(iSTATUSLOCAL_GROUPID, "watchrunnerstarted","Thread zur Verbindungspruefung gestartet",""),
+		ISSTOPPED(iSTATUSLOCAL_GROUPID, "isstopped","Server wurde gestoppt",""),
+		HASERROR(iSTATUSLOCAL_GROUPID, "haserror","Ein Fehler ist aufgetreten","");
 					
 		private int iStatusGroupId;
 		private String sAbbreviation,sStatusMessage,sDescription;

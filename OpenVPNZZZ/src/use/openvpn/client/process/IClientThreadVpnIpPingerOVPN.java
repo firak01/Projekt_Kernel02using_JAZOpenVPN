@@ -33,24 +33,27 @@ public interface IClientThreadVpnIpPingerOVPN extends IKernelModuleZZZ, IClientM
 	
 	
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//Die StatusId für Stati, aus dieser Klasse selbst. Nicht die Stati der anderen Klassen.
+	public static int iSTATUSLOCAL_GROUPID=2;
+			
 	//++++++++++++++++++++++++
 	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW(2,"isstartnew","PING: Nicht gestarted",""),
-		ISSTARTING(2,"isstarting","PING: Startet...",""),		
-		ISSTARTED(2,"isstarted","PING: Gestarted",""),
+		ISSTARTNEW(iSTATUSLOCAL_GROUPID,"isstartnew","PING: Nicht gestarted",""),
+		ISSTARTING(iSTATUSLOCAL_GROUPID,"isstarting","PING: Startet...",""),		
+		ISSTARTED(iSTATUSLOCAL_GROUPID,"isstarted","PING: Gestarted",""),
 		
-		ISCONNECTNEW(2,"isconnectnew","PING: Nicht verbunden",""),
-		ISCONNECTING(2,"isconnecting","PING: Verbinde...",""),
-		ISCONNECTED(2,"isconnected","PING: Verbunden",""),
+		ISCONNECTNEW(iSTATUSLOCAL_GROUPID,"isconnectnew","PING: Nicht verbunden",""),
+		ISCONNECTING(iSTATUSLOCAL_GROUPID,"isconnecting","PING: Verbinde...",""),
+		ISCONNECTED(iSTATUSLOCAL_GROUPID,"isconnected","PING: Verbunden",""),
 		
-		ISSTOPPED(2,"isstopped","PING: Gestoppt",""),
-		HASERROR(2,"haserror","PING: Fehler",""),
-		HASCLIENTNOTSTARTING(2,"hasclientnotstarting","PING: Client nicht gestarted",""),
-		HASCLIENTNOTSTARTED(2,"hasclientnotstarted","PING: Client nicht fertig mit Start. Wartet auf Process?",""),
-		HASCLIENTNOTCONNECTED(2,"hasclientnotconnected","PING: Client nicht verbunden.","");
+		ISSTOPPED(iSTATUSLOCAL_GROUPID,"isstopped","PING: Gestoppt",""),
+		HASERROR(iSTATUSLOCAL_GROUPID,"haserror","PING: Fehler",""),
+		HASCLIENTNOTSTARTING(iSTATUSLOCAL_GROUPID,"hasclientnotstarting","PING: Client nicht gestarted",""),
+		HASCLIENTNOTSTARTED(iSTATUSLOCAL_GROUPID,"hasclientnotstarted","PING: Client nicht fertig mit Start. Wartet auf Process?",""),
+		HASCLIENTNOTCONNECTED(iSTATUSLOCAL_GROUPID,"hasclientnotconnected","PING: Client nicht verbunden.","");
 		
 		private int iGroupId;
 		private String sAbbreviation,sStatusMessage,sDescription;

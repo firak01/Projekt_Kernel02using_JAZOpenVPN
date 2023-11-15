@@ -36,6 +36,9 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	* lindhaueradmin; 13.07.2006 08:38:51
 	 * @throws ExceptionZZZ 
 	 */
+	/* (non-Javadoc)
+	 * @see use.openvpn.IMainOVPN#logProtocolString(java.lang.String)
+	 */
 	public void logProtocolString(String sProtocol) throws ExceptionZZZ{
 		if(sProtocol!=null){
 			this.addProtocolString(sProtocol);
@@ -314,6 +317,4 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 //			}//end main:
 //			return bReturn;
 //		}
-
-	
 }

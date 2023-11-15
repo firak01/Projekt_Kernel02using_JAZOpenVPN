@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import basic.zKernel.net.client.IMainZZZ;
-import basic.zKernel.status.IStatusLocalUserZZZ;
 import use.openvpn.IMainOVPN;
-import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
+import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
 import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
 
@@ -24,6 +20,11 @@ public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetU
 		LAUNCHONSTART, CONNECTONSTART, ENABLEPORTSCAN, USEPROXY, DUMMY
 	}
 	
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//Die StatusId für Stati, aus dieser Klasse selbst. Nicht die Stati der anderen Klassen.
+	public static int iSTATUSLOCAL_GROUPID=0;
+	
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//Merke: Das enum ist im Interface besser aufgehoben, als z.B. in einer internen enum-Klasse.
 		
@@ -31,32 +32,34 @@ public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetU
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	
 	//Merke: Die Message aus anderen Modulen sollte uebernommen werden.
-	//       Die Meldung hier wuerde damit dann ueberschrieben. Daher ist hier solch eine Meldung ueberfluessig, ggfs. ein Fallback.
+	//       Die Meldung hier wuerde damit dann ueberschrieben. Daher ist hier solch eine Meldung ueberfluessig, ggfs. ein Fallback.	
 	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW(5, "isstartnew", "CLIENT: Nicht gestarted (ClientMain.STATUSLOCAL)",""),
-		ISSTARTING(5, "isstarting","CLIENT: Startet...(ClientMain.STATUSLOCAL)",""),
-		ISSTARTED(5, "isstarted","CLIENT: Gestartet (ClientMain.STATUSLOCAL)",""),	
+		ISSTARTNEW(iSTATUSLOCAL_GROUPID, "isstartnew", "CLIENT: Nicht gestarted (ClientMain.STATUSLOCAL)",""),
+		ISSTARTING(iSTATUSLOCAL_GROUPID, "isstarting","CLIENT: Startet...(ClientMain.STATUSLOCAL)",""),
+		ISSTARTED(iSTATUSLOCAL_GROUPID, "isstarted","CLIENT: Gestartet (ClientMain.STATUSLOCAL)",""),	
 		
-		ISCONNECTNEW(5, "isconnectnew","OVPN: Nicht gestartet4",""),
-		ISCONNECTING(5, "isconnecting","OVPN: Startet...5",""),
-		ISCONNECTED(5, "isconnected","OVPN: Verbunden6",""),
-		ISCONNECTINTERUPTED(5, "isconnectinterrupted","OVPN: Verbingungsunterbrechung6b",""),
+		ISCONNECTNEW(IClientThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "isconnectnew","OVPN: Nicht gestartet4",""),
+		ISCONNECTING(IClientThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "isconnecting","OVPN: Startet...5",""),
+		ISCONNECTED(IClientThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "isconnected","OVPN: Verbunden6",""),
+		ISCONNECTINTERUPTED(IClientThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "isconnectinterrupted","OVPN: Verbingungsunterbrechung6b",""),
 		
-		ISPINGNEW(5, "ispingnew","PING: Thread nicht gestartet7",""),
-		ISPINGSTARTING(5, "ispingstarting","PING: Thread startet...8",""),
-		ISPINGSTARTED(5, "ispingstarted","PING: Thread gestartet9",""),
-		ISPINGCONNECTNEW(5, "ispingconnectnew","PING: Veringungsaufbau nicht gestartet10",""),
-		ISPINGCONNECTING(5, "ispingconnecting","PING: Verbinde...11",""),
-		ISPINGCONNECTED(5, "ispingconnected","PING: Verbunden12",""),
-		ISPINGSTOPPED(5, "ispingstopped","PING: Thread gestoppt13",""),
-		HASPINGERROR(5, "haspingerror","PING: Fehler, s. Log14",""),
+		ISPINGNEW(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingnew","PING: Thread nicht gestartet7",""),
+		ISPINGSTARTING(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingstarting","PING: Thread startet...8",""),
+		ISPINGSTARTED(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingstarted","PING: Thread gestartet9",""),
+		ISPINGCONNECTNEW(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingconnectnew","PING: Veringungsaufbau nicht gestartet10",""),
+		ISPINGCONNECTING(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingconnecting","PING: Verbinde...11",""),
+		ISPINGCONNECTED(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingconnected","PING: Verbunden12",""),
+		ISPINGSTOPPED(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingstopped","PING: Thread gestoppt13",""),
+		HASPINGERROR(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "haspingerror","PING: Fehler, s. Log14",""),
 		
 		
-		PortScanAllFinished(5, "portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
+		PortScanAllFinished(iSTATUSLOCAL_GROUPID, "portscanallfinished","xyz Fragezeichen (ClientMain.STATUSLOCAL)",""),
 		
-		ISSTOPPED(5, "isstopped","CLIENT: Gestoppt",""),
-		HASERROR(5, "haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");
-					
+		ISSTOPPED(iSTATUSLOCAL_GROUPID, "isstopped","CLIENT: Gestoppt",""),
+		HASERROR(iSTATUSLOCAL_GROUPID, "haserror","Ein Fehler ist aufgetreten. Details dazu im Log. (ClientMain.STATUSLOCAL)","");
+		
+		
+		
 		private int iStatusGroupId;
 		private String sAbbreviation,sStatusMessage,sDescription;
 

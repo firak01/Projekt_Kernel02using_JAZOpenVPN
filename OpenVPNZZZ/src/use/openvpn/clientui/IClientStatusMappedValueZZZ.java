@@ -2,7 +2,6 @@ package use.openvpn.clientui;
 
 import java.util.EnumSet;
 
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 
 public interface IClientStatusMappedValueZZZ {

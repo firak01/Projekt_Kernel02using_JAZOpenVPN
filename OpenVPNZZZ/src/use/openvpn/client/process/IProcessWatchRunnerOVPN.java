@@ -35,21 +35,27 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	boolean proofFlagSetBefore(FLAGZ objEnumFlag) throws ExceptionZZZ;
 	
 	
+
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//Die StatusId für Stati, aus dieser Klasse selbst. Nicht die Stati der anderen Klassen.
+	public static int iSTATUSLOCAL_GROUPID=3;
+			
+	//++++++++++++++++++++++++
 	
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW(3,"isstartnew","ProcessWatchRunner: Nicht gestartet",""),
-		ISSTARTING(3,"isstarting","ProcessWatchRunner: Startet...",""),
-		ISSTARTED(3,"isstarted","ProcessWatchRunner: Gestartet",""),
+		ISSTARTNEW(iSTATUSLOCAL_GROUPID,"isstartnew","ProcessWatchRunner: Nicht gestartet",""),
+		ISSTARTING(iSTATUSLOCAL_GROUPID,"isstarting","ProcessWatchRunner: Startet...",""),
+		ISSTARTED(iSTATUSLOCAL_GROUPID,"isstarted","ProcessWatchRunner: Gestartet",""),
 		
-		HASOUTPUT(3,"hasoutput","Prozess hat Output",""),
-		HASCONNECTION(3,"hasconnection","Process meldet eine Verbindung zu OVPN",""),
-		HASCONNECTIONLOST(3,"hasconnectionlost","Process meldet ein Reset der Verbindung zu OVPN",""),
+		HASOUTPUT(iSTATUSLOCAL_GROUPID,"hasoutput","Prozess hat Output",""),
+		HASCONNECTION(iSTATUSLOCAL_GROUPID,"hasconnection","Process meldet eine Verbindung zu OVPN",""),
+		HASCONNECTIONLOST(iSTATUSLOCAL_GROUPID,"hasconnectionlost","Process meldet ein Reset der Verbindung zu OVPN",""),
 				
-		ISSTOPPED(3,"isended","ProcessWatchRunner: Beendet",""),
-		HASERROR(3,"haserror","ProcessWatchRunner: Fehler","");
+		ISSTOPPED(iSTATUSLOCAL_GROUPID,"isended","ProcessWatchRunner: Beendet",""),
+		HASERROR(iSTATUSLOCAL_GROUPID,"haserror","ProcessWatchRunner: Fehler","");
 									
 		private int iStatusGroupId;			
 		private String sAbbreviation,sStatusMessage,sDescription;

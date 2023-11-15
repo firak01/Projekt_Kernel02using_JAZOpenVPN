@@ -1184,25 +1184,40 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);
 					break main;
-				}								
+				}			
+			
 				
+				//++++++++ TESTEN - Ermittle u.a. die StatusGroupIds über alle vorherigen Events...
+				int iStepsMax=9;
+				this.getMainObject().debugCircularBufferStatusLocalMessage(iStepsMax);				
+				//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					
+					
+					
+					
 				if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
 					//Erneute Verarbeitung mit einem frueheren Status:
 					//Setze den Status auf einen anderen Status zurueck
 					//Frage nach dem Status im Backend nach...
 					IEnumSetMappedStatusZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
-					sLog = "Der aktuelle Status im Main ist - '" + objStatusLocalCurrent.getAbbreviation()+"'.";
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist - '" + objStatusLocalCurrent.getAbbreviation()+"'.";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 					this.logLineDate(sLog);
 				
 					//Mal zu testen schleife......
 					int iStepsToSearchBackwards=5;
+					
+					TODOGOON20231115;//Errechne die Anzahl der Schritte zur vorherigen GroupId, ggfs. ueber eine Array, das in der Methode ermittelt wird.
+					iStepsToSearchBackwards = this.searchNumberOfStepsToPreviousGroupId();
+					
+					TODOGOON20231115;//Statt in einer for Schleife das durchzusehen, gezielt den objStatusLocalPrevious ansprechen, halt ueber ein Array und den Index.
+					
 					boolean bGoon = false;
 					IEnumSetMappedStatusZZZ objStatusLocalPrevious = null;
 					do {					
 					for(int iStepsPrevious = 0;iStepsPrevious<=iStepsToSearchBackwards;iStepsPrevious++) {
 						int iIndex = this.getMainObject().getCircularBufferStatusLocal().computeIndexForStepPrevious(iStepsPrevious);
-						sLog = "Vorheriger Status= " + iStepsPrevious + " | Verwendeter Index= " + iIndex;
+						sLog = ReflectCodeZZZ.getPositionCurrent()+": Vorheriger Status= " + iStepsPrevious + " | Verwendeter Index= " + iIndex;
 						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 						this.logLineDate(sLog);
 						
@@ -1211,7 +1226,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 						//TODOGOON20231108;//Irgendwie den letzten vorherigen Status einer anderen Klasse erhalten....
 						//IEnumSetMappedZZZ objStatusLocalPreviousOther = (IEnumSetMapped) this.getMainObject().getStatusLocalEnumPreviousOther(this.getMainObject()......);
 						if(objStatusLocalPrevious==null) {
-							sLog = "Kein entsprechend weit entfernter vorheriger Status vorhanden";
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": Kein entsprechend weit entfernter vorheriger Status vorhanden";
 							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 							this.logLineDate(sLog);
 							break main;
@@ -1219,7 +1234,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 							
 							//Frage nach dem Status im Backend nach...
 		//					IEnumSetMappedZZZ objStatusLocalPrevious = this.getMainObject().getStatusLocalEnumPrevious();
-							sLog = "Der " + iStepsPrevious + " Schritte vorherige Status im Main ist. GroupId/Abbreviation: " + objStatusLocalPrevious.getStatusGroupId() + "/'" + objStatusLocalPrevious.getAbbreviation()+"'.";
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": Der " + iStepsPrevious + " Schritte vorherige Status im Main ist. GroupId/Abbreviation: " + objStatusLocalPrevious.getStatusGroupId() + "/'" + objStatusLocalPrevious.getAbbreviation()+"'.";
 							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 							this.logLineDate(sLog);							
 						}

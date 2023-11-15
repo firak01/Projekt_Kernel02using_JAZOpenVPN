@@ -22,28 +22,33 @@ public interface IClientThreadProcessWatchMonitorOVPN extends IClientMainUserOVP
 	
 	
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//Die StatusId für Stati, aus dieser Klasse selbst. Nicht die Stati der anderen Klassen.
+	public static int iSTATUSLOCAL_GROUPID=1;
+		
 	//++++++++++++++++++++++++
 	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISSTARTNEW(1,"isstartnew","OVPN: Monitor nicht gestartet",""),
-		ISSTARTING(1,"isstarting","OVPN: Monitor startet...",""),		
-		ISSTARTED(1,"isstarted","OVPN: Monitor gestartet",""),
-		HASPROCESSSTARTNEW(1,"hasprocessnew","OVPN: Prozess nicht gestartet",""),
-		HASPROCESSSTARTING(1,"hasprocessstarting","OVPN: Prozess startet",""),
-		HASPROCESSSTARTED(1,"hasprocessstarted","OVPN: Prozess gestartet",""),
-		HASPROCESSOUTPUT(1,"hasprocessoutput","OVPN: Prozess mit Ausgabe",""),
-		HASPROCESSCONNECTION(1,"hasprocessconnection","OVPN: Process verbunden",""),
-		HASPROCESSCONNECTIONLOST(1,"hasprocessconnectionlost","OVPN: Process Verbindung verloren",""),
-		HASPROCESSERROR(1,"hasprocesserror","OVPN: Process meldet fehler",""),
-		HASPROCESSSTOPPED(1,"hasprocessstopped","OVPN: Process gestoppt",""),
+		ISSTARTNEW(iSTATUSLOCAL_GROUPID,"isstartnew","OVPN: Monitor nicht gestartet",""),
+		ISSTARTING(iSTATUSLOCAL_GROUPID,"isstarting","OVPN: Monitor startet...",""),		
+		ISSTARTED(iSTATUSLOCAL_GROUPID,"isstarted","OVPN: Monitor gestartet",""),
+		HASPROCESSSTARTNEW(iSTATUSLOCAL_GROUPID,"hasprocessnew","OVPN: Prozess nicht gestartet",""),
+		HASPROCESSSTARTING(iSTATUSLOCAL_GROUPID,"hasprocessstarting","OVPN: Prozess startet",""),
+		HASPROCESSSTARTED(iSTATUSLOCAL_GROUPID,"hasprocessstarted","OVPN: Prozess gestartet",""),
+		HASPROCESSOUTPUT(iSTATUSLOCAL_GROUPID,"hasprocessoutput","OVPN: Prozess mit Ausgabe",""),
+		HASPROCESSCONNECTION(iSTATUSLOCAL_GROUPID,"hasprocessconnection","OVPN: Process verbunden",""),
+		HASPROCESSCONNECTIONLOST(iSTATUSLOCAL_GROUPID,"hasprocessconnectionlost","OVPN: Process Verbindung verloren",""),
+		HASPROCESSERROR(iSTATUSLOCAL_GROUPID,"hasprocesserror","OVPN: Process meldet fehler",""),
+		HASPROCESSSTOPPED(iSTATUSLOCAL_GROUPID,"hasprocessstopped","OVPN: Process gestoppt",""),
 		
-		ISSTOPPED(1,"isstopped","OVPN: Monitor beendet",""),
+		ISSTOPPED(iSTATUSLOCAL_GROUPID,"isstopped","OVPN: Monitor beendet",""),
 				
-		HASERROR(1,"haserror","OVPN: Monitor Fehler",""),		
-		HASCLIENTNOTSTARTING(1,"hasclientnotstarting","OVPN: Client nicht gestarted",""),
-		HASCLIENTNOTSTARTED(1,"hasclientnotstarted","OVPN: Client nicht fertig mit Start. Wartet auf Process?","");		
+		HASERROR(iSTATUSLOCAL_GROUPID,"haserror","OVPN: Monitor Fehler",""),		
+		HASCLIENTNOTSTARTING(iSTATUSLOCAL_GROUPID,"hasclientnotstarting","OVPN: Client nicht gestarted",""),
+		HASCLIENTNOTSTARTED(iSTATUSLOCAL_GROUPID,"hasclientnotstarted","OVPN: Client nicht fertig mit Start. Wartet auf Process?","");		
 		
 		private int iStatusGroupId;
 		private String sAbbreviation,sStatusMessage,sDescription;
