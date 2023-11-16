@@ -45,6 +45,7 @@ import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
+import basic.zKernel.status.IStatusBooleanZZZ;
 import basic.zKernel.status.IStatusLocalMapForCascadingStatusLocalUserZZZ;
 import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
@@ -53,6 +54,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
@@ -1178,8 +1180,8 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					
 				//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
 				HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForStatusLocal();		
-				ClientTrayStatusTypeZZZ objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
-				if(objEnum==null) {
+				ClientTrayStatusTypeZZZ objEnumForTray = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
+				if(objEnumForTray==null) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);
@@ -1187,106 +1189,83 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				}			
 			
 				
-				//++++++++ TESTEN - Ermittle u.a. die StatusGroupIds über alle vorherigen Events...
-				int iStepsMax=9;
-				this.getMainObject().debugCircularBufferStatusLocalMessage(iStepsMax);				
-				//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-					
-					
-					
-					
-				if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
-					//Erneute Verarbeitung mit einem frueheren Status:
-					//Setze den Status auf einen anderen Status zurueck
-					//Frage nach dem Status im Backend nach...
-					IEnumSetMappedStatusZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist - '" + objStatusLocalCurrent.getAbbreviation()+"'.";
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);
 				
-					//Mal zu testen schleife......
-					int iStepsToSearchBackwards=5;
 					
-					TODOGOON20231115;//Errechne die Anzahl der Schritte zur vorherigen GroupId, ggfs. ueber eine Array, das in der Methode ermittelt wird.
-					iStepsToSearchBackwards = this.searchNumberOfStepsToPreviousGroupId();
-					
-					TODOGOON20231115;//Statt in einer for Schleife das durchzusehen, gezielt den objStatusLocalPrevious ansprechen, halt ueber ein Array und den Index.
-					
-					boolean bGoon = false;
-					IEnumSetMappedStatusZZZ objStatusLocalPrevious = null;
-					do {					
-					for(int iStepsPrevious = 0;iStepsPrevious<=iStepsToSearchBackwards;iStepsPrevious++) {
-						int iIndex = this.getMainObject().getCircularBufferStatusLocal().computeIndexForStepPrevious(iStepsPrevious);
-						sLog = ReflectCodeZZZ.getPositionCurrent()+": Vorheriger Status= " + iStepsPrevious + " | Verwendeter Index= " + iIndex;
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-						this.logLineDate(sLog);
+				//########################################	
+				//### Erneute Verarbeitung mit einem frueheren Status:
+				//### Setze den Status auf einen anderen Status zurueck
+				//########################################	
+				if(objEnumForTray == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
+					//++++++++ TESTEN - Ermittle u.a. die StatusGroupIds über alle vorherigen Events...
+					int iStepsMax=9;
+					this.getMainObject().debugCircularBufferStatusLocalMessage(iStepsMax);				
+					//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 						
-						objStatusLocalPrevious = (IEnumSetMappedStatusZZZ) this.getMainObject().getStatusLocalEnumPrevious(iStepsPrevious);
-						
-						//TODOGOON20231108;//Irgendwie den letzten vorherigen Status einer anderen Klasse erhalten....
-						//IEnumSetMappedZZZ objStatusLocalPreviousOther = (IEnumSetMapped) this.getMainObject().getStatusLocalEnumPreviousOther(this.getMainObject()......);
-						if(objStatusLocalPrevious==null) {
-							sLog = ReflectCodeZZZ.getPositionCurrent()+": Kein entsprechend weit entfernter vorheriger Status vorhanden";
-							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-							this.logLineDate(sLog);
-							break main;
-						}else {
-							
-							//Frage nach dem Status im Backend nach...
-		//					IEnumSetMappedZZZ objStatusLocalPrevious = this.getMainObject().getStatusLocalEnumPrevious();
-							sLog = ReflectCodeZZZ.getPositionCurrent()+": Der " + iStepsPrevious + " Schritte vorherige Status im Main ist. GroupId/Abbreviation: " + objStatusLocalPrevious.getStatusGroupId() + "/'" + objStatusLocalPrevious.getAbbreviation()+"'.";
-							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-							this.logLineDate(sLog);							
-						}
-					}//end for
 					
+					//++++++++ TESTEN - Ermittle die vorherige GroupId
+					int iGroupIdPreviousDifferentFromCurrent = this.getMainObject().searchStatusLocalGroupIdPreviousDifferentFromCurrent();
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige, andere GroupId ist = " + iGroupIdPreviousDifferentFromCurrent +".";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);	
+					//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					
+					
+					//Nun kann man aus der ermittelten Liste den ersten Eintrag nehmen
+					ArrayList<IStatusBooleanZZZ>listaObjStatusLocalPrevious = this.getMainObject().searchStatusLocalGroupById(iGroupIdPreviousDifferentFromCurrent, true);
+					IStatusBooleanZZZ objStatusLocalPrevious = (IStatusBooleanZZZ) ArrayListZZZ.getFirst(listaObjStatusLocalPrevious);					
 					if(objStatusLocalPrevious!=null) {
-						objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious);			
-						if(objEnum==null) {
+						objEnumForTray = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious.getEnumObject());			
+						if(objEnumForTray==null) {
 							sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
 							System.out.println(sLog);
 							this.getMainObject().logProtocolString(sLog);
 							break main;
-						}											
-					}
-					
-					//ggfs. noch weiter schrittweise zurück, wenn der vorherige Status ein Steuerevent war...,d.h. ohne Icon
-					if(objStatusLocalPrevious!=null) {
-						objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious);			
-						if(objEnum!=null) {					
-							if(StringZZZ.isEmpty(objEnum.getIconFileName())){
-								iStepsToSearchBackwards=1;
-								
-								sLog = ReflectCodeZZZ.getPositionCurrent()+": Steuerevent als gemappten Status aus dem Event-Objekt erhalten. Gehe noch einen weitere " + iStepsToSearchBackwards + " Schritt(e) zurueck.";
-								System.out.println(sLog);
-								this.getMainObject().logProtocolString(sLog);							
-							}else {
-								bGoon=true;
-							}
-						}
-					}
-															
-					}while(!bGoon);
-					
-					//Das Problem ist nun, das der Event erneut geworfen werden muesste... 
-					//Das Werfen des Events geht aber wohl nur ueber das Hauptobjekt, da man keinen Zugriff auf das Objekt hat, das den Event vorher mal geworfen hat.
-					//this.getMainObject().getSenderStatusLocalUsed().fireEvent(event);
-					
-					//Aber erst einmal den gefundenen Status neu hinzufügen. Damit er auch bei einem weiteren "rueckwaerts Suchen" in der Liste auftaucht.
-					if(objStatusLocalPrevious!=null) {
-//						objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious);			
-//						if(objEnum!=null) {	
-							sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf.";
+						}else {
+							//Erst einmal den gefundenen Status neu hinzufügen. Damit er auch bei einem weiteren "rueckwaerts Suchen" in der Liste auftaucht.
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf: '" + objEnumForTray.getAbbreviation() + "'";
 							System.out.println(sLog);
-							this.getMainObject().logProtocolString(sLog);	
-						
-							this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious, "", true);
-//						}
+							this.getMainObject().logProtocolString(sLog);							
+							this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), "", true);											
+						}	
+					}else {
+						sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);
+						break main;
 					}
+							
+					//ggfs. noch weiter schrittweise zurück, wenn der vorherige Status ein Steuerevent war...,d.h. ohne Icon
+//					if(objStatusLocalPrevious!=null) {
+//						objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious);			
+//						if(objEnum!=null) {					
+//							if(StringZZZ.isEmpty(objEnum.getIconFileName())){
+//								iStepsToSearchBackwards=1;
+//								
+//								sLog = ReflectCodeZZZ.getPositionCurrent()+": Steuerevent als gemappten Status aus dem Event-Objekt erhalten. Gehe noch einen weitere " + iStepsToSearchBackwards + " Schritt(e) zurueck.";
+//								System.out.println(sLog);
+//								this.getMainObject().logProtocolString(sLog);							
+//							}else {
+//								bGoon=true;
+//							}
+//						}
+//					}
+
 					
 					
+					//#############################					
+					//Frage nach dem Status im Backend nach...
+					IEnumSetMappedStatusZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist '" + objStatusLocalCurrent.getAbbreviation()+"'.";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);
+				
+					int iGroupIdPrevious = this.getMainObject().getStatusLocalGroupIdFromPrevious();
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige GroupId ist= " + iGroupIdPrevious +".";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);
+						
 				}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {					
-				this.switchStatus(objEnum); //Merke: Der Wert true wird angenommen.
+				this.switchStatus(objEnumForTray); //Merke: Der Wert true wird angenommen.
 				
 				bReturn = true;
 			}//end main:

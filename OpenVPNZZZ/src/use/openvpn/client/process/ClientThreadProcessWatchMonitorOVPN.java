@@ -876,8 +876,6 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			hmReturn.put(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR, IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.HASPROCESSERROR);
 						
 		}//end main:
-		return hmReturn;
-		
-		
+		return hmReturn;	
 	}
 }//END class

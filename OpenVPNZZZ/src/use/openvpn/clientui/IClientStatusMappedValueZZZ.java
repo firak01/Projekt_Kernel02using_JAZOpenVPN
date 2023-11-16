@@ -12,7 +12,7 @@ public interface IClientStatusMappedValueZZZ {
 
 		//Merke1: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	    //Merke2: Das ist kein IEnumSetMappedStatus. Ein einfache IEnumSetMapped reicht, da das hier lediglich als Container für den Icondateipfad dienen soll.
-		//ALIAS("Uniquename","Icon-Dateiname","Beschreibung, wird nicht genutzt....",)
+		//ALIAS("Uniquename","ClientTryMenuTypeZZZ. ...", "Icon-Dateiname","Beschreibung, wird nicht genutzt....",)
 		public enum ClientTrayStatusTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			NEW("new",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START, "icons8-networking-64_black_bgGray.png", ""),			
 			STARTING("starting",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START,"icons8-networking-64_yellow.png",""),	
