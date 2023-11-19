@@ -95,8 +95,9 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 				if(this.isStatusChanged(sWatchRunnerStatus)) {
 					this.setStatusString(sWatchRunnerStatus);
 				}
-			}				
+			}		
 			
+			String sLog;		
 			
 			//Erst mal sehn, ob ueberhaupt was da ist.
 			ArrayList listaProcessStarter = objServerMain.getProcessStarterAll();
@@ -128,7 +129,7 @@ private void ServerMonitorRunnerNew_(ServerTrayUIOVPN objTray, IServerMainOVPN o
 			
 			String sStatusTemp=null;
 			
-			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": In run()-Schleife.";
+			sLog = ReflectCodeZZZ.getPositionCurrent() + ": In run()-Schleife.";
 			do{								
 				System.out.println(sLog);
 				this.getLogObject().WriteLineDate(sLog);

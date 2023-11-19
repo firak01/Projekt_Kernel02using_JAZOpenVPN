@@ -14,7 +14,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.net.server.KernelServerTcpZZZ;
 
 public class ServerConnectionListenerZZZ extends KernelServerTcpZZZ{
-	private ServerConfigStarterOVPN objConfigStarter=null;   //dar�ber ist u.a. das OVPN-Konfigurations-File zu holen, aus dem man die IP und den Port auslesen kann.
+	private ServerConfigStarterOVPN objConfigStarter=null;   //darueber ist u.a. das OVPN-Konfigurations-File zu holen, aus dem man die IP und den Port auslesen kann.
 	private ConfigFileTemplateOvpnOVPN objConfigFileTemplateOvpn = null;
 
 		

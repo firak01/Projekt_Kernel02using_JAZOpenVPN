@@ -253,9 +253,15 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			
 			//+++++ Test: Logge den Menüpunkt			
 			IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ objEnum = (IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ) enumSTATUS.getAccordingTrayMenuType();
-			String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnum.getMenu();
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			if(objEnum!=null){
+				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnum.getMenu();
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+			}else {
+				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Kein Menuepunkt vorhanden.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+			}
 			//++++++++++++++++++++++++++++++++
 			
 			
@@ -350,7 +356,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					objMonitor.offerStatusLocalEnum(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED);					
 					break main;
 				}
-												
+									
 				Thread objThreadMonitorThread = new Thread(objMonitor);
 				objThreadMonitorThread.start();							
 				//Merke: Wenn der erfolgreich verbunden wurde, wird der den Status auf "ISCONNECTED" gesetzt und ein Event geworfen.
@@ -1197,17 +1203,63 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				//########################################	
 				if(objEnumForTray == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
 					//++++++++ TESTEN - Ermittle u.a. die StatusGroupIds über alle vorherigen Events...
-					int iStepsMax=9;
-					this.getMainObject().debugCircularBufferStatusLocalMessage(iStepsMax);				
+					this.getMainObject().debugCircularBufferStatusLocalMessage();				
 					//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 						
+	
+					//++++++++ TESTEN - Ermittle die Indexwerte der aktuellen GroupId im CircularBuffer
+					int iGroupIdCurrent = this.getMainObject().getStatusLocalGroupIdFromCurrent();
+					int iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent);
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdCurrent +" ist="+iIndexLower;
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);
 					
+					int iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent, true);
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexLowerInterrupted;
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);
+					
+					int iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent);
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdCurrent +" ist="+iIndexUpper;
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);	
+
+					int iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent, true);
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexUpperInterrupted;
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);
+					
+					
+
 					//++++++++ TESTEN - Ermittle die vorherige GroupId
 					int iGroupIdPreviousDifferentFromCurrent = this.getMainObject().searchStatusLocalGroupIdPreviousDifferentFromCurrent();
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige, andere GroupId ist = " + iGroupIdPreviousDifferentFromCurrent +".";
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
 					this.logLineDate(sLog);	
 					//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					
+					
+					//++++++++ TESTEN - Ermittle die Indexwerte der vorherigen GroupId im CircularBuffer
+					iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent);
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLower;
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);
+					
+					iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLowerInterrupted;
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);
+					
+					iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent);
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpper;
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);	
+
+					iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpperInterrupted;
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+					this.logLineDate(sLog);	
+					
 					
 					
 					//Nun kann man aus der ermittelten Liste den ersten Eintrag nehmen

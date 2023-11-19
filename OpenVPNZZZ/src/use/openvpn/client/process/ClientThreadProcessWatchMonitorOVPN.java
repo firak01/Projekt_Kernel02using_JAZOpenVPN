@@ -88,7 +88,13 @@ private void MonitorNew_(ClientMainOVPN objMain, String[] saFlagControl) throws 
 				//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.								
 				//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
 				//besser ueber eine geworfenen Event... und nicht direkt: this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
-				this.setStatusLocal(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISSTARTING, true);
+				boolean bStartNewGoon = this.setStatusLocal(IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISSTARTING, true);
+				if(!bStartNewGoon) {
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Starting monitor thread canceled.";
+					System.out.println(sLog);
+					this.getMainObject().logProtocolString(sLog);
+					break main;
+				}
 								
  				ArrayList<ClientConfigStarterOVPN> listaStarter = this.getMainObject().getClientConfigStarterList();
  				
@@ -116,7 +122,8 @@ private void MonitorNew_(ClientMainOVPN objMain, String[] saFlagControl) throws 
  						//runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name());
  						//runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted);
  						//String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
- 						String[]saFlagControl = {IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
+ 						//String[]saFlagControl = {IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
+ 						String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name()};
  						runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, saFlagControl);
  						
  						runneraOVPN[icount].setClientBackendObject(this.getMainObject());
@@ -641,6 +648,12 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);										
 					
+					boolean bEndOnConnection = this.getFlag(IClientThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION);
+					if(bEndOnConnection) {
+						sLog = ReflectCodeZZZ.getPositionCurrent()+": Beende den Monitor.";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);
+					}
 					
 				}else if(bEventHasConnectionLost) {
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

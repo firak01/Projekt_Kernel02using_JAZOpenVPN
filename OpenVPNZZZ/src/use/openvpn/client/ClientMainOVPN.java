@@ -88,8 +88,13 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientThreadProcessWatchMonitorOVPN-Object";
 		System.out.println(sLog);
 		this.getLogObject().WriteLineDate(sLog);
-			
-		String[] saFlagMonitorProcess = {IClientThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION.name()};		
+		
+		//Idee: Den Monitor nach der erfolgreichen Verbindung einfach beenden.
+		//String[] saFlagMonitorProcess = {IClientThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
+
+		//Mit diesen Flags auf Pruefung der Statusaenderung, wird u.a. das Neustarten des Watcher-Processes indirekt verhindert.
+		//           siehe: ClientThreadProcessWatchMonitorOVPN.run - Line: 93: Starting monitor thread canceled.
+		String[] saFlagMonitorProcess = {IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};		
 		this.objMonitorProcess = new ClientThreadProcessWatchMonitorOVPN(this.getKernelObject(), this, saFlagMonitorProcess);
 		this.registerForStatusLocalEvent(this.objMonitorProcess);//Den Thread am Main-Backend-Objekt registrieren			
 		this.objMonitorProcess.registerForStatusLocalEvent(this); //Das Main-Backend-Objekt am MonitorProcess registrieren
