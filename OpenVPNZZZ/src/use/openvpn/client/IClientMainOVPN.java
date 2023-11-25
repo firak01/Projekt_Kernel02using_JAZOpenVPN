@@ -9,10 +9,12 @@ import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
 import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
+import use.openvpn.server.ServerConfigStarterOVPN;
 
 public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetUserOVPN{
 	//Spezielle ClientOVPN - Methoden
 	public ArrayList<ClientConfigStarterOVPN> getClientConfigStarterList();
+	public ClientConfigStarterOVPN getClientConfigStarter(int iPosition);
 	public ArrayList<ClientConfigStarterOVPN> getClientConfigStarterRunningList();
 	
 	//#################################
@@ -49,6 +51,7 @@ public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetU
 		ISPINGCONNECTNEW(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingconnectnew","PING: Veringungsaufbau nicht gestartet10",""),
 		ISPINGCONNECTING(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingconnecting","PING: Verbinde...11",""),
 		ISPINGCONNECTED(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingconnected","PING: Verbunden12",""),
+		ISPINGCONNECTNO(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingconnectno","PING: Nicht verbunden12b", ""),
 		ISPINGSTOPPED(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "ispingstopped","PING: Thread gestoppt13",""),
 		HASPINGERROR(IClientThreadVpnIpPingerOVPN.iSTATUSLOCAL_GROUPID, "haspingerror","PING: Fehler, s. Log14",""),
 		

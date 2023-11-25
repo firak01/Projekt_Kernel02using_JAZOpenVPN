@@ -41,6 +41,7 @@ import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.IClientStatusMappedValueZZZ.ClientTrayStatusTypeZZZ;
+import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
 
 /**This class is used as a backend worker.
@@ -56,7 +57,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	private ArrayList<ClientConfigStarterOVPN> listaClientConfigStarter = null; //Liste der Batches, die OVPN starten mit den Konfigurationen.
 	private ArrayList<ClientConfigStarterOVPN> listaClientConfigStarterRunning = null; //Liste der Batches, die OVPN starten mit den Konfigurationen, die noch laufen, also gestartet worden sind.
 	
-	//Die Objekte an die sich der Tray registriert und auf deren LocalStauts - Events er hoert.
+	//Die Objekte, an die sich der Tray registriert und auf deren LocalStauts - Events er hoert.
 	private ClientThreadProcessWatchMonitorOVPN  objMonitorProcess = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verf�gung, bzw. �ndert das TrayIcon selbst.
 	private ClientThreadVpnIpPingerOVPN  objVpnIpPinger = null;         //Der Thread, welcher auf hereinkommende Verbindungen (an bestimmten Port) lauscht. Er startet dazu eigene ServerConnectionListener-Threads und stellt deren Ergebnisse zur Verf�gung, bzw. �ndert das TrayIcon selbst.
 		
@@ -329,7 +330,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 */
 	public void run() {
 		try {
-			boolean bStarted = this.start();
+			this.start();
 		} catch (ExceptionZZZ ez) {
 			try {
 				String sLog = ez.getDetailAllLast();
@@ -676,6 +677,19 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		this.objFileConfigReached = objFileConfig;
 	}
 	
+	public ClientConfigStarterOVPN getClientConfigStarter(int iPosition) {
+		ClientConfigStarterOVPN objReturn=null;
+		main:{
+			if(iPosition<= 0) break main;
+				 
+			ArrayList<ClientConfigStarterOVPN> listaConfigStarter = this.getClientConfigStarterList();
+			if(iPosition > listaConfigStarter.size()) break main;
+			
+		 	objReturn = (ClientConfigStarterOVPN) listaConfigStarter.get(iPosition);
+		 	
+		 }//END main
+		 return objReturn;
+	}
 	public ArrayList<ClientConfigStarterOVPN> getClientConfigStarterList() {
 		if(this.listaClientConfigStarter==null) {
 			this.listaClientConfigStarter=new ArrayList<ClientConfigStarterOVPN>();
@@ -728,21 +742,35 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	//### IStatusLocalUserZZZ
 	@Override 
 	public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-		boolean bFunction = false;
+		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
 				break main;
 			}
 			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
-			bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
+			bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
 		}//end main:
-		return bFunction;
+		return bReturn;
+	}
+	
+	@Override 
+	public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+		}//end main:
+		return bReturn;
 	}
 	
 	@Override 
 	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-		boolean bFunction = false;
+		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
 				break main;
@@ -750,14 +778,14 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
 
-			bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, null, bStatusValue);
+			bReturn = this.offerStatusLocal_(iIndexOfProcess, enumStatus, null, bStatusValue);
 		}//end main:
-		return bFunction;
+		return bReturn;
 	}
-	
+		
 	@Override 
 	public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
-		boolean bFunction = false;
+		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
 				break main;
@@ -765,14 +793,14 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
 
-			bFunction = this.offerStatusLocal_(-1, enumStatus, sStatusMessage, bStatusValue);
+			bReturn = this.offerStatusLocal_(-1, enumStatus, sStatusMessage, bStatusValue);
 		}//end main:
-		return bFunction;
+		return bReturn;
 	}
 	
 	@Override
 	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ{
-		boolean bFunction = false;
+		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
 				break main;
@@ -780,16 +808,16 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
 	
-			bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sStatusMessage, bStatusValue);
+			bReturn = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sStatusMessage, bStatusValue);
 		}//end main:
-		return bFunction;
+		return bReturn;
 	}
 	
 	/* (non-Javadoc)
 	 * @see basic.zBasic.AbstractObjectWithStatusZZZ#setStatusLocal(java.lang.Enum, java.lang.String, boolean)
 	 */
 	private boolean offerStatusLocal_(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
-		boolean bFunction = false;
+		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) break main;
 			
@@ -797,16 +825,16 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		//Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum		
 	    IClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 		String sStatusName = enumStatus.name();
-		bFunction = this.proofStatusLocalExists(sStatusName);
-		if(!bFunction) {
+		bReturn = this.proofStatusLocalExists(sStatusName);
+		if(!bReturn) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMainOVPN would like to fire event, but this status is not available: '" + sStatusName + "'";
 			System.out.println(sLog);
 			this.logProtocolString(sLog);
 			break main;
 		}
 		
-		bFunction = this.proofStatusLocalValue(sStatusName, bStatusValue);
-		if(!bFunction) {
+		bReturn = this.proofStatusLocalValue(sStatusName, bStatusValue);
+		if(!bReturn) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMainOVPN would like to fire event, but this status has a value to be ignored: '" + sStatusName + "'";
 			System.out.println(sLog);
 			this.logProtocolString(sLog);
@@ -818,6 +846,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		//Setze den Status nun in die HashMap
 		HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
 		hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+		
 		
 		//Den enumStatus als currentStatus im Objekt speichern...
 		//                   dito mit dem "vorherigen Status"
@@ -847,7 +876,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
 	
 		//++++++++++++++++++++
-		//Besonderheit im Main-Objekt
+		//Besonderheit im Client-Main-Objekt
 		//Konfiguration ggfs. einer Liste hinzufuegen
 		ClientConfigStarterOVPN objClientConfigStarter = null;
 		if(iIndexOfProcess>=0) {
@@ -891,9 +920,9 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		this.logProtocolString(sLog);
 		this.getSenderStatusLocalUsed().fireEvent(event);
 		
-		bFunction = true;										
-	}	// end main:
-	return bFunction;
+		bReturn = true;										
+		}	// end main:
+	return bReturn;
 	}
 	
 	@Override
@@ -904,7 +933,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			boolean bProof = this.proofStatusLocalExists(sStatusName);
 			if(!bProof)break main;
 
-			//Setze das Flag nun in die HashMap
+			//Setze den Status nun in die HashMap
 			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
 			hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
 
@@ -1535,6 +1564,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		return bReturn;
 	}
 
+
 	/* (non-Javadoc)
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
@@ -1587,13 +1617,13 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTING, IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTING);
 			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTED, IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTED);
 			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, IClientMainOVPN.STATUSLOCAL.ISPINGSTOPPED);
+			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASERROR, IClientMainOVPN.STATUSLOCAL.HASPINGERROR);
 			
-			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTING, IClientMainOVPN.STATUSLOCAL.HASPINGERROR);
-			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED, IClientMainOVPN.STATUSLOCAL.HASPINGERROR);			
+			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTING, IClientMainOVPN.STATUSLOCAL.ISSTARTNEW);
+			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED, IClientMainOVPN.STATUSLOCAL.ISSTARTNEW);			
 			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASERROR, IClientMainOVPN.STATUSLOCAL.HASERROR);
 		}//end main:
 		return hmReturn;
 	}
-
 }//END class
 

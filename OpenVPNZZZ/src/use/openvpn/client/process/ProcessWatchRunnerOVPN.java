@@ -17,13 +17,13 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
-import basic.zKernel.process.ProcessWatchRunnerZZZ;
 import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
+import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL;
 import use.openvpn.client.status.EventObject4ProcessMonitorStatusLocalSetOVPN;
 import use.openvpn.client.status.EventObject4ProcessWatchRunnerStatusLocalSetOVPN;
 import use.openvpn.client.status.EventObject4ProcessWatchStatusLocalSetOVPN;
@@ -447,6 +447,20 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			    
 			}//end main
 			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
 		}
 		
 		@Override

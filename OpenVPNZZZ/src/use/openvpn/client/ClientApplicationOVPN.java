@@ -2,23 +2,14 @@ package use.openvpn.client;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.machine.EnvironmentZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.AbstractKernelUseObjectZZZ;
-import basic.zKernel.html.TagInputZZZ;
-import basic.zKernel.html.TagTypeInputZZZ;
-import basic.zKernel.html.reader.KernelReaderHtmlZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
-import basic.zKernel.net.client.KernelReaderPageZZZ;
-import basic.zKernel.net.client.KernelReaderURLZZZ;
 import use.openvpn.AbstractApplicationOVPN;
+import use.openvpn.ApplicationCommonUtilOVPN;
 import use.openvpn.IMainOVPN;
-import use.openvpn.IMainUserOVPN;
 
 public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
-	
-	
-	
+	private static final long serialVersionUID = 9137062917343733927L;
 	private String sURL = null;	
 	private String sIpURL = null;
 	
@@ -27,10 +18,7 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	//Ggf. ist dieser Wert aussagekräftiger als der Versuch über sIPVPN
 	private String sPortRemoteScanned = null;
 	private String sPortVpnScanned = null;
-
-	private String sIPVPN = null;
-	
-	
+		
 	public ClientApplicationOVPN(IKernelZZZ objKernel, ClientMainOVPN objClient) throws ExceptionZZZ {
 		super(objKernel, objClient);		
 	}
@@ -92,23 +80,14 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 	public String readIpURL() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
-			
-			String[] satemp = {"UseStream"};
-			KernelReaderURLZZZ objReaderURL = new KernelReaderURLZZZ(objKernel, sURL,satemp, "");
-			this.readProxyEnabled();
-			if(this.getFlag("useProxy")==true) objReaderURL.setProxyEnabled(this.getProxyHost(), this.getProxyPort());
-			
-			
-			//+++ Nachdem nun ggf. der Proxy aktiviert wurde, die Web-Seite versuchen auszulesen				
-			//+++ Den IP-Wert holen aus dem HTML-Code der konfigurierten URL
-			KernelReaderPageZZZ objReaderPage = objReaderURL.getReaderPage();
-			KernelReaderHtmlZZZ objReaderHTML = objReaderPage.getReaderHTML();
-			 
-			//Nun alle input-Elemente holen und nach dem Namen "IPNr" suchen.
-			TagTypeInputZZZ objTagTypeInput = new TagTypeInputZZZ(objKernel);			
-			TagInputZZZ objTag = (TagInputZZZ) objReaderHTML.readTagFirstZZZ(objTagTypeInput, "IPNr");
-			sReturn = objTag.readValue();
-		}//END main
+			boolean bUseProxy = this.getFlag("useProxy");
+			if(!bUseProxy) {	
+				this.readProxyEnabled();
+				sReturn = ApplicationCommonUtilOVPN.readIpURL(this.getKernelObject(), sURL);
+			}else {			
+				sReturn = ApplicationCommonUtilOVPN.readIpURL(this.getKernelObject(), sURL, this.getProxyHost(), this.getProxyPort());
+			}
+		}//end main:
 		return sReturn;
 	}
 	

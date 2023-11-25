@@ -14,6 +14,8 @@ public class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implemen
 	
 	protected String sProxyHost = null;
 	protected String sProxyPort = null;	
+	
+	protected String sVpnPortRemote = null;
 	protected String sVpnIpRemote = null;
 	protected String sVpnIpRemoteEstablished = null; //die VpnIp mit der aktuell die Verbindung existiert (diese IP wird dann ggfs. auch mit ping ueberwacht)
 	protected String sVpnIpLocal = null;
@@ -85,6 +87,15 @@ public class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implemen
 		}//END main
 		this.setFlag("UseProxy", bReturn);
 		return bReturn;
+	}
+	
+	public String readVpnPortRemote() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgVPNCheck","VPNPort2Check").getValue();					
+		}//END main:
+		return sReturn;
 	}
 	
 	public String readVpnIpRemote() throws ExceptionZZZ{
@@ -188,6 +199,16 @@ public class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implemen
 		public String getProxyPort(){
 			//Werte werden in readProxyEnabled gesetzt
 			return this.sProxyPort;
+		}
+		
+		public String getVpnPortRemote() throws ExceptionZZZ {
+			if(this.sVpnPortRemote==null) {
+				this.sVpnPortRemote = this.readVpnPortRemote(); 
+			}
+			return this.sVpnPortRemote;
+		}
+		public void setVpnPortRemote(String sVpnPortRemote) {
+			this.sVpnPortRemote = sVpnPortRemote;
 		}
 		
 		public String getVpnIpRemote() throws ExceptionZZZ {

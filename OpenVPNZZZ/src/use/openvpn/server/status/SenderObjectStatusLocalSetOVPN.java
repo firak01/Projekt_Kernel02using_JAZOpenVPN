@@ -8,10 +8,11 @@ import java.util.EventListener;
 import basic.zKernel.IKernelZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
-import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import basic.zKernel.status.KernelSenderObjectStatusLocalSetZZZ;
+import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 
 /** Diese Klasse implementiert alles, was benoetigt wird, damit die eigenen Events "Flag hat sich geaendert" abgefeuert werden kann
  *  und auch von den Objekten, die hier registriert sind empfangen wird. Damit fungieren Objekte dieser Klasse als "EventBroker".
@@ -25,6 +26,8 @@ import basic.zKernel.status.KernelSenderObjectStatusLocalSetZZZ;
  */
 public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalSetOVPN,Serializable{
 	private static final long serialVersionUID = 8999783685575147532L;
+	private IEventObjectStatusLocalSetOVPN eventPrevious=null;
+	
 	public SenderObjectStatusLocalSetOVPN() throws ExceptionZZZ{
 		super();
 	}
@@ -32,7 +35,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 	/* (non-Javadoc)
 	 * @see use.via.client.module.export.ISenderEventComponentReset#fireEvent(basic.zKernelUI.component.model.KernelEventComponentSelectionResetZZZ)
 	 */
-	private ArrayList<IListenerObjectStatusLocalSetOVPN> listaLISTENER_REGISTERED = new ArrayList();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden 
+	private ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN> listaLISTENER_REGISTERED = new ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN>();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden 
 																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht m�glich ist 
 	@Override                                                                                     //             mehrere Events, an verschiedenen Komponenten, unabhaengig voneinander zu verwalten.
 	public final void fireEvent(IEventObjectStatusLocalSetOVPN event){	
@@ -57,6 +60,13 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 		main:{
 			if(event==null)break main;
 			
+			//Dafür sorgen, dass der Event nur 1x geworfen wird, wenn der vorherige Event der gleich war.
+			IEventObjectStatusLocalSetOVPN eventPrevious = this.getEventPrevious();
+			if(eventPrevious!=null) {
+				if(eventPrevious.equals(event))break main;
+			}
+			this.setEventPrevious(event);
+						
 			try {
 				for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 					IListenerObjectStatusLocalSetOVPN l = (IListenerObjectStatusLocalSetOVPN) this.getListenerRegisteredAll().get(i);				
@@ -64,7 +74,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 					try {
 						boolean bStatusLocalChanged = l.statusLocalChanged(event);
 						if(bStatusLocalChanged) {
-							System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat Flag '" + event.getStatusText() + "' gesetzt." );
+							System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat Status '" + event.getStatusText() + "' gesetzt." );
 						}					
 					} catch (ExceptionZZZ ez) {
 						//Z.B. falls es das Flag hier nicht gibt, wird die ggfs. die Exception weitergeworfen.
@@ -79,6 +89,16 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 		}//end main:
 	}
 	
+	@Override
+	public IEventObjectStatusLocalSetOVPN getEventPrevious() {
+		return this.eventPrevious;
+	}
+
+	@Override
+	public void setEventPrevious(IEventObjectStatusLocalSetOVPN event) {
+		this.eventPrevious = event;
+	}
+	
 	/* (non-Javadoc)
 	 * @see use.via.client.module.export.ISenderEventComponentReset#removeSelectionResetListener(basic.zKernelUI.component.model.ISelectionResetListener)
 	 */
@@ -88,7 +108,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 	}
 
 	@Override
-	public final ArrayList<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ{
+	public final ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ{
 		return listaLISTENER_REGISTERED;
 	}
 

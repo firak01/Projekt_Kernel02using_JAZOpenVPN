@@ -24,6 +24,7 @@ public interface IClientStatusMappedValueZZZ {
 			PINGED("pinged",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_black_bgMagentaDark.png",""),
 			PINGCONNECTING("pingconnecting",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_greenLight.png",""),
 			PINGCONNECTED("pingconnected",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_black_bgGreen.png",""),
+			PINGCONNECTNO("pingconnectno", IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "pill-button-purple_benji_01.png",""),
 			
 			INTERRUPTED("interrupted",null,"pill-button-purple_benji_01.png",""),
 			STOPPED("stopped",null,"Green Metallic_32.png",""),		

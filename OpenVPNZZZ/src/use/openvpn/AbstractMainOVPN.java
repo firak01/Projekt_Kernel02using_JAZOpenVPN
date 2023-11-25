@@ -7,6 +7,7 @@ import java.util.Set;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -14,6 +15,7 @@ import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
+import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
@@ -160,6 +162,9 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		@Override
 		abstract public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
 
+		@Override 
+		abstract public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
+					
 		@Override
 		public boolean[] setStatusLocal(Enum[] objaEnumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 			boolean[] baReturn=null;
@@ -175,10 +180,8 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 				}
 			}//end main:
 			return baReturn;
-		}
-
+		}		
 		
-
 		@Override
 		public boolean proofStatusLocalExists(Enum objEnumStatus) throws ExceptionZZZ {
 			return this.proofStatusLocalExists(objEnumStatus.name());
@@ -300,6 +303,8 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			return bReturn;
 		}
 		
+		
+		
 //		@Override
 //		public boolean proofStatusLocalChanged(Enum objEnumStatus, boolean bValue) throws ExceptionZZZ {
 //			return this.proofStatusLocalChanged(objEnumStatus.name(), bValue);
@@ -317,4 +322,6 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 //			}//end main:
 //			return bReturn;
 //		}
+		
+		
 }

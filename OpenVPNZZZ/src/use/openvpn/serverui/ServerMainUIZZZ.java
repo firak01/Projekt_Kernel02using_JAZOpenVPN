@@ -39,7 +39,7 @@ public class ServerMainUIZZZ implements IConstantZZZ{
 			 */
 			public static void main(String[] args) {
 				ServerMainUIZZZ objServer = new ServerMainUIZZZ();
-				boolean bStarted = objServer.start(args);								
+				objServer.start(args);								
 			}//END main()
 			
 			public boolean start(String[] saArg){
@@ -59,16 +59,8 @@ public class ServerMainUIZZZ implements IConstantZZZ{
 						
 						//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
 						this.objServerTray = new ServerTrayUIOVPN(objKernel, this.objServerMain, (String[]) null);
-						
-						//Registriere das ServerTray-Objekt fuer Aenderungen an den ServerMain-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
-						this.objServerMain.registerForFlagEvent(this.objServerTray);
-						
-						//Registriere das ServerTray-Objekt fuer Aenderung am ServerMain-Objekt-Status. Das garantiert, das der Tray auch auf Änderungen des Status reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
-						this.objServerMain.registerForStatusLocalEvent(this.objServerTray);
-						
-												
 						bReturn = objServerTray.load();
-						
+												
 						//Konfigurierbar: Beim Launch der Applikation schon starten
 						boolean btemp = this.objServerMain.isStartingOnLaunch();
 						if(btemp==false){							

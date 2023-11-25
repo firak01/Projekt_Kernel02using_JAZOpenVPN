@@ -3,47 +3,45 @@ package use.openvpn.serverui;
 import java.util.EnumSet;
 
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import use.openvpn.clientui.IClientTrayMenuZZZ;
 
 public interface IServerTrayStatusMappedValueZZZ {
 	//#######################################################
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### String fullName, String abbreviation
 	//#######################################################
-//	    public enum STATUS{
-//			NEW,STARTING,STARTED,LISTENING,CONNECTED,INTERRUPTED,STOPPED,ERROR
-//		}
-		//Ersetzt durch enum, die Bedeutung bleibt 
-//		public static final int iSTATUS_NEW = 0;                       //Wenn das SystemTry-icon neu ist 
-//		public static final int iSTATUS_STARTING = 1;               //Die OVPN-Konfiguration wird gesucht und die Processe werden mit diesen Konfigurationen gestartet.
-//		public static final int iSTATUS_STARTED = 2;
-//		public static final int iSTATUS_LISTENING = 3;               //Die OVPN-Processe laufen.
-//		public static final int iSTATUS_CONNECTED = 4;            //Falls sich ein Client per vpn mit dem Server verbunden hat und erreichbar ist
-//		public static final int iSTATUS_INTERRUPTED = 5;          //Falls der Client wieder nicht erreichbar ist. Das soll aber keine Fehlermeldung in dem Sinne sein, sondern nur anzeigen, dass mal ein Client verbunden war.
-//		                                                                                      //Dies wird auch angezeigt, wenn z.B. die Netzwerkverbindung unterbrochen worden ist.
-//		public static final int iSTATUS_STOPPED = 6; 				 //Wenn kein OVPN-Prozess mehr l�uft.
-//		public static final int iSTATUS_ERROR = 7;
-					
-  //Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
-  	//ALIAS("Uniquename","Menuepunkt-Text","Icon-Dateiname","Beschreibung, wird nicht genutzt....",)
+
+	//Merke1: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
+    //Merke2: Das ist kein IEnumSetMappedStatus. Ein einfache IEnumSetMapped reicht, da das hier lediglich als Container für den Icondateipfad dienen soll.
+	//ALIAS("Uniquename","ClientTryMenuTypeZZZ. ...", "Icon-Dateiname","Beschreibung, wird nicht genutzt....",)
+	
+	//Noch zu verwendendes Icon: "icons8-web-camera-unfilled-100" "Green Metallic_32.png", "pill-button-yellow_benji_01.png", circle.png,pill-button-green_benji_01.png
   	public enum ServerTrayStatusTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-  		NEW("new","","Green Metallic_32.png", ""),
-  		STARTING("starting","","pill-button-yellow_benji_01.png",""),
-  		STARTED("started","","pill-button-green_benji_01.png",""),
-  		LISTENING("listenig","","pill-button-seagreen_benji_01.png",""),
-  		CONNECTED("connected","","pill-button-blue_benji_01.png",""),
-  		INTERRUPTED("interrupted","","pill-button-purple_benji_01.png",""),
-  		STOPPED("stopped","","pill-button-yellow_benji_01.png",""),
-  		ERROR("error","","pill-button-red_benji_01.png","");
+  		NEW("new",IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START,"icons8-web-camera-filled-100.png",""),  				  				
+  		STARTING("starting",IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START,"circle.png",""),
+  		STARTED("started", IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN,"button-green_benji_park_01.png",""),
+  		LISTENERSTARTNEW("listenerstartnew", IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN,"button-green_benji_park_01.png",""),
+  		LISTENERSTARTING("listenerstarting", IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN,"pill-button-yellow_benji_01.png",""),  		
+  		LISTENERSTARTED("listenerstarted", IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN,"pill-button-seagreen_benji_01.png",""),
+  	  		
+  		CONNECTED("connected", IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN ,"pill-button-blue_benji_01.png",""),  		
+  		INTERRUPTED("interrupted", IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN ,"pill-button-purple_benji_01.png",""),
   		
-  	private String sAbbreviation,sMenuText, sIconFileName, sDescription;
+  		STOPPED("stopped", IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START,"pill-button-yellow_benji_01.png",""),
+  		ERROR("error", IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START,"pill-button-red_benji_01.png",""),
+  		
+  		PREVIOUSEVENTRTYPE("previousentrytype",null,"","Ohne Bild. Wird genutzt, um in einem weiteren Lauf das passende rauszusuchen. Z.B. wenn nach dem Stop ein vorheriger Status verwendet werden soll");
+  	
+  		private IEnumSetMappedZZZ objEnum;
+  		private String sAbbreviation, sIconFileName, sDescription;
 
   	//#############################################
   	//#### Konstruktoren
   	//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
   	//In der Util-Klasse habe ich aber einen Workaround gefunden.
-  	ServerTrayStatusTypeZZZ(String sAbbreviation, String sMenuText, String sIconFileName, String sDescription) {
+  	ServerTrayStatusTypeZZZ(String sAbbreviation, IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ objEnum, String sIconFileName, String sDescription) {
   	    this.sAbbreviation = sAbbreviation;
-  	    this.sMenuText = sMenuText;
+  	    this.objEnum = objEnum;
   	    this.sIconFileName = sIconFileName;
   	    this.sDescription = sDescription;
   	}
@@ -53,10 +51,10 @@ public interface IServerTrayStatusMappedValueZZZ {
   	 return this.sAbbreviation;
   	}
   	
-  	public String getMentuText() {
-  		return this.sMenuText;
-  	}
-  		
+  	public IEnumSetMappedZZZ getAccordingTrayMenuType(){
+		return this.objEnum;
+	}
+  	  		
   	public String getIconFileName() {
   		return this.sIconFileName;
   	}

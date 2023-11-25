@@ -5,7 +5,6 @@ import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL;
-import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 
 /** 
  * Merke: Der gleiche "Design Pattern" wird auch im UI - Bereich fuer Komponenten verwendet ( package basic.zKernelUI.component.model; )  

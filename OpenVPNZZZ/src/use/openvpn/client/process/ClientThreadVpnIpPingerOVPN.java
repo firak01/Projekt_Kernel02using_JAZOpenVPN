@@ -1,5 +1,6 @@
 package use.openvpn.client.process;
 
+import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
@@ -25,6 +26,7 @@ import use.openvpn.serverui.ServerTrayUIOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
 
@@ -152,9 +154,8 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 					//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
 					//this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISPINGSTARTING, true);								
 					//besser ueber eine geworfenen Event... und nicht direkt: this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
-					
 					//boolean bStatusLocalSet = this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTING, true);
-					boolean bStatusLocalSet = this.switchStatusLocalAsGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTING, true); //Damit der ISSTOPPED Wert auf jeden Fall auch beseitigt wird
+					boolean bStatusLocalSet = this.switchStatusLocalAllGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTING, true); //Damit der ISSTOPPED Wert auf jeden Fall auch beseitigt wird
 					if(!bStatusLocalSet) {
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
 						System.out.println(sLog);
@@ -180,23 +181,43 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 							break main;							
 						}
 						
-						Thread.sleep(10000);							
+						Thread.sleep(5000);							
 						System.out.println("... PING: Starte fuer alle Konfigurationen...");					
-						this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTED, true);										
+						this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTED, true);
+						
+						int iNumberOfPingsStarted = 0;
 						for(int icount3=0; icount3 < listaClientConfigStarterRunning.size(); icount3++){
 							
-							Thread.sleep(10000);							
+							Thread.sleep(5000);							
 							System.out.println("..."+(icount3+1)+". PING: Mache neue Verbindung...");							
 							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTING, true);
+																					
+			 				IApplicationOVPN objApplication = this.getMainObject().getApplicationObject();
+	
+//			 				ClientConfigStarterOVPN objStarter = (ClientConfigStarterOVPN)listaStarter.get(icount);
+			 				//Process objProcess = objStarter.requestStart();
+			 				
+			 				//Idee20231119, mache entsprechend: KernelPingHostZZZ objPing = objStarter.requestPing();
+			 					
+			 					
+			 				Thread.sleep(10000);
+							String sVpnIp = objApplication.getVpnIpRemote();
+							String sVpnPort = objApplication.getVpnPortRemote(); //Es gibt im OVPN-Server einen Listener, der auf einen Port ("5000") hört. Wenn die VPN Verbindung steht, wird dazu die Verbindung klappen;
+							KernelPingHostZZZ objPing = new KernelPingHostZZZ(this.getKernelObject(),null);
+							iNumberOfPingsStarted++;
+							boolean bConnected = objPing.ping(sVpnIp, sVpnPort);
+							if(bConnected) {																				
+								System.out.println("..."+(icount3+1)+". PING: Verbunden");							
+								this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTED, true);
+																							
+							}else {
+								System.out.println("..."+(icount3+1)+". PING: Nicht verbunden");							
+								this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTNO, true);															
+							}
 							
-			
-							Thread.sleep(10000);							
-							System.out.println("..."+(icount3+1)+". PING: Verbunden");							
-							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISCONNECTED, true);
-						
-							Thread.sleep(10000);							
-							System.out.println("..."+(icount3+1)+". Beende...");	
-							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);							
+							Thread.sleep(5000);							
+							System.out.println("..."+(icount3+1)+". PING: Beende...");	
+							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
 						}//END For
 
 						Thread.sleep(1000);
@@ -368,9 +389,9 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 					
 					//Damit werden die anderen Statuswerte nicht veraendert. 
 					//Das hat Probleme beim Neustart  this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
-					Thread.sleep(10000);							
+					Thread.sleep(5000);							
 					System.out.println(".... PING: Stoppe");						
-					this.switchStatusLocalAsGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
+					this.switchStatusLocalAllGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
 				} catch (InterruptedException e) {
 					ExceptionZZZ ez = new ExceptionZZZ(e);
 					throw ez;
@@ -378,7 +399,28 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			}//END main:
 			
 		}catch(ExceptionZZZ ez){
-			System.out.println(ez.getDetailAllLast());
+			String sLog;
+			try {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": "+ez.getDetailAllLast();
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+					
+				try {
+					Thread.sleep(5000);
+					System.out.println("... PING: Fehler...");	
+					this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASERROR, true);
+									
+					Thread.sleep(5000);							
+					System.out.println(".... PING: Stoppe");						
+					this.switchStatusLocalAllGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
+				} catch (InterruptedException e) {
+					ExceptionZZZ ez2 = new ExceptionZZZ(e);
+					throw ez2;
+				}		
+				
+			} catch (ExceptionZZZ e) {
+				e.printStackTrace();
+			}
 		}
 	}//END run
 	
@@ -706,6 +748,20 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 				}//end main:
 				return bFunction;
 			}
+			
+			@Override 
+			public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+				boolean bReturn = false;
+				main:{
+					if(enumStatusIn==null) {
+						break main;
+					}
+					ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+					
+					bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+				}//end main:
+				return bReturn;
+			}			
 			
 			@Override 
 			public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {

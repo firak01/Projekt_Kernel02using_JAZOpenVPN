@@ -2,10 +2,10 @@ package use.openvpn.client.status;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
 
 /** Diese Klasse implementiert alles, was benoetigt wird, damit die eigenen Events "Flag hat sich geaendert" abgefeuert werden kann
  *  und auch von den Objekten, die hier registriert sind empfangen wird. Damit fungieren Objekte dieser Klasse als "EventBroker".
@@ -28,7 +28,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 	/* (non-Javadoc)
 	 * @see use.via.client.module.export.ISenderEventComponentReset#fireEvent(basic.zKernelUI.component.model.KernelEventComponentSelectionResetZZZ)
 	 */
-	private ArrayList<IListenerObjectStatusLocalSetOVPN> listaLISTENER_REGISTERED = new ArrayList();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden 
+	private ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN> listaLISTENER_REGISTERED = new ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN>();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden 
 																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht m�glich ist 
 	@Override                                                                                     //             mehrere Events, an verschiedenen Komponenten, unabhaengig voneinander zu verwalten.
 	public final void fireEvent(IEventObjectStatusLocalSetOVPN event){	
@@ -68,9 +68,6 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 						boolean bStatusLocalChanged = l.statusLocalChanged(event);
 						if(bStatusLocalChanged) {
 							System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN for " + l.getClass().getName() + " hat LocalStatusValue '" + event.getStatusValue() + "' fuer externen Event " + event.getStatusText() + "' gesetzt." );
-							
-							
-							
 						}					
 					} catch (ExceptionZZZ ez) {					
 						System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " throws Exception " + ez.getDetailAllLast() );					
@@ -102,7 +99,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 	}
 
 	@Override
-	public final ArrayList<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ{
+	public final ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ{
 		return listaLISTENER_REGISTERED;
 	}
 

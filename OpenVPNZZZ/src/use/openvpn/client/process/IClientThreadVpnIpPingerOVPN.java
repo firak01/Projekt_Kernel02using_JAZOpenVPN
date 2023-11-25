@@ -48,6 +48,7 @@ public interface IClientThreadVpnIpPingerOVPN extends IKernelModuleZZZ, IClientM
 		ISCONNECTNEW(iSTATUSLOCAL_GROUPID,"isconnectnew","PING: Nicht verbunden",""),
 		ISCONNECTING(iSTATUSLOCAL_GROUPID,"isconnecting","PING: Verbinde...",""),
 		ISCONNECTED(iSTATUSLOCAL_GROUPID,"isconnected","PING: Verbunden",""),
+		ISCONNECTNO(iSTATUSLOCAL_GROUPID,"isconnectno","PING: Nicht verbunden",""),
 		
 		ISSTOPPED(iSTATUSLOCAL_GROUPID,"isstopped","PING: Gestoppt",""),
 		HASERROR(iSTATUSLOCAL_GROUPID,"haserror","PING: Fehler",""),

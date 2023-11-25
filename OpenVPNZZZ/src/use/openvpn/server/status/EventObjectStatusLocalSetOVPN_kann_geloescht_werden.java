@@ -2,7 +2,9 @@ package use.openvpn.server.status;
 
 import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
 import use.openvpn.IApplicationOVPN;
-import use.openvpn.server.ServerMainOVPN;
+import use.openvpn.server.IServerMainOVPN;
+import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
+import use.openvpn.server.ServerConfigStarterOVPN;;
 
 /** 
  * Merke: Der gleiche "Design Pattern" wird auch im UI - Bereich fuer Komponenten verwendet ( package basic.zKernelUI.component.model; )  
@@ -12,8 +14,8 @@ import use.openvpn.server.ServerMainOVPN;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObjectStatusLocalSetOVPN extends  AbstractEventObjectStatusLocalSetZZZ implements IEventObjectStatusLocalSetOVPN, Comparable<IEventObjectStatusLocalSetOVPN>{
-	private ServerMainOVPN.STATUSLOCAL objStatusEnum=null;	
+public class EventObjectStatusLocalSetOVPN_kann_geloescht_werden extends  AbstractEventObjectStatusLocalSetZZZ implements IEventObjectStatusLocalSetOVPN, Comparable<IEventObjectStatusLocalSetOVPN>{
+	private STATUSLOCAL objStatusEnum=null;	
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
 	private String sStatusAbbreviation = null;
@@ -24,11 +26,11 @@ public class EventObjectStatusLocalSetOVPN extends  AbstractEventObjectStatusLoc
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
 	 */
-	public EventObjectStatusLocalSetOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
+	public EventObjectStatusLocalSetOVPN_kann_geloescht_werden(Object source, int iID,  String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);
 	}
 	
-	public EventObjectStatusLocalSetOVPN(Object source, int iID,  ServerMainOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) {
+	public EventObjectStatusLocalSetOVPN_kann_geloescht_werden(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) {
 		super(source,iID,"",bStatusValue);
 		this.objStatusEnum=objStatusEnum;
 	}
@@ -39,7 +41,7 @@ public class EventObjectStatusLocalSetOVPN extends  AbstractEventObjectStatusLoc
 	 * @see basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ#getStatusEnum()
 	 */
 	@Override
-	public ServerMainOVPN.STATUSLOCAL getStatusEnum() {
+	public STATUSLOCAL getStatusEnum() {
 		return this.objStatusEnum;
 	}
 	
@@ -96,8 +98,8 @@ public class EventObjectStatusLocalSetOVPN extends  AbstractEventObjectStatusLoc
    @Override 
    public boolean equals(Object aThat) {
      if (this == aThat) return true;
-     if (!(aThat instanceof EventObjectStatusLocalSetOVPN)) return false;
-     EventObjectStatusLocalSetOVPN that = (EventObjectStatusLocalSetOVPN)aThat;
+     if (!(aThat instanceof EventObjectStatusLocalSetOVPN_kann_geloescht_werden)) return false;
+     EventObjectStatusLocalSetOVPN_kann_geloescht_werden that = (EventObjectStatusLocalSetOVPN_kann_geloescht_werden)aThat;
      
      String sNameToCompare = that.getStatusEnum().getName();
 	 boolean bValueToCompare = that.getStatusValue();
@@ -115,6 +117,24 @@ public class EventObjectStatusLocalSetOVPN extends  AbstractEventObjectStatusLoc
    public int hashCode() {
 	   return this.getStatusText().hashCode();
    }
+
+@Override
+public String getStatusMessage() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public void setServerConfigStarterObjectUsed(ServerConfigStarterOVPN clientConfigStarterOVPN) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public ServerConfigStarterOVPN getServerConfigStarterObjectUsed() {
+	// TODO Auto-generated method stub
+	return null;
+}
 
 	
 }

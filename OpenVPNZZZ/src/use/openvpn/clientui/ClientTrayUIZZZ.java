@@ -17,54 +17,39 @@ import javax.swing.JPopupMenu;
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
-import use.openvpn.IApplicationOVPN;
-import use.openvpn.client.ClientApplicationOVPN;
-import use.openvpn.client.ClientConfigFileZZZ;
-import use.openvpn.client.ClientConfigStarterOVPN;
-import use.openvpn.client.ClientMainOVPN;
-import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
-import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
-import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
-import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
-import use.openvpn.client.process.ProcessWatchRunnerOVPN;
-import use.openvpn.client.IClientMainOVPN;
-import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
-import use.openvpn.client.status.IEventObject4ProcessWatchMonitorStatusLocalSetOVPN;
-import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.clientui.IClientStatusMappedValueZZZ.ClientTrayStatusTypeZZZ;
-import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
-import use.openvpn.clientui.IConstantClientOVPN;
-import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
-import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
-import use.openvpn.server.ServerMainOVPN;
-import use.openvpn.serverui.ServerMonitorRunnerOVPN;
-import use.openvpn.serverui.ServerTrayMenuZZZ;
-import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
-import basic.zKernel.KernelZZZ;
-import basic.zKernel.component.IKernelModuleZZZ;
-import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
-import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
-import basic.zKernel.status.IStatusBooleanZZZ;
-import basic.zKernel.status.IStatusLocalMapForCascadingStatusLocalUserZZZ;
-import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
-import basic.zKernel.status.StatusLocalHelperZZZ;
-import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.abstractList.ArrayListZZZ;
-import basic.zBasic.util.datatype.enums.EnumSetUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
-import basic.zKernel.IKernelZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
+import basic.zKernel.IKernelZZZ;
+import basic.zKernel.component.IKernelModuleZZZ;
+import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
+import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
+import basic.zKernel.status.IStatusBooleanZZZ;
+import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
+import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
+import use.openvpn.client.ClientApplicationOVPN;
+import use.openvpn.client.ClientConfigFileZZZ;
+import use.openvpn.client.ClientMainOVPN;
+import use.openvpn.client.IClientMainOVPN;
+import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
+import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
+import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
+import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
+import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
+import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
+import use.openvpn.clientui.IClientStatusMappedValueZZZ.ClientTrayStatusTypeZZZ;
+import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
+import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
+import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
 
 /** Der Icon unter Windows in der TaskLeiste.
  *  Aus ihm heraus werden:
@@ -102,7 +87,12 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		ClientTrayUINew_(objClientMain);
 	}
 	
-	private void ClientTrayUINew_(ClientMainOVPN objClientMain) throws ExceptionZZZ{
+	public ClientTrayUIZZZ(IKernelZZZ objKernel, IClientMainOVPN objClientMain, String[] saFlagControl) throws ExceptionZZZ{
+		super(objKernel,saFlagControl);//20210402: Die direkten Flags werden nun in der Elternklasse verarbeitet
+		ClientTrayUINew_(objClientMain);
+	}
+	
+	private void ClientTrayUINew_(IClientMainOVPN objClientMain) throws ExceptionZZZ{
 		main:{		
 			//try{		
 			check:{
@@ -111,7 +101,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 					ExceptionZZZ ez = new ExceptionZZZ("ClientMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
 					 throw ez;		 
 				}else{
-					this.objMain = objClientMain;
+					this.objMain = (ClientMainOVPN) objClientMain;
 				}
 			}//End check
 			
@@ -667,7 +657,6 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		return bReturn;		
 	}
 	
-	
 	/** Reads a status string from the Backend-Object-Thread
 	* @return String
 	* 
@@ -697,6 +686,8 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		}
 		return sReturn;
 	}
+	
+	
 	
 	
 	/** Reads a status string from the ProcessMonitor-Object-Thread
@@ -771,6 +762,11 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 	public String readStatusDetailString() throws ExceptionZZZ{
 		String sReturn = "";
 		main:{
+			if (this.objMain == null){
+				sReturn = "No Client Backend available.";
+				break main;
+			}
+			
 			String stemp = null;
 			
 			//Merke: der BackendStausString wird von den Events, die er empfaengt gefuettert.
@@ -1580,6 +1576,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTARTED, ClientTrayStatusTypeZZZ.PINGED);
 				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTING, ClientTrayStatusTypeZZZ.PINGCONNECTING);
 				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTED, ClientTrayStatusTypeZZZ.PINGCONNECTED);
+				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTNO, ClientTrayStatusTypeZZZ.PINGCONNECTNO);
 				
 				//++++++++++++++++++++++++
 				//Berechne den wirklichen Typen anschliessend, dynamisch. Es wird auf auf einen vorherigen Event zugegriffen durch eine zweite Abfrage

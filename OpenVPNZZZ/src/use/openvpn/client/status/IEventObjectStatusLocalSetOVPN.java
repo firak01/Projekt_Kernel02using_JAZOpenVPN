@@ -11,7 +11,7 @@ public interface IEventObjectStatusLocalSetOVPN extends IEventObjectStatusLocalS
 	String getStatusAbbreviation();
 	String getStatusMessage();
 	
-	//Speziell für OVPN
+	//Speziell für OVPN Client
 	public void setClientConfigStarterObjectUsed(ClientConfigStarterOVPN clientConfigStarterOVPN);
 	public  ClientConfigStarterOVPN getClientConfigStarterObjectUsed();	 
 }

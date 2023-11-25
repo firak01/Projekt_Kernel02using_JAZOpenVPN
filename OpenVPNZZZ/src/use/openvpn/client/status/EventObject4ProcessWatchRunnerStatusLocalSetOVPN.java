@@ -57,6 +57,9 @@ public class EventObject4ProcessWatchRunnerStatusLocalSetOVPN  extends AbstractE
 	}
 	
 	//### Speziell für OVPN wichtig	
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IEventObjectStatusLocalSetOVPN#setClientConfigStarterObjectUsed(use.openvpn.client.ClientConfigStarterOVPN)
+	 */
 	@Override
 	public void setClientConfigStarterObjectUsed(ClientConfigStarterOVPN objStarter) {
 		this.objStarter = objStarter;

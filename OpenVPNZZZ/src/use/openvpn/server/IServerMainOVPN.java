@@ -1,14 +1,20 @@
 package use.openvpn.server;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import use.openvpn.IMainOVPN;
-import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalSetUserOVPN;
 import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
-public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetUserOVPN{
+	//Spezielle ServerOVPN - Methoden
+	public ArrayList<ServerConfigStarterOVPN> getServerConfigStarterList();
+	public ServerConfigStarterOVPN getServerConfigStarter(int iPosition);
+	
+	//####################################
 	public enum FLAGZ{
 		DUMMY
 	}
@@ -22,10 +28,20 @@ public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetO
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
 	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-		ISLAUNCHED(iSTATUSLOCAL_GROUPID, "islaunched","Trayicon wurde gestartet",""),
-		ISSTARTING(iSTATUSLOCAL_GROUPID, "isstarting","Server startet. Warte ggfs. auf Task",""),		
-		ISSTARTED(iSTATUSLOCAL_GROUPID, "isstarted","OVPN Konfigurationen gebaut und Server gestartet",""),
-		ISLISTENING(iSTATUSLOCAL_GROUPID, "islistening","Server wartet auf Verbindung",""),
+		ISSTARTNEW(iSTATUSLOCAL_GROUPID, "isstartnew","SERVER: Noch nicht gestartet.", ""),
+		ISSTARTING(iSTATUSLOCAL_GROUPID, "isstarting","SERVER: Startet. Warte ggfs. auf Task.",""),		
+		ISSTARTED(iSTATUSLOCAL_GROUPID, "isstarted","SEVER: OVPN Konfigurationen gebaut und Server gestartet.",""),
+				
+		ISLISTENERSTARTNEW(IServerThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "islistenernew","OVPN: Listener nicht gestartet.",""),		
+		ISLISTENERSTARTING(IServerThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "islistenerstarting","OVPN: Listener started...",""),
+		ISLISTENERSTARTED(IServerThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "islistenerstarted","OVPN: Listener wartet auf Verbindung.",""),
+		ISLISTENERSTARTNO(IServerThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "islistenerstartno","OVPN: Listener ohne Verbindung beendet.",""),
+				
+		ISLISTENERCONNECTING(IServerThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "isconnectno","OVPN: Listener nicht verbunden.",""),
+		ISLISTENERCONNECTED(IServerThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "isconnected","OVPN: Listener verbunden.",""),		
+		ISLISTENERINTERRUPTED(IServerThreadProcessWatchMonitorOVPN.iSTATUSLOCAL_GROUPID, "isinterrupted","OVPN: Listener unterbrochen.",""),
+		
+		
 		WATCHRUNNERSTARTED(iSTATUSLOCAL_GROUPID, "watchrunnerstarted","Thread zur Verbindungspruefung gestartet",""),
 		ISSTOPPED(iSTATUSLOCAL_GROUPID, "isstopped","Server wurde gestoppt",""),
 		HASERROR(iSTATUSLOCAL_GROUPID, "haserror","Ein Fehler ist aufgetreten","");

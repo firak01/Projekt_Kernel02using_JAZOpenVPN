@@ -15,7 +15,7 @@ public class ServerTrayStatusMappedValueZZZ implements Serializable, IServerTray
 	
 	//Entsprechend der internen Enumeration
 	//Merke: Die Enumeration dient der Festlegung der Defaultwerte. In den Feldern des Entities werden die gespeicherten Werte gehalten.
-	private String sAbbreviation,sDescription;
+	private String sAbbreviation;
 			
 	public ServerTrayStatusMappedValueZZZ(){		
 	}

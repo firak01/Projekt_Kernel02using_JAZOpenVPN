@@ -4,30 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.IObjectWithStatusZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.EventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
-import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
-import basic.zKernel.status.IStatusBooleanZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
-import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.EventObject4ProcessMonitorStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.client.status.IEventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObject4ProcessWatchMonitorStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
@@ -43,7 +37,7 @@ public ClientThreadProcessWatchMonitorOVPN(IKernelZZZ objKernel, ClientMainOVPN 
 	MonitorNew_(objMain, saFlagControl);
 }
 
-private void MonitorNew_(ClientMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
+private void MonitorNew_(IClientMainOVPN objMain, String[] saFlagControl) throws ExceptionZZZ{
 	main:{
 		
 		check:{
@@ -74,10 +68,8 @@ private void MonitorNew_(ClientMainOVPN objMain, String[] saFlagControl) throws 
 	public void run() {		
 		main:{
 		try {
-			check:{
-				if(this.getMainObject()==null) break main;
-			}//END check:
-		   	
+			if(this.getMainObject()==null) break main;
+					   	
 								
 				//######### 20230826 Verschoben aus ClientMainOVPN.start(), durch das Aufteilen sind mehrere Prozesse parallel moeglich.					
  				//+++ Noch keine Verbindung/Noch fehlende Verbindungen, dann wird es aber Zeit verschiedene Threads damit zu beauftragen
@@ -116,7 +108,7 @@ private void MonitorNew_(ClientMainOVPN objMain, String[] saFlagControl) throws 
  						//NEU: Einen anderen Thread zum "Monitoren" des Inputstreams des Processes verwenden. Dadurch werden die anderen Prozesse nicht angehalten.
  						sLog = ReflectCodeZZZ.getPositionCurrent()+": Successfull process created, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"' for thread #" + iNumberOfProcessStarted + " von " + listaStarter.size() +". Starting Thread as Monitor for this process.";
  						System.out.println(sLog);
- 						this.objMain.logProtocolString(sLog);
+ 						this.getMainObject().logProtocolString(sLog);
  				
  						//TEST, Flagübergabe: Ohne, z.B. die Pruefung auf vorherige Werte wird immer ein Event geworfen fuer "HASOUTPUT"
  						//runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name());
@@ -136,7 +128,7 @@ private void MonitorNew_(ClientMainOVPN objMain, String[] saFlagControl) throws 
  						
  						sLog = ReflectCodeZZZ.getPositionCurrent()+": Finished starting thread #" + iNumberOfProcessStarted + " von " + listaStarter.size() + " for watching connection.";
  						System.out.println(sLog);
- 						this.objMain.logProtocolString(sLog);
+ 						this.getMainObject().logProtocolString(sLog);
  					}
  				}//END for	
  					
@@ -155,6 +147,7 @@ private void MonitorNew_(ClientMainOVPN objMain, String[] saFlagControl) throws 
 	
 	}//END run
 	
+
 	@Override
 	public void setMainObject(IClientMainOVPN objClientBackend){
 		this.objMain = (ClientMainOVPN) objClientBackend;
@@ -407,6 +400,20 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, null, bStatusValue);				
 			}//end main;
 			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
 		}
 		
 		/* (non-Javadoc)
