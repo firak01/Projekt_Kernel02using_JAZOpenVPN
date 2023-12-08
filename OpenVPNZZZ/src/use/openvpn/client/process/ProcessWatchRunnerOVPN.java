@@ -3,37 +3,30 @@ package use.openvpn.client.process;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
-import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
-import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
-import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
-import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL;
-import use.openvpn.client.status.EventObject4ProcessMonitorStatusLocalSetOVPN;
 import use.openvpn.client.status.EventObject4ProcessWatchRunnerStatusLocalSetOVPN;
 import use.openvpn.client.status.EventObject4ProcessWatchStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.client.status.IEventObject4ProcessWatchMonitorStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObject4ProcessWatchRunnerStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
+import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 
 /**This class receives the stream from a process, which was started by the ConfigStarterZZZ class.
  * This is necessary, because the process will only goon working, if the streams were "catched" by a target.
@@ -154,17 +147,17 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	//###### FLAGS
 	//#######################################
 	@Override
-	public boolean getFlag(use.openvpn.client.process.IProcessWatchRunnerOVPN.FLAGZ objEnumFlag) {
+	public boolean getFlag(IProcessWatchRunnerOVPN.FLAGZ objEnumFlag) {
 		return this.getFlag(objEnumFlag.name());
 	}
 
 	@Override
-	public boolean setFlag(use.openvpn.client.process.IProcessWatchRunnerOVPN.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+	public boolean setFlag(IProcessWatchRunnerOVPN.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
 		return this.setFlag(objEnumFlag.name(), bFlagValue);
 	}
 
 	@Override
-	public boolean[] setFlag(use.openvpn.client.process.IProcessWatchRunnerOVPN.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+	public boolean[] setFlag(IProcessWatchRunnerOVPN.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
 		boolean[] baReturn=null;
 		main:{
 			if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
@@ -185,12 +178,12 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	}
 
 	@Override
-	public boolean proofFlagExists(use.openvpn.client.process.IProcessWatchRunnerOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
+	public boolean proofFlagExists(IProcessWatchRunnerOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.proofFlagExists(objEnumFlag.name());
 	}
 
 	@Override
-	public boolean proofFlagSetBefore(use.openvpn.client.process.IProcessWatchRunnerOVPN.FLAGZ objEnumFlag)	throws ExceptionZZZ {
+	public boolean proofFlagSetBefore(IProcessWatchRunnerOVPN.FLAGZ objEnumFlag)	throws ExceptionZZZ {
 		return this.proofFlagSetBefore(objEnumFlag.name());
 	}		
 
@@ -463,6 +456,20 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			return bReturn;
 		}
 		
+		@Override 
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
+		}
+		
 		@Override
 		public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 			boolean bFunction = false;
@@ -690,6 +697,26 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 					throw ez;
 				}
 			}//END main:
+		}
+		
+		@Override
+		public boolean writeErrorToLogWithStatus() throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{			
+				try{
+					bReturn = this.writeErrorToLog();
+					if(!bReturn)break main;
+					
+				    this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR, true);
+				    Thread.sleep(20);			
+
+				} catch (InterruptedException e) {
+					ExceptionZZZ ez = new ExceptionZZZ("InterruptedException happend: '"+ e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}
+				bReturn = true;
+			}//END Main:	
+			return bReturn;
 		}
 		
 		//########################

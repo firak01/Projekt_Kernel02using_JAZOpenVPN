@@ -27,6 +27,7 @@ import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
+import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 
 public class ClientThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningZZZ implements IClientThreadProcessWatchMonitorOVPN, Runnable,IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
 	private IClientMainOVPN objMain = null;
@@ -120,6 +121,9 @@ private void MonitorNew_(IClientMainOVPN objMain, String[] saFlagControl) throws
  						
  						runneraOVPN[icount].setClientBackendObject(this.getMainObject());
  						runneraOVPN[icount].setClientConfigStarterObject(objStarter);
+ 						
+ 						//Wichtig, den ProcessWatchMonitorOVPN an den ProcessWatchRunnerOVPN Listener registrieren.
+ 						//Dafuer gibt es dann auch ein Mapping, in dem steht wie mit den empfangenen Events umgegangen wird, bzw. welche eigenen Events geworfen werden sollen. 						
  						runneraOVPN[icount].registerForStatusLocalEvent((IListenerObjectStatusLocalSetOVPN)this);//Registriere den Monitor nun am ProcessWatchRunner
  						 						
  						threadaOVPN[icount] = new Thread(runneraOVPN[icount]);//Starte den ProcessWatchRunner					
@@ -412,6 +416,20 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 				
 				bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
+		}
+		
+		@Override 
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
 			}//end main:
 			return bReturn;
 		}
@@ -873,7 +891,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		return bFunction;	
 	}
 	
-	//aus IStatusLocalMapUserZZZ, wg. Abstracter Klasse
+	//Weil auf den Status anderer Thread gehoert wird und diese weitergeleitet werden sollen.
 	@Override
 	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
 		

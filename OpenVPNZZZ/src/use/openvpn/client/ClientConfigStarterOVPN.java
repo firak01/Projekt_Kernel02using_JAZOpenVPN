@@ -3,15 +3,18 @@ package use.openvpn.client;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import basic.zKernel.KernelZZZ;
 import use.openvpn.AbstractConfigStarterOVPN;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 import use.openvpn.IConfigMapper4BatchOVPN;
+import use.openvpn.IConfigStarterOVPN;
 import use.openvpn.IMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 
@@ -67,6 +70,11 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				}
 				
 				
+				//Vor dem Start - egal ob by_batch oder GUI - muss sichergestellt sein, dass das Log-Verzeichnis esistiert.
+				//TODOGOON 20231207: Der Pfad muss noch irgendwo definiert werden.
+				String sDirectoryPath="c:\\fglkernel\\kernellog\\ovpnClient";
+				FileEasyZZZ.createDirectory(sDirectoryPath);
+				
 				//sCommandConcrete = StringZZZ.replace(sCommand, "%1", this.getFileConfig().getName());
 				//sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfig().getName());
 				sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfigOvpn().getPath());
@@ -83,7 +91,10 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			    }
 				*/
 				Runtime load = Runtime.getRuntime();
-				if (this.getFlag("byBatch")==false){
+				//bybatch				
+				if (this.getFlag(IConfigStarterOVPN.FLAGZ.BY_BATCH.name())){
+					this.getLogObject().WriteLineDate("Excecuting by batch 'not implemented'.");
+				}else {
 					// DAS FUNKTIONIERT BEIM CLIENT
 					this.getLogObject().WriteLineDate("Executing direct '"+sCommandConcrete+"'");				
 					objReturn = load.exec("cmd /c " + sCommandConcrete);
@@ -95,11 +106,7 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 //						Thread.sleep(10000);
 //					} catch (InterruptedException e) {
 //						e.printStackTrace();
-//					}
-					
-					
-				}else{
-					this.getLogObject().WriteLineDate("Excecuting by batch 'not implemented'.");
+//					}					
 				}//END if
 				
 				
@@ -116,13 +123,12 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	}
 
 	@Override
-	public ArrayList<String> computeBatchLines(File objFileBatch, File objFileTemplateOvpn) throws ExceptionZZZ {
+	public IConfigMapper4BatchOVPN createConfigMapperObject() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
-	public IConfigMapper4BatchOVPN createConfigMapperObject() {
+	public HashMap<String, String> computeProcessArgumentHashMap() throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return null;
 	}

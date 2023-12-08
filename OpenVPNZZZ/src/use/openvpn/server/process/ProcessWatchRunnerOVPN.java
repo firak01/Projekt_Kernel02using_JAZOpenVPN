@@ -273,40 +273,113 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	 * Merke2: Wie über einen Erfolg benachrichtigen?
 			   Wenn die Verbindung erstellt wird, steht folgendes im Log.
 			   
-TCP connection established with [AF_INET]192.168.3.116:4999
-0#Sat Sep 02 12:53:10 2023 us=223095 TCPv4_CLIENT link local: [undef]
-0#Sat Sep 02 12:53:10 2023 us=223095 TCPv4_CLIENT link remote: [AF_INET]192.168.3.116:4999
-0#Sat Sep 02 12:53:10 2023 us=223095 TLS: Initial packet from [AF_INET]192.168.3.116:4999, sid=75fbf19d 73f20fdc
-0#Sat Sep 02 12:53:10 2023 us=363726 VERIFY OK: depth=1, C=DE, ST=PREUSSEN, L=BERLIN, O=OpenVPN, OU=TEST, CN=PAUL.HINDENBURG, name=PAUL.HINDENBURG, emailAddress=paul.hindenburg@mailinator.com\09
-0#Sat Sep 02 12:53:10 2023 us=363726 VERIFY OK: depth=0, C=DE, ST=PREUSSEN, L=BERLIN, O=OpenVPN, OU=TEST, CN=HANNIBALDEV06VM_SERVER, name=HANNIBALDEV06VM, emailAddress=paul.hindenburg@mailinator.com\09
-0#Sat Sep 02 12:53:10 2023 us=551235 Data Channel Encrypt: Cipher 'BF-CBC' initialized with 128 bit key
-0#Sat Sep 02 12:53:10 2023 us=551235 WARNING: INSECURE cipher with block size less than 128 bit (64 bit).  This allows attacks like SWEET32.  Mitigate by using a --cipher with a larger block size (e.g. AES-256-CBC).
-0#Sat Sep 02 12:53:10 2023 us=551235 Data Channel Encrypt: Using 160 bit message hash 'SHA1' for HMAC authentication
-0#Sat Sep 02 12:53:10 2023 us=551235 Data Channel Decrypt: Cipher 'BF-CBC' initialized with 128 bit key
-0#Sat Sep 02 12:53:10 2023 us=551235 WARNING: INSECURE cipher with block size less than 128 bit (64 bit).  This allows attacks like SWEET32.  Mitigate by using a --cipher with a larger block size (e.g. AES-256-CBC).
-0#Sat Sep 02 12:53:10 2023 us=551235 Data Channel Decrypt: Using 160 bit message hash 'SHA1' for HMAC authentication
-0#Sat Sep 02 12:53:10 2023 us=551235 Control Channel: TLSv1.2, cipher TLSv1/SSLv3 DHE-RSA-AES256-GCM-SHA384, 1024 bit RSA
-0#Sat Sep 02 12:53:10 2023 us=551235 [HANNIBALDEV06VM_SERVER] Peer Connection Initiated with [AF_INET]192.168.3.116:4999
-0#Sat Sep 02 12:53:13 2023 us=20060 SENT CONTROL [HANNIBALDEV06VM_SERVER]: 'PUSH_REQUEST' (status=1)
-0#Sat Sep 02 12:53:13 2023 us=176313 PUSH: Received control message: 'PUSH_REPLY,ping 10,ping-restart 240,ifconfig 10.0.0.2 10.0.0.1'
-0#Sat Sep 02 12:53:13 2023 us=176313 OPTIONS IMPORT: timers and/or timeouts modified
-0#Sat Sep 02 12:53:13 2023 us=176313 OPTIONS IMPORT: --ifconfig/up options modified
-0#Sat Sep 02 12:53:13 2023 us=176313 do_ifconfig, tt->ipv6=0, tt->did_ifconfig_ipv6_setup=0
-0#Sat Sep 02 12:53:13 2023 us=176313 ******** NOTE:  Please manually set the IP/netmask of 'OpenVPN2' to 10.0.0.2/255.255.255.252 (if it is not already set)
-0#Sat Sep 02 12:53:13 2023 us=176313 open_tun, tt->ipv6=0
-0#Sat Sep 02 12:53:13 2023 us=176313 TAP-WIN32 device [OpenVPN2] opened: \\.\Global\{9B00449E-0F90-4137-A063-CEA05D846AD8}.tap
-0#Sat Sep 02 12:53:13 2023 us=176313 TAP-Windows Driver Version 9.9 
-0#Sat Sep 02 12:53:13 2023 us=176313 TAP-Windows MTU=1500
-0#Sat Sep 02 12:53:13 2023 us=176313 Sleeping for 3 seconds...
-2023-9-2_12_53: Thread # 0 not jet ended or has reported an error.
-0#Sat Sep 02 12:53:16 2023 us=176370 Successful ARP Flush on interface [4] {9B00449E-0F90-4137-A063-CEA05D846AD8}
-0#Sat Sep 02 12:53:17 2023 us=410769 TEST ROUTES: 0/0 succeeded len=0 ret=0 a=0 u/d=down
-0#Sat Sep 02 12:53:17 2023 us=410769 Route: Waiting for TUN/TAP interface to come up...
-0#Sat Sep 02 12:53:18 2023 us=645168 TEST ROUTES: 0/0 succeeded len=0 ret=1 a=0 u/d=up
-0#Sat Sep 02 12:53:18 2023 us=645168 WARNING: this configuration may cache passwords in memory -- use the auth-nocache option to prevent this
-0#Sat Sep 02 12:53:18 2023 us=645168 Initialization Sequence Completed
-					 
-	 *  
+Sat Nov 25 23:14:09 2023 us=715775 Current Parameter Settings:
+Sat Nov 25 23:14:09 2023 us=715775   config = 'C:\Programme\OpenVPN\config\server_TCP_4999.ovpn'
+Sat Nov 25 23:14:09 2023 us=715775   mode = 1
+Sat Nov 25 23:14:09 2023 us=715775   show_ciphers = DISABLED
+Sat Nov 25 23:14:09 2023 us=715775   show_digests = DISABLED
+Sat Nov 25 23:14:09 2023 us=715775   show_engines = DISABLED
+Sat Nov 25 23:14:09 2023 us=715775   genkey = DISABLED
+Sat Nov 25 23:14:09 2023 us=715775   key_pass_file = '[UNDEF]'
+Sat Nov 25 23:14:09 2023 us=715775   show_tls_ciphers = DISABLED
+Sat Nov 25 23:14:09 2023 us=715775 Connection profiles [default]:
+Sat Nov 25 23:14:09 2023 us=715775   proto = tcp-server
+Sat Nov 25 23:14:09 2023 us=715775   local = '[UNDEF]'
+Sat Nov 25 23:14:09 2023 us=715775   local_port = 4999
+Sat Nov 25 23:14:09 2023 us=715775   remote = '[UNDEF]'
+Sat Nov 25 23:14:09 2023 us=715775   remote_port = 4999
+Sat Nov 25 23:14:09 2023 us=715775   remote_float = DISABLED
+Sat Nov 25 23:14:09 2023 us=715775   bind_defined = DISABLED
+Sat Nov 25 23:14:09 2023 us=715775   bind_local = ENABLED
+Sat Nov 25 23:14:09 2023 us=715775   connect_retry_seconds = 5
+Sat Nov 25 23:14:09 2023 us=715775   connect_timeout = 10
+Sat Nov 25 23:14:09 2023 us=715775 NOTE: --mute triggered...
+Sat Nov 25 23:14:09 2023 us=715775 270 variation(s) on previous 20 message(s) suppressed by --mute
+Sat Nov 25 23:14:09 2023 us=715775 OpenVPN 2.3.18 i686-w64-mingw32 [SSL (OpenSSL)] [LZO] [PKCS11] [IPv6] built on Sep 26 2017
+Sat Nov 25 23:14:09 2023 us=715775 Windows version 5.1 (Windows XP) 32bit
+Sat Nov 25 23:14:09 2023 us=715775 library versions: OpenSSL 1.0.2l  25 May 2017, LZO 2.10
+Sat Nov 25 23:14:09 2023 us=809504 Diffie-Hellman initialized with 1024 bit key
+Sat Nov 25 23:14:09 2023 us=809504 TLS-Auth MTU parms [ L:1544 D:1210 EF:40 EB:0 ET:0 EL:3 ]
+Sat Nov 25 23:14:09 2023 us=825125 Socket Buffers: R=[8192->8192] S=[8192->8192]
+Sat Nov 25 23:14:09 2023 us=825125 do_ifconfig, tt->ipv6=0, tt->did_ifconfig_ipv6_setup=0
+Sat Nov 25 23:14:09 2023 us=825125 ******** NOTE:  Please manually set the IP/netmask of 'OpenVPN1' to 10.0.0.1/255.255.255.252 (if it is not already set)
+Sat Nov 25 23:14:09 2023 us=825125 open_tun, tt->ipv6=0
+Sat Nov 25 23:14:09 2023 us=825125 TAP-WIN32 device [OpenVPN1] opened: \\.\Global\{1BB99DCA-6322-41E5-9CD1-1DBD6B1EBFF1}.tap
+Sat Nov 25 23:14:09 2023 us=825125 TAP-Windows Driver Version 9.9 
+Sat Nov 25 23:14:09 2023 us=825125 TAP-Windows MTU=1500
+Sat Nov 25 23:14:09 2023 us=825125 Sleeping for 10 seconds...
+Sat Nov 25 23:14:19 2023 us=822821 Successful ARP Flush on interface [4] {1BB99DCA-6322-41E5-9CD1-1DBD6B1EBFF1}
+Sat Nov 25 23:14:19 2023 us=822821 Data Channel MTU parms [ L:1544 D:1450 EF:44 EB:143 ET:0 EL:3 AF:3/1 ]
+Sat Nov 25 23:14:19 2023 us=822821 Listening for incoming TCP connection on [undef]
+Sat Nov 25 23:14:19 2023 us=822821 TCPv4_SERVER link local (bound): [undef]
+Sat Nov 25 23:14:19 2023 us=822821 TCPv4_SERVER link remote: [undef]
+Sat Nov 25 23:14:19 2023 us=822821 MULTI: multi_init called, r=256 v=256
+Sat Nov 25 23:14:19 2023 us=822821 MULTI: TCP INIT maxclients=1 maxevents=5
+Sat Nov 25 23:14:19 2023 us=822821 Initialization Sequence Completed
+Sat Nov 25 23:14:29 2023 us=70690 MULTI: multi_create_instance called
+Sat Nov 25 23:14:29 2023 us=70690 Re-using SSL/TLS context
+Sat Nov 25 23:14:29 2023 us=70690 LZO compression initialized
+Sat Nov 25 23:14:29 2023 us=70690 Control Channel MTU parms [ L:1544 D:1210 EF:40 EB:0 ET:0 EL:3 ]
+Sat Nov 25 23:14:29 2023 us=70690 Data Channel MTU parms [ L:1544 D:1450 EF:44 EB:143 ET:0 EL:3 AF:3/1 ]
+Sat Nov 25 23:14:29 2023 us=70690 Local Options String: 'V4,dev-type tun,link-mtu 1544,tun-mtu 1500,proto TCPv4_SERVER,comp-lzo,cipher BF-CBC,auth SHA1,keysize 128,key-method 2,tls-server'
+Sat Nov 25 23:14:29 2023 us=70690 Expected Remote Options String: 'V4,dev-type tun,link-mtu 1544,tun-mtu 1500,proto TCPv4_CLIENT,comp-lzo,cipher BF-CBC,auth SHA1,keysize 128,key-method 2,tls-client'
+Sat Nov 25 23:14:29 2023 us=70690 Local Options hash (VER=V4): 'c0103fa8'
+Sat Nov 25 23:14:29 2023 us=70690 Expected Remote Options hash (VER=V4): '69109d17'
+Sat Nov 25 23:14:29 2023 us=70690 TCP connection established with [AF_INET]192.168.3.179:3888
+Sat Nov 25 23:14:29 2023 us=70690 TCPv4_SERVER link local: [undef]
+Sat Nov 25 23:14:29 2023 us=70690 TCPv4_SERVER link remote: [AF_INET]192.168.3.179:3888
+Sat Nov 25 23:14:30 2023 us=70460 192.168.3.179:3888 TLS: Initial packet from [AF_INET]192.168.3.179:3888, sid=4cbeb862 096bdf12
+Sat Nov 25 23:14:30 2023 us=226674 192.168.3.179:3888 VERIFY OK: depth=1, C=DE, ST=PREUSSEN, L=BERLIN, O=OpenVPN, OU=TEST, CN=PAUL.HINDENBURG, name=PAUL.HINDENBURG, emailAddress=paul.hindenburg@mailinator.com\09
+Sat Nov 25 23:14:30 2023 us=226674 192.168.3.179:3888 VERIFY OK: depth=0, C=DE, ST=PREUSSEN, L=BERLIN, O=OpenVPN, OU=TEST, CN=HANNIBALDEV04VM_CLIENT, name=HANNIBALDEV04VM, emailAddress=paul.hindenburg@mailinator.com\09
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 Data Channel Encrypt: Cipher 'BF-CBC' initialized with 128 bit key
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 WARNING: INSECURE cipher with block size less than 128 bit (64 bit).  This allows attacks like SWEET32.  Mitigate by using a --cipher with a larger block size (e.g. AES-256-CBC).
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 Data Channel Encrypt: Using 160 bit message hash 'SHA1' for HMAC authentication
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 Data Channel Decrypt: Cipher 'BF-CBC' initialized with 128 bit key
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 WARNING: INSECURE cipher with block size less than 128 bit (64 bit).  This allows attacks like SWEET32.  Mitigate by using a --cipher with a larger block size (e.g. AES-256-CBC).
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 Data Channel Decrypt: Using 160 bit message hash 'SHA1' for HMAC authentication
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 WARNING: cipher with small block size in use, reducing reneg-bytes to 64MB to mitigate SWEET32 attacks.
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 Control Channel: TLSv1.2, cipher TLSv1/SSLv3 DHE-RSA-AES256-GCM-SHA384, 1024 bit RSA
+Sat Nov 25 23:14:30 2023 us=414130 192.168.3.179:3888 [HANNIBALDEV04VM_CLIENT] Peer Connection Initiated with [AF_INET]192.168.3.179:3888
+Sat Nov 25 23:14:30 2023 us=414130 HANNIBALDEV04VM_CLIENT/192.168.3.179:3888 OPTIONS IMPORT: reading client specific options from: C:\Programme\OpenVPN\config\clientconnection\HANNIBALDEV04VM_CLIENT
+Sat Nov 25 23:14:30 2023 us=414130 HANNIBALDEV04VM_CLIENT/192.168.3.179:3888 MULTI: Learn: 10.0.0.2 -> HANNIBALDEV04VM_CLIENT/192.168.3.179:3888
+Sat Nov 25 23:14:30 2023 us=414130 HANNIBALDEV04VM_CLIENT/192.168.3.179:3888 MULTI: primary virtual IP for HANNIBALDEV04VM_CLIENT/192.168.3.179:3888: 10.0.0.2
+Sat Nov 25 23:14:32 2023 us=538641 HANNIBALDEV04VM_CLIENT/192.168.3.179:3888 PUSH: Received control message: 'PUSH_REQUEST'
+Sat Nov 25 23:14:32 2023 us=538641 HANNIBALDEV04VM_CLIENT/192.168.3.179:3888 send_push_reply(): safe_cap=940
+Sat Nov 25 23:14:32 2023 us=538641 HANNIBALDEV04VM_CLIENT/192.168.3.179:3888 SENT CONTROL [HANNIBALDEV04VM_CLIENT]: 'PUSH_REPLY,ping 10,ping-restart 240,ifconfig 10.0.0.2 10.0.0.1' (status=1)
+Sun Nov 26 08:07:32 2023 us=690875 HANNIBALDEV04VM_CLIENT/192.168.3.179:3888 Connection reset, restarting [-1]
+Sun Nov 26 08:07:32 2023 us=690875 HANNIBALDEV04VM_CLIENT/192.168.3.179:3888 SIGUSR1[soft,connection-reset] received, client-instance restarting
+Sun Nov 26 08:07:32 2023 us=706500 TCP/UDP: Closing socket
+Sun Nov 26 08:07:35 2023 us=612750 MULTI: multi_create_instance called
+Sun Nov 26 08:07:35 2023 us=612750 Re-using SSL/TLS context
+Sun Nov 26 08:07:35 2023 us=612750 LZO compression initialized
+Sun Nov 26 08:07:35 2023 us=612750 Control Channel MTU parms [ L:1544 D:1210 EF:40 EB:0 ET:0 EL:3 ]
+Sun Nov 26 08:07:35 2023 us=612750 Data Channel MTU parms [ L:1544 D:1450 EF:44 EB:143 ET:0 EL:3 AF:3/1 ]
+Sun Nov 26 08:07:35 2023 us=612750 Local Options String: 'V4,dev-type tun,link-mtu 1544,tun-mtu 1500,proto TCPv4_SERVER,comp-lzo,cipher BF-CBC,auth SHA1,keysize 128,key-method 2,tls-server'
+Sun Nov 26 08:07:35 2023 us=612750 Expected Remote Options String: 'V4,dev-type tun,link-mtu 1544,tun-mtu 1500,proto TCPv4_CLIENT,comp-lzo,cipher BF-CBC,auth SHA1,keysize 128,key-method 2,tls-client'
+Sun Nov 26 08:07:35 2023 us=612750 Local Options hash (VER=V4): 'c0103fa8'
+Sun Nov 26 08:07:35 2023 us=612750 Expected Remote Options hash (VER=V4): '69109d17'
+Sun Nov 26 08:07:35 2023 us=612750 hTCP connection established wit [AF_INET]192.168.3.179:3937
+Sun Nov 26 08:07:35 2023 us=612750 TCPv4_SERVER link local: [undef]
+Sun Nov 26 08:07:35 2023 us=612750 TCPv4_SERVER link remote: [AF_INET]192.168.3.179:3937
+Sun Nov 26 08:07:36 2023 us=612750 192.168.3.179:3937 TLS: Initial packet from [AF_INET]192.168.3.179:3937, sid=2931882e 813014ac
+Sun Nov 26 08:07:36 2023 us=722125 192.168.3.179:3937 VERIFY OK: depth=1, C=DE, ST=PREUSSEN, L=BERLIN, O=OpenVPN, OU=TEST, CN=PAUL.HINDENBURG, name=PAUL.HINDENBURG, emailAddress=paul.hindenburg@mailinator.com\09
+Sun Nov 26 08:07:36 2023 us=722125 192.168.3.179:3937 VERIFY OK: depth=0, C=DE, ST=PREUSSEN, L=BERLIN, O=OpenVPN, OU=TEST, CN=HANNIBALDEV04VM_CLIENT, name=HANNIBALDEV04VM, emailAddress=paul.hindenburg@mailinator.com\09
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 Data Channel Encrypt: Cipher 'BF-CBC' initialized with 128 bit key
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 WARNING: INSECURE cipher with block size less than 128 bit (64 bit).  This allows attacks like SWEET32.  Mitigate by using a --cipher with a larger block size (e.g. AES-256-CBC).
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 Data Channel Encrypt: Using 160 bit message hash 'SHA1' for HMAC authentication
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 Data Channel Decrypt: Cipher 'BF-CBC' initialized with 128 bit key
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 WARNING: INSECURE cipher with block size less than 128 bit (64 bit).  This allows attacks like SWEET32.  Mitigate by using a --cipher with a larger block size (e.g. AES-256-CBC).
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 Data Channel Decrypt: Using 160 bit message hash 'SHA1' for HMAC authentication
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 WARNING: cipher with small block size in use, reducing reneg-bytes to 64MB to mitigate SWEET32 attacks.
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 Control Channel: TLSv1.2, cipher TLSv1/SSLv3 DHE-RSA-AES256-GCM-SHA384, 1024 bit RSA
+Sun Nov 26 08:07:36 2023 us=847125 192.168.3.179:3937 [HANNIBALDEV04VM_CLIENT] Peer Connection Initiated with [AF_INET]192.168.3.179:3937
+Sun Nov 26 08:07:36 2023 us=847125 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 OPTIONS IMPORT: reading client specific options from: C:\Programme\OpenVPN\config\clientconnection\HANNIBALDEV04VM_CLIENT
+Sun Nov 26 08:07:36 2023 us=847125 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 MULTI: Learn: 10.0.0.2 -> HANNIBALDEV04VM_CLIENT/192.168.3.179:3937
+Sun Nov 26 08:07:36 2023 us=847125 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 MULTI: primary virtual IP for HANNIBALDEV04VM_CLIENT/192.168.3.179:3937: 10.0.0.2
+Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 PUSH: Received control message: 'PUSH_REQUEST'
+Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 send_push_reply(): safe_cap=940
+Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SENT CONTROL [HANNIBALDEV04VM_CLIENT]: 'PUSH_REPLY,ping 10,ping-restart 240,ifconfig 10.0.0.2 10.0.0.1' (status=1)
+
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 03.09.2023, 07:35:31
 	 */
@@ -319,8 +392,9 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			System.out.println(sLog);
 			this.logLineDate(sLog);
 			if(StringZZZ.contains(sLine,"TCP connection established")) {
-				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST, false);
-				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, true);
+//				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST, false);
+//				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, true);
+				this.switchStatusLocalAllGroupTo(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht wird, dies hier tun
 				boolean bEndOnConnection = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION);
@@ -344,9 +418,9 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				//Sun Oct 29 07:36:15 2023 us=949340 TCP: connect to [AF_INET]192.168.3.116:4999 failed, will try again in 5 seconds: Connection timed out (WSAETIMEDOUT)
 				System.out.println(("TESTFGL PROCESS STRING ANALYSE 01: " + sLine));
 				
-			//TODOGOON20231106;//Debugge, warum der false - Wert nicht weitergegeben wird an Main
-				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, false);				
-				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST, true);
+//				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, false);				
+//			this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST, true);
+				this.switchStatusLocalAllGroupTo(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST);
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht wird, dies hier tun
 				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
@@ -363,8 +437,9 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				//[HANNIBALDEV06VM_SERVER] Peer Connection Initiated with [AF_INET]192.168.3.116:4999
 				System.out.println(("TESTFGL PROCESS STRING ANALYSE 02: " + sLine));
 											
-				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST, false);
-				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, true);
+//				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST, false);
+//				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, true);
+				this.switchStatusLocalAllGroupTo(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht worden waere, dies hier wieder rueckgaengig machen
 				//Idee dahinter: Der Verbindungsverlust war so kurzfristig, der STOPREQUEST hat noch garnicht gezogen.
@@ -425,7 +500,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				}
 				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
 								
-				bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
+				bFunction = this.offerStatusLocal(enumStatusIn, null, bStatusValue);
 			}//end main:
 			return bFunction;
 		}
@@ -461,6 +536,20 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			return bReturn;
 		}
 		
+		@Override 
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
+		}
+		
 		@Override
 		public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 			boolean bFunction = false;
@@ -472,7 +561,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
 			    IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
 			
-			    bFunction = this.offerStatusLocal_(-1, enumStatus, sStatusMessage, bStatusValue);
+			    bFunction = this.offerStatusLocal_(-1, enumStatusIn, sStatusMessage, bStatusValue);
 			    
 			}//end main
 			return bFunction;
@@ -502,7 +591,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 							
 			    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
 			    IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-				String sStatusName = enumStatus.name();
+				String sStatusName = enumStatusIn.name();
 				bFunction = this.proofStatusLocalExists(sStatusName);															
 				if(!bFunction){
 					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status is not available: '" + sStatusName + "'";
@@ -831,6 +920,54 @@ Sun Nov 19 19:47:51 2023 us=75880 TCP/UDP: Closing socket
 					throw ez;
 				}
 			}//END main:
+		}
+		
+		@Override
+		public boolean writeErrorToLog() throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{			
+				try{
+					check:{
+						if(this.objProcess==null){
+							ExceptionZZZ ez = new ExceptionZZZ("Process-Object", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+							throw ez;
+						}
+					}//END check:
+				   		
+				    BufferedReader err = new BufferedReader(new InputStreamReader(objProcess.getErrorStream()) );
+				    for ( String s; (s = err.readLine()) != null; ){
+					      //System.out.println( s );
+				    	this.getLogObject().WriteLine(this.getNumber() + "# ERROR: "+ s);				    	
+				    	if( this.getFlag("stoprequested")==true) break main;
+					}
+				} catch (IOException e) {
+					ExceptionZZZ ez = new ExceptionZZZ("IOException happend: '" + e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}
+				bReturn = true;
+			}//END Main:	
+			return bReturn;
+		}
+		
+		@Override
+		public boolean writeErrorToLogWithStatus() throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{			
+				try{		   		
+					bReturn = this.writeErrorToLog();
+					if(!bReturn)break main;
+					
+			    	this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR, true);
+			    	Thread.sleep(20);			
+			    	if( this.getFlag("stoprequested")==true) break main;
+			
+				} catch (InterruptedException e) {
+					ExceptionZZZ ez = new ExceptionZZZ("InterruptedException happend: '"+ e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}
+				bReturn = true;
+			}//END Main:	
+			return bReturn;
 		}
 		
 		//########################

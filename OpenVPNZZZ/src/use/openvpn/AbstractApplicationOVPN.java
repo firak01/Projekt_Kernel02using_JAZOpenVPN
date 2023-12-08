@@ -26,11 +26,22 @@ public class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implemen
 	protected String sCertifierConfiguredFilename=null;	
 	protected String sKeyConfiguredFilename=null;
 	
+	protected String sDirectoryOvpnLog=null;
+	
 	
 	
 	public AbstractApplicationOVPN(IKernelZZZ objKernel, IMainOVPN objMain) throws ExceptionZZZ {
 		super(objKernel);
 		this.setMainObject(objMain);
+	}
+	
+	public String readDirectoryOvpnLog() throws ExceptionZZZ{
+	String sReturn = null;
+	main:{
+		IKernelZZZ objKernel = this.getKernelObject();
+		sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","DirectoryLog").getValue();					
+	}//END main:
+	return sReturn;
 	}
 	
 	/**Read from the configuration file a proxy which might be necessary to use AND enables the proxy for this application.
@@ -187,6 +198,13 @@ public class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implemen
 		}
 		public void setMainObject(IMainOVPN objMain) {
 			this.objMain = objMain;
+		}
+		
+		public String getDirectoryOvpnLog() throws ExceptionZZZ {
+			if(this.sDirectoryOvpnLog==null) {
+				this.sDirectoryOvpnLog=this.readDirectoryOvpnLog();
+			}
+			return this.sDirectoryOvpnLog;
 		}
 		
 		public String getProxyHost(){

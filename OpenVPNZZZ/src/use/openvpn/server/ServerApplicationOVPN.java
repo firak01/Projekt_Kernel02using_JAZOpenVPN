@@ -10,9 +10,10 @@ import use.openvpn.IMainOVPN;
 public class ServerApplicationOVPN extends AbstractApplicationOVPN {
 	private static final long serialVersionUID = 5897449174489342306L;
 	private String sURL = null;
-	private String sIpURL = null;
-	
+	private String sIpURL = null;	
 	private String sIpRemote = null;
+	
+	
 	
 	public ServerApplicationOVPN(IKernelZZZ objKernel, ServerMainOVPN objServer) throws ExceptionZZZ {
 		super(objKernel, (IMainOVPN) objServer);

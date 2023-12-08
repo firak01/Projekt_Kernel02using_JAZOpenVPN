@@ -24,8 +24,8 @@ import basic.zWin32.com.wmi.KernelWMIZZZ;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.IApplicationOVPN;
-import use.openvpn.client.ClientMainOVPN;
-import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
+import use.openvpn.IConfigStarterOVPN;
+import use.openvpn.IMainOVPN;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.status.EventObject4ServerMainStatusLocalSetOVPN;
@@ -39,8 +39,8 @@ import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
 public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,IEventBrokerStatusLocalSetUserOVPN,IListenerObjectStatusLocalSetOVPN{
 	protected ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
-	private ArrayList<File> listaConfigFile = null;
-	private ArrayList<ServerConfigStarterOVPN> listaConfigStarter = new ArrayList(); //Hieruwber werden alle Prozesse, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.	
+	volatile ArrayList<File> listaConfigFile = null;
+	volatile ArrayList<ServerConfigStarterOVPN> listaConfigStarter = new ArrayList<ServerConfigStarterOVPN>(); //Hierueber werden alle Prozesse, die mit einem bestimmten Konfigurations-File gestartet wurden festgehalten.	
 	
 	//Die Objekte, an die sich der Tray registriert und auf deren LocalStatus - Events er hoert.
 	private ServerThreadProcessWatchMonitorOVPN  objMonitorProcess = null;
@@ -54,10 +54,8 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		boolean bReturn = false;
 		main:{		
 			//try{		
-			check:{
-				if(this.getFlag("init")) break main;
-			}//End check
-		
+			if(this.getFlag("init")) break main;
+					
 		//#################
         //Definiere einen Monitor, der die OVPN-Watch Processe beobachtet (die ihren jeweiligen, eigentlichen OVPN.exe Process beobachten)
 		//Er wird auch am Backend-Objekt registriert, um dortige Aenderungen mitzubekommen.
@@ -270,7 +268,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 				break main;
 			}else{
 				String stemp = "";
-				for(int icount=0; icount <= listaFileConfigUsed.size()-1; icount++){
+				for(int icount=0; icount <= listaFileConfigUsed.size()-1; icount++){										
 					File objFileTemp = (File) listaFileConfigUsed.get(icount);
 					if(stemp.equals("")){
 						stemp = objFileTemp.getName();
@@ -280,12 +278,42 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 				}//END for
 				this.logProtocolString("Finally used configuration  file(s): " + stemp);
 			}
-			
+						
 			//#############
 			//Auslesen der "erlaubten" Clients und Datei dafür in einem bestimmten Verzeichnis anlegen.			
 			//Das wird alles in einem Handler gekapselt, den Namen (auch der Methode noch optimieren)
 			ServerConfigOnServerAllowedClientFacadeOVPN objClientConfigHandler = new ServerConfigOnServerAllowedClientFacadeOVPN(this.getKernelObject(), this, null);
 			boolean bSuccess = objClientConfigHandler.execute();
+			
+			//############
+			//Erstelle die Konfigurationstprocesse
+			int iNumberOfProcessStarted = 0;
+			for(int icount=0; icount <= listaFileConfigUsed.size()-1; icount++){
+				File objFileConfigOvpn = (File) listaFileConfigUsed.get(icount);
+				String sAlias = Integer.toString(icount);								
+				File objFileTemplateBatch = objChooser.findFileConfigBatchTemplateFirst();				
+				
+				boolean bByGui = objKernel.getParameterBooleanByProgramAlias("OVPN","ProgProcessCheck","startByOvpnGUI");
+				boolean bByBatch = objKernel.getParameterBooleanByProgramAlias("OVPN","ProgProcessCheck","startByBatch");
+				if(bByGui && bByBatch) {
+					ExceptionZZZ ez = new ExceptionZZZ(sERROR_CONFIGURATION_VALUE + "OVPN kann entweder als Batch oder als GUI gestartet werden. '" + objChooser.readDirectoryConfigPath() + "'", iERROR_CONFIGURATION_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
+					throw ez;
+				}
+				
+				ArrayList<String> listasFlagStarter = new ArrayList<String>();
+				if(bByGui) {
+					//saFlagStarter = {IConfigStarterOVPN.FLAGZ.BY_OVPNGUI.name()}; 
+					listasFlagStarter.add(IConfigStarterOVPN.FLAGZ.BY_OVPNGUI.name());
+				}
+				if(bByBatch) {
+					//saFlagStarter = {IConfigStarterOVPN.FLAGZ.BY_BATCH.name()}; 
+					listasFlagStarter.add(IConfigStarterOVPN.FLAGZ.BY_BATCH.name()); //Problem: Wenn man eine Batch startet, kann man nicht auf den Output eines in der Batch gestarteten Programs zugreifen.
+				}
+								
+				String[] saTemp = ArrayListZZZ.toStringArray(listasFlagStarter);
+				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, icount, objFileTemplateBatch, objFileConfigOvpn, sAlias, saTemp);
+				this.addProcessStarter(objStarter);
+			}//end for
 			
 			//############
 			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.						
@@ -373,7 +401,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 				 if(objStarter==null) break main;
 			 }//END check
 		 
-		 	this.listaConfigStarter.add(objStarter);
+		 	this.getServerConfigStarterList().add(objStarter);
 		 
 		 }//END main
 		 return bReturn;
@@ -543,6 +571,20 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 			bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
 		}//end main:
 		return bFunction;
+	}
+	
+	@Override 
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ServerMainOVPN.STATUSLOCAL enumStatus = (ServerMainOVPN.STATUSLOCAL) enumStatusIn;
+			
+			bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+		}//end main:
+		return bReturn;
 	}
 	
 	

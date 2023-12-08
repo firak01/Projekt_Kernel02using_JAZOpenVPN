@@ -43,6 +43,7 @@ import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.IClientStatusMappedValueZZZ.ClientTrayStatusTypeZZZ;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
+import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 
 /**This class is used as a backend worker.
  * For frontend features, use ConfigMainUIZZZ.
@@ -764,6 +765,20 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
 			bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+		}//end main:
+		return bReturn;
+	}
+	
+	@Override 
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
 		}//end main:
 		return bReturn;
 	}

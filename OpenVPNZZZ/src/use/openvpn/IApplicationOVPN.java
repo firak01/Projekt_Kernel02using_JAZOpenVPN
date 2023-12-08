@@ -3,7 +3,8 @@ package use.openvpn;
 import basic.zBasic.ExceptionZZZ;
 
 public interface IApplicationOVPN extends IMainUserOVPN{
-
+	String getDirectoryOvpnLog() throws ExceptionZZZ;
+	
 	String getProxyHost();
 
 	String getProxyPort();

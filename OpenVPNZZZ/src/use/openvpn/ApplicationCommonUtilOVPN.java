@@ -62,6 +62,8 @@ public class ApplicationCommonUtilOVPN {
 			IKernelZZZ objKernel = objReaderURL.getKernelObject();
 			TagTypeInputZZZ objTagTypeInput = new TagTypeInputZZZ(objKernel);			
 			TagInputZZZ objTag = (TagInputZZZ) objReaderHTML.readTagFirstZZZ(objTagTypeInput, "IPNr");
+			if(objTag==null)break main;
+			
 			sReturn = objTag.readValue();
 		}//end main:
 		return sReturn;

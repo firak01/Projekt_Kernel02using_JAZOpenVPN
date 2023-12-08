@@ -8,12 +8,16 @@ import java.util.List;
 import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
+import basic.zKernel.flag.EventObjectFlagZsetZZZ;
+import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IFlagZLocalUserZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
+import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.ServerConfigMapper4BatchOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
 import basic.zBasic.util.abstractList.SetZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -31,7 +35,6 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 	private String sMyAlias = "-1";
 	private int iIndex = -1;
 	
-	private boolean bFlagByBatch = false;
 	String sOvpnContextClientOrServer=null;
 		
 	public AbstractConfigStarterOVPN(IKernelZZZ objKernel, IMainOVPN objMain, int iIndex, File objFileOConfigvpn, String sMyAlias, String[] saFlagControl) throws ExceptionZZZ{
@@ -89,7 +92,8 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 				
 				//Falls nicht explizit das Flag gesetzt ist, wirf keinen Fehler. Übernimm dann trotzdem die Batchdatei - wenn übergeben -, was man hat dat hat man. 
 				if(objFileTemplateBatch==null){
-					if(this.getFlag("byBatch")) {
+					//bybatch
+					if(this.getFlag(IConfigStarterOVPN.FLAGZ.BY_BATCH.name())) {
 						ExceptionZZZ ez = new ExceptionZZZ("BatchConfigurationFile", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 						throw ez;
 					}
@@ -227,7 +231,31 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 	}
 	
 	
-//	###### FLAGS
+	//###### FLAGS
+	/* @see basic.zBasic.IFlagZZZ#getFlagZ(java.lang.String)
+	 * 	 Weitere Voraussetzungen:
+	 * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
+	 * - Innere Klassen muessen auch public deklariert werden.(non-Javadoc)
+	 */
+	public boolean getFlag(String sFlagName) {
+		boolean bFunction = false;
+		main:{
+			if(StringZZZ.isEmpty(sFlagName)) break main;
+										
+			HashMap<String, Boolean> hmFlag = this.getHashMapFlag();
+			Boolean objBoolean = hmFlag.get(sFlagName.toUpperCase());
+			if(objBoolean==null){
+				bFunction = false;
+			}else{
+				bFunction = objBoolean.booleanValue();
+			}
+							
+		}	// end main:
+		
+		return bFunction;	
+	}
+	
+	//ALTE VERSION
 	/* (non-Javadoc)
 	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
 	Flags used: 
@@ -236,78 +264,161 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 	- hasInput
 	- stoprequested
 	 */
-	public boolean getFlag(String sFlagName){
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.getFlag(sFlagName);
-			if(bFunction==true) break main;
-							
-			//getting the flags of this object
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("bybatch")){
-				bFunction = bFlagByBatch;
-				break main;
-			}
-			/*
-			else if(stemp.equals("hasoutput")){
-				bFunction = bFlagHasOutput;
-				break main;
-			}else if(stemp.equals("hasinput")){
-				bFunction = bFlagHasInput;
-				break main;
-			}else if(stemp.equals("stoprequested")){
-				bFunction = bFlagStopRequested;
-				break main;
-			}
-			*/
-	
-		}//end main:
-		return bFunction;
-	}
+//	public boolean getFlag(String sFlagName){
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.getFlag(sFlagName);
+//			if(bFunction==true) break main;
+//							
+//			//getting the flags of this object
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("bybatch")){
+//				bFunction = bFlagByBatch;
+//				break main;
+//			}
+//			/*
+//			else if(stemp.equals("hasoutput")){
+//				bFunction = bFlagHasOutput;
+//				break main;
+//			}else if(stemp.equals("hasinput")){
+//				bFunction = bFlagHasInput;
+//				break main;
+//			}else if(stemp.equals("stoprequested")){
+//				bFunction = bFlagStopRequested;
+//				break main;
+//			}
+//			*/
+//	
+//		}//end main:
+//		return bFunction;
+//	}
 
-	/**
-	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
-	 * @param sFlagName
-	 * Flags used:<CR>
-	 	- hasError
-	- hasOutput
-	- hasInput
-	- stoprequested
-	 * @throws ExceptionZZZ 
-	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
-		boolean bFunction = false;
-		main:{			
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.setFlag(sFlagName, bFlagValue);
-		if(bFunction==true) break main;
+/** DIESE METHODE MUSS IN ALLEN KLASSEN VORHANDEN SEIN - über Vererbung -, DIE IHRE FLAGS SETZEN WOLLEN
+ * Weitere Voraussetzungen:
+ * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
+ * - Innere Klassen müssen auch public deklariert werden.
+ * @param objClassParent
+ * @param sFlagName
+ * @param bFlagValue
+ * @return
+ * lindhaueradmin, 23.07.2013
+ */
+@Override
+public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ {
+	boolean bFunction = false;
+	main:{
+		if(StringZZZ.isEmpty(sFlagName)) {
+			bFunction = true;
+			break main;
+		}
+					
+		bFunction = this.proofFlagExists(sFlagName);															
+		if(bFunction == true){
+			
+			//Setze das Flag nun in die HashMap
+			HashMap<String, Boolean> hmFlag = this.getHashMapFlag();
+			hmFlag.put(sFlagName.toUpperCase(), bFlagValue);								
+			
+			//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+			//Dann erzeuge den Event und feuer ihn ab.
+			if(this.objEventFlagZBroker!=null) {
+				IEventObjectFlagZsetZZZ event = new EventObjectFlagZsetZZZ(this,1,sFlagName.toUpperCase(), bFlagValue);
+				this.objEventFlagZBroker.fireEvent(event);
+			}
+			
+			bFunction = true;								
+		}										
+	}	// end main:
+	
+	return bFunction;	
+}
+
+//ALTE VERSION
+/**
+ * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+ * @param sFlagName
+ * Flags used:<CR>
+ 	- hasError
+- hasOutput
+- hasInput
+- stoprequested
+ * @throws ExceptionZZZ 
+ */
+//public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
+//	boolean bFunction = false;
+//	main:{			
+//		if(StringZZZ.isEmpty(sFlagName)) break main;
+//		bFunction = super.setFlag(sFlagName, bFlagValue);
+//	if(bFunction==true) break main;
+//	
+//	//setting the flags of this object
+//	String stemp = sFlagName.toLowerCase();
+//	if(stemp.equals("bybatch")){
+//		bFlagByBatch = bFlagValue;
+//		bFunction = true;
+//		break main;
+//	}
+//	/*
+//	else if(stemp.equals("hasoutput")){
+//		bFlagHasOutput = bFlagValue;
+//		bFunction = true;
+//		break main;
+//	}else if(stemp.equals("hasinput")){
+//		bFlagHasInput = bFlagValue;
+//		bFunction = true;
+//		break main;
+//	}else if(stemp.equals("stoprequested")){
+//		bFlagStopRequested = bFlagValue;
+//		bFunction = true;
+//		break main;
+//	}
+//	*/
+//	}//END main:
+//	return bFunction;
+//}
+	
+		@Override
+		public boolean getFlag(IConfigStarterOVPN.FLAGZ objEnumFlag) {
+			return this.getFlag(objEnumFlag.name());
+		}
+		@Override
+		public boolean setFlag(IConfigStarterOVPN.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			return this.setFlag(objEnumFlag.name(), bFlagValue);
+		}
 		
-		//setting the flags of this object
-		String stemp = sFlagName.toLowerCase();
-		if(stemp.equals("bybatch")){
-			bFlagByBatch = bFlagValue;
-			bFunction = true;
-			break main;
+		@Override
+		public boolean[] setFlag(IConfigStarterOVPN.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			boolean[] baReturn=null;
+			main:{
+				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+					baReturn = new boolean[objaEnumFlag.length];
+					int iCounter=-1;
+					for(IConfigStarterOVPN.FLAGZ objEnumFlag:objaEnumFlag) {
+						iCounter++;
+						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+						baReturn[iCounter]=bReturn;
+					}
+					
+					//!!! Ein mögliches init-Flag ist beim direkten setzen der Flags unlogisch.
+					//    Es wird entfernt.
+					this.setFlag(IFlagZUserZZZ.FLAGZ.INIT, false);
+				}
+			}//end main:
+			return baReturn;
 		}
-		/*
-		else if(stemp.equals("hasoutput")){
-			bFlagHasOutput = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("hasinput")){
-			bFlagHasInput = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("stoprequested")){
-			bFlagStopRequested = bFlagValue;
-			bFunction = true;
-			break main;
+		
+		@Override
+		public boolean proofFlagExists(IConfigStarterOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagExists(objEnumFlag.name());
+		}	
+		
+		@Override
+		public boolean proofFlagSetBefore(IConfigStarterOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagSetBefore(objEnumFlag.name());
 		}
-		*/
-		}//END main:
-		return bFunction;
-	}
+	
+	//##########################################
 
 	@Override
 	public abstract Process requestStart() throws ExceptionZZZ;
@@ -327,5 +438,8 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 		}
 		return listasReturn;
 	}	
+	
+	@Override
+	public abstract HashMap<String, String> computeProcessArgumentHashMap() throws ExceptionZZZ;
 	
 }//END class

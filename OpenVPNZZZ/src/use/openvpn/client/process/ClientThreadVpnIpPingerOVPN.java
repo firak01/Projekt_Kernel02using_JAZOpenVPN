@@ -761,7 +761,21 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 					bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
 				}//end main:
 				return bReturn;
-			}			
+			}	
+			
+			@Override 
+			public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+				boolean bReturn = false;
+				main:{
+					if(enumStatusIn==null) {
+						break main;
+					}
+					ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+					
+					bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+				}//end main:
+				return bReturn;
+			}
 			
 			@Override 
 			public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {

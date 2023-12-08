@@ -1,2 +1,4 @@
 REM Template für das Starter Batch - File
-%exeovpn% --pause-exit --log c:\fglkernel\kernellog\ovpn.log --config %templateovpn% > c:\fglkernel\kernellog\ovpnStarter.log 2>&1
+REM 20231207 alte Version: %exeovpn% --pause-exit --log c:\fglkernel\kernellog\ovpn.log --config %templateovpn% > c:\fglkernel\kernellog\ovpnStarter.log 2>&1
+REM 20231207: Es wird ohne die Umleitungen > bzw. 2>%1 nix in ein Log geschrieben.
+%exeovpn% --pause-exit --log c:\fglkernel\kernellog\ovpnServer\ovpn.log --config %templateovpn% > c:\fglkernel\kernellog\ovpnServer\byBatchStarter.log 2>&1
