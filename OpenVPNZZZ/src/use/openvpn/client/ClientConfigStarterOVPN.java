@@ -41,9 +41,11 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 	public Process requestStart() throws ExceptionZZZ{
 		Process objReturn = null;
 		main:{
+			String sLog = null;
 			String sCommandConcrete=null;
 			try {
-				this.getLogObject().WriteLineDate("Trying to find OVPNExecutable.");
+				sLog = "Trying to find OVPNExecutable.";
+				this.getLogObject().WriteLineDate(sLog);
 				File objFileExe = ConfigFileTemplateOvpnOVPN.findFileExe();
 				if(objFileExe==null){
 					ExceptionZZZ ez = new ExceptionZZZ( "Executabel associated with .ovpn can not be found.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName());
@@ -55,8 +57,25 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					ExceptionZZZ ez = new ExceptionZZZ("Executabel associated with .ovpn is not a file: '"+objFileExe.getPath()+"'", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
-				this.getLogObject().WriteLineDate("OVPNExecutable found");
+				sLog = "OVPNExecutable found";
+				this.getLogObject().WriteLineDate(sLog);
+
+				//Vor dem Start - egal ob by_batch oder GUI - muss sichergestellt sein, dass das Log-Verzeichnis existiert.				
+				//String sDirectoryPath="c:\\fglkernel\\kernellog\\ovpnClient";
+				String sDirectoryPath=this.getMainObject().getApplicationObject().getDirectoryOvpnLog();
+				sLog = ReflectCodeZZZ.getPositionCurrent() + " Using as LogDirectory: '" + sDirectoryPath + "'";//bybatch als Suchtag
+				System.out.println(sLog);
+				this.getLogObject().WriteLineDate(sLog);
 				
+				boolean bCreated = FileEasyZZZ.createDirectory(sDirectoryPath);
+				if(bCreated) {
+					sLog = ReflectCodeZZZ.getPositionCurrent() + " Directory created: '" + sDirectoryPath + "'";//bybatch als Suchtag
+					System.out.println(sLog);
+					this.getLogObject().WriteLineDate(sLog);
+				}
+
+				//Anders als beim Server hier nur der "direkte" Weg OVPN zu starten.
+				//Dann kommt die Ausgabe sogar in die Konsole und kann analysiert werden.
 				String sCommandParameter = ConfigFileTemplateOvpnOVPN.readCommandParameter();
 				String sCommand = null;
 				if(sCommandParameter!=null){
@@ -68,12 +87,6 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				}else{
 					sCommand = objFileExe.getPath();
 				}
-				
-				
-				//Vor dem Start - egal ob by_batch oder GUI - muss sichergestellt sein, dass das Log-Verzeichnis esistiert.
-				//TODOGOON 20231207: Der Pfad muss noch irgendwo definiert werden.
-				String sDirectoryPath="c:\\fglkernel\\kernellog\\ovpnClient";
-				FileEasyZZZ.createDirectory(sDirectoryPath);
 				
 				//sCommandConcrete = StringZZZ.replace(sCommand, "%1", this.getFileConfig().getName());
 				//sCommandConcrete = StringZZZ.replace(sCommand, "\"%1\"", this.getFileConfig().getName());
@@ -89,14 +102,16 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			    for ( String s; (s = in.readLine()) != null; ){
 			      System.out.println( s );
 			    }
-				*/
-				Runtime load = Runtime.getRuntime();
-				//bybatch				
+				*/								
 				if (this.getFlag(IConfigStarterOVPN.FLAGZ.BY_BATCH.name())){
-					this.getLogObject().WriteLineDate("Excecuting by batch 'not implemented'.");
+					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Excecuting by batch 'not implemented'.";//bybatch als Suchtag
+					this.getLogObject().WriteLineDate(sLog);
 				}else {
 					// DAS FUNKTIONIERT BEIM CLIENT
-					this.getLogObject().WriteLineDate("Executing direct '"+sCommandConcrete+"'");				
+					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Executing direct - " + sCommandConcrete;
+					this.getLogObject().WriteLineDate(sLog);
+					
+					Runtime load = Runtime.getRuntime();
 					objReturn = load.exec("cmd /c " + sCommandConcrete);
 					//Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");
 					//DAS GEHT: Process p = load.exec( "cmd /c C:\\Programme\\OpenVPN\\bin\\openvpn.exe --pause-exit --config C:\\Programme\\OpenVPN\\config\\client_itelligence.ovpn");
@@ -111,7 +126,7 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				
 				
 			} catch (IOException e) {
-				String sError = "ReflectCodeZZZ.getPositionCurrent() + \": \" + IOException ('"+e.getMessage()+"') executing the commandline: '"+ sCommandConcrete +"'";
+				String sError = ReflectCodeZZZ.getPositionCurrent() + ": IOException ('"+e.getMessage()+"') executing the commandline: '"+ sCommandConcrete +"'";
 				System.out.println(sError);
 				this.getLogObject().WriteLineDate(sError);
 				ExceptionZZZ ez = new ExceptionZZZ(sError, iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());

@@ -64,7 +64,8 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			String sLog = null;
 			String sCommandConcrete=null;
 			try {
-				this.getLogObject().WriteLineDate("Trying to find OVPNExecutable.");
+				sLog = "Trying to find OVPNExecutable.";
+				this.getLogObject().WriteLineDate(sLog);
 				File objFileExe = ConfigFileTemplateOvpnOVPN.findFileExe();
 				if(objFileExe==null){
 					ExceptionZZZ ez = new ExceptionZZZ( "Executabel associated with .ovpn can not be found.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName());
@@ -76,7 +77,8 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					ExceptionZZZ ez = new ExceptionZZZ("Executabel associated with .ovpn is not a file: '"+objFileExe.getPath()+"'", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
-				this.getLogObject().WriteLineDate("OVPNExecutable found");
+				sLog = "OVPNExecutable found";
+				this.getLogObject().WriteLineDate(sLog);
 				
 				//Vor dem Start - egal ob by_batch oder GUI - muss sichergestellt sein, dass das Log-Verzeichnis existiert.				
 				//String sDirectoryPath="c:\\fglkernel\\kernellog\\ovpnServer";
@@ -272,7 +274,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					//*/										
 				}//END if
 			} catch (IOException e) {
-				String sError = "ReflectCodeZZZ.getPositionCurrent() + \": \" + IOException ('"+e.getMessage()+"') executing the commandline: '"+ sCommandConcrete +"'";
+				String sError = ReflectCodeZZZ.getPositionCurrent() + ": IOException ('"+e.getMessage()+"') executing the commandline: '"+ sCommandConcrete +"'";
 				System.out.println(sError);
 				this.getLogObject().WriteLineDate(sError);
 				ExceptionZZZ ez = new ExceptionZZZ(sError, iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());

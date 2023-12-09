@@ -9,7 +9,7 @@ import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import use.openvpn.server.ServerMainOVPN;
 
-public class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implements IApplicationOVPN{
+public abstract class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implements IApplicationOVPN{
 	protected IMainOVPN objMain = null;
 	
 	protected String sProxyHost = null;
@@ -35,14 +35,7 @@ public class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implemen
 		this.setMainObject(objMain);
 	}
 	
-	public String readDirectoryOvpnLog() throws ExceptionZZZ{
-	String sReturn = null;
-	main:{
-		IKernelZZZ objKernel = this.getKernelObject();
-		sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","DirectoryLog").getValue();					
-	}//END main:
-	return sReturn;
-	}
+	public abstract String readDirectoryOvpnLog() throws ExceptionZZZ;
 	
 	/**Read from the configuration file a proxy which might be necessary to use AND enables the proxy for this application.
 	 * Remember: This proxy is used to read the url (containing the ip adress)

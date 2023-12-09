@@ -31,6 +31,17 @@ public class ServerApplicationOVPN extends AbstractApplicationOVPN {
 		this.setMainObject((IMainOVPN) objServer);
 	}		
 	
+	@Override
+	public String readDirectoryOvpnLog() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgProcessCheck","DirectoryLog").getValue();					
+		}//END main:
+		return sReturn;
+	}
+
+	
 	public String getURL2Parse() throws ExceptionZZZ{
 		if(this.sURL==null) {
 			this.sURL = this.readURL2Parse();

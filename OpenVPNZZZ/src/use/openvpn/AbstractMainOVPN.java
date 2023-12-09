@@ -20,12 +20,12 @@ import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
 public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusListeningZZZ implements Runnable,IMainOVPN {
-	protected IApplicationOVPN objApplication = null;
-	protected ConfigChooserOVPN objConfigChooser = null;
-	protected IConfigMapper4TemplateOVPN objConfigMapper = null;
+	protected volatile IApplicationOVPN objApplication = null;
+	protected volatile ConfigChooserOVPN objConfigChooser = null;
+	protected volatile IConfigMapper4TemplateOVPN objConfigMapper = null;
 	
-	protected String sProtocol= null; //wird als Protokoll verwendet
-	protected ArrayList<String> listaProtocol = new ArrayList<String>(); //Hierueber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
+	protected volatile String sProtocol= null; //wird als Protokoll verwendet
+	protected volatile ArrayList<String> listaProtocol = new ArrayList<String>(); //Hierueber werden alle gesetzten Stati, die in der Methode "start()" gesetzt wurden festgehalten.
 		
 	public AbstractMainOVPN(IKernelZZZ objKernel, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel, saFlagControl);

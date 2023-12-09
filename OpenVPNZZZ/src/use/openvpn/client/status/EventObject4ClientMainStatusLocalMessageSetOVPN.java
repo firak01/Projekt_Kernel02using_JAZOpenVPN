@@ -5,6 +5,7 @@ import java.util.EventObject;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalMessageSetZZZ;
 import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
@@ -22,7 +23,7 @@ import use.openvpn.server.ServerMainOVPN;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4ClientMainStatusLocalSetOVPN  extends AbstractEventObjectStatusLocalSetZZZ implements IEventObject4ClientMainStatusLocalSetOVPN, Comparable<IEventObject4ClientMainStatusLocalSetOVPN>{
+public class EventObject4ClientMainStatusLocalMessageSetOVPN  extends AbstractEventObjectStatusLocalMessageSetZZZ implements IEventObject4ClientMainStatusLocalMessageSetOVPN, Comparable<IEventObject4ClientMainStatusLocalMessageSetOVPN>{
 	private ClientMainOVPN.STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
@@ -37,16 +38,16 @@ public class EventObject4ClientMainStatusLocalSetOVPN  extends AbstractEventObje
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
 	 */
-	public EventObject4ClientMainStatusLocalSetOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
+	public EventObject4ClientMainStatusLocalMessageSetOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);		
 	}
 	
-	public EventObject4ClientMainStatusLocalSetOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
+	public EventObject4ClientMainStatusLocalMessageSetOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);
 		this.sStatusAbbreviation = sStatusAbbreviation;
 	}
 	
-	public EventObject4ClientMainStatusLocalSetOVPN(Object source, int iID,  ClientMainOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) {
+	public EventObject4ClientMainStatusLocalMessageSetOVPN(Object source, int iID,  ClientMainOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) {
 		super(source,iID,"",bStatusValue);
 		this.objStatusEnum=objStatusEnum;
 	}
@@ -116,7 +117,7 @@ public class EventObject4ClientMainStatusLocalSetOVPN  extends AbstractEventObje
 
 	//### Aus dem Interface Comparable
 	@Override
-	public int compareTo(IEventObject4ClientMainStatusLocalSetOVPN o) {
+	public int compareTo(IEventObject4ClientMainStatusLocalMessageSetOVPN o) {
 		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
 		int iReturn = 0;
 		main:{
@@ -137,8 +138,8 @@ public class EventObject4ClientMainStatusLocalSetOVPN  extends AbstractEventObje
    @Override 
    public boolean equals(Object aThat) {
      if (this == aThat) return true;
-     if (!(aThat instanceof EventObject4ClientMainStatusLocalSetOVPN)) return false;
-     EventObject4ClientMainStatusLocalSetOVPN that = (EventObject4ClientMainStatusLocalSetOVPN)aThat;
+     if (!(aThat instanceof EventObject4ClientMainStatusLocalMessageSetOVPN)) return false;
+     EventObject4ClientMainStatusLocalMessageSetOVPN that = (EventObject4ClientMainStatusLocalMessageSetOVPN)aThat;
      
      String sNameToCompare = that.getStatusEnum().getName();
 	 boolean bValueToCompare = that.getStatusValue();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.IObjectWithStatusZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
@@ -116,7 +117,7 @@ private void MonitorNew_(IClientMainOVPN objMain, String[] saFlagControl) throws
  						//runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted);
  						//String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
  						//String[]saFlagControl = {IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
- 						String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name()};
+ 						String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
  						runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, saFlagControl);
  						
  						runneraOVPN[icount].setClientBackendObject(this.getMainObject());
@@ -434,6 +435,66 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			return bReturn;
 		}
 		
+		//################################################
+		//+++ aus IStatusLocalUserMessageZZZ			
+		@Override 
+		public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bReturn;
+		}				
+		
+		@Override 
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
+		}
+		
+		
+		//++++++++++++++++++++++++
 		/* (non-Javadoc)
 		 * @see basic.zBasic.AbstractObjectWithStatusZZZ#setStatusLocal(java.lang.Enum, java.lang.String, boolean)
 		 */

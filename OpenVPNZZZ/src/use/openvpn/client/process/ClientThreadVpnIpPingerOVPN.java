@@ -140,16 +140,17 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		try {
 			main:{			
 				try {
-					check:{
-						if(this.objMain==null) break main;
-					}//END check:
-				   	
+					if(this.objMain==null) break main;
+									   	
 					//######### 20230826 Verschoben aus ClientMainOVPN.start(), durch das Aufteilen sind mehrere Prozesse parallel moeglich.					
 	 				//+++ Noch keine Verbindung/Noch fehlende Verbindungen, dann wird es aber Zeit verschiedene Threads damit zu beauftragen
 	 				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Trying to establish a new connection with every OVPN-configuration-file. Starting threads.";
 					System.out.println(sLog);
 					this.getMainObject().logProtocolString(sLog);	
 	 				
+					//Setze ggfs. vorher gesetzte Werte zurück.
+					this.reset();
+					
 					//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.
 					//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.
 					//this.objMain.setStatusLocal(ClientMainOVPN.STATUSLOCAL.ISPINGSTARTING, true);								
@@ -408,8 +409,11 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 				try {
 					Thread.sleep(5000);
 					System.out.println("... PING: Fehler...");	
-					this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASERROR, true);
-									
+					String sMessage = ez.getDetailAllLast();
+					this.setStatusLocalError(sMessage);
+					this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASERROR, sMessage, true);
+					
+					
 					Thread.sleep(5000);							
 					System.out.println(".... PING: Stoppe");						
 					this.switchStatusLocalAllGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
@@ -721,178 +725,242 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}
 
 	//#############
-			@Override 
-			public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-				boolean bFunction = false;
-				main:{
-					if(enumStatusIn==null) {
-						break main;
-					}
-					IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
-					
-					bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
-				}//end main:
-				return bFunction;
+	//Aus IStatusLocalUserBasicZZZ
+	@Override 
+	public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
 			}
+			IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
 			
-			@Override 
-			public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-				boolean bFunction = false;
-				main:{
-					if(enumStatusIn==null) {
-						break main;
-					}
-					IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
-					
-					bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, null, bStatusValue);
-				}//end main:
-				return bFunction;
-			}
-			
-			@Override 
-			public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-				boolean bReturn = false;
-				main:{
-					if(enumStatusIn==null) {
-						break main;
-					}
-					ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
-					
-					bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
-				}//end main:
-				return bReturn;
-			}	
-			
-			@Override 
-			public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-				boolean bReturn = false;
-				main:{
-					if(enumStatusIn==null) {
-						break main;
-					}
-					ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
-					
-					bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
-				}//end main:
-				return bReturn;
-			}
-			
-			@Override 
-			public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
-				boolean bFunction = false;
-				main:{
-					if(enumStatusIn==null) break main;
-					
-					IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
-					
-					bFunction = this.offerStatusLocal_(-1, enumStatus, sStatusMessage, bStatusValue);
-				}//end main:
-				return bFunction;
-			}
-								
-			@Override
-			public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
-				boolean bFunction = false;
-				main:{
-					if(enumStatusIn==null) break main;
-					
-					IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
-					
-					bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sStatusMessage, bStatusValue);
-				}//end main:
-				return bFunction;
-				
-			}
-						
-			private boolean offerStatusLocal_(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
-				boolean bFunction = false;
-				main:{
-					if(enumStatusIn==null) break main;
-									
-				    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
-				    IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
-					String sStatusName = enumStatus.name();
-					bFunction = this.proofStatusLocalExists(sStatusName);															
-					if(!bFunction){
-						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status is not available: '" + sStatusName + "'";
-						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);			
-						break main;
-					}
-					
-					bFunction = this.proofStatusLocalValueChanged(sStatusName, bStatusValue);
-					if(!bFunction) {
-						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status has not changed: '" + sStatusName + "'";
-						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);
-						break main;
-					}
-				
-					//++++++++++++++++++++	
-					//Setze den Status nun in die HashMap
-					HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
-					hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
-				
-					//Den enumStatus als currentStatus im Objekt speichern...
-					//                   dito mit dem "vorherigen Status"
-					//Setze nun das Enum, und damit auch die Default-StatusMessage					
-					String sStatusMessageToSet = null;
-					if(StringZZZ.isEmpty(sStatusMessage)){
-						if(bStatusValue) {
-							sStatusMessageToSet = enumStatus.getStatusMessage();
-						}else {
-							sStatusMessageToSet = "NICHT " + enumStatus.getStatusMessage();
-						}			
-					}else {
-						String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
-						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);
-						
-						sStatusMessageToSet = sStatusMessage;
-					}
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
-					
-					//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
-					boolean bSuccess = this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
-
-					
-					//....hier keine Verarbeitung der Startkonfiguration
+			bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
+		}//end main:
+		return bFunction;
+	}						
 	
-					//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
-					//Dann erzeuge den Event und feuer ihn ab.	
-					if(this.getSenderStatusLocalUsed()==null) {
-						sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);			
-						break main;
-					}
-					
-					//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
-					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);				
-					IEventObject4VpnIpPingerStatusLocalSetOVPN event = new EventObject4VpnIpPingerStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);
-					event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
-					
-					//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger for Process iIndex= '" + iIndexOfProcess + "'";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
-					if(iIndexOfProcess>=0) {
-						event.setClientConfigStarterObjectUsed(this.getMainObject().getClientConfigStarterList().get(iIndexOfProcess));
-					}
-					
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger fires event '" + enumStatus.getAbbreviation() + "'";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
-					this.getSenderStatusLocalUsed().fireEvent(event);
-						
-					bFunction = true;	
-				}	// end main:
-				return bFunction;
+	@Override 
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
 			}
+			IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
+			
+			bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, null, bStatusValue);
+		}//end main:
+		return bFunction;
+	}
+	
+	@Override 
+	public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+		}//end main:
+		return bReturn;
+	}	
+	
+	
+	@Override 
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+		}//end main:
+		return bReturn;
+	}
+	
+	//################################################
+	//+++ aus IStatusLocalUserMessageZZZ			
+	@Override 
+	public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+		}//end main:
+		return bFunction;
+	}
+	
+	@Override 
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sMessage, bStatusValue);
+		}//end main:
+		return bFunction;
+	}
+	
+	@Override 
+	public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+		}//end main:
+		return bReturn;
+	}				
+	
+	@Override 
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(enumStatusIn==null) {
+				break main;
+			}
+			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+		}//end main:
+		return bReturn;
+	}
+	
+	
+	//+++++++++++++++++++++++++++++++++++
+	@Override 
+	public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) break main;
+			
+			IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bFunction = this.offerStatusLocal_(-1, enumStatus, sStatusMessage, bStatusValue);
+		}//end main:
+		return bFunction;
+	}
+		
+	@Override
+	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) break main;
+			
+			IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			
+			bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sStatusMessage, bStatusValue);
+		}//end main:
+		return bFunction;				
+	}
+	
+	
+	//###############			
+	private boolean offerStatusLocal_(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(enumStatusIn==null) break main;
+							
+		    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
+		    IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			String sStatusName = enumStatus.name();
+			bFunction = this.proofStatusLocalExists(sStatusName);															
+			if(!bFunction){
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status is not available: '" + sStatusName + "'";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);			
+				break main;
+			}
+			
+			bFunction = this.proofStatusLocalValueChanged(sStatusName, bStatusValue);
+			if(!bFunction) {
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status has not changed: '" + sStatusName + "'";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+				break main;
+			}
+		
+			//++++++++++++++++++++	
+			//Setze den Status nun in die HashMap
+			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+			hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
+		
+			//Den enumStatus als currentStatus im Objekt speichern...
+			//                   dito mit dem "vorherigen Status"
+			//Setze nun das Enum, und damit auch die Default-StatusMessage					
+			String sStatusMessageToSet = null;
+			if(StringZZZ.isEmpty(sStatusMessage)){
+				if(bStatusValue) {
+					sStatusMessageToSet = enumStatus.getStatusMessage();
+				}else {
+					sStatusMessageToSet = "NICHT " + enumStatus.getStatusMessage();
+				}			
+			}else {
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+				
+				sStatusMessageToSet = sStatusMessage;
+			}
+			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			
+			//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
+			boolean bSuccess = this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
+
+			
+			//....hier keine Verarbeitung der Startkonfiguration
+
+			//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+			//Dann erzeuge den Event und feuer ihn ab.	
+			if(this.getSenderStatusLocalUsed()==null) {
+				sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);			
+				break main;
+			}
+			
+			//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
+			sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);				
+			IEventObject4VpnIpPingerStatusLocalSetOVPN event = new EventObject4VpnIpPingerStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);
+			event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
+			
+			
+			//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
+			sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger for Process iIndex= '" + iIndexOfProcess + "'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			if(iIndexOfProcess>=0) {
+				event.setClientConfigStarterObjectUsed(this.getMainObject().getClientConfigStarterList().get(iIndexOfProcess));
+			}
+			
+			sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger fires event '" + enumStatus.getAbbreviation() + "'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			this.getSenderStatusLocalUsed().fireEvent(event);
+				
+			bFunction = true;	
+		}	// end main:
+		return bFunction;
+	}
 
 	//################################
 	@Override
@@ -1012,5 +1080,6 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	@Override
 	public void reset() {
 		this.resetModuleUsed();
+		this.resetStatusLocalError();
 	}
 }//END class

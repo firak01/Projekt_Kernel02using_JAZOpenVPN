@@ -750,6 +750,11 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			if(this.getMainObject().getVpnIpPingerObject()==null) break main;
 			
 			sReturn = this.getMainObject().getVpnIpPingerObject().getStatusLocalMessage();
+			
+			String sError = this.getMainObject().getVpnIpPingerObject().getStatusLocalError();
+			if(!StringZZZ.isEmpty(sError)) {
+				sReturn = sReturn + " -" + sError;
+			}
 		}//end main:
 		return sReturn;
 	}
@@ -887,7 +892,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			break main;
 		}else{
 			//Falls der Pinger gestartet wurde, hole die Statusmeldung aus dem Backend-Monotor-Objekt. Also neu setzen.
-			sStatusPingerString = this.getMainObject().getVpnIpPingerObject().getStatusLocalMessage() + "\n";
+			//Das unterschlaegt ggfs. vorhanden Fehlermeldunge: sStatusPingerString = this.getMainObject().getVpnIpPingerObject().getStatusLocalMessage() + "\n";
 			sReturn = sReturn + sStatusPingerString + "\n";
 		}
 				

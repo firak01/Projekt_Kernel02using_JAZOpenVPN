@@ -24,6 +24,8 @@ import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
+import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
+import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL;
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.status.EventObject4ProcessMonitorStatusLocalSetOVPN;
@@ -550,6 +552,65 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 			return bReturn;
 		}
 		
+		//################################################
+		//+++ aus IStatusLocalUserMessageZZZ			
+		@Override 
+		public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bReturn;
+		}				
+		
+		@Override 
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
+		}
+		
+		//++++++++++++++++++++++++++++++++++++++++++++++++++++
 		@Override
 		public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 			boolean bFunction = false;

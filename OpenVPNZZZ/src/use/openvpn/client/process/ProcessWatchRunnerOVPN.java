@@ -27,6 +27,7 @@ import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
+import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
 
 /**This class receives the stream from a process, which was started by the ConfigStarterZZZ class.
  * This is necessary, because the process will only goon working, if the streams were "catched" by a target.
@@ -470,6 +471,65 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			return bReturn;
 		}
 		
+		//################################################
+		//+++ aus IStatusLocalUserMessageZZZ			
+		@Override 
+		public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bReturn;
+		}				
+		
+		@Override 
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
+		}
+		
+		//++++++++++++++++++++++++++++++++++++++++++++++++
 		@Override
 		public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 			boolean bFunction = false;
@@ -527,6 +587,8 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 					this.logLineDate(sLog);	
 					break main;
 				}
+				
+				
 				
 				//++++++++++++++++++++	
 				//Setze den Status nun in die HashMap

@@ -17,6 +17,8 @@ import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
 import use.openvpn.IApplicationOVPN;
+import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
+import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.IProcessWatchRunnerOVPN;
@@ -976,6 +978,65 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}//end main:
 		return bReturn;
 	}
+	
+	//################################################
+		//+++ aus IStatusLocalUserMessageZZZ			
+		@Override 
+		public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bFunction = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bFunction;
+		}
+		
+		@Override 
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			}//end main:
+			return bReturn;
+		}				
+		
+		@Override 
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
+			}//end main:
+			return bReturn;
+		}
+		//++++++++++++++++++++++++++++++++++++++++
 
 	
 	//Weil auf den Status anderer Thread gehoert wird und diese weitergeleitet werden sollen.

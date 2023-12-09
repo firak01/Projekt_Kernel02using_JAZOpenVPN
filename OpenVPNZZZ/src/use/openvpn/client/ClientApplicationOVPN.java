@@ -23,7 +23,15 @@ public class ClientApplicationOVPN  extends AbstractApplicationOVPN{
 		super(objKernel, objClient);		
 	}
 	
-	
+	@Override
+	public String readDirectoryOvpnLog() throws ExceptionZZZ{
+		String sReturn = null;
+		main:{
+			IKernelZZZ objKernel = this.getKernelObject();
+			sReturn = objKernel.getParameterByProgramAlias("OVPN","ProgConfigHandler","DirectoryLog").getValue();					
+		}//END main:
+		return sReturn;
+	}
 	
 	/**Reads a port from the configuration-file. Default: Port 80.
 	 * This port is used to check the connection. 
