@@ -63,13 +63,13 @@ import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 
 public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ActionListener, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {		
 	private static final long serialVersionUID = 4170579821557468353L;
-	
-	//Merke: Der Tray selbst hat keinen Status.
+		
 	private SystemTray objTray = null;                                    //Das gesamte SystemTray von Windows
 	private TrayIcon objTrayIcon = null;                                 //Das TrayIcon dieser Application	
 	private ServerMainOVPN objMain = null;                            //Ein Thread, der die OpenVPN.exe mit der gew�nschten Konfiguration startet.
 	
-	//Wie in AbstractObjectWithStatusListeningZZZ
+	//Merke: Der Tray selbst hat keinen Status. Er nimmt aber Statusaenderungen vom Main-Objekt entgegen und mapped diese auf sein "Aussehen"
+	//       Wie in AbstractObjectWithStatusListeningZZZ wird für das Mappen des reinkommenden Status auf ein Enum eine Hashmap benötigt.
 	private HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ> hmEnumSet =null; //Hier wird ggfs. der Eigene Status mit dem Status einer anderen Klasse (definiert durch das Interface) gemappt.
 	
 	//TODOGOON 20210210: Realisiere die Idee
@@ -623,7 +623,7 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 				String stemp = this.readProtocolString();
 				//this.getTrayIconObject() ist keine Component ????
 				JOptionPane.showMessageDialog(null, stemp, "Log des OVPN Connection Listeners", JOptionPane.INFORMATION_MESSAGE );
-			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PAGE_IP_UPLOAD.name())) {
+			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PAGE_IP_UPLOAD.getMenu())) {
 				
 				//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
 				//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	

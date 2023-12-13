@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class DebugOpenVpnStarterOVPN {
+public class TryoutOpenVpnStarterOVPN {
 
 	public static void main(String[] args) {
-		DebugOpenVpnStarterOVPN objStart = new DebugOpenVpnStarterOVPN();
+		TryoutOpenVpnStarterOVPN objStart = new TryoutOpenVpnStarterOVPN();
 		objStart.startServerProcessByProcessBuilder();
 		
 	}
@@ -91,5 +91,7 @@ public class DebugOpenVpnStarterOVPN {
 		}//end main:
 		return objReturn;
 	}
+	
+	
 
 }

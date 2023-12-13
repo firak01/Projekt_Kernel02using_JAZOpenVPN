@@ -6,6 +6,10 @@ import java.util.Set;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.component.IModuleUserZZZ;
+import basic.zBasic.component.IModuleZZZ;
+import basic.zBasic.component.IProgramRunnableZZZ;
+import basic.zBasic.component.IProgramZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
@@ -19,7 +23,11 @@ import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
-public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusListeningZZZ implements Runnable,IMainOVPN {
+public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusListeningZZZ implements IMainOVPN {
+	protected volatile IModuleZZZ objModule=null; //Das Modul, in der KernelUI - Variante wäre das die Dialogbox aus der das Program gestartet wird.	
+	protected volatile String sProgramName = null;
+	protected volatile String sModuleName = null;
+	
 	protected volatile IApplicationOVPN objApplication = null;
 	protected volatile ConfigChooserOVPN objConfigChooser = null;
 	protected volatile IConfigMapper4TemplateOVPN objConfigMapper = null;
@@ -85,9 +93,40 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		return this.listaProtocol;
 	}
 	
-
+	//### ueber IProgramRunnableZZZ
 	@Override
-	public abstract void run();
+	public void run() {
+		try {
+			this.start();
+		} catch (ExceptionZZZ ez) {
+			try {
+				this.logLineDate(ez.getDetailAllLast());
+			} catch (ExceptionZZZ e1) {
+				System.out.println(e1.getDetailAllLast());
+				e1.printStackTrace();
+			}
+			
+			try {
+				String sLog = ez.getDetailAllLast();
+				this.logLineDate("An error happend: '" + sLog + "'");
+				this.setStatusLocal(ClientMainOVPN.STATUSLOCAL.HASERROR, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
+				
+			} catch (ExceptionZZZ e1) {				
+				System.out.println(ez.getDetailAllLast());
+				e1.printStackTrace();
+			}			
+		} catch (InterruptedException e) {					
+			try {
+				String sLog = e.getMessage();
+				this.logLineDate("An error happend: '" + sLog + "'");
+			} catch (ExceptionZZZ e1) {
+				System.out.println(e1.getDetailAllLast());
+				e1.printStackTrace();
+			}
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public IApplicationOVPN getApplicationObject() {
@@ -127,6 +166,80 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 //		this.objConfigMapper = objConfigMapper;
 //	}
 	
+
+	//### Aus IProgramZZZ
+	@Override
+	public abstract boolean start() throws ExceptionZZZ, InterruptedException;
+	
+		@Override
+		public String getProgramName() throws ExceptionZZZ{
+			if(StringZZZ.isEmpty(this.sProgramName)) {
+				if(this.getFlag(IProgramZZZ.FLAGZ.ISPROGRAM.name())) {
+					this.sProgramName = this.getClass().getName();
+				}
+			}
+			return this.sProgramName;
+		}
+		
+		@Override
+		public String getProgramAlias() throws ExceptionZZZ {		
+			return null;
+		}
+			
+		@Override
+		public void resetProgramUsed() {
+			this.sProgramName = null;
+		}
+				
+		@Override
+		public boolean reset() throws ExceptionZZZ {
+			this.resetProgramUsed();
+			this.resetModuleUsed();
+			this.resetFlags();
+			return true;
+		}
+		
+		//### Aus IModuleUserZZZ	
+		@Override
+		public String readModuleName() throws ExceptionZZZ {
+			String sReturn = null;
+			main:{
+				IModuleZZZ objModule = this.getModule();
+				if(objModule!=null) {
+					sReturn = objModule.getModuleName();
+				}
+			}//end main:
+			return sReturn;
+		}
+		
+		@Override
+		public String getModuleName() throws ExceptionZZZ{
+			if(StringZZZ.isEmpty(this.sModuleName)) {
+				this.sModuleName = this.readModuleName();
+			}
+			return this.sModuleName;
+		}
+		
+		@Override
+		public void setModuleName(String sModuleName){
+			this.sModuleName=sModuleName;
+		}
+		
+		@Override
+		public void resetModuleUsed() {
+			this.objModule = null;
+			this.sModuleName = null;
+		}
+		
+		@Override
+		public IModuleZZZ getModule() {
+			return this.objModule;
+		}
+		
+		@Override
+		public void setModule(IModuleZZZ objModule) {
+			this.objModule = objModule;
+		}
 	
 	//####### aus IStatusLocalUserZZZ
 		/* (non-Javadoc)
@@ -323,5 +436,118 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 //			return bReturn;
 //		}
 		
+		
+		//##########################################
+		//### FLAG HANDLING aus IProgramRunnable
+		@Override
+		public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) {
+			return this.getFlag(objEnumFlag.name());
+		}
+		@Override
+		public boolean setFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			return this.setFlag(objEnumFlag.name(), bFlagValue);
+		}
+		
+		@Override
+		public boolean[] setFlag(IProgramRunnableZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			boolean[] baReturn=null;
+			main:{
+				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+					baReturn = new boolean[objaEnumFlag.length];
+					int iCounter=-1;
+					for(IProgramRunnableZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+						iCounter++;
+						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+						baReturn[iCounter]=bReturn;
+					}
+				}
+			}//end main:
+			return baReturn;
+		}
+		
+		@Override
+		public boolean proofFlagExists(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+				return this.proofFlagExists(objEnumFlag.name());
+			}
+		
+		@Override
+		public boolean proofFlagSetBefore(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagSetBefore(objEnumFlag.name());
+		}	
+		
+		//### FLAG HANDLING AUS IProgramZZZ
+		@Override
+		public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) {
+			return this.getFlag(objEnumFlag.name());
+		}
+		@Override
+		public boolean setFlag(IProgramZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			return this.setFlag(objEnumFlag.name(), bFlagValue);
+		}
+		
+		@Override
+		public boolean[] setFlag(IProgramZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			boolean[] baReturn=null;
+			main:{
+				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+					baReturn = new boolean[objaEnumFlag.length];
+					int iCounter=-1;
+					for(IProgramZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+						iCounter++;
+						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+						baReturn[iCounter]=bReturn;
+					}
+				}
+			}//end main:
+			return baReturn;
+		}
+		
+		@Override
+		public boolean proofFlagExists(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+				return this.proofFlagExists(objEnumFlag.name());
+			}
+		
+		@Override
+		public boolean proofFlagSetBefore(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagSetBefore(objEnumFlag.name());
+		}	
+		
+		@Override
+		public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) {
+			return this.getFlag(objEnumFlag.name());
+		}
+		@Override
+		public boolean setFlag(IModuleUserZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			return this.setFlag(objEnumFlag.name(), bFlagValue);
+		}
+		
+		@Override
+		public boolean[] setFlag(IModuleUserZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			boolean[] baReturn=null;
+			main:{
+				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+					baReturn = new boolean[objaEnumFlag.length];
+					int iCounter=-1;
+					for(IModuleUserZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+						iCounter++;
+						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+						baReturn[iCounter]=bReturn;
+					}
+				}
+			}//end main:
+			return baReturn;
+		}
+		
+		@Override
+		public boolean proofFlagExists(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+				return this.proofFlagExists(objEnumFlag.name());
+		}
+		
+		@Override
+		public boolean proofFlagSetBefore(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagExists(objEnumFlag.name());
+		}
+		
+		//##########################	
 		
 }

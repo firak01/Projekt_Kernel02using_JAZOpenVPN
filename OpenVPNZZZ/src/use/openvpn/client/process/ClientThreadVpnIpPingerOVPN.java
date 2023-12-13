@@ -37,6 +37,10 @@ import java.util.Set;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.component.IModuleUserZZZ;
+import basic.zBasic.component.IModuleZZZ;
+import basic.zBasic.component.IProgramRunnableZZZ;
+import basic.zBasic.component.IProgramZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
@@ -46,8 +50,11 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 
-public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, Runnable,IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
-	protected String sModuleName=null;
+public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+	protected volatile IModuleZZZ objModule = null;
+	protected volatile String sModuleName=null;
+	protected volatile String sProgramName = null;
+	
 	
 	private IClientMainOVPN objMain = null;
 	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
@@ -132,14 +139,46 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		return bReturn;
 	}	
 	
+	//###
+		public void run() {
+			try {
+				this.start();
+			} catch (ExceptionZZZ ez) {
+				try {
+					this.logLineDate(ez.getDetailAllLast());
+				} catch (ExceptionZZZ e1) {
+					System.out.println(e1.getDetailAllLast());
+					e1.printStackTrace();
+				}
+				
+				try {
+					String sLog = ez.getDetailAllLast();
+					this.logLineDate("An error happend: '" + sLog + "'");
+				} catch (ExceptionZZZ e1) {				
+					System.out.println(ez.getDetailAllLast());
+					e1.printStackTrace();
+				}			
+			} catch (InterruptedException e) {					
+				try {
+					String sLog = e.getMessage();
+					this.logLineDate("An error happend: '" + sLog + "'");
+				} catch (ExceptionZZZ e1) {
+					System.out.println(e1.getDetailAllLast());
+					e1.printStackTrace();
+				}
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+		}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 *TODO: Die Fehler ins Log-Schreiben.
 	 */
-	public void run() {
+	public boolean start() throws ExceptionZZZ, InterruptedException {
+		boolean bReturn = false;
 		try {
-			main:{			
-				try {
+			main:{							
 					if(this.objMain==null) break main;
 									   	
 					//######### 20230826 Verschoben aus ClientMainOVPN.start(), durch das Aufteilen sind mehrere Prozesse parallel moeglich.					
@@ -393,10 +432,9 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 					Thread.sleep(5000);							
 					System.out.println(".... PING: Stoppe");						
 					this.switchStatusLocalAllGroupTo(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTOPPED, true);
-				} catch (InterruptedException e) {
-					ExceptionZZZ ez = new ExceptionZZZ(e);
-					throw ez;
-				}				
+					
+					bReturn = true;
+											
 			}//END main:
 			
 		}catch(ExceptionZZZ ez){
@@ -426,6 +464,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 				e.printStackTrace();
 			}
 		}
+		return bReturn;
 	}//END run
 	
 	
@@ -438,6 +477,15 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	public IClientMainOVPN getMainObject(){
 		return this.objMain;
 	}
+	
+	@Override
+	public boolean reset() {
+		this.resetModuleUsed();
+		this.resetStatusLocalError();
+		return true;
+	}
+	
+	
 	
 	public boolean isStatusChanged(String sStatusString) throws ExceptionZZZ{
 		boolean bReturn = false;
@@ -1015,7 +1063,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);;
 	}
 	
-	//### Aus IKernelModuleZZZ
+	//### Aus IModuleZZZ
 	public String readModuleName() throws ExceptionZZZ {
 		String sReturn = null;
 		main:{
@@ -1032,7 +1080,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		return this.sModuleName;
 	}
 	
-	private void setModuleName(String sModuleName){
+	public void setModuleName(String sModuleName){
 		this.sModuleName=sModuleName;
 	}
 	
@@ -1077,9 +1125,153 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		this.setModuleName(null);
 	}
 	
-	@Override
-	public void reset() {
-		this.resetModuleUsed();
-		this.resetStatusLocalError();
-	}
+	//##########################################
+		//### FLAG HANDLING
+		@Override
+		public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) {
+			return this.getFlag(objEnumFlag.name());
+		}
+		@Override
+		public boolean setFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			return this.setFlag(objEnumFlag.name(), bFlagValue);
+		}
+		
+		@Override
+		public boolean[] setFlag(IProgramRunnableZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			boolean[] baReturn=null;
+			main:{
+				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+					baReturn = new boolean[objaEnumFlag.length];
+					int iCounter=-1;
+					for(IProgramRunnableZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+						iCounter++;
+						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+						baReturn[iCounter]=bReturn;
+					}
+				}
+			}//end main:
+			return baReturn;
+		}
+		
+		@Override
+		public boolean proofFlagExists(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+				return this.proofFlagExists(objEnumFlag.name());
+			}
+		
+		@Override
+		public boolean proofFlagSetBefore(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagSetBefore(objEnumFlag.name());
+		}	
+		
+		
+		//### Aus IProgramZZZ
+		@Override
+		public String getProgramName(){
+			if(StringZZZ.isEmpty(this.sProgramName)) {
+				if(this.getFlag(IProgramZZZ.FLAGZ.ISPROGRAM.name())) {
+					this.sProgramName = this.getClass().getName();
+				}
+			}
+			return this.sProgramName;
+		}
+		
+		@Override
+		public String getProgramAlias() throws ExceptionZZZ {		
+			return null;
+		}
+			
+		@Override
+		public void resetProgramUsed() {
+			this.sProgramName = null;
+		}
+		
+		@Override
+		public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) {
+			return this.getFlag(objEnumFlag.name());
+		}
+		@Override
+		public boolean setFlag(IProgramZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			return this.setFlag(objEnumFlag.name(), bFlagValue);
+		}
+		
+		@Override
+		public boolean[] setFlag(IProgramZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			boolean[] baReturn=null;
+			main:{
+				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+					baReturn = new boolean[objaEnumFlag.length];
+					int iCounter=-1;
+					for(IProgramZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+						iCounter++;
+						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+						baReturn[iCounter]=bReturn;
+					}
+				}
+			}//end main:
+			return baReturn;
+		}
+		
+		@Override
+		public boolean proofFlagExists(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+				return this.proofFlagExists(objEnumFlag.name());
+			}
+		
+		@Override
+		public boolean proofFlagSetBefore(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagSetBefore(objEnumFlag.name());
+		}	
+
+
+		
+		
+		//### Aus IKernelModuleUserZZZ	
+		@Override
+		public IModuleZZZ getModule() {
+			return this.objModule;
+		}
+		
+		@Override
+		public void setModule(IModuleZZZ objModule) {
+			this.objModule = objModule;
+		}
+		
+		
+		@Override
+		public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) {
+			return this.getFlag(objEnumFlag.name());
+		}
+		@Override
+		public boolean setFlag(IModuleUserZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			return this.setFlag(objEnumFlag.name(), bFlagValue);
+		}
+		
+		@Override
+		public boolean[] setFlag(IModuleUserZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+			boolean[] baReturn=null;
+			main:{
+				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+					baReturn = new boolean[objaEnumFlag.length];
+					int iCounter=-1;
+					for(IModuleUserZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+						iCounter++;
+						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+						baReturn[iCounter]=bReturn;
+					}
+				}
+			}//end main:
+			return baReturn;
+		}
+		
+		@Override
+		public boolean proofFlagExists(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+				return this.proofFlagExists(objEnumFlag.name());
+		}
+		
+		@Override
+		public boolean proofFlagSetBefore(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagExists(objEnumFlag.name());
+		}		
+		//##########################
+	
+	
 }//END class

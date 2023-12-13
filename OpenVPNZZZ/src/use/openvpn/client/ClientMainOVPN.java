@@ -9,6 +9,7 @@ import java.util.Set;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectWithStatusZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
@@ -326,30 +327,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		return bReturn;
 	}//END start()
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
-		try {
-			this.start();
-		} catch (ExceptionZZZ ez) {
-			try {
-				String sLog = ez.getDetailAllLast();
-				this.logProtocolString("An error happend: '" + sLog + "'");
-				this.setStatusLocal(ClientMainOVPN.STATUSLOCAL.HASERROR, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
-				
-			} catch (ExceptionZZZ e1) {				
-				System.out.println(ez.getDetailAllLast());
-				e1.printStackTrace();
-			}
-			try {
-				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
-			} catch (ExceptionZZZ e1) {
-				System.out.println(e1.getDetailAllLast());
-				e1.printStackTrace();
-			}
-		}
-	}
+	
 	
 	/**Scans the ports of the VPN-Ip in the given range.
 	 * Updates the status.
@@ -648,7 +626,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		main:{
 			if(this.objVpnIpPinger!=null) {
 				if(this.objVpnIpPinger.getFlagLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTING.getName())) {
-					this.objVpnIpPinger.setFlag(IClientThreadVpnIpPingerOVPN.FLAGZ.STOPREQUEST, true);
+					this.objVpnIpPinger.setFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP, true);
 	
 					String sLog  = ReflectCodeZZZ.getPositionCurrent() + ": Set previous thread object to NULL";
 					System.out.println(sLog);
@@ -1700,5 +1678,31 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		}//end main:
 		return hmReturn;
 	}
+
+	@Override
+	public String getProgramName() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getProgramAlias() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void resetProgramUsed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean reset() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
 }//END class
 

@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
@@ -70,78 +71,59 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	}
 	
 	//#####################################
-	public void run() {
-		
+	public boolean start() throws ExceptionZZZ, InterruptedException{
+		boolean bReturn = false;
 		main:{
-			try{
-				try {
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumber();
-					System.out.println(sLog);
-					this.logLineDate(sLog);
-					
-					//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
-					do{
-						//System.out.println("FGLTEST01");
-						//Wichtig: Man muss wohl zuallererst den InputStream abgreifen, damit der Process weiterlaufen kann.
-						this.writeOutputToLogPLUSanalyse();				
-						boolean bHasConnection = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
-						if(bHasConnection) {
-							sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
-							this.logLineDate(sLog);						
-							
-							//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
-							//Dann erzeuge den Event und feuer ihn ab.
-							//Merke: Nun aber ueber das enum			
-							if(this.objEventStatusLocalBroker!=null) {
-								//IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,ClientMainOVPN.STATUSLOCAL.ISCONNECTED, true);
-								//TODOGOON20230914: Woher kommt nun das Enum? Es gibt ja kein konkretes Beispiel
-								IEventObjectStatusLocalSetOVPN event = new EventObject4ProcessWatchRunnerStatusLocalSetOVPN(this,1,(IProcessWatchRunnerOVPN.STATUSLOCAL)null, true);
-								event.setServerConfigStarterObjectUsed(this.getServerConfigStarterObject());
-								this.objEventStatusLocalBroker.fireEvent(event);
-							}		
-							
-							Thread.sleep(20);
-							boolean bStopRequested = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.STOPREQUEST);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
-							if( bStopRequested) break main;
-						}
-						
-						
-						//System.out.println("FGLTEST02");
-						this.writeErrorToLog();				
-						boolean bError = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR);
-						if(bError) break;
-		
-						//Nach irgendeiner Ausgabe enden ist hier falsch, in einer abstrakten Klasse vielleicht richtig, quasi als Muster.
-						//if(this.getFlag("hasOutput")) break;
-						//System.out.println("FGLTEST03");
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException e) {
-							ExceptionZZZ ez = new ExceptionZZZ("An InterruptedException happened: '" + e.getMessage() + "''", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-							throw ez;
-						}
-						
-						boolean bStopRequested = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.STOPREQUEST);//Merke: Das ist eine Anweisung und kein Status. Darum bleibt es beim Flag.
-						if(bStopRequested) break;					
-				}while(true);
-				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED,true);
-				this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
+			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumber();
+			System.out.println(sLog);
+			this.logLineDate(sLog);
 			
-			} catch (InterruptedException e) {
-				ExceptionZZZ ez = new ExceptionZZZ(e);
-				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
-				System.out.println(ez.getDetailAllLast());
-			}
-		}catch(ExceptionZZZ ez){
-			try {
-				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
-				System.out.println(ez.getDetailAllLast());
-			} catch (ExceptionZZZ e) {
-				System.out.println(ez.getDetailAllLast());
-				e.printStackTrace();
-			}
-		}
+			//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
+			do{
+				//System.out.println("FGLTEST01");
+				//Wichtig: Man muss wohl zuallererst den InputStream abgreifen, damit der Process weiterlaufen kann.
+				this.writeOutputToLogPLUSanalyse();				
+				boolean bHasConnection = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
+				if(bHasConnection) {
+					sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
+					this.logLineDate(sLog);						
+					
+					//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
+					//Dann erzeuge den Event und feuer ihn ab.
+					//Merke: Nun aber ueber das enum			
+					if(this.objEventStatusLocalBroker!=null) {
+						//IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,ClientMainOVPN.STATUSLOCAL.ISCONNECTED, true);
+						//TODOGOON20230914: Woher kommt nun das Enum? Es gibt ja kein konkretes Beispiel
+						IEventObjectStatusLocalSetOVPN event = new EventObject4ProcessWatchRunnerStatusLocalSetOVPN(this,1,(IProcessWatchRunnerOVPN.STATUSLOCAL)null, true);
+						event.setServerConfigStarterObjectUsed(this.getServerConfigStarterObject());
+						this.objEventStatusLocalBroker.fireEvent(event);
+					}		
+					
+					Thread.sleep(20);
+					boolean bStopRequested = this.getFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
+					if( bStopRequested) break main;
+				}
+				
+				
+				//System.out.println("FGLTEST02");
+				this.writeErrorToLog();				
+				boolean bError = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR);
+				if(bError) break;
+	
+				//Nach irgendeiner Ausgabe enden ist hier falsch, in einer abstrakten Klasse vielleicht richtig, quasi als Muster.
+				//if(this.getFlag("hasOutput")) break;
+				//System.out.println("FGLTEST03");
+				
+				Thread.sleep(10);
+				
+				boolean bStopRequested = this.getFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP);//Merke: Das ist eine Anweisung und kein Status. Darum bleibt es beim Flag.
+				if(bStopRequested) break;					
+		}while(true);
+		this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED,true);
+		this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
+		
 		}//END main
+		return bReturn;
 	}
 	
 	public void setServerBackendObject(IServerMainOVPN objServerBackend){
@@ -402,7 +384,7 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				boolean bEndOnConnection = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION);
 				if(bEndOnConnection) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
-					boolean bStopRequested = this.setFlag(IProcessWatchRunnerZZZ.FLAGZ.STOPREQUEST, true);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
+					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP, true);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
 					
 				}
 				
@@ -428,7 +410,7 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
 				if(bEndOnConnectionLost) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
-					boolean bStopRequested = this.setFlag(IProcessWatchRunnerZZZ.FLAGZ.STOPREQUEST, true);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
+					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP, true);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
 					
 				}
 				
@@ -448,7 +430,7 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
 				if(bEndOnConnectionLost) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
-					boolean bStopRequested = this.setFlag(IProcessWatchRunnerZZZ.FLAGZ.STOPREQUEST, false);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
+					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP, false);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
 					
 				}
 				

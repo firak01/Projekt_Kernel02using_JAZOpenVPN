@@ -3,11 +3,12 @@ package use.openvpn.client.process;
 import java.util.EnumSet;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import use.openvpn.client.IClientMainUserOVPN;
 import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
-public interface IClientThreadProcessWatchMonitorOVPN extends IClientMainUserOVPN {
+public interface IClientThreadProcessWatchMonitorOVPN extends IClientMainUserOVPN, IProgramRunnableZZZ {
 	public enum FLAGZ{
 		DUMMY,END_ON_CONNECTION
 	}
