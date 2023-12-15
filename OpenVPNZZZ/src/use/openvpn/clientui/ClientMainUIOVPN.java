@@ -17,10 +17,10 @@ import custom.zKernel.LogZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
 
-public class ClientMainUIZZZ implements IConstantZZZ {
+public class ClientMainUIOVPN implements IConstantZZZ {
 	private IKernelZZZ objKernel=null;
 	private ClientMainOVPN objClientMain = null;
-	private ClientTrayUIZZZ objClientTray=null;
+	private ClientTrayUIOVPN objClientTray=null;
 	
 	/**Entry point for the OVPN-Client-Starter.
 	 * @return void
@@ -29,7 +29,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 	 * lindhaueradmin; 08.07.2006 08:24:16
 	 */
 	public static void main(String[] args) {
-		ClientMainUIZZZ objClient = new ClientMainUIZZZ();		
+		ClientMainUIOVPN objClient = new ClientMainUIOVPN();		
 		objClient.start(args);
 	}//END main()
 	
@@ -49,7 +49,7 @@ public class ClientMainUIZZZ implements IConstantZZZ {
 				this.objClientMain.setApplicationObject(objApplication);
 											
 				//### 1. Voraussetzung: OpenVPN muss auf dem Rechner vorhanden sein. Bzw. die Dateiendung .ovpn ist registriert. 
-				this.objClientTray = new ClientTrayUIZZZ(objKernel, this.objClientMain, (String[]) null);		
+				this.objClientTray = new ClientTrayUIOVPN(objKernel, this.objClientMain, (String[]) null);		
 				bReturn = objClientTray.load();
 				
 				//Konfigurierbar: Beim Launch der Applikation schon starten

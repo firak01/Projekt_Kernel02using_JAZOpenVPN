@@ -12,8 +12,8 @@ import use.openvpn.client.status.EventObject4VpnIpPingerStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
-import use.openvpn.clientui.ClientTrayStatusMappedValueZZZ;
-import use.openvpn.clientui.ClientTrayUIZZZ;
+import use.openvpn.clientui.ClientTrayStatusMappedValueOVPN;
+import use.openvpn.clientui.ClientTrayUIOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
@@ -21,7 +21,7 @@ import use.openvpn.client.status.IEventObject4ProcessWatchMonitorStatusLocalSetO
 import use.openvpn.client.status.IEventObject4VpnIpPingerStatusLocalSetOVPN;
 import use.openvpn.server.ServerMainOVPN;
 
-import use.openvpn.serverui.ServerTrayStatusMappedValueZZZ;
+import use.openvpn.serverui.ServerTrayStatusMappedValueOVPN;
 import use.openvpn.serverui.ServerTrayUIOVPN;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;

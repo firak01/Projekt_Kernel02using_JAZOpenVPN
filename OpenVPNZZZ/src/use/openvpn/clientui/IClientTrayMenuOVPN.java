@@ -3,7 +3,7 @@ package use.openvpn.clientui;
 import java.util.EnumSet;
 
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-public interface IClientTrayMenuZZZ {
+public interface IClientTrayMenuOVPN {
 		//#######################################################
 		//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 		//### String fullName, String abbreviation

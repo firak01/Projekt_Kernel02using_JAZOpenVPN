@@ -1,6 +1,5 @@
 package use.openvpn.serverui;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.InetAddress;
@@ -8,14 +7,10 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
@@ -25,29 +20,25 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.abstractList.ArrayListZZZ;
-import basic.zBasic.util.datatype.enums.EnumSetUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
-import basic.zBasic.util.log.ReportLogZZZ;
-import basic.zKernel.IKernelZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
-import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
 import basic.zKernel.status.IStatusBooleanZZZ;
 import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
+import basic.zKernelUI.component.IActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
-import basic.zKernelUI.util.JTextFieldHelperZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
-import use.openvpn.client.ClientApplicationOVPN;
+import use.openvpn.IMainOVPN;
+import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
-import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
-import use.openvpn.clientui.IClientTrayMenuZZZ;
-import use.openvpn.clientui.IClientStatusMappedValueZZZ.ClientTrayStatusTypeZZZ;
+import use.openvpn.clientui.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
 import use.openvpn.server.ServerApplicationOVPN;
@@ -58,15 +49,16 @@ import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.serverui.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
-import use.openvpn.serverui.component.FTPCredentials.IConstantProgramFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 
-public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ActionListener, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {		
+public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ITrayOVPN, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {		
 	private static final long serialVersionUID = 4170579821557468353L;
 		
 	private SystemTray objTray = null;                                    //Das gesamte SystemTray von Windows
-	private TrayIcon objTrayIcon = null;                                 //Das TrayIcon dieser Application	
-	private ServerMainOVPN objMain = null;                            //Ein Thread, der die OpenVPN.exe mit der gew�nschten Konfiguration startet.
+	private TrayIcon objTrayIcon = null; //Das TrayIcon dieser Application
+	private JPopupMenu objMenu = null;
+	private IActionCascadedZZZ objActionListener = null;
+	private volatile ServerMainOVPN objMain = null;                            //Ein Thread, der die OpenVPN.exe mit der gew�nschten Konfiguration startet.
 	
 	//Merke: Der Tray selbst hat keinen Status. Er nimmt aber Statusaenderungen vom Main-Objekt entgegen und mapped diese auf sein "Aussehen"
 	//       Wie in AbstractObjectWithStatusListeningZZZ wird für das Mappen des reinkommenden Status auf ein Enum eine Hashmap benötigt.
@@ -91,91 +83,29 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 	
 	private void ServerTrayUINew_(IServerMainOVPN objServerMain) throws ExceptionZZZ{
 		main:{
-			
-			//try{		
-			check:{
-				if(this.getFlag("init")) break main;
-				if(objServerMain==null){
-					ExceptionZZZ ez = new ExceptionZZZ("ServerMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
-					throw ez;		 
-				}else{
-					this.objMain = (ServerMainOVPN) objServerMain;
-				}
-			}//End check
-			this.objMain = (ServerMainOVPN) objServerMain;
+			if(this.getFlag("init")) break main;
+			if(objServerMain==null){
+				ExceptionZZZ ez = new ExceptionZZZ("ServerMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
+				throw ez;		 
+			}
+			this.setMainObject(objServerMain);
 	
 			//Dieses muss beim Beenden angesprochen werden, um das TrayIcon wieder zu entfernen
-			this.objTray = SystemTray.getDefaultSystemTray();
+			//Merke 20220718: Wohl unter Win10 nicht lauffähig
+			TrayIcon objTrayIcon = this.getTrayIcon();
 			
-			JPopupMenu menu = new JPopupMenu();
+			//this.objTrayIcon.addActionListener(this);
+			//20231214: Mache den ActionListerne unabahängig von dem Tray, bzw. dieser Klasse selbst
+			//so wie: in einem JButton
+			//buttonCancel = new JButton(sText);
+			//buttonCancel.addActionListener(this.getActionListenerButtonCancel(this));
+			//this.add(buttonCancel);
+			IActionCascadedZZZ objActionListener = this.getActionListenerTrayIcon();
+			objTrayIcon.addActionListener((ActionListener) objActionListener);
 			
-			JMenuItem menueeintrag2 = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START.getMenu());
-			menu.add(menueeintrag2);
-			menueeintrag2.addActionListener(this);
-			
-			JMenuItem menueeintrag2b = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN.getMenu());
-			menu.add(menueeintrag2b);
-			menueeintrag2b.addActionListener(this);
-			
-			JMenuItem menueeintrag3 = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PROTOCOL.getMenu());
-            menu.add(menueeintrag3);
-			menueeintrag3.addActionListener(this);
-			
-			JMenuItem menueeintragFTPCredentials = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.FTP_CREDENTIALS.getMenu());
-            menu.add(menueeintragFTPCredentials);
-			menueeintragFTPCredentials.addActionListener(this);
-			
-			JMenuItem menueeintragIPPage = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PAGE_IP_UPLOAD.getMenu());
-            menu.add(menueeintragIPPage);
-			menueeintragIPPage.addActionListener(this);
-					
-			JMenuItem menueeintrag = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.END.getMenu());	
-			menu.add(menueeintrag);		
-			menueeintrag.addActionListener(this);
-			
-			//DUMMY Einträge, sofort erkennen ob Server / Client
-			//DUMMY Einträge, damit der unterste Eintrag ggfs. nicht durch die Windows Taskleiste verdeckt wird
-			JMenuItem menueeintragLine = new JMenuItem("------------------");
-			menu.add(menueeintragLine);
-			//Kein actionListener für Dummy Eintrag
-						
-			JMenuItem menueeintragContext = new JMenuItem("RUNNING AS SERVER");
-			menu.add(menueeintragContext);
-			//Kein actionListener für Dummy Eintrag
-			
-			JMenuItem menueeintragDummy = new JMenuItem(" ");
-			menu.add(menueeintragDummy);
-			//Kein actionListener für Dummy Eintrag
-			
-			/* das scheint dann doch nicht notwendig zu sein !!!
-			menueeintrag.addMouseListener(new MouseAdapter(){
-				public void mouseReleased(MouseEvent me){
-					System.out.println("mausi released");
-				}
-				public void mousePressed(MouseEvent me){
-					System.out.println("mausi pressed");
-				}
-				public void mouseClicked(MouseEvent me){
-					System.out.println("mausi clicked");
-				}
-				
-				//Das wird erkannt
-				public void mouseEntered(MouseEvent me){
-					System.out.println("mausi entered");
-				}
-				
-				//
-				public void mouseExited(MouseEvent me){
-					System.out.println("mausi exited");
-				}
-			});
-			*/
-
-		
-			ImageIcon objIcon = this.getImageIconByStatus(ServerTrayStatusTypeZZZ.NEW);			
-			this.objTrayIcon = new TrayIcon(objIcon, "OVPNListener", menu);
-			this.objTrayIcon.addActionListener(this);			
-			this.objTray.addTrayIcon(this.objTrayIcon);
+			SystemTray objTray = this.getSystemTray();
+			objTray.addTrayIcon(objTrayIcon);
+			//Merke: Ueber unload() wird das TrayIcon wieder entfernt.
 			
 			//Den Process-Monitor auch schon vorbereiten, auch wenn ggfs. nicht schon am Anfang auf die Verbindung "gelistend" wird.
 			//Er wird später auch am Backend-Objekt registriert, um dort Änderungen mitzubekommen.
@@ -191,9 +121,8 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 			this.getMainObject().registerForStatusLocalEvent(this);
 		}//END main
 	}
-	
-	//public static ImageIcon getImageIconByStatus(Enum enumSTATUS)throws ExceptionZZZ{
-	public static ImageIcon getImageIconByStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ enumSTATUS)throws ExceptionZZZ{	
+		
+	public static ImageIcon getImageIconByStatus(ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ enumSTATUS)throws ExceptionZZZ{	
 		ImageIcon objReturn = null;
 		main:{
 			URL url = null;
@@ -222,8 +151,9 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 		}//END main:
 		return objReturn;
 	}
-		
-	public boolean switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
+			
+	@Override
+	public boolean switchStatus(ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
 		boolean bReturn = false;
 		main:{
 			//ImageIcon aendern
@@ -243,11 +173,23 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 			}
 			//++++++++++++++++++++++++++++++++
 				
-			this.getTrayIconObject().setIcon(objIcon);
+			this.getTrayIcon().setIcon(objIcon);
 
 			bReturn = true;
 		}//END main:
 		return bReturn;
+	}
+	
+	@Override
+	public boolean switchStatus(ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
+	public boolean switchStatus(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 
@@ -259,11 +201,12 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 	 * @return boolean
 	 *
 	 * javadoc created by: 0823, 11.07.2006 - 13:03:47
+	 * @throws ExceptionZZZ 
 	 */
-	public boolean load(){
+	public boolean load() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{		
-			this.objTray.addTrayIcon(this.objTrayIcon);
+			this.getSystemTray().addTrayIcon(this.getTrayIcon());
 			bReturn = true;
 		}//END main:
 		return bReturn;
@@ -360,7 +303,7 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 					String stemp = ez.getDetailAllLast();
 					this.getKernelObject().getLogObject().WriteLineDate(stemp);
 					System.out.println(ez.getDetailAllLast());
-					this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
+					this.switchStatus(ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {
 					System.out.println(ez.getDetailAllLast());
 					ez2.printStackTrace();					
@@ -597,148 +540,215 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 	
 	//#######################
 	//### GETTER / SETTER
-	public TrayIcon getTrayIconObject(){
+	
+	@Override 
+	public SystemTray getSystemTray() throws ExceptionZZZ{
+		if(this.objTray == null) {
+			this.objTray = SystemTray.getDefaultSystemTray();
+		}
+		return this.objTray;
+	}
+	
+	@Override
+	public void setSystemTray(SystemTray objTray) {
+		this.objTray = objTray;
+	}
+	
+	@Override
+	public TrayIcon getTrayIcon() throws ExceptionZZZ{
+		if(this.objTrayIcon==null) {
+			JPopupMenu menu = this.getMenu();
+			ImageIcon objIcon = ServerTrayUIOVPN.getImageIconByStatus(ServerTrayStatusTypeZZZ.NEW);
+			this.objTrayIcon = new TrayIcon(objIcon, "OVPNListener", menu);
+		}
 		return this.objTrayIcon;
 	}
 	
-	public void setMainObject(IServerMainOVPN objServerBackend){
-		this.objMain = (ServerMainOVPN) objServerBackend;
+	@Override
+	public void setTrayIcon(TrayIcon objTrayIcon) {
+		this.objTrayIcon = objTrayIcon;
 	}
+
+	@Override
 	public ServerMainOVPN getMainObject(){
 		return this.objMain;
 	}
-
-	public void actionPerformed(ActionEvent arg0) {
-		try{
-			String sCommand = arg0.getActionCommand();
-			//System.out.println("Action to perform: " + sCommand);
-			if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.END.getMenu())){
-				this.unload();	
-			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START.getMenu())){
-				boolean bFlagValue = this.start();					
-			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN.getMenu())) {
-				boolean bFlagValue = this.listen();
-			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PROTOCOL.getMenu())){
-				//JOptionPane pane = new JOptionPane();
-				String stemp = this.readProtocolString();
-				//this.getTrayIconObject() ist keine Component ????
-				JOptionPane.showMessageDialog(null, stemp, "Log des OVPN Connection Listeners", JOptionPane.INFORMATION_MESSAGE );
-			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PAGE_IP_UPLOAD.getMenu())) {
-				
-				//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
-				//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
-				
-				 //Also In ClientMainUI
-				//HashMap<String, KernelJDialogExtendedZZZ> hmContainerDialog....
-				//
-				//Also ClientMainUIZZZ implements Interface IClientMainUIZZZ
-				//                                 mit der Methode HashMap<String, KernelJDialogExtendedZZZ> .getDialogs();
-				//                                 mit der Methode KernelJDialogExtendedZZZ .getDialogByAlias(....)
-			   
-				
-				//Also ClientTrayUIZZZ implements Interface IClientMainUIUserZZZ 
-				//                               mit der Methode .getClientMainUI();
-				//                                               .setClientMainUI(IClientMainUI objClientMain)
-				//objMainUI = this.getClientMainUI
-				//objMainUI.getDialogByAlias(....)
-				
-				//Bei CANCEL: Lösche diese Dialogbox, d.h. sie wird auch wieder komplett neu gemacht.
-				//Neuer Button CLOSE: D.h. die Dialogbox wird geschlossen, aber wenn sie wieder neu geöffnet wird, 
-				//                    dann sind ggfs. eingegebene Werte wieder da.
-				
-				if(this.dlgIPExternal==null || this.dlgIPExternal.isDisposed() ) {									
-					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
-					HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
-					hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
-					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
-					//dlgIPExternal.setText4ButtonOk("USE VALUE");	
-					this.dlgIPExternal = dlgIPExternal;
-				}
-				try {
-					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-					this.dlgIPExternal.showDialog(null, "Build and Upload IP Page");
-					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'Build and Upload IP Page'");
-				} catch (ExceptionZZZ ez) {					
-					System.out.println(ez.getDetailAllLast()+"\n");
-					ez.printStackTrace();
-					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
-				}
-			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.FTP_CREDENTIALS.getMenu())) {					
-				if(this.dlgFTPCredentials==null || this.dlgFTPCredentials.isDisposed() ) {									
-					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
-					HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
-					hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
-					
-					HashMap<String,Boolean>hmFlagLocal=new HashMap<String,Boolean>();
-					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CANCEL.name(), false);
-					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CLOSE.name(), true);
-					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_OK.name(), false);
-					DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlagLocal, hmFlag);
-					dlgFTPCredentials.setText4ButtonOk("USE VALUES");	
-					this.dlgFTPCredentials = dlgFTPCredentials;
-				}
-				try {
-					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-					this.dlgFTPCredentials.showDialog(null, "FTP Credentials");
-					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'FTP Credentials'");
-					
-					//Versuch den Focus und ein markiertes Feld zu setzen
-					//DAS GEHT NUR AN DIESER STELLE, NACHDEM DER DIALOG SCHON GESTARTET IST
-					//UND DER STARTWERT SCHON GESETZT WURDE
-					//UND DAS GEHT AUCH NUR FUER 1 TEXTFIELD
-//						String sTextfield4Update1 =IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_USERNAME;
-//						JTextField textField1 = (JTextField) this.dlgFTPCredentials.getPanelContent().searchComponent(sTextfield4Update1);
-//						if(textField1!=null) {
-//							//textField.setText(sText2Update);					
-//							JTextFieldHelperZZZ.markAndFocus(this.dlgFTPCredentials.getPanelContent(),textField1);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.
-//						}else {
-//							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "JTextField '" + sTextfield4Update1 + "' NOT FOUND in panel '" + this.dlgFTPCredentials.getPanelContent().getClass() + "' !!!");										
-//						}
-					
-					String sTextfield4Update2 =IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD_DECRYPTED;
-					JTextField textField2 = (JTextField) this.dlgFTPCredentials.getPanelContent().searchComponent(sTextfield4Update2);
-					if(textField2!=null) {											
-						JTextFieldHelperZZZ.markAndFocus(this.dlgFTPCredentials.getPanelContent(),textField2);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.
-					}else {
-						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "JTextField '" + sTextfield4Update2 + "' NOT FOUND in panel '" + this.dlgFTPCredentials.getPanelContent().getClass() + "' !!!");										
-					}
-				} catch (ExceptionZZZ ez) {					
-					System.out.println(ez.getDetailAllLast()+"\n");
-					ez.printStackTrace();
-					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
-				}
-				
-			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.DETAIL.getMenu())){		
-				String stemp = this.readStatusDetailString();
-				if(stemp!= null){
-					if(objTrayIcon!=null) objTrayIcon.displayMessage("Status des OVPN Connection Listeners.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
-				}else{
-					if(objTrayIcon!=null) objTrayIcon.displayMessage("Status des OVPN Connection Listeners.", "unable to receive any status.", TrayIcon.INFO_MESSAGE_TYPE);
-				}
-			
-				/* DAS PASST NICHT IN DIESE SPRECHBLASE REIN
-				String stemp = this.readLogString();
-				if(stemp!= null){
-					if(objTrayIcon!=null) objTrayIcon.displayMessage("Log der Verbindung.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
-				}else{
-					if(objTrayIcon!=null) objTrayIcon.displayMessage("Log der Verbindung.", "unable to receive any log.", TrayIcon.INFO_MESSAGE_TYPE);
-				}
-				*/
-			}
-		}catch(ExceptionZZZ ez){
-			try {
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.				
-				ez.printStackTrace();
-				String stemp = ez.getDetailAllLast();
-				this.getKernelObject().getLogObject().WriteLineDate(stemp);
-				System.out.println(stemp);
-				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
-			} catch (ExceptionZZZ ez2) {					
-				System.out.println(ez.getDetailAllLast());
-				ez2.printStackTrace();
-			}
-		}
+	@Override
+	public void setMainObject(IMainOVPN objMain) {
+		this.objMain = (ServerMainOVPN) objMain;
 	}
+//	public void setMainObject(IServerMainOVPN objServerBackend){
+//		this.objMain = (ServerMainOVPN) objServerBackend;
+//	}
+	
+	public KernelJDialogExtendedZZZ getDialogIpExternal() throws ExceptionZZZ {
+		if(this.dlgIPExternal==null) {
+			//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
+			HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+			hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+			DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
+			//dlgIPExternal.setText4ButtonOk("USE VALUE");	
+			this.dlgIPExternal = dlgIPExternal;
+		}
+		return this.dlgIPExternal;
+	}
+	public void setDialogIpExternal(KernelJDialogExtendedZZZ dlgIpExternal) {
+		this.dlgIPExternal = dlgIpExternal;
+	}
+	
+	public KernelJDialogExtendedZZZ getDialogFtpCredentials() throws ExceptionZZZ {
+		if(this.dlgFTPCredentials==null) {
+			//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
+			HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+			hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+			
+			HashMap<String,Boolean>hmFlagLocal=new HashMap<String,Boolean>();
+			hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CANCEL.name(), false);
+			hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CLOSE.name(), true);
+			hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_OK.name(), false);
+			DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlagLocal, hmFlag);
+			dlgFTPCredentials.setText4ButtonOk("USE VALUES");	
+			this.dlgFTPCredentials = dlgFTPCredentials;
+		}
+		return this.dlgFTPCredentials;
+	}
+	public void setDialogFtpCredentials(KernelJDialogExtendedZZZ dlgFtpCredentials) {
+		this.dlgFTPCredentials = dlgFtpCredentials;
+	}
+	
+	
+
+//	public void actionPerformed(ActionEvent arg0) {
+//		try{
+//			String sCommand = arg0.getActionCommand();
+//			//System.out.println("Action to perform: " + sCommand);
+//			if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.END.getMenu())){
+//				this.unload();	
+//			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START.getMenu())){
+//				boolean bFlagValue = this.start();					
+//			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN.getMenu())) {
+//				boolean bFlagValue = this.listen();
+//			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PROTOCOL.getMenu())){
+//				//JOptionPane pane = new JOptionPane();
+//				String stemp = this.readProtocolString();
+//				//this.getTrayIconObject() ist keine Component ????
+//				JOptionPane.showMessageDialog(null, stemp, "Log des OVPN Connection Listeners", JOptionPane.INFORMATION_MESSAGE );
+//			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PAGE_IP_UPLOAD.getMenu())) {
+//				
+//				//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
+//				//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
+//				
+//				 //Also In ClientMainUI
+//				//HashMap<String, KernelJDialogExtendedZZZ> hmContainerDialog....
+//				//
+//				//Also ClientMainUIZZZ implements Interface IClientMainUIZZZ
+//				//                                 mit der Methode HashMap<String, KernelJDialogExtendedZZZ> .getDialogs();
+//				//                                 mit der Methode KernelJDialogExtendedZZZ .getDialogByAlias(....)
+//			   
+//				
+//				//Also ClientTrayUIZZZ implements Interface IClientMainUIUserZZZ 
+//				//                               mit der Methode .getClientMainUI();
+//				//                                               .setClientMainUI(IClientMainUI objClientMain)
+//				//objMainUI = this.getClientMainUI
+//				//objMainUI.getDialogByAlias(....)
+//				
+//				//Bei CANCEL: Lösche diese Dialogbox, d.h. sie wird auch wieder komplett neu gemacht.
+//				//Neuer Button CLOSE: D.h. die Dialogbox wird geschlossen, aber wenn sie wieder neu geöffnet wird, 
+//				//                    dann sind ggfs. eingegebene Werte wieder da.
+//				
+//				if(this.dlgIPExternal==null || this.dlgIPExternal.isDisposed() ) {									
+//					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
+//					HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+//					hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+//					DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
+//					//dlgIPExternal.setText4ButtonOk("USE VALUE");	
+//					this.dlgIPExternal = dlgIPExternal;
+//				}
+//				try {
+//					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+//					this.dlgIPExternal.showDialog(null, "Build and Upload IP Page");
+//					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'Build and Upload IP Page'");
+//				} catch (ExceptionZZZ ez) {					
+//					System.out.println(ez.getDetailAllLast()+"\n");
+//					ez.printStackTrace();
+//					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
+//				}
+//			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.FTP_CREDENTIALS.getMenu())) {					
+//				if(this.dlgFTPCredentials==null || this.dlgFTPCredentials.isDisposed() ) {									
+//					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;					
+//					HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+//					hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+//					
+//					HashMap<String,Boolean>hmFlagLocal=new HashMap<String,Boolean>();
+//					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CANCEL.name(), false);
+//					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CLOSE.name(), true);
+//					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_OK.name(), false);
+//					DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlagLocal, hmFlag);
+//					dlgFTPCredentials.setText4ButtonOk("USE VALUES");	
+//					this.dlgFTPCredentials = dlgFTPCredentials;
+//				}
+//				try {
+//					//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+//					this.dlgFTPCredentials.showDialog(null, "FTP Credentials");
+//					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: 'FTP Credentials'");
+//					
+//					//Versuch den Focus und ein markiertes Feld zu setzen
+//					//DAS GEHT NUR AN DIESER STELLE, NACHDEM DER DIALOG SCHON GESTARTET IST
+//					//UND DER STARTWERT SCHON GESETZT WURDE
+//					//UND DAS GEHT AUCH NUR FUER 1 TEXTFIELD
+////						String sTextfield4Update1 =IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_USERNAME;
+////						JTextField textField1 = (JTextField) this.dlgFTPCredentials.getPanelContent().searchComponent(sTextfield4Update1);
+////						if(textField1!=null) {
+////							//textField.setText(sText2Update);					
+////							JTextFieldHelperZZZ.markAndFocus(this.dlgFTPCredentials.getPanelContent(),textField1);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.
+////						}else {
+////							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "JTextField '" + sTextfield4Update1 + "' NOT FOUND in panel '" + this.dlgFTPCredentials.getPanelContent().getClass() + "' !!!");										
+////						}
+//					
+//					String sTextfield4Update2 =IConstantProgramFTPCredentialsOVPN.sCOMPONENT_TEXTFIELD_PASSWORD_DECRYPTED;
+//					JTextField textField2 = (JTextField) this.dlgFTPCredentials.getPanelContent().searchComponent(sTextfield4Update2);
+//					if(textField2!=null) {											
+//						JTextFieldHelperZZZ.markAndFocus(this.dlgFTPCredentials.getPanelContent(),textField2);//Merke: Jetzt den Cursor noch verändern macht dies wieder rückgängig.
+//					}else {
+//						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "JTextField '" + sTextfield4Update2 + "' NOT FOUND in panel '" + this.dlgFTPCredentials.getPanelContent().getClass() + "' !!!");										
+//					}
+//				} catch (ExceptionZZZ ez) {					
+//					System.out.println(ez.getDetailAllLast()+"\n");
+//					ez.printStackTrace();
+//					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
+//				}
+//				
+//			}else if(sCommand.equalsIgnoreCase(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.DETAIL.getMenu())){		
+//				String stemp = this.readStatusDetailString();
+//				if(stemp!= null){
+//					if(objTrayIcon!=null) objTrayIcon.displayMessage("Status des OVPN Connection Listeners.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
+//				}else{
+//					if(objTrayIcon!=null) objTrayIcon.displayMessage("Status des OVPN Connection Listeners.", "unable to receive any status.", TrayIcon.INFO_MESSAGE_TYPE);
+//				}
+//			
+//				/* DAS PASST NICHT IN DIESE SPRECHBLASE REIN
+//				String stemp = this.readLogString();
+//				if(stemp!= null){
+//					if(objTrayIcon!=null) objTrayIcon.displayMessage("Log der Verbindung.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
+//				}else{
+//					if(objTrayIcon!=null) objTrayIcon.displayMessage("Log der Verbindung.", "unable to receive any log.", TrayIcon.INFO_MESSAGE_TYPE);
+//				}
+//				*/
+//			}
+//		}catch(ExceptionZZZ ez){
+//			try {
+//				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.				
+//				ez.printStackTrace();
+//				String stemp = ez.getDetailAllLast();
+//				this.getKernelObject().getLogObject().WriteLineDate(stemp);
+//				System.out.println(stemp);
+//				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
+//			} catch (ExceptionZZZ ez2) {					
+//				System.out.println(ez.getDetailAllLast());
+//				ez2.printStackTrace();
+//			}
+//		}
+//	}
 
 	//+++ Aus IListenerObjectFlagZsetZZZ
 	@Override
@@ -1167,6 +1177,105 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements Acti
 			hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASERROR, ClientTrayStatusTypeZZZ.ERROR);
 		}//end main:
 		return hmReturn;
+	}
+
+	@Override
+	public JPopupMenu getMenu() throws ExceptionZZZ {
+		if(this.objMenu==null) {
+			this.objMenu = this.createMenuCustom();
+		}
+		return this.objMenu;	}
+
+	@Override
+	public void setMenu(JPopupMenu menu) throws ExceptionZZZ {
+		this.objMenu = menu;
+		this.getTrayIcon().setPopupMenu(menu);
+	}
+
+	@Override
+	public IActionCascadedZZZ getActionListenerTrayIcon() throws ExceptionZZZ {
+		if(this.objActionListener==null) {
+			IActionCascadedZZZ objActionListener = new ActionServerTrayUIOVPN(this.getKernelObject(), this);
+			this.setActionListenerTrayIcon(objActionListener);
+		}
+		return this.objActionListener;		
+	}
+
+	@Override
+	public void setActionListenerTrayIcon(IActionCascadedZZZ objActionListener) {
+		this.objActionListener = objActionListener;
+	}
+	
+	@Override
+	public JPopupMenu createMenuCustom() throws ExceptionZZZ {
+		JPopupMenu objReturn = new JPopupMenu();
+		main:{
+			IActionCascadedZZZ objActionListener = this.getActionListenerTrayIcon();
+			
+			JMenuItem menueeintrag2 = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START.getMenu());
+			objReturn.add(menueeintrag2);
+			menueeintrag2.addActionListener((ActionListener) objActionListener);
+			
+			JMenuItem menueeintrag2b = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.LISTEN.getMenu());
+			objReturn.add(menueeintrag2b);
+			menueeintrag2b.addActionListener((ActionListener) objActionListener);
+			
+			JMenuItem menueeintrag3 = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PROTOCOL.getMenu());
+	        objReturn.add(menueeintrag3);
+			menueeintrag3.addActionListener((ActionListener) objActionListener);
+			
+			JMenuItem menueeintragFTPCredentials = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.FTP_CREDENTIALS.getMenu());
+	        objReturn.add(menueeintragFTPCredentials);
+			menueeintragFTPCredentials.addActionListener((ActionListener) objActionListener);
+			
+			JMenuItem menueeintragIPPage = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.PAGE_IP_UPLOAD.getMenu());
+	        objReturn.add(menueeintragIPPage);
+			menueeintragIPPage.addActionListener((ActionListener) objActionListener);
+					
+			JMenuItem menueeintrag = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.END.getMenu());	
+			objReturn.add(menueeintrag);		
+			menueeintrag.addActionListener((ActionListener) objActionListener);
+			
+			//DUMMY Einträge, sofort erkennen ob Server / Client
+			//DUMMY Einträge, damit der unterste Eintrag ggfs. nicht durch die Windows Taskleiste verdeckt wird
+			JMenuItem menueeintragLine = new JMenuItem("------------------");
+			objReturn.add(menueeintragLine);
+			//Kein actionListener für Dummy Eintrag
+						
+			JMenuItem menueeintragContext = new JMenuItem("RUNNING AS SERVER");
+			objReturn.add(menueeintragContext);
+			//Kein actionListener für Dummy Eintrag
+			
+			JMenuItem menueeintragDummy = new JMenuItem(" ");
+			objReturn.add(menueeintragDummy);
+			//Kein actionListener für Dummy Eintrag
+			
+			/* das scheint dann doch nicht notwendig zu sein !!!
+			menueeintrag.addMouseListener(new MouseAdapter(){
+				public void mouseReleased(MouseEvent me){
+					System.out.println("mausi released");
+				}
+				public void mousePressed(MouseEvent me){
+					System.out.println("mausi pressed");
+				}
+				public void mouseClicked(MouseEvent me){
+					System.out.println("mausi clicked");
+				}
+				
+				//Das wird erkannt
+				public void mouseEntered(MouseEvent me){
+					System.out.println("mausi entered");
+				}
+				
+				//
+				public void mouseExited(MouseEvent me){
+					System.out.println("mausi exited");
+				}
+			});
+			*/
+			
+		}//end main:
+		return objReturn;
 	}
 }//END Class
 

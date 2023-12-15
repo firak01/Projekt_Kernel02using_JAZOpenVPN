@@ -33,8 +33,11 @@ import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
 import basic.zKernel.status.IStatusBooleanZZZ;
 import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
+import basic.zKernelUI.component.IActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
+import use.openvpn.IMainOVPN;
+import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainOVPN;
@@ -46,10 +49,14 @@ import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.clientui.IClientStatusMappedValueZZZ.ClientTrayStatusTypeZZZ;
-import use.openvpn.clientui.IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ;
+import use.openvpn.clientui.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
+import use.openvpn.clientui.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
+import use.openvpn.serverui.ActionServerTrayUIOVPN;
+import use.openvpn.serverui.ServerTrayUIOVPN;
+import use.openvpn.serverui.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
+import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 
 /** Der Icon unter Windows in der TaskLeiste.
  *  Aus ihm heraus werden:
@@ -65,13 +72,15 @@ import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
  * @author Fritz Lindhauer, 11.10.2023, 07:46:15
  * 
  */
-public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements ActionListener ,IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {
-	//Merke: Der Tray selbst hat keinen Status.
+public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITrayOVPN, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {
 	private SystemTray objTray = null;
 	private TrayIcon objTrayIcon = null;
-	private ClientMainOVPN objMain = null;
+	private JPopupMenu objMenu = null;
+	private IActionCascadedZZZ objActionListener = null;
+	private volatile ClientMainOVPN objMain = null;
 	
-	//Wie in AbstractObjectWithStatusListeningZZZ
+	//Merke: Der Tray selbst hat keinen Status. Er nimmt aber Statusaenderungen vom Main-Objekt entgegen und mapped diese auf sein "Aussehen"
+	//       Wie in AbstractObjectWithStatusListeningZZZ wird für das Mappen des reinkommenden Status auf ein Enum eine Hashmap benötigt.		
 	private HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ> hmEnumSet =null; //Hier wird ggfs. der Eigene Status mit dem Status einer anderen Klasse (definiert durch das Interface) gemappt.
 
 	
@@ -82,107 +91,39 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 	private KernelJDialogExtendedZZZ dlgIPExternal=null;
 	private KernelJDialogExtendedZZZ dlgAdjustment=null;
 	
-	public ClientTrayUIZZZ(IKernelZZZ objKernel, ClientMainOVPN objClientMain, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientTrayUIOVPN(IKernelZZZ objKernel, ClientMainOVPN objClientMain, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,saFlagControl);//20210402: Die direkten Flags werden nun in der Elternklasse verarbeitet
 		ClientTrayUINew_(objClientMain);
 	}
 	
-	public ClientTrayUIZZZ(IKernelZZZ objKernel, IClientMainOVPN objClientMain, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientTrayUIOVPN(IKernelZZZ objKernel, IClientMainOVPN objClientMain, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel,saFlagControl);//20210402: Die direkten Flags werden nun in der Elternklasse verarbeitet
 		ClientTrayUINew_(objClientMain);
 	}
 	
 	private void ClientTrayUINew_(IClientMainOVPN objClientMain) throws ExceptionZZZ{
 		main:{		
-			//try{		
-			check:{
-				if(this.getFlag("init")) break main;
-				if(objClientMain==null){
-					ExceptionZZZ ez = new ExceptionZZZ("ClientMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
-					 throw ez;		 
-				}else{
-					this.objMain = (ClientMainOVPN) objClientMain;
-				}
-			}//End check
+			if(this.getFlag("init")) break main;
+			if(objClientMain==null){
+				ExceptionZZZ ez = new ExceptionZZZ("ClientMain-Object", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName()); 					 
+				 throw ez;		 
+			}
+			this.setMainObject(objClientMain);
+			
 			
 			//Dieses muss beim Beenden angesprochen werden, um das TrayIcon wieder zu entfernen
 			//Merke 20220718: Wohl unter Win10 nicht lauffähig
-			this.objTray = SystemTray.getDefaultSystemTray();
+			TrayIcon objTrayIcon = this.getTrayIcon();
 			
 			//https://docs.oracle.com/javase/tutorial/uiswing/misc/systemtray.html
 			//this.objTray = SystemTray.getSystemTray();
 			
-			JPopupMenu menu = new JPopupMenu();
+			IActionCascadedZZZ objActionListener = this.getActionListenerTrayIcon();
+			objTrayIcon.addActionListener((ActionListener) objActionListener);
 			
-			JMenuItem menueeintrag2 = new JMenuItem(ClientTrayMenuTypeZZZ.START.getMenu());
-			menu.add(menueeintrag2);
-			menueeintrag2.addActionListener(this);
-			
-			
-			JMenuItem menueeintrag2b = new JMenuItem(ClientTrayMenuTypeZZZ.CONNECT.getMenu());
-			menu.add(menueeintrag2b);
-			menueeintrag2b.addActionListener(this);
-			
-			JMenuItem menueeintrag2c = new JMenuItem(ClientTrayMenuTypeZZZ.PING.getMenu());
-			menu.add(menueeintrag2c);
-			menueeintrag2c.addActionListener(this);
-			
-			JMenuItem menueeintrag3 = new JMenuItem(ClientTrayMenuTypeZZZ.PROTOCOL.getMenu());
-            menu.add(menueeintrag3);
-			menueeintrag3.addActionListener(this);
-			
-			JMenuItem menueeintrag4 = new JMenuItem(ClientTrayMenuTypeZZZ.ADJUSTMENT.getMenu());
-			menu.add(menueeintrag4);
-			menueeintrag4.addActionListener(this);
-			
-			JMenuItem menueeintragFTP = new JMenuItem(ClientTrayMenuTypeZZZ.PAGE_IP_READ.getMenu());
-            menu.add(menueeintragFTP);
-			menueeintragFTP.addActionListener(this);
-						
-			JMenuItem menueeintrag = new JMenuItem(ClientTrayMenuTypeZZZ.END.getMenu());	
-			menu.add(menueeintrag);		
-			menueeintrag.addActionListener(this);
-			
-			//DUMMY Einträge, a: Server / Client
-			//DUMMY Einträge, damit der unterste Eintrag ggfs. nicht durch die Windows Taskleiste verdeckt wird
-			JMenuItem menueeintragLine = new JMenuItem("------------------");
-			menu.add(menueeintragLine);
-			//Kein actionListener für Dummy Eintrag
-			
-			JMenuItem menueeintragContext = new JMenuItem("RUNNING AS CLIENT");
-			menu.add(menueeintragContext);
-			//Kein actionListener für Dummy Eintrag
-			
-			JMenuItem menueeintragDummy = new JMenuItem(" ");
-			menu.add(menueeintragDummy);
-			//Kein actionListener für Dummy Eintrag
-			
-			
-			/* Spezielle Mouse-Listener sind nicht notwendig, aber moeglich !!!
-			menueeintrag.addMouseListener(new MouseAdapter(){
-				public void mouseReleased(MouseEvent me){
-					System.out.println("mausi released");
-				}
-				public void mousePressed(MouseEvent me){
-					System.out.println("mausi pressed");
-				}
-				public void mouseClicked(MouseEvent me){
-					System.out.println("mausi clicked");
-				}
-				public void mouseEntered(MouseEvent me){
-					System.out.println("mausi entered");
-				}				
-				public void mouseExited(MouseEvent me){
-					System.out.println("mausi exited");
-				}
-			});
-			*/
-
-			ImageIcon objIcon = this.getImageIconByStatus(ClientTrayStatusTypeZZZ.NEW);			
-			this.objTrayIcon = new TrayIcon(objIcon, "OVPNConnector", menu);
-			this.objTrayIcon.addActionListener(this);			
-			this.objTray.addTrayIcon(this.objTrayIcon);
-			
+			SystemTray objTray = this.getSystemTray();
+			objTray.addTrayIcon(objTrayIcon);
+			//Merke: Ueber unload() wird das TrayIcon wieder entfernt.
 			
 			//Den Process-Monitor auch schon vorbereiten, auch wenn ggfs. nicht schon am Anfang auf die Verbindung "gelistend" wird.
 			//Er wird auch am Backend-Objekt registriert, um dortige Aenderungen mitzubekommen.
@@ -203,9 +144,9 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 		ImageIcon objReturn = null;
 		main:{
 			URL url = null;
-			ClassLoader objClassLoader = ClientTrayUIZZZ.class.getClassLoader(); 
+			ClassLoader objClassLoader = ClientTrayUIOVPN.class.getClassLoader(); 
 			if(objClassLoader==null) {
-				ExceptionZZZ ez = new ExceptionZZZ("unable to receiver classloader object", iERROR_RUNTIME, ClientTrayUIZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				ExceptionZZZ ez = new ExceptionZZZ("unable to receiver classloader object", iERROR_RUNTIME, ClientTrayUIOVPN.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
 			String sPath= ResourceEasyZZZ.searchDirectoryAsStringRelative("resourceZZZ/image/tray"); //Merke: Innerhalb einer JAR-Datei soll hier ein src/ vorangestellt werden.					
@@ -219,7 +160,7 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 			if(url==null) {
 				String sLog = "unable to receive url object. Path '" + sPathTotal + "' not found?";
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-				ExceptionZZZ ez = new ExceptionZZZ(sLog, iERROR_RUNTIME, ClientTrayUIZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				ExceptionZZZ ez = new ExceptionZZZ(sLog, iERROR_RUNTIME, ClientTrayUIOVPN.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}else {
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": URL = '"+url.toExternalForm() + "'");
@@ -235,14 +176,15 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 11.10.2023, 07:56:09
 	 */
-	public boolean switchStatus(ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
+	@Override
+	public boolean switchStatus(ClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
 		boolean bReturn = false;
 		main:{			
 			ImageIcon objIcon = this.getImageIconByStatus(enumSTATUS);
 			if(objIcon==null)break main;
 			
 			//+++++ Test: Logge den Menüpunkt			
-			IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ objEnum = (IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ) enumSTATUS.getAccordingTrayMenuType();
+			IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ objEnum = (IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ) enumSTATUS.getAccordingTrayMenuType();
 			if(objEnum!=null){
 				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnum.getMenu();
 				System.out.println(sLog);
@@ -253,13 +195,24 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 				this.getMainObject().logProtocolString(sLog);
 			}
 			//++++++++++++++++++++++++++++++++
-			
-			
-			this.getTrayIconObject().setIcon(objIcon);
+						
+			this.getTrayIcon().setIcon(objIcon);
 			
 			bReturn = true;
 		}//END main:
 		return bReturn;
+	}
+	
+	@Override
+	public boolean switchStatus(ServerTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean switchStatus(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	/**Adds an icon ito the systemtray. 
@@ -930,364 +883,292 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 	
 	//#######################
 	//### GETTER / SETTER
-	public TrayIcon getTrayIconObject(){
+	
+	@Override 
+	public SystemTray getSystemTray() throws ExceptionZZZ{
+		if(this.objTray == null) {
+			this.objTray = SystemTray.getDefaultSystemTray();
+		}
+		return this.objTray;
+	}
+	
+	@Override
+	public void setSystemTray(SystemTray objTray) {
+		this.objTray = objTray;
+	}
+	
+	@Override
+	public TrayIcon getTrayIcon() throws ExceptionZZZ{
+		if(this.objTrayIcon==null) {
+			JPopupMenu menu = this.getMenu();
+			ImageIcon objIcon = ClientTrayUIOVPN.getImageIconByStatus(ClientTrayStatusTypeZZZ.NEW);
+			this.objTrayIcon = new TrayIcon(objIcon, "OVPNListener", menu);
+		}
 		return this.objTrayIcon;
 	}
 	
-	public void setMainObject(IClientMainOVPN objClientBackend){
-		this.objMain = (ClientMainOVPN) objClientBackend;
+	@Override
+	public void setTrayIcon(TrayIcon objTrayIcon) {
+		this.objTrayIcon = objTrayIcon;
 	}
+	
+	@Override
 	public ClientMainOVPN getMainObject(){
 		return this.objMain;
 	}
 	
-//FGL Es scheint so als geht das nicht mit extra Klassen.
-		public void actionPerformed(ActionEvent arg0) {
-			try{
-				String sCommand = arg0.getActionCommand();
-				//System.out.println("Action to perform: " + sCommand);
-				if(sCommand.equals(ClientTrayMenuTypeZZZ.END.getMenu())){
-					this.unload();	
-				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.START.getMenu())){
-					this.start();
-				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.CONNECT.getMenu())) {
-					this.connect();
-				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.PING.getMenu())) {
-					this.ping();	
-				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.PROTOCOL.getMenu())){
-					//JOptionPane pane = new JOptionPane();
-					String stemp = this.readProtocolString();
-					//this.getTrayIconObject() ist keine Component ????
-					JOptionPane.showMessageDialog(null, stemp, "Log der Verbindung", JOptionPane.INFORMATION_MESSAGE );
-				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.ADJUSTMENT.getMenu())) {
-					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
-					//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
-					
-					 //Also In ClientMainUI
-					//HashMap<String, KernelJDialogExtendedZZZ> hmContainerDialog....
-					//
-					//Also ClientMainUIZZZ implements Interface IClientMainUIZZZ
-					//                                 mit der Methode HashMap<String, KernelJDialogExtendedZZZ> .getDialogs();
-					//                                 mit der Methode KernelJDialogExtendedZZZ .getDialogByAlias(....)
-				   
-					
-					//Also ClientTrayUIZZZ implements Interface IClientMainUIUserZZZ 
-					//                               mit der Methode .getClientMainUI();
-					//                                               .setClientMainUI(IClientMainUI objClientMain)
-					//objMainUI = this.getClientMainUI
-					//objMainUI.getDialogByAlias(....)
-					
-					//Bei CANCEL: Lösche diese Dialogbox, d.h. sie wird auch wieder komplett neu gemacht.
-					//Neuer Button CLOSE: D.h. die Dialogbox wird geschlossen, aber wenn sie wieder neu geöffnet wird, 
-					//                    dann sind ggfs. eingegebene Werte wieder da.
-					
-					if(this.dlgAdjustment==null || this.dlgAdjustment.isDisposed() ) {
-					
-						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-						//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
-						//       Sie ermöglicht die Konfiguration der anderen Module.
-						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
-						hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
-						DlgAdjustmentOVPN dlgAdjustment = new DlgAdjustmentOVPN(this.getKernelObject(), null, hmFlag);
-						dlgAdjustment.setText4ButtonOk("USE VALUE");
-						
-						this.dlgAdjustment = dlgAdjustment;					
-					}
-										
-					try {
-						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-						dlgAdjustment.showDialog(null, "Adjustments for available Modules");
-						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: Dialog 'Adjustment'");
-					} catch (ExceptionZZZ ez) {					
-						System.out.println(ez.getDetailAllLast()+"\n");
-						ez.printStackTrace();
-						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
-					}				
-				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.PAGE_IP_READ.getMenu())) {
-					
-					//TODOGOON 20210210: Wenn es eine HashMap gäbe, dann könnte man diese über eine Methode 
-					//                   ggfs. holen, wenn sie schon mal erzeugt worden ist.	
-					
-					 //Also In ClientMainUI
-					//HashMap<String, KernelJDialogExtendedZZZ> hmContainerDialog....
-					//
-					//Also ClientMainUIZZZ implements Interface IClientMainUIZZZ
-					//                                 mit der Methode HashMap<String, KernelJDialogExtendedZZZ> .getDialogs();
-					//                                 mit der Methode KernelJDialogExtendedZZZ .getDialogByAlias(....)
-				   
-					
-					//Also ClientTrayUIZZZ implements Interface IClientMainUIUserZZZ 
-					//                               mit der Methode .getClientMainUI();
-					//                                               .setClientMainUI(IClientMainUI objClientMain)
-					//objMainUI = this.getClientMainUI
-					//objMainUI.getDialogByAlias(....)
-					
-					//Bei CANCEL: Lösche diese Dialogbox, d.h. sie wird auch wieder komplett neu gemacht.
-					//Neuer Button CLOSE: D.h. die Dialogbox wird geschlossen, aber wenn sie wieder neu geöffnet wird, 
-					//                    dann sind ggfs. eingegebene Werte wieder da.
-					
-					if(this.dlgIPExternal==null || this.dlgIPExternal.isDisposed() ) {
-					
-						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-						//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
-						HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
-						hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
-						DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
-						dlgIPExternal.setText4ButtonOk("USE VALUE");
-						
-						this.dlgIPExternal = dlgIPExternal;					
-					}
-										
-					try {
-						//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
-						dlgIPExternal.showDialog(null, "Read IP External/Build Page");
-						ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Ended Action: Dialog 'Read IP External/Build Page'");
-					} catch (ExceptionZZZ ez) {					
-						System.out.println(ez.getDetailAllLast()+"\n");
-						ez.printStackTrace();
-						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
-					}
-				}else if(sCommand.equals(ClientTrayMenuTypeZZZ.DETAIL.getMenu())){			//"PressAction": DAS SCHEINT EIN FEST VORGEGEBENER NAME VON JDIC zu sein für das Clicken AUF das Icon.		
-					String stemp = this.readStatusDetailString();
-					if(stemp!= null){
-						if(objTrayIcon!=null) objTrayIcon.displayMessage("Status der Verbindung.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
-					}else{
-						if(objTrayIcon!=null) objTrayIcon.displayMessage("Status der Verbindung.", "unable to receive any status.", TrayIcon.INFO_MESSAGE_TYPE);
-					}
-				
-					/* DAS PASST NICHT IN DIESE SPRECHBLASE REIN
-					String stemp = this.readLogString();
-					if(stemp!= null){
-						if(objTrayIcon!=null) objTrayIcon.displayMessage("Log der Verbindung.", stemp, TrayIcon.INFO_MESSAGE_TYPE);
-					}else{
-						if(objTrayIcon!=null) objTrayIcon.displayMessage("Log der Verbindung.", "unable to receive any log.", TrayIcon.INFO_MESSAGE_TYPE);
-					}
-					*/
-				}
-			}catch(ExceptionZZZ ez){
-				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.
-				try {
-					this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
-				} catch (ExceptionZZZ e1) {
-					System.out.println(ez.getDetailAllLast());
-					e1.printStackTrace();
-				}
-				try {
-					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
-				} catch (ExceptionZZZ e2) {
-					System.out.println(e2.getDetailAllLast());
-					e2.printStackTrace();
-				}
-			}
+	@Override
+	public void setMainObject(IMainOVPN objMain){
+		this.objMain = (ClientMainOVPN) objMain;
+	}
+	
+	
+	
+	public KernelJDialogExtendedZZZ getDialogIpExternal() throws ExceptionZZZ {
+		if(this.dlgIPExternal==null || this.dlgIPExternal.isDisposed() ) {
+			
+			//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+			//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
+			HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+			hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+			DlgIPExternalOVPN dlgIPExternal = new DlgIPExternalOVPN(this.getKernelObject(), null, hmFlag);
+			dlgIPExternal.setText4ButtonOk("USE VALUE");
+			
+			this.dlgIPExternal = dlgIPExternal;					
 		}
-
-		//+++ Aus IListenerObjectFlagZsetZZZ
-		@Override
-		public boolean flagChanged(IEventObjectFlagZsetZZZ eventFlagZset) throws ExceptionZZZ {
-			boolean bReturn=false;
-			main:{
-				Enum objFlagEnum = eventFlagZset.getFlagEnum();
-				if(objFlagEnum==null) break main;
-				
-				boolean bFlagValue = eventFlagZset.getFlagValue();
-				if(bFlagValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
-
-			}//end main:
-			return bReturn;
+		return this.dlgIPExternal;
+	}
+	public void setDialogIpExternal(KernelJDialogExtendedZZZ dlgIpExternal) {
+		this.dlgIPExternal = dlgIpExternal;
+	}
+	
+	public KernelJDialogExtendedZZZ getDialogAdjustment() throws ExceptionZZZ {
+					
+		if(this.dlgAdjustment==null || this.dlgAdjustment.isDisposed() ) {
+			
+			//Merke: Hier gibt es keinen ParentFrame, darum ist this.getFrameParent() = null;
+			//Merke: Diese Dialogbox soll als Modul in der Kernel-Ini-Datei konfiguriert sein.
+			//       Sie ermöglicht die Konfiguration der anderen Module.
+			HashMap<String,Boolean>hmFlag=new HashMap<String,Boolean>();
+			hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
+			DlgAdjustmentOVPN dlgAdjustment = new DlgAdjustmentOVPN(this.getKernelObject(), null, hmFlag);
+			dlgAdjustment.setText4ButtonOk("USE VALUE");
+			
+			this.dlgAdjustment = dlgAdjustment;					
 		}
-		
-		//+++ Aus IListenerObjectStatusLocalSetOVPN
-		@Override
-		public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-			//Der Tray ist am MainObjekt registriert.
-			//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
-			boolean bReturn=false;
-			main:{	
-				if(eventStatusLocalSet==null)break main;
-				
-				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Event gefangen.";
+		return this.dlgAdjustment;
+	}
+	public void setDialogAdjustment(KernelJDialogExtendedZZZ dlgAdjustment) {
+		this.dlgAdjustment = dlgAdjustment;
+	}
+	
+	//+++ Aus IListenerObjectFlagZsetZZZ
+	@Override
+	public boolean flagChanged(IEventObjectFlagZsetZZZ eventFlagZset) throws ExceptionZZZ {
+		boolean bReturn=false;
+		main:{
+			Enum objFlagEnum = eventFlagZset.getFlagEnum();
+			if(objFlagEnum==null) break main;
+			
+			boolean bFlagValue = eventFlagZset.getFlagValue();
+			if(bFlagValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+
+		}//end main:
+		return bReturn;
+	}
+	
+	//+++ Aus IListenerObjectStatusLocalSetOVPN
+	@Override
+	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		//Der Tray ist am MainObjekt registriert.
+		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
+		boolean bReturn=false;
+		main:{	
+			if(eventStatusLocalSet==null)break main;
+			
+			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Event gefangen.";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			
+			boolean bRelevant = this.isEventRelevant(eventStatusLocalSet); 
+			if(!bRelevant) {
+				sLog = 	ReflectCodeZZZ.getPositionCurrent() + ": Event / Status nicht relevant. Breche ab.";
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
-				
-				boolean bRelevant = this.isEventRelevant(eventStatusLocalSet); 
-				if(!bRelevant) {
-					sLog = 	ReflectCodeZZZ.getPositionCurrent() + ": Event / Status nicht relevant. Breche ab.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
-					break main;
+				break main;
+			}
+			
+			
+			/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
+		 	class Animal { }
+			class Dog2 extends Animal {
+				static void method(Animal j) {
+				if(j instanceof Dog2){
+				Dog2 d=(Dog2)j;//downcasting
+				System.out.println(“downcasting done”);
 				}
-				
-				
-				/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
-			 	class Animal { }
-				class Dog2 extends Animal {
-					static void method(Animal j) {
-					if(j instanceof Dog2){
-					Dog2 d=(Dog2)j;//downcasting
-					System.out.println(“downcasting done”);
-					}
-					}
-					public static void main (String [] args) {
-					Animal j=new Dog2();
-					Dog2.method(j);
-					}
 				}
-			 */
-				
-				//+++ Mappe nun die eingehenden Status-Enums auf die eigenen
-				if(eventStatusLocalSet.getStatusEnum() instanceof IClientMainOVPN.STATUSLOCAL){					
-					bReturn = this.statusLocalChangedMainEvent_(eventStatusLocalSet);
-					break main;
-					
+				public static void main (String [] args) {
+				Animal j=new Dog2();
+				Dog2.method(j);
 				}
+			}
+		 */
+			
+			//+++ Mappe nun die eingehenden Status-Enums auf die eigenen
+			if(eventStatusLocalSet.getStatusEnum() instanceof IClientMainOVPN.STATUSLOCAL){					
+				bReturn = this.statusLocalChangedMainEvent_(eventStatusLocalSet);
+				break main;
+				
+			}
 //				else if(eventStatusLocalSet.getStatusEnum() instanceof IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL) {
 //					System.out.println(ReflectCodeZZZ.getPositionCurrent() +" :FGLTEST 02");
 //					bReturn = this.statusLocalChangedMonitorEvent_(eventStatusLocalSet);
 //					break main;
 //				}
-				else {	
-					sLog = ReflectCodeZZZ.getPositionCurrent() +" : Status-Enum wird von der Klasse her nicht betrachtet.";
-					System.out.println(sLog);	
-					this.getMainObject().logProtocolString(sLog);
-				}											
-				bReturn = true;
-			}//end main:
-			return bReturn;
-		}
-		/** Merke: Diese private Methode wird nach ausführlicher Prüfung aufgerufen, daher hier mehr noetig z.B.:
-		 * - Keine Pruefung auf NULLL
-		 * - kein instanceof 
-		 * @param eventStatusLocalSet
-		 * @return
-		 * @throws ExceptionZZZ
-		 * @author Fritz Lindhauer, 19.10.2023, 09:43:19
-		 */
-		private boolean statusLocalChangedMainEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-			boolean bReturn=false;
-			main:{	
-				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Fuer MainEvent.";
-				System.out.println(sLog);
+			else {	
+				sLog = ReflectCodeZZZ.getPositionCurrent() +" : Status-Enum wird von der Klasse her nicht betrachtet.";
+				System.out.println(sLog);	
 				this.getMainObject().logProtocolString(sLog);
+			}											
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
+	/** Merke: Diese private Methode wird nach ausführlicher Prüfung aufgerufen, daher hier mehr noetig z.B.:
+	 * - Keine Pruefung auf NULLL
+	 * - kein instanceof 
+	 * @param eventStatusLocalSet
+	 * @return
+	 * @throws ExceptionZZZ
+	 * @author Fritz Lindhauer, 19.10.2023, 09:43:19
+	 */
+	private boolean statusLocalChangedMainEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn=false;
+		main:{	
+			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Fuer MainEvent.";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			
+			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
+			STATUSLOCAL objStatusEnum = (STATUSLOCAL) eventStatusLocalSet.getStatusEnum();
+			if(objStatusEnum==null) break main;
 				
-				IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
-				STATUSLOCAL objStatusEnum = (STATUSLOCAL) eventStatusLocalSet.getStatusEnum();
-				if(objStatusEnum==null) break main;
-					
-				//Falls nicht zuständig, mache nix
-				boolean bProof = this.isEventRelevant(eventStatusLocalSet);
-				if(!bProof) break main;
-					
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);	
-					
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
+			//Falls nicht zuständig, mache nix
+			boolean bProof = this.isEventRelevant(eventStatusLocalSet);
+			if(!bProof) break main;
+				
+			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);	
+				
+			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+				
+			//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForStatusLocal();		
+			ClientTrayStatusTypeZZZ objEnumForTray = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
+			if(objEnumForTray==null) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
-					
-				//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
-				HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForStatusLocal();		
-				ClientTrayStatusTypeZZZ objEnumForTray = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
-				if(objEnumForTray==null) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
-					break main;
-				}			
+				break main;
+			}			
+		
+			
 			
 				
+			//########################################	
+			//### Erneute Verarbeitung mit einem frueheren Status:
+			//### Setze den Status auf einen anderen Status zurueck
+			//########################################	
+			if(objEnumForTray == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
+				//++++++++ TESTEN - Ermittle u.a. die StatusGroupIds über alle vorherigen Events...
+				this.getMainObject().debugCircularBufferStatusLocalMessage();				
+				//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					
+
+				//++++++++ TESTEN - Ermittle die Indexwerte der aktuellen GroupId im CircularBuffer
+				int iGroupIdCurrent = this.getMainObject().getStatusLocalGroupIdFromCurrent();
+				int iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdCurrent +" ist="+iIndexLower;
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);
 				
-					
-				//########################################	
-				//### Erneute Verarbeitung mit einem frueheren Status:
-				//### Setze den Status auf einen anderen Status zurueck
-				//########################################	
-				if(objEnumForTray == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
-					//++++++++ TESTEN - Ermittle u.a. die StatusGroupIds über alle vorherigen Events...
-					this.getMainObject().debugCircularBufferStatusLocalMessage();				
-					//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-						
-	
-					//++++++++ TESTEN - Ermittle die Indexwerte der aktuellen GroupId im CircularBuffer
-					int iGroupIdCurrent = this.getMainObject().getStatusLocalGroupIdFromCurrent();
-					int iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent);
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdCurrent +" ist="+iIndexLower;
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);
-					
-					int iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent, true);
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexLowerInterrupted;
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);
-					
-					int iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent);
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdCurrent +" ist="+iIndexUpper;
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);	
+				int iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent, true);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexLowerInterrupted;
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);
+				
+				int iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdCurrent +" ist="+iIndexUpper;
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);	
 
-					int iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent, true);
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexUpperInterrupted;
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);
-					
-					
+				int iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent, true);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexUpperInterrupted;
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);
+				
+				
 
-					//++++++++ TESTEN - Ermittle die vorherige GroupId
-					int iGroupIdPreviousDifferentFromCurrent = this.getMainObject().searchStatusLocalGroupIdPreviousDifferentFromCurrent();
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige, andere GroupId ist = " + iGroupIdPreviousDifferentFromCurrent +".";
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);	
-					//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-					
-					
-					//++++++++ TESTEN - Ermittle die Indexwerte der vorherigen GroupId im CircularBuffer
-					iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent);
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLower;
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);
-					
-					iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLowerInterrupted;
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);
-					
-					iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent);
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpper;
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);	
+				//++++++++ TESTEN - Ermittle die vorherige GroupId
+				int iGroupIdPreviousDifferentFromCurrent = this.getMainObject().searchStatusLocalGroupIdPreviousDifferentFromCurrent();
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige, andere GroupId ist = " + iGroupIdPreviousDifferentFromCurrent +".";
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);	
+				//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				
+				
+				//++++++++ TESTEN - Ermittle die Indexwerte der vorherigen GroupId im CircularBuffer
+				iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLower;
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);
+				
+				iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLowerInterrupted;
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);
+				
+				iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpper;
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);	
 
-					iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpperInterrupted;
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);	
-					
-					
-					
-					//Nun kann man aus der ermittelten Liste den ersten Eintrag nehmen
-					ArrayList<IStatusBooleanZZZ>listaObjStatusLocalPrevious = this.getMainObject().searchStatusLocalGroupById(iGroupIdPreviousDifferentFromCurrent, true);
-					IStatusBooleanZZZ objStatusLocalPrevious = (IStatusBooleanZZZ) ArrayListZZZ.getFirst(listaObjStatusLocalPrevious);					
-					if(objStatusLocalPrevious!=null) {
-						objEnumForTray = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious.getEnumObject());			
-						if(objEnumForTray==null) {
-							sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
-							System.out.println(sLog);
-							this.getMainObject().logProtocolString(sLog);
-							break main;
-						}else {
-							//Erst einmal den gefundenen Status neu hinzufügen. Damit er auch bei einem weiteren "rueckwaerts Suchen" in der Liste auftaucht.
-							sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf: '" + objEnumForTray.getAbbreviation() + "'";
-							System.out.println(sLog);
-							this.getMainObject().logProtocolString(sLog);							
-							this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), "", true);											
-						}	
-					}else {
-						sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";
+				iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpperInterrupted;
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);	
+				
+				
+				
+				//Nun kann man aus der ermittelten Liste den ersten Eintrag nehmen
+				ArrayList<IStatusBooleanZZZ>listaObjStatusLocalPrevious = this.getMainObject().searchStatusLocalGroupById(iGroupIdPreviousDifferentFromCurrent, true);
+				IStatusBooleanZZZ objStatusLocalPrevious = (IStatusBooleanZZZ) ArrayListZZZ.getFirst(listaObjStatusLocalPrevious);					
+				if(objStatusLocalPrevious!=null) {
+					objEnumForTray = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious.getEnumObject());			
+					if(objEnumForTray==null) {
+						sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
 						System.out.println(sLog);
 						this.getMainObject().logProtocolString(sLog);
 						break main;
-					}
-							
-					//ggfs. noch weiter schrittweise zurück, wenn der vorherige Status ein Steuerevent war...,d.h. ohne Icon
+					}else {
+						//Erst einmal den gefundenen Status neu hinzufügen. Damit er auch bei einem weiteren "rueckwaerts Suchen" in der Liste auftaucht.
+						sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf: '" + objEnumForTray.getAbbreviation() + "'";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);							
+						this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), "", true);											
+					}	
+				}else {
+					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";
+					System.out.println(sLog);
+					this.getMainObject().logProtocolString(sLog);
+					break main;
+				}
+						
+				//ggfs. noch weiter schrittweise zurück, wenn der vorherige Status ein Steuerevent war...,d.h. ohne Icon
 //					if(objStatusLocalPrevious!=null) {
 //						objEnum = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious);			
 //						if(objEnum!=null) {					
@@ -1303,27 +1184,27 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 //						}
 //					}
 
-					
-					
-					//#############################					
-					//Frage nach dem Status im Backend nach...
-					IEnumSetMappedStatusZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist '" + objStatusLocalCurrent.getAbbreviation()+"'.";
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);
 				
-					int iGroupIdPrevious = this.getMainObject().getStatusLocalGroupIdFromPrevious();
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige GroupId ist= " + iGroupIdPrevious +".";
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-					this.logLineDate(sLog);
-						
-				}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {					
-				this.switchStatus(objEnumForTray); //Merke: Der Wert true wird angenommen.
 				
-				bReturn = true;
-			}//end main:
-			return bReturn;
-		}
+				//#############################					
+				//Frage nach dem Status im Backend nach...
+				IEnumSetMappedStatusZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist '" + objStatusLocalCurrent.getAbbreviation()+"'.";
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);
+			
+				int iGroupIdPrevious = this.getMainObject().getStatusLocalGroupIdFromPrevious();
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige GroupId ist= " + iGroupIdPrevious +".";
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
+				this.logLineDate(sLog);
+					
+			}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {					
+			this.switchStatus(objEnumForTray); //Merke: Der Wert true wird angenommen.
+			
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
 
 //		/** Merke: Diese private Methode wird nach ausführlicher Prüfung aufgerufen, daher hier mehr noetig z.B.:
 //		 * - Keine Pruefung auf NULLL
@@ -1411,72 +1292,72 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 //			return bReturn;
 //		}
 		
-		/* (non-Javadoc)
-		 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
-		 */
-		@Override
-		public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				if(eventStatusLocalSet==null)break main;
-				
-				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Pruefe Relevanz des Events.";
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+	 */
+	@Override
+	public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(eventStatusLocalSet==null)break main;
+			
+			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Pruefe Relevanz des Events.";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			
+			IEnumSetMappedZZZ enumStatusFromEvent = eventStatusLocalSet.getStatusEnum();				
+			if(enumStatusFromEvent==null) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocolString(sLog);							
+				break main;
+			}
+			
+			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
+			sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
 				
-				IEnumSetMappedZZZ enumStatusFromEvent = eventStatusLocalSet.getStatusEnum();				
-				if(enumStatusFromEvent==null) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);							
-					break main;
-				}
+			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus hat class='"+enumStatusFromEvent.getClass()+"'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);	
 				
-				boolean bStatusValue = eventStatusLocalSet.getStatusValue();
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-					
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus hat class='"+enumStatusFromEvent.getClass()+"'";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);	
-					
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus='" + enumStatusFromEvent.getAbbreviation()+"'";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				
-				
-				//#### Problemansatz: Mappen des Lokalen Status auf einen Status aus dem Event, verschiedener Klassen.
-				String sStatusAbbreviationLocal = null;
-				IEnumSetMappedZZZ objEnumStatusLocal = null;
+			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus='" + enumStatusFromEvent.getAbbreviation()+"'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			
+			
+			//#### Problemansatz: Mappen des Lokalen Status auf einen Status aus dem Event, verschiedener Klassen.
+			String sStatusAbbreviationLocal = null;
+			IEnumSetMappedZZZ objEnumStatusLocal = null;
 
-				HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForStatusLocalCustom();
-				objEnumStatusLocal = hm.get(enumStatusFromEvent);					
-				//###############################
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForStatusLocalCustom();
+			objEnumStatusLocal = hm.get(enumStatusFromEvent);					
+			//###############################
+			
+			if(objEnumStatusLocal==null) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping nicht mit Wert vorhanden. Damit nicht relevant.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+				break main;
+				//sStatusAbbreviationLocal = enumStatusFromEvent.getAbbreviation();
+			}else {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping mit Wert vorhanden. Damit relevant.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
 				
-				if(objEnumStatusLocal==null) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping nicht mit Wert vorhanden. Damit nicht relevant.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
-					break main;
-					//sStatusAbbreviationLocal = enumStatusFromEvent.getAbbreviation();
-				}else {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping mit Wert vorhanden. Damit relevant.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
-					
-					sStatusAbbreviationLocal = objEnumStatusLocal.getAbbreviation();
-				}
-				
-				//+++ Pruefungen
-				bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
-				if(!bReturn) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);				
-					break main;
-				}
-				
+				sStatusAbbreviationLocal = objEnumStatusLocal.getAbbreviation();
+			}
+			
+			//+++ Pruefungen
+			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);				
+				break main;
+			}
+			
 // für den Tray nicht relevant
 //				bReturn = this.isStatusLocalChanged(sStatusAbbreviationLocal, bStatusValue);
 //				if(!bReturn) {
@@ -1489,110 +1370,213 @@ public class ClientTrayUIZZZ extends AbstractKernelUseObjectZZZ implements Actio
 //					System.out.println(sLog);
 //					this.getMainObject().logProtocolString(sLog);
 //				}
-				
-				//dito gibt es auch die Methode isStatusLocalRelevant(...) nicht, da der Tray kein AbstractObjectWithStatus ist, er verwaltet halt selbst keinen Status.
-				
-							
-				bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
-				if(!bReturn) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);				
-					break main;
-				}
-				
-				bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
-				if(!bReturn) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);				
-					break main;
-				}
-				
-				bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
-				if(!bReturn) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);				
-					break main;
-				}
-
-							
-				bReturn = true;
-			}//end main:
-			return bReturn;
-		}
-
-		@Override
-		public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-			return true;
-		}
-
-		@Override
-		public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
-			return true;
-		}
-
-		@Override
-		public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				if(eventStatusLocalSet==null)break main;
-				
-				boolean bStatusValue = eventStatusLocalSet.getStatusValue();
-				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
 			
-				if(!bStatusValue)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
-				
-				bReturn = true;
+			//dito gibt es auch die Methode isStatusLocalRelevant(...) nicht, da der Tray kein AbstractObjectWithStatus ist, er verwaltet halt selbst keinen Status.
+			
+						
+			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);				
+				break main;
 			}
-			return bReturn;
-		}
-
-		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
-			if(this.hmEnumSet==null) {
-				this.hmEnumSet = this.createHashMapEnumSetForStatusLocalCustom();
+			
+			bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);				
+				break main;
 			}
-			return this.hmEnumSet;
-		}
+			
+			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);				
+				break main;
+			}
 
-		@Override
-		public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
-			this.hmEnumSet = hmEnumSet;
-		}
+						
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
 
-		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForStatusLocalCustom() {
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>();
-			main:{
-				
-				//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTNEW, ClientTrayStatusTypeZZZ.NEW);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTING, ClientTrayStatusTypeZZZ.STARTING);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTED, ClientTrayStatusTypeZZZ.STARTED);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTING, ClientTrayStatusTypeZZZ.CONNECTING);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTED, ClientTrayStatusTypeZZZ.CONNECTED);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTINTERUPTED, ClientTrayStatusTypeZZZ.INTERRUPTED);
-				
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTARTING, ClientTrayStatusTypeZZZ.PINGING);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTARTED, ClientTrayStatusTypeZZZ.PINGED);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTING, ClientTrayStatusTypeZZZ.PINGCONNECTING);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTED, ClientTrayStatusTypeZZZ.PINGCONNECTED);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTNO, ClientTrayStatusTypeZZZ.PINGCONNECTNO);
-				
-				//++++++++++++++++++++++++
-				//Berechne den wirklichen Typen anschliessend, dynamisch. Es wird auf auf einen vorherigen Event zugegriffen durch eine zweite Abfrage
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTOPPED, ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE);
-				
-				//+++++++++++++++++++++++
-				
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASPINGERROR, ClientTrayStatusTypeZZZ.FAILED);
-				hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASERROR, ClientTrayStatusTypeZZZ.ERROR);
-			}//end main:
-			return hmReturn;
+	@Override
+	public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		return true;
+	}
+
+	@Override
+	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
+		return true;
+	}
+
+	@Override
+	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(eventStatusLocalSet==null)break main;
+			
+			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
+			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+		
+			if(!bStatusValue)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+			
+			bReturn = true;
 		}
+		return bReturn;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
+		if(this.hmEnumSet==null) {
+			this.hmEnumSet = this.createHashMapEnumSetForStatusLocalCustom();
+		}
+		return this.hmEnumSet;
+	}
+
+	@Override
+	public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
+		this.hmEnumSet = hmEnumSet;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForStatusLocalCustom() {
+		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>();
+		main:{
+			
+			//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTNEW, ClientTrayStatusTypeZZZ.NEW);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTING, ClientTrayStatusTypeZZZ.STARTING);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISSTARTED, ClientTrayStatusTypeZZZ.STARTED);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTING, ClientTrayStatusTypeZZZ.CONNECTING);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTED, ClientTrayStatusTypeZZZ.CONNECTED);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISCONNECTINTERUPTED, ClientTrayStatusTypeZZZ.INTERRUPTED);
+			
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTARTING, ClientTrayStatusTypeZZZ.PINGING);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTARTED, ClientTrayStatusTypeZZZ.PINGED);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTING, ClientTrayStatusTypeZZZ.PINGCONNECTING);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTED, ClientTrayStatusTypeZZZ.PINGCONNECTED);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGCONNECTNO, ClientTrayStatusTypeZZZ.PINGCONNECTNO);
+			
+			//++++++++++++++++++++++++
+			//Berechne den wirklichen Typen anschliessend, dynamisch. Es wird auf auf einen vorherigen Event zugegriffen durch eine zweite Abfrage
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTOPPED, ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE);
+			
+			//+++++++++++++++++++++++
+			
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASPINGERROR, ClientTrayStatusTypeZZZ.FAILED);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASERROR, ClientTrayStatusTypeZZZ.ERROR);
+		}//end main:
+		return hmReturn;
+	}
+	
+	@Override
+	public JPopupMenu getMenu() throws ExceptionZZZ {
+		if(this.objMenu==null) {
+			this.objMenu = this.createMenuCustom();
+		}
+		return this.objMenu;	}
+
+	@Override
+	public void setMenu(JPopupMenu menu) throws ExceptionZZZ {
+		this.objMenu = menu;
+		this.getTrayIcon().setPopupMenu(menu);
+	}
+
+	@Override
+	public IActionCascadedZZZ getActionListenerTrayIcon() throws ExceptionZZZ {
+		if(this.objActionListener==null) {
+			IActionCascadedZZZ objActionListener = new ActionClientTrayUIOVPN(this.getKernelObject(), this);
+			this.setActionListenerTrayIcon(objActionListener);
+		}
+		return this.objActionListener;		
+	}
+
+	@Override
+	public void setActionListenerTrayIcon(IActionCascadedZZZ objActionListener) {
+		this.objActionListener = objActionListener;
+	}
+
+	@Override
+	public JPopupMenu createMenuCustom() throws ExceptionZZZ {
+		JPopupMenu objReturn = new JPopupMenu();
+		main:{
+			IActionCascadedZZZ objActionListener = this.getActionListenerTrayIcon();
+			
+			JMenuItem menueeintrag2 = new JMenuItem(ClientTrayMenuTypeZZZ.START.getMenu());
+			objReturn.add(menueeintrag2);
+			menueeintrag2.addActionListener((ActionListener) objActionListener);
+			
+			
+			JMenuItem menueeintrag2b = new JMenuItem(ClientTrayMenuTypeZZZ.CONNECT.getMenu());
+			objReturn.add(menueeintrag2b);
+			menueeintrag2b.addActionListener((ActionListener) objActionListener);
+			
+			JMenuItem menueeintrag2c = new JMenuItem(ClientTrayMenuTypeZZZ.PING.getMenu());
+			objReturn.add(menueeintrag2c);
+			menueeintrag2c.addActionListener((ActionListener) objActionListener);
+			
+			JMenuItem menueeintrag3 = new JMenuItem(ClientTrayMenuTypeZZZ.PROTOCOL.getMenu());
+			objReturn.add(menueeintrag3);
+			menueeintrag3.addActionListener((ActionListener) objActionListener);
+			
+			JMenuItem menueeintrag4 = new JMenuItem(ClientTrayMenuTypeZZZ.ADJUSTMENT.getMenu());
+			objReturn.add(menueeintrag4);
+			menueeintrag4.addActionListener((ActionListener) objActionListener);
+			
+			JMenuItem menueeintragFTP = new JMenuItem(ClientTrayMenuTypeZZZ.PAGE_IP_READ.getMenu());
+			objReturn.add(menueeintragFTP);
+			menueeintragFTP.addActionListener((ActionListener) objActionListener);
+						
+			JMenuItem menueeintrag = new JMenuItem(ClientTrayMenuTypeZZZ.END.getMenu());	
+			objReturn.add(menueeintrag);		
+			menueeintrag.addActionListener((ActionListener) objActionListener);
+			
+			//DUMMY Einträge, a: Server / Client
+			//DUMMY Einträge, damit der unterste Eintrag ggfs. nicht durch die Windows Taskleiste verdeckt wird
+			JMenuItem menueeintragLine = new JMenuItem("------------------");
+			objReturn.add(menueeintragLine);
+			//Kein actionListener für Dummy Eintrag
+			
+			JMenuItem menueeintragContext = new JMenuItem("RUNNING AS CLIENT");
+			objReturn.add(menueeintragContext);
+			//Kein actionListener für Dummy Eintrag
+			
+			JMenuItem menueeintragDummy = new JMenuItem(" ");
+			objReturn.add(menueeintragDummy);
+			//Kein actionListener für Dummy Eintrag
+			
+			
+			/* Spezielle Mouse-Listener sind nicht notwendig, aber moeglich !!!
+			menueeintrag.addMouseListener(new MouseAdapter(){
+				public void mouseReleased(MouseEvent me){
+					System.out.println("mausi released");
+				}
+				public void mousePressed(MouseEvent me){
+					System.out.println("mausi pressed");
+				}
+				public void mouseClicked(MouseEvent me){
+					System.out.println("mausi clicked");
+				}
+				public void mouseEntered(MouseEvent me){
+					System.out.println("mausi entered");
+				}				
+				public void mouseExited(MouseEvent me){
+					System.out.println("mausi exited");
+				}
+			});
+			*/
+			
+		}//end main:
+		return objReturn;
+	}
+
+	
 		
 }//END Class

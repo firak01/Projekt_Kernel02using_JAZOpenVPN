@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 
-public interface IClientStatusMappedValueZZZ {
+public interface IClientTrayStatusMappedValueOVPN {
 		//#######################################################
 		//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 		//### String fullName, String abbreviation
@@ -14,17 +14,17 @@ public interface IClientStatusMappedValueZZZ {
 	    //Merke2: Das ist kein IEnumSetMappedStatus. Ein einfache IEnumSetMapped reicht, da das hier lediglich als Container für den Icondateipfad dienen soll.
 		//ALIAS("Uniquename","ClientTryMenuTypeZZZ. ...", "Icon-Dateiname","Beschreibung, wird nicht genutzt....",)
 		public enum ClientTrayStatusTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-			NEW("new",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START, "icons8-networking-64_black_bgGray.png", ""),			
-			STARTING("starting",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START,"icons8-networking-64_yellow.png",""),	
-			STARTED("started",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.START,"icons8-networking-64_black_bgYellow.png",""),
-			CONNECTING("connecting",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.CONNECT,"icons8-networking-64_blue.png",""),
-			CONNECTED("connected",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.CONNECT, "icons8-networking-64_black_bgBlueLight.png",""),
+			NEW("new",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.START, "icons8-networking-64_black_bgGray.png", ""),			
+			STARTING("starting",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.START,"icons8-networking-64_yellow.png",""),	
+			STARTED("started",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.START,"icons8-networking-64_black_bgYellow.png",""),
+			CONNECTING("connecting",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.CONNECT,"icons8-networking-64_blue.png",""),
+			CONNECTED("connected",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.CONNECT, "icons8-networking-64_black_bgBlueLight.png",""),
 			
-			PINGING("pinging",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_magenta.png",""),
-			PINGED("pinged",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_black_bgMagentaDark.png",""),
-			PINGCONNECTING("pingconnecting",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_greenLight.png",""),
-			PINGCONNECTED("pingconnected",IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_black_bgGreen.png",""),
-			PINGCONNECTNO("pingconnectno", IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ.PING, "pill-button-purple_benji_01.png",""),
+			PINGING("pinging",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_magenta.png",""),
+			PINGED("pinged",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_black_bgMagentaDark.png",""),
+			PINGCONNECTING("pingconnecting",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_greenLight.png",""),
+			PINGCONNECTED("pingconnected",IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.PING, "icons8-networking-64_black_bgGreen.png",""),
+			PINGCONNECTNO("pingconnectno", IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ.PING, "pill-button-purple_benji_01.png",""),
 			
 			INTERRUPTED("interrupted",null,"pill-button-purple_benji_01.png",""),
 			STOPPED("stopped",null,"Green Metallic_32.png",""),		
@@ -40,7 +40,7 @@ public interface IClientStatusMappedValueZZZ {
 		//#### Konstruktoren
 		//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
 		//In der Util-Klasse habe ich aber einen Workaround gefunden.
-		ClientTrayStatusTypeZZZ(String sAbbreviation, IClientTrayMenuZZZ.ClientTrayMenuTypeZZZ objEnum, String sIconFileName, String sDescription) {			
+		ClientTrayStatusTypeZZZ(String sAbbreviation, IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ objEnum, String sIconFileName, String sDescription) {			
 		    this.sAbbreviation = sAbbreviation;
 		    this.objEnum = objEnum;
 		    this.sIconFileName = sIconFileName;
