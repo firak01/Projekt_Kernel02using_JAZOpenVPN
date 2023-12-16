@@ -5,6 +5,7 @@ import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.server.ServerApplicationOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.serverui.ConfigOVPN;
+import use.openvpn.serverui.component.tray.ServerTrayUIOVPN;
 
 import java.util.ArrayList;
 

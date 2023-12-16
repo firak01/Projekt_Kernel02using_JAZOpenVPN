@@ -1,4 +1,4 @@
-package use.openvpn.clientui;
+package use.openvpn.clientui.component.tray;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +35,8 @@ import basic.zKernel.status.IStatusBooleanZZZ;
 import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
 import basic.zKernelUI.component.IActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
+import basic.zKernelUI.component.tray.AbstractKernelTrayUIZZZ;
+import basic.zKernelUI.component.tray.IActionTrayZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.ITrayOVPN;
@@ -49,14 +51,14 @@ import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.clientui.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
-import use.openvpn.clientui.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
+import use.openvpn.clientui.component.tray.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
+import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
-import use.openvpn.serverui.ActionServerTrayUIOVPN;
-import use.openvpn.serverui.ServerTrayUIOVPN;
-import use.openvpn.serverui.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
+import use.openvpn.serverui.component.tray.ActionServerTrayUIOVPN;
+import use.openvpn.serverui.component.tray.ServerTrayUIOVPN;
+import use.openvpn.serverui.component.tray.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 
 /** Der Icon unter Windows in der TaskLeiste.
  *  Aus ihm heraus werden:
@@ -72,11 +74,11 @@ import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
  * @author Fritz Lindhauer, 11.10.2023, 07:46:15
  * 
  */
-public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITrayOVPN, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {
-	private SystemTray objTray = null;
-	private TrayIcon objTrayIcon = null;
-	private JPopupMenu objMenu = null;
-	private IActionCascadedZZZ objActionListener = null;
+public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayOVPN, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {
+//	private SystemTray objTray = null;
+//	private TrayIcon objTrayIcon = null;
+//	private JPopupMenu objMenu = null;
+//	private IActionTrayZZZ objActionListener = null;
 	private volatile ClientMainOVPN objMain = null;
 	
 	//Merke: Der Tray selbst hat keinen Status. Er nimmt aber Statusaenderungen vom Main-Objekt entgegen und mapped diese auf sein "Aussehen"
@@ -118,7 +120,7 @@ public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITr
 			//https://docs.oracle.com/javase/tutorial/uiswing/misc/systemtray.html
 			//this.objTray = SystemTray.getSystemTray();
 			
-			IActionCascadedZZZ objActionListener = this.getActionListenerTrayIcon();
+			IActionTrayZZZ objActionListener = this.getActionListenerTrayIcon();
 			objTrayIcon.addActionListener((ActionListener) objActionListener);
 			
 			SystemTray objTray = this.getSystemTray();
@@ -215,20 +217,20 @@ public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITr
 		return false;
 	}
 	
-	/**Adds an icon ito the systemtray. 
-	 * Right click on the item to show available menue entries.
-	 * @return boolean
-	 *
-	 * javadoc created by: 0823, 11.07.2006 - 13:03:47
-	 */
-	public boolean load(){
-		boolean bReturn = false;
-		main:{		
-			this.objTray.addTrayIcon(this.objTrayIcon);
-			bReturn = true;
-		}//END main:
-		return bReturn;
-	}
+//	/**Adds an icon ito the systemtray. 
+//	 * Right click on the item to show available menue entries.
+//	 * @return boolean
+//	 *
+//	 * javadoc created by: 0823, 11.07.2006 - 13:03:47
+//	 */
+//	public boolean load(){
+//		boolean bReturn = false;
+//		main:{		
+//			this.objTray.addTrayIcon(this.objTrayIcon);
+//			bReturn = true;
+//		}//END main:
+//		return bReturn;
+//	}
 	
 	/**Removes the icon from the systemtray
 	 * AND removes any running "openvpn.exe" processes. (or how the exe-file is named)
@@ -239,9 +241,7 @@ public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITr
 	 */
 	public boolean unload() throws ExceptionZZZ{
 		boolean bReturn = false;
-		main:{		
-			//TODO Natuerlich muessen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
-			
+		main:{					
 			//###### Prozesse beenden
 			//+++ Vorbereitend den processnamen auslesen
 			File objFileExe = ClientConfigFileZZZ.findFileExe();
@@ -884,33 +884,33 @@ public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITr
 	//#######################
 	//### GETTER / SETTER
 	
-	@Override 
-	public SystemTray getSystemTray() throws ExceptionZZZ{
-		if(this.objTray == null) {
-			this.objTray = SystemTray.getDefaultSystemTray();
-		}
-		return this.objTray;
-	}
-	
-	@Override
-	public void setSystemTray(SystemTray objTray) {
-		this.objTray = objTray;
-	}
-	
-	@Override
-	public TrayIcon getTrayIcon() throws ExceptionZZZ{
-		if(this.objTrayIcon==null) {
-			JPopupMenu menu = this.getMenu();
-			ImageIcon objIcon = ClientTrayUIOVPN.getImageIconByStatus(ClientTrayStatusTypeZZZ.NEW);
-			this.objTrayIcon = new TrayIcon(objIcon, "OVPNListener", menu);
-		}
-		return this.objTrayIcon;
-	}
-	
-	@Override
-	public void setTrayIcon(TrayIcon objTrayIcon) {
-		this.objTrayIcon = objTrayIcon;
-	}
+//	@Override 
+//	public SystemTray getSystemTray() throws ExceptionZZZ{
+//		if(this.objTray == null) {
+//			this.objTray = SystemTray.getDefaultSystemTray();
+//		}
+//		return this.objTray;
+//	}
+//	
+//	@Override
+//	public void setSystemTray(SystemTray objTray) {
+//		this.objTray = objTray;
+//	}
+//	
+//	@Override
+//	public TrayIcon getTrayIcon() throws ExceptionZZZ{
+//		if(this.objTrayIcon==null) {
+//			JPopupMenu menu = this.getMenu();
+//			ImageIcon objIcon = ClientTrayUIOVPN.getImageIconByStatus(ClientTrayStatusTypeZZZ.NEW);
+//			this.objTrayIcon = new TrayIcon(objIcon, "OVPNListener", menu);
+//		}
+//		return this.objTrayIcon;
+//	}
+//	
+//	@Override
+//	public void setTrayIcon(TrayIcon objTrayIcon) {
+//		this.objTrayIcon = objTrayIcon;
+//	}
 	
 	@Override
 	public ClientMainOVPN getMainObject(){
@@ -979,7 +979,7 @@ public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITr
 	
 	//+++ Aus IListenerObjectStatusLocalSetOVPN
 	@Override
-	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean changedStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		//Der Tray ist am MainObjekt registriert.
 		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
 		boolean bReturn=false;
@@ -1476,30 +1476,30 @@ public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITr
 		return hmReturn;
 	}
 	
-	@Override
-	public JPopupMenu getMenu() throws ExceptionZZZ {
-		if(this.objMenu==null) {
-			this.objMenu = this.createMenuCustom();
-		}
-		return this.objMenu;	}
+//	@Override
+//	public JPopupMenu getMenu() throws ExceptionZZZ {
+//		if(this.objMenu==null) {
+//			this.objMenu = this.createMenuCustom();
+//		}
+//		return this.objMenu;	}
+//
+//	@Override
+//	public void setMenu(JPopupMenu menu) throws ExceptionZZZ {
+//		this.objMenu = menu;
+//		this.getTrayIcon().setPopupMenu(menu);
+//	}
 
 	@Override
-	public void setMenu(JPopupMenu menu) throws ExceptionZZZ {
-		this.objMenu = menu;
-		this.getTrayIcon().setPopupMenu(menu);
-	}
-
-	@Override
-	public IActionCascadedZZZ getActionListenerTrayIcon() throws ExceptionZZZ {
+	public IActionTrayZZZ getActionListenerTrayIcon() throws ExceptionZZZ {
 		if(this.objActionListener==null) {
-			IActionCascadedZZZ objActionListener = new ActionClientTrayUIOVPN(this.getKernelObject(), this);
+			IActionTrayZZZ objActionListener = new ActionClientTrayUIOVPN(this.getKernelObject(), this);
 			this.setActionListenerTrayIcon(objActionListener);
 		}
 		return this.objActionListener;		
 	}
 
 	@Override
-	public void setActionListenerTrayIcon(IActionCascadedZZZ objActionListener) {
+	public void setActionListenerTrayIcon(IActionTrayZZZ objActionListener) {
 		this.objActionListener = objActionListener;
 	}
 
@@ -1507,7 +1507,7 @@ public class ClientTrayUIOVPN extends AbstractKernelUseObjectZZZ implements  ITr
 	public JPopupMenu createMenuCustom() throws ExceptionZZZ {
 		JPopupMenu objReturn = new JPopupMenu();
 		main:{
-			IActionCascadedZZZ objActionListener = this.getActionListenerTrayIcon();
+			IActionTrayZZZ objActionListener = this.getActionListenerTrayIcon();
 			
 			JMenuItem menueeintrag2 = new JMenuItem(ClientTrayMenuTypeZZZ.START.getMenu());
 			objReturn.add(menueeintrag2);

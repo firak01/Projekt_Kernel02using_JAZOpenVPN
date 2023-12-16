@@ -15,7 +15,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.thread.SwingWorker;
 import basic.zKernelUI.KernelUIZZZ;
-import basic.zKernelUI.component.AbstractKernelActionCascadedZZZ;
+import basic.zKernelUI.component.AbstractKernelActionListenerCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -42,8 +42,8 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 	
 	//#######################################################
 	//### Zugriff auf den alternativen Button
-	public AbstractKernelActionCascadedZZZ getActionListenerButtonOk(KernelJPanelCascadedZZZ panelButton) {
-		AbstractKernelActionCascadedZZZ objReturn = null;
+	public AbstractKernelActionListenerCascadedZZZ getActionListenerButtonOk(KernelJPanelCascadedZZZ panelButton) {
+		AbstractKernelActionListenerCascadedZZZ objReturn = null;
 		try {
 			objReturn = new ActionListenerDlgAdjustmentButtonOk(this.getKernelObject(), panelButton);
 		}catch(ExceptionZZZ ez) {

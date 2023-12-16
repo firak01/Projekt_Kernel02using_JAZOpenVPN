@@ -1,33 +1,32 @@
-package use.openvpn.clientui;
+package use.openvpn.serverui.component.tray;
 
 import java.util.EnumSet;
-
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-public interface IClientTrayMenuOVPN {
-		//#######################################################
+
+public interface IServerTrayMenuZZZ {
+	//#######################################################
 		//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 		//### String fullName, String abbreviation
 		//#######################################################
 	    
 		//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 		//ALIAS("Uniquename","Menuepunkt-Text","Beschreibung, wird nicht genutzt....",)
-		public enum ClientTrayMenuTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{		
-			START("start","Starten",""),
-			CONNECT("connect","Verbinden",""),
-			PING("ping","Verbindung pruefen",""),
-			PROTOCOL("protocol","Client Protokol ansehen",""),
-			ADJUSTMENT("adjustment","Einstellungen",""),
-			PAGE_IP_READ("page_ip_read","IP aus remote Page auslesen",""),		
+		public enum ServerTrayMenuTypeZZZ implements IEnumSetMappedZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			END("end","Beenden",""),
-			DETAIL("detail","PressAction","");
-							
+			START("start","Starten",""),		
+			LISTEN("listen","Auf Verbindung warten",""),
+			PROTOCOL("protocol","Server Protokol ansehen",""),
+			DETAIL("detail","PressAction",""),
+			PAGE_IP_UPLOAD("page_ip_upload","IP Page hochladen",""),
+			FTP_CREDENTIALS("ftp_credentials","FTP Anmeldedaten","");				
+			
 		private String sAbbreviation,sMenu,sDescription;
 
 		//#############################################
 		//#### Konstruktoren
 		//Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
 		//In der Util-Klasse habe ich aber einen Workaround gefunden.
-		ClientTrayMenuTypeZZZ(String sAbbreviation, String sMenu, String sDescription) {
+		ServerTrayMenuTypeZZZ(String sAbbreviation, String sMenu, String sDescription) {
 		    this.sAbbreviation = sAbbreviation;
 		    this.sMenu = sMenu;
 		    this.sDescription = sDescription;
@@ -42,19 +41,25 @@ public interface IClientTrayMenuOVPN {
 			}
 		
 		public EnumSet<?>getEnumSetUsed(){
-			return ClientTrayMenuTypeZZZ.getEnumSet();
+			return ServerTrayMenuTypeZZZ.getEnumSet();
 		}
 
 		/* Die in dieser Methode verwendete Klasse für den ...TypeZZZ muss immer angepasst werden. */
 		@SuppressWarnings("rawtypes")
 		public static <E> EnumSet getEnumSet() {
-					
-			//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
-			Class<ClientTrayMenuTypeZZZ> enumClass = ClientTrayMenuTypeZZZ.class;
-			EnumSet<ClientTrayMenuTypeZZZ> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 			
-			for(Object obj : ClientTrayMenuTypeZZZ.class.getEnumConstants()){		
-				set.add((ClientTrayMenuTypeZZZ) obj);
+		 //Merke: Das wird anders behandelt als FLAGZ Enumeration.
+			//String sFilterName = "FLAGZ"; /
+			//...
+			//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
+			
+			//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
+			Class<ServerTrayMenuTypeZZZ> enumClass = ServerTrayMenuTypeZZZ.class;
+			EnumSet<ServerTrayMenuTypeZZZ> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
+			
+			for(Object obj : ServerTrayMenuTypeZZZ.class.getEnumConstants()){
+				//System.out.println(obj + "; "+obj.getClass().getName());
+				set.add((ServerTrayMenuTypeZZZ) obj);
 			}
 			return set;
 			
@@ -76,8 +81,8 @@ public interface IClientTrayMenuOVPN {
 
 		//+++ Das könnte auch in einer Utility-Klasse sein.
 		//the valueOfMethod <--- Translating from DB
-		public static ClientTrayMenuTypeZZZ fromAbbreviation(String s) {
-		for (ClientTrayMenuTypeZZZ state : values()) {
+		public static ServerTrayMenuTypeZZZ fromAbbreviation(String s) {
+		for (ServerTrayMenuTypeZZZ state : values()) {
 		   if (s.equals(state.getAbbreviation()))
 		       return state;
 		}
@@ -113,5 +118,5 @@ public interface IClientTrayMenuOVPN {
 			return this.sDescription;
 		}
 		//+++++++++++++++++++++++++
-	}//End internal Class			
+		}//End internal Class
 }

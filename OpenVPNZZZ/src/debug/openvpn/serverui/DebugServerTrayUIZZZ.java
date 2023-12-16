@@ -4,7 +4,7 @@ import java.io.File;
 
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
-import use.openvpn.serverui.ServerTrayUIOVPN;
+import use.openvpn.serverui.component.tray.ServerTrayUIOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;

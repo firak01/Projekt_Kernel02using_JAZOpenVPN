@@ -3,6 +3,7 @@ package use.openvpn.clientui;
 import use.openvpn.client.ClientApplicationOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.clientui.ConfigOVPN;
+import use.openvpn.clientui.component.tray.ClientTrayUIOVPN;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.file.ini.IKernelCallIniSolverZZZ;

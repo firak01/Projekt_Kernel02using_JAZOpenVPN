@@ -1,4 +1,4 @@
-package use.openvpn.clientui;
+package use.openvpn.clientui.component.tray;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,8 +33,12 @@ import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
 import basic.zKernel.status.IStatusBooleanZZZ;
 import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
-import basic.zKernelUI.component.AbstractKernelActionCascadedZZZ;
+import basic.zKernelUI.component.AbstractKernelActionListenerCascadedZZZ;
+import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
+import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
+import basic.zKernelUI.component.tray.AbstractKernelActionTrayZZZ;
+import basic.zKernelUI.component.tray.ITrayZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientApplicationOVPN;
@@ -48,14 +52,14 @@ import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.clientui.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
-import use.openvpn.clientui.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
+import use.openvpn.clientui.component.tray.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
+import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.ServerMainOVPN;
-import use.openvpn.serverui.ServerTrayStatusMappedValueOVPN;
-import use.openvpn.serverui.ServerTrayUIOVPN;
+import use.openvpn.serverui.component.tray.ServerTrayStatusMappedValueOVPN;
+import use.openvpn.serverui.component.tray.ServerTrayUIOVPN;
 
 /** Der Icon unter Windows in der TaskLeiste.
  *  Aus ihm heraus werden:
@@ -71,7 +75,7 @@ import use.openvpn.serverui.ServerTrayUIOVPN;
  * @author Fritz Lindhauer, 11.10.2023, 07:46:15
  * 
  */
-public class ActionClientTrayUIOVPN extends AbstractKernelActionCascadedZZZ {
+public class ActionClientTrayUIOVPN extends AbstractKernelActionTrayZZZ {
 	private static final long serialVersionUID = 1004331678604454588L;
 
 	public ActionClientTrayUIOVPN(IKernelZZZ objKernel, ITrayOVPN objTrayParent) throws ExceptionZZZ{
@@ -87,6 +91,8 @@ public class ActionClientTrayUIOVPN extends AbstractKernelActionCascadedZZZ {
 		}//END main
 		return bReturn;
 	}
+	
+	
 	
 	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;

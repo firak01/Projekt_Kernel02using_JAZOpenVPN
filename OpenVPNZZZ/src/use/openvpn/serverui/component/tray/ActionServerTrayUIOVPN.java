@@ -1,4 +1,4 @@
-package use.openvpn.serverui;
+package use.openvpn.serverui.component.tray;
 
 import java.awt.event.ActionEvent;
 import java.net.InetAddress;
@@ -16,8 +16,9 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
-import basic.zKernelUI.component.AbstractKernelActionCascadedZZZ;
+import basic.zKernelUI.component.AbstractKernelActionListenerCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
+import basic.zKernelUI.component.tray.AbstractKernelActionTrayZZZ;
 import basic.zKernelUI.util.JTextFieldHelperZZZ;
 import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientMainOVPN;
@@ -30,7 +31,7 @@ import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 import use.openvpn.serverui.component.FTPCredentials.IConstantProgramFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 
-public class ActionServerTrayUIOVPN extends AbstractKernelActionCascadedZZZ{		
+public class ActionServerTrayUIOVPN extends AbstractKernelActionTrayZZZ{		
 	private static final long serialVersionUID = 4170579821557468353L;		
 	
 	public ActionServerTrayUIOVPN(IKernelZZZ objKernel, ITrayOVPN objTrayParent) throws ExceptionZZZ{

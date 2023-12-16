@@ -1,9 +1,10 @@
-package use.openvpn.serverui;
+package use.openvpn.serverui.component.tray;
 
 import java.util.EnumSet;
 
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import use.openvpn.clientui.IClientTrayMenuOVPN;
+import use.openvpn.clientui.component.tray.IClientTrayMenuOVPN;
+import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
 public interface IServerTrayStatusMappedValueZZZ {
 	//#######################################################

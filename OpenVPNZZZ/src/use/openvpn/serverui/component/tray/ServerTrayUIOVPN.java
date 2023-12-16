@@ -1,4 +1,4 @@
-package use.openvpn.serverui;
+package use.openvpn.serverui.component.tray;
 
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -32,13 +32,15 @@ import basic.zKernel.status.IStatusBooleanZZZ;
 import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
 import basic.zKernelUI.component.IActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
+import basic.zKernelUI.component.tray.AbstractKernelTrayUIZZZ;
+import basic.zKernelUI.component.tray.IActionTrayZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
-import use.openvpn.clientui.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
+import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
 import use.openvpn.server.ServerApplicationOVPN;
@@ -47,17 +49,18 @@ import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.serverui.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
+import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
+import use.openvpn.serverui.component.tray.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 
-public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ITrayOVPN, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {		
+public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOVPN, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {		
 	private static final long serialVersionUID = 4170579821557468353L;
 		
-	private SystemTray objTray = null;                                    //Das gesamte SystemTray von Windows
-	private TrayIcon objTrayIcon = null; //Das TrayIcon dieser Application
-	private JPopupMenu objMenu = null;
-	private IActionCascadedZZZ objActionListener = null;
+//	private SystemTray objTray = null;                                    //Das gesamte SystemTray von Windows
+//	private TrayIcon objTrayIcon = null; //Das TrayIcon dieser Application
+//	private JPopupMenu objMenu = null;
+//	private IActionTrayZZZ objActionListener = null;
 	private volatile ServerMainOVPN objMain = null;                            //Ein Thread, der die OpenVPN.exe mit der gew�nschten Konfiguration startet.
 	
 	//Merke: Der Tray selbst hat keinen Status. Er nimmt aber Statusaenderungen vom Main-Objekt entgegen und mapped diese auf sein "Aussehen"
@@ -100,7 +103,7 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ITra
 			//buttonCancel = new JButton(sText);
 			//buttonCancel.addActionListener(this.getActionListenerButtonCancel(this));
 			//this.add(buttonCancel);
-			IActionCascadedZZZ objActionListener = this.getActionListenerTrayIcon();
+			IActionTrayZZZ objActionListener = this.getActionListenerTrayIcon();
 			objTrayIcon.addActionListener((ActionListener) objActionListener);
 			
 			SystemTray objTray = this.getSystemTray();
@@ -196,21 +199,21 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ITra
 	
 	
 
-	/**Loads an icon in the systemtray. 
-	 * Right click on the item to show available menue entries.
-	 * @return boolean
-	 *
-	 * javadoc created by: 0823, 11.07.2006 - 13:03:47
-	 * @throws ExceptionZZZ 
-	 */
-	public boolean load() throws ExceptionZZZ{
-		boolean bReturn = false;
-		main:{		
-			this.getSystemTray().addTrayIcon(this.getTrayIcon());
-			bReturn = true;
-		}//END main:
-		return bReturn;
-	}
+//	/**Loads an icon in the systemtray. 
+//	 * Right click on the item to show available menue entries.
+//	 * @return boolean
+//	 *
+//	 * javadoc created by: 0823, 11.07.2006 - 13:03:47
+//	 * @throws ExceptionZZZ 
+//	 */
+//	public boolean load() throws ExceptionZZZ{
+//		boolean bReturn = false;
+//		main:{		
+//			this.getSystemTray().addTrayIcon(this.getTrayIcon());
+//			bReturn = true;
+//		}//END main:
+//		return bReturn;
+//	}
 
 	
 
@@ -224,8 +227,6 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ITra
 	public boolean unload() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{		
-			//TODO Natuerlich muessen hier ggf. noch weitere Sachen gemacht werden, z.B. Threads beenden
-			
 			//###### Prozesse beenden
 			//+++ Vorbereitend den prozessnamen auslesen
 			File objFileExe = ClientConfigFileZZZ.findFileExe();
@@ -767,7 +768,7 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ITra
 
 	//+++ Aus IListenerObjectStatusLocalSetOVPN
 	@Override
-	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean changeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		//Der Tray ist am MainObjekt registriert.
 		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
 		boolean bReturn=false;
@@ -1193,16 +1194,16 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ITra
 	}
 
 	@Override
-	public IActionCascadedZZZ getActionListenerTrayIcon() throws ExceptionZZZ {
+	public IActionTrayZZZ getActionListenerTrayIcon() throws ExceptionZZZ {
 		if(this.objActionListener==null) {
-			IActionCascadedZZZ objActionListener = new ActionServerTrayUIOVPN(this.getKernelObject(), this);
+			IActionTrayZZZ objActionListener = new ActionServerTrayUIOVPN(this.getKernelObject(), this);
 			this.setActionListenerTrayIcon(objActionListener);
 		}
 		return this.objActionListener;		
 	}
 
 	@Override
-	public void setActionListenerTrayIcon(IActionCascadedZZZ objActionListener) {
+	public void setActionListenerTrayIcon(IActionTrayZZZ objActionListener) {
 		this.objActionListener = objActionListener;
 	}
 	
@@ -1210,7 +1211,7 @@ public class ServerTrayUIOVPN extends AbstractKernelUseObjectZZZ implements ITra
 	public JPopupMenu createMenuCustom() throws ExceptionZZZ {
 		JPopupMenu objReturn = new JPopupMenu();
 		main:{
-			IActionCascadedZZZ objActionListener = this.getActionListenerTrayIcon();
+			IActionTrayZZZ objActionListener = this.getActionListenerTrayIcon();
 			
 			JMenuItem menueeintrag2 = new JMenuItem(ServerTrayMenuZZZ.ServerTrayMenuTypeZZZ.START.getMenu());
 			objReturn.add(menueeintrag2);

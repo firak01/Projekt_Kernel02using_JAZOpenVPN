@@ -41,7 +41,7 @@ import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
-import use.openvpn.clientui.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
+import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
@@ -1064,7 +1064,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 
     //### aus IListenerObjectStatusLocalSetOVPN,
 	@Override
-	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean changedStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		//Das Main Objekt ist woanders registriert.
 		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
 		boolean bReturn = false;
@@ -1086,12 +1086,12 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 
 			if (eventStatusLocalSet.getStatusEnum() instanceof IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL) {
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() +"TYP FGLTEST 12");
-				bReturn = this.statusLocalChangedMonitorEvent_(eventStatusLocalSet);
+				bReturn = this.changeStatusLocalMonitorEvent_(eventStatusLocalSet);
 				break main;
 				
 			}else if(eventStatusLocalSet.getStatusEnum() instanceof IClientThreadVpnIpPingerOVPN.STATUSLOCAL) {
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() +"TYP FGLTEST 13");
-				bReturn = this.statusLocalChangedPingerEvent_(eventStatusLocalSet);
+				bReturn = this.changeStatusLocalPingerEvent_(eventStatusLocalSet);
 				break main;
 			
 			}else{	
@@ -1180,7 +1180,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 19.10.2023, 09:43:19
 	 */
-	private boolean statusLocalChangedMonitorEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn=false;
 		main:{	
 			if(eventStatusLocalSet==null)break main;
@@ -1336,7 +1336,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 19.10.2023, 09:43:19
 	 */
-	private boolean statusLocalChangedPingerEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	private boolean changeStatusLocalPingerEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn=false;
 		main:{	
 			if(eventStatusLocalSet==null)break main;
@@ -1529,7 +1529,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 				break main;
 			}
 			
-			bReturn = this.isStatusLocalChanged(sStatusAbbreviationLocal, bStatusValue);
+			bReturn = this.isStatusLocalDifferent(sStatusAbbreviationLocal, bStatusValue);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status nicht geaendert. Breche ab.";
 				System.out.println(sLog);
@@ -1561,7 +1561,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		}//end main:
 		return bReturn;
 	}
-	
+		
 	/* (non-Javadoc)
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
@@ -1631,7 +1631,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		}//end main:
 		return bReturn;
 	}
-	
+		
 	
 	//#######################################
 	/* (non-Javadoc)
@@ -1702,6 +1702,8 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
 
 	
 }//END class

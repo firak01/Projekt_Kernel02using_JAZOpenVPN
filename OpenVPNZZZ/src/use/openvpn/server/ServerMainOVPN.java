@@ -18,6 +18,7 @@ import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import basic.zUtil.io.KernelFileExpansionZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
@@ -1010,7 +1011,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	}
 	
 	@Override
-	public boolean statusLocalChanged(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean changeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		//Das Main Objekt ist woanders registriert.
 		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
 		boolean bReturn = false;
@@ -1032,7 +1033,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 
 			if (eventStatusLocalSet.getStatusEnum() instanceof IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) {
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() +" :FGLTEST server12");
-				bReturn = this.statusLocalChangedMonitorEvent_(eventStatusLocalSet);
+				bReturn = this.changeStatusLocalMonitorEvent_(eventStatusLocalSet);
 				break main;
 				
 //			}else if(eventStatusLocalSet.getStatusEnum() instanceof IClientThreadVpnIpPingerOVPN.STATUSLOCAL) {
@@ -1058,7 +1059,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
  * @throws ExceptionZZZ
  * @author Fritz Lindhauer, 19.10.2023, 09:43:19
  */
-private boolean statusLocalChangedMonitorEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 	boolean bReturn=false;
 	main:{	
 		if(eventStatusLocalSet==null)break main;
@@ -1283,7 +1284,7 @@ private boolean statusLocalChangedMonitorEvent_(IEventObjectStatusLocalSetOVPN e
 				break main;
 			}
 			
-			bReturn = this.isStatusLocalChanged(sStatusAbbreviationLocal, bStatusValue);
+			bReturn = this.isStatusLocalDifferent(sStatusAbbreviationLocal, bStatusValue);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status nicht geaendert. Breche ab.";
 				System.out.println(sLog);
@@ -1379,7 +1380,7 @@ private boolean statusLocalChangedMonitorEvent_(IEventObjectStatusLocalSetOVPN e
 		}//end main:
 		return bReturn;
 	}
-	
+		
 	//### aus IListenerObjectStatusLocalMapForEventUserZZZ
 		@Override
 		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {

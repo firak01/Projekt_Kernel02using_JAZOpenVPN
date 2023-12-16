@@ -28,7 +28,7 @@ import basic.zKernel.flag.IFlagZLocalUserZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.IProgramUIZZZ;
-import basic.zKernelUI.component.AbstractKernelActionCascadedZZZ;
+import basic.zKernelUI.component.AbstractKernelActionListenerCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -162,7 +162,7 @@ public class PanelAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impleme
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
-		class ActionIPWebRefreshOVPN extends  AbstractKernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+		class ActionIPWebRefreshOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
 			public ActionIPWebRefreshOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 				super(objKernel, panelParent);			
 			}

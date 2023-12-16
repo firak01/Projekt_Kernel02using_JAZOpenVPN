@@ -72,7 +72,7 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 					IListenerObjectStatusLocalSetOVPN l = (IListenerObjectStatusLocalSetOVPN) this.getListenerRegisteredAll().get(i);				
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " - object (d.h. this - object) fired: " + i);
 					try {
-						boolean bStatusLocalChanged = l.statusLocalChanged(event);
+						boolean bStatusLocalChanged = l.changeStatusLocal(event);
 						if(bStatusLocalChanged) {
 							System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " hat Status '" + event.getStatusText() + "' gesetzt." );
 						}					

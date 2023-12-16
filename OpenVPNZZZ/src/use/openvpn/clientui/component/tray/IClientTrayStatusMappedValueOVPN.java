@@ -1,4 +1,4 @@
-package use.openvpn.clientui;
+package use.openvpn.clientui.component.tray;
 
 import java.util.EnumSet;
 

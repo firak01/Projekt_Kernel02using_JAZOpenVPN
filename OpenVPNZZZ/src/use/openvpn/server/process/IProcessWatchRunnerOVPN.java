@@ -6,7 +6,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
 import use.openvpn.server.ServerConfigStarterOVPN;
-import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
+import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
 public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	//### Spezielle OVPN - Methoden

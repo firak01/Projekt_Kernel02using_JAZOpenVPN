@@ -7,7 +7,7 @@ import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalSetUserOVPN;
-import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
+import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
 public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetUserOVPN{
 	//Spezielle ServerOVPN - Methoden

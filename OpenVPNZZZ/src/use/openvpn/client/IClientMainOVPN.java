@@ -8,7 +8,7 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
-import use.openvpn.clientui.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
+import use.openvpn.clientui.component.tray.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
 import use.openvpn.server.ServerConfigStarterOVPN;
 
 public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetUserOVPN{

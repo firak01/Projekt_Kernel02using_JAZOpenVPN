@@ -6,8 +6,8 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import use.openvpn.client.IClientMainUserOVPN;
 import use.openvpn.server.IServerMainUserOVPN;
-import use.openvpn.serverui.IServerTrayMenuZZZ;
-import use.openvpn.serverui.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
+import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ;
+import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
 public interface IServerThreadProcessWatchMonitorOVPN extends IServerMainUserOVPN {
 	public enum FLAGZ{

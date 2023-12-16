@@ -32,7 +32,7 @@ import basic.zKernel.flag.IFlagZLocalUserZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.IComponentCascadedUserZZZ;
-import basic.zKernelUI.component.AbstractKernelActionCascadedZZZ;
+import basic.zKernelUI.component.AbstractKernelActionListenerCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -316,7 +316,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 		
 //		#######################################
 		//Innere Klassen, welche eine Action behandelt	
-		class ActionModuleChangeOVPN extends  AbstractKernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
+		class ActionModuleChangeOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
 			public ActionModuleChangeOVPN(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) throws ExceptionZZZ{
 				super(objKernel, panelParent);			
 			}
