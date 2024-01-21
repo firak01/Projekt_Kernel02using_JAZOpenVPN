@@ -15,7 +15,7 @@ import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusListeningCascadedZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
@@ -23,7 +23,7 @@ import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
-public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusListeningZZZ implements IMainOVPN {
+public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IMainOVPN {
 	protected volatile IModuleZZZ objModule=null; //Das Modul, in der KernelUI - Variante wäre das die Dialogbox aus der das Program gestartet wird.	
 	protected volatile String sProgramName = null;
 	protected volatile String sModuleName = null;
@@ -241,7 +241,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			this.objModule = objModule;
 		}
 	
-	//####### aus IStatusLocalUserZZZ
+		//####### aus IStatusLocalUserZZZ
 		/* (non-Javadoc)
 		 * @see basic.zKernel.status.IStatusLocalUserZZZ#getStatusLocal(java.lang.Enum)
 		 */

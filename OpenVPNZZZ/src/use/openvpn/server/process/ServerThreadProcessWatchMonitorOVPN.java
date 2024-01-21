@@ -9,7 +9,7 @@ import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusListeningCascadedZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.EventObjectFlagZsetZZZ;
@@ -40,7 +40,7 @@ import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
  * @author 0823
  *
  */
-public class ServerThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+public class ServerThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
 	private IServerMainOVPN objServerMain = null;
 	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	

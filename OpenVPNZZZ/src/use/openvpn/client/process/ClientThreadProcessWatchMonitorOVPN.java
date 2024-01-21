@@ -14,7 +14,7 @@ import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusListeningZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusListeningCascadedZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.EventObjectFlagZsetZZZ;
@@ -36,7 +36,7 @@ import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 
-public class ClientThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningZZZ implements IClientThreadProcessWatchMonitorOVPN,IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+public class ClientThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IClientThreadProcessWatchMonitorOVPN,IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
 	protected volatile IModuleZZZ objModule = null;
 	protected volatile String sModuleName=null;
 	protected volatile String sProgramName = null;
@@ -857,7 +857,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 				
-				boolean bRelevant = this.isEventRelevant(eventStatusLocalSet); 
+				boolean bRelevant = this.isEventRelevant2ChangeStatusLocal(eventStatusLocalSet); 
 				if(!bRelevant) {
 					sLog = 	ReflectCodeZZZ.getPositionCurrent() + ": Event / Status nicht relevant. Breche ab.";
 					System.out.println(sLog);
@@ -993,7 +993,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 		 */
 		@Override
-		public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(eventStatusLocalSet==null)break main;
@@ -1023,7 +1023,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				this.getMainObject().logProtocolString(sLog);
 				
 				//+++ Pruefungen
-				bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+				bReturn = this.isEventRelevantByClass2ChangeStatusLocal(eventStatusLocalSet);
 				if(!bReturn) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
 					System.out.println(sLog);
@@ -1039,7 +1039,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 					break main;
 				}
 							
-				bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
+				bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
 				if(!bReturn) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 					System.out.println(sLog);
@@ -1047,7 +1047,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 					break main;
 				}
 				
-				bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
+				bReturn = this.isEventRelevantByStatusLocal2ChangeStatusLocal(eventStatusLocalSet);
 				if(!bReturn) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
 					System.out.println(sLog);
@@ -1064,7 +1064,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 		 */
 		@Override
-		public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		public boolean isEventRelevantByStatusLocalValue2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(eventStatusLocalSet==null)break main;
@@ -1079,7 +1079,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}
 		
 		@Override
-		public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 			/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
 		 	class Animal { }
 			class Dog2 extends Animal {
@@ -1116,7 +1116,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 		 */
 		@Override
-		public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
+		public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
@@ -1133,25 +1133,25 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}
 		
 		@Override
-		public boolean isEventRelevant(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
+		public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public boolean isEventRelevantByClass(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
+		public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
+		public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalSetZZZ eventStatusLocalSet) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetZZZ eventStatusLocalSet)
+		public boolean isEventRelevantByStatusLocalValue2ChangeStatusLocal(IEventObjectStatusLocalSetZZZ eventStatusLocalSet)
 				throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;

@@ -1075,7 +1075,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			System.out.println(sLog);
 			this.logProtocolString(sLog);
 				
-						//+++ Mappe nun die eingehenden Status-Enums auf die eigenen.
+			//+++ Mappe nun die eingehenden Status-Enums auf die eigenen.
 			
 //			if(eventStatusLocalSet.getStatusEnum() instanceof IClientMainOVPN.STATUSLOCAL){
 //				System.out.println(ReflectCodeZZZ.getPositionCurrent() +" :FGLTEST 01");
@@ -1190,7 +1190,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			this.logProtocolString(sLog);
 			
 			//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++			
-			boolean bRelevant = this.isEventRelevant(eventStatusLocalSet); 
+			boolean bRelevant = this.isEventRelevant2ChangeStatusLocal(eventStatusLocalSet); 
 			if(!bRelevant) {
 				sLog = 	ReflectCodeZZZ.getPositionCurrent() + ": Event / Status nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1466,7 +1466,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -1521,7 +1521,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			}
 			
 			//+++ Pruefungen
-			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByClass2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1541,7 +1541,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 				this.logProtocolString(sLog);
 			}
 						
-			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1549,7 +1549,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 				break main;
 			}
 			
-			bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByStatusLocal2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1566,7 +1566,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocalValue2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -1581,7 +1581,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 	
 	@Override
-	public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
 	 	class Animal { }
 		class Dog2 extends Animal {
@@ -1622,7 +1622,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							

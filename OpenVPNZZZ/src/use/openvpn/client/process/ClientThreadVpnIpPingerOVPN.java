@@ -560,7 +560,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		boolean bReturn = false;
 		main:{		
 			//Falls nicht zuständig, mache nix
-		    boolean bProof = this.isEventRelevant(eventStatusLocalSet);
+		    boolean bProof = this.isEventRelevant2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bProof) break main;
 		    
 			bReturn = true;
@@ -572,7 +572,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -602,7 +602,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			this.getMainObject().logProtocolString(sLog);
 			
 			//+++ Pruefungen
-			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByClass2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -619,7 +619,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 				break main;
 			}
 						
-			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -627,7 +627,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 				break main;
 			}
 			
-			bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByStatusLocal2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -644,7 +644,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocalValue2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -659,7 +659,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}
 	
 	@Override
-	public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
 	 	class Animal { }
 		class Dog2 extends Animal {
@@ -696,7 +696,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							

@@ -21,15 +21,17 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 	private static final long serialVersionUID = 8999783685575147532L;
 	private IEventObjectStatusLocalSetOVPN eventPrevious=null;
 	
-	public SenderObjectStatusLocalSetOVPN() throws ExceptionZZZ{
-		super();
-	}
-	
 	/* (non-Javadoc)
 	 * @see use.via.client.module.export.ISenderEventComponentReset#fireEvent(basic.zKernelUI.component.model.KernelEventComponentSelectionResetZZZ)
 	 */
 	private ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN> listaLISTENER_REGISTERED = new ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN>();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden 
-																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht m�glich ist 
+																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht moeglich ist 
+	
+	
+	public SenderObjectStatusLocalSetOVPN() throws ExceptionZZZ{
+		super();
+	}
+	
 	@Override                                                                                     //             mehrere Events, an verschiedenen Komponenten, unabhaengig voneinander zu verwalten.
 	public final void fireEvent(IEventObjectStatusLocalSetOVPN event){	
 		/* Die Abfrage nach getSource() funktioniert so mit dem Interface noch nicht....
@@ -99,15 +101,13 @@ public class SenderObjectStatusLocalSetOVPN implements ISenderObjectStatusLocalS
 	}
 
 	@Override
-	public final ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ{
-		return listaLISTENER_REGISTERED;
-	}
-
-	@Override
 	public void addListenerObjectStatusLocalSet(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {	
 		this.getListenerRegisteredAll().add(objEventListener);
 	}
 
-	
+	@Override
+	public final ArrayListUniqueZZZ<IListenerObjectStatusLocalSetOVPN> getListenerRegisteredAll() throws ExceptionZZZ{
+		return listaLISTENER_REGISTERED;
+	}
 }
 

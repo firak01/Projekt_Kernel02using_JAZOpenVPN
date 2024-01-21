@@ -34,13 +34,12 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	boolean proofFlagExists(FLAGZ objEnumFlag) throws ExceptionZZZ;
 	boolean proofFlagSetBefore(FLAGZ objEnumFlag) throws ExceptionZZZ;
 	
+	//##############################################################
 	
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//Die StatusId für Stati, aus dieser Klasse selbst. Nicht die Stati der anderen Klassen.
 	public static int iSTATUSLOCAL_GROUPID=3;
-			
-	//++++++++++++++++++++++++
 	
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
@@ -100,7 +99,7 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 			Class<STATUSLOCAL> enumClass = STATUSLOCAL.class;
 			EnumSet<STATUSLOCAL> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 			
-			for(Object obj : ServerTrayMenuTypeZZZ.class.getEnumConstants()){
+			for(Object obj : ProcessWatchRunnerOVPN.class.getEnumConstants()){
 				//System.out.println(obj + "; "+obj.getClass().getName());
 				set.add((STATUSLOCAL) obj);
 			}

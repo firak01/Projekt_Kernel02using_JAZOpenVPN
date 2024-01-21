@@ -54,18 +54,10 @@ import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 import use.openvpn.serverui.component.tray.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 
-public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOVPN, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {		
+public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOVPN, IListenerObjectStatusLocalSetOVPN {		
 	private static final long serialVersionUID = 4170579821557468353L;
-		
-//	private SystemTray objTray = null;                                    //Das gesamte SystemTray von Windows
-//	private TrayIcon objTrayIcon = null; //Das TrayIcon dieser Application
-//	private JPopupMenu objMenu = null;
-//	private IActionTrayZZZ objActionListener = null;
+
 	private volatile ServerMainOVPN objMain = null;                            //Ein Thread, der die OpenVPN.exe mit der gew�nschten Konfiguration startet.
-	
-	//Merke: Der Tray selbst hat keinen Status. Er nimmt aber Statusaenderungen vom Main-Objekt entgegen und mapped diese auf sein "Aussehen"
-	//       Wie in AbstractObjectWithStatusListeningZZZ wird für das Mappen des reinkommenden Status auf ein Enum eine Hashmap benötigt.
-	private HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ> hmEnumSet =null; //Hier wird ggfs. der Eigene Status mit dem Status einer anderen Klasse (definiert durch das Interface) gemappt.
 	
 	//TODOGOON 20210210: Realisiere die Idee
 	//Idee: In ClientMainUI eine/verschiedene HashMaps anbieten, in die dann diese Container-Objekte kommen.
@@ -156,17 +148,20 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	}
 			
 	@Override
-	public boolean switchStatus(ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
+	//public boolean switchStatus(ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
+	public boolean switchStatus(IEnumSetMappedZZZ objEnumMappedIn) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
+			ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ enumSTATUS = (ServerTrayStatusTypeZZZ) objEnumMappedIn;
+			
 			//ImageIcon aendern
 			ImageIcon objIcon = this.getImageIconByStatus(enumSTATUS);
 			if(objIcon==null)break main;
 			
 			//+++++ Test: Logge den Menüpunkt			
-			IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ objEnum = (IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ) enumSTATUS.getAccordingTrayMenuType();
-			if(objEnum!=null){
-				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnum.getMenu();
+			IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ objEnumMenu = (IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ) enumSTATUS.getAccordingTrayMenuType();
+			if(objEnumMenu!=null){
+				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnumMenu.getMenu();
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 			}else {
@@ -181,41 +176,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			bReturn = true;
 		}//END main:
 		return bReturn;
-	}
-	
-	@Override
-	public boolean switchStatus(ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@Override
-	public boolean switchStatus(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-
-	
-	
-
-//	/**Loads an icon in the systemtray. 
-//	 * Right click on the item to show available menue entries.
-//	 * @return boolean
-//	 *
-//	 * javadoc created by: 0823, 11.07.2006 - 13:03:47
-//	 * @throws ExceptionZZZ 
-//	 */
-//	public boolean load() throws ExceptionZZZ{
-//		boolean bReturn = false;
-//		main:{		
-//			this.getSystemTray().addTrayIcon(this.getTrayIcon());
-//			bReturn = true;
-//		}//END main:
-//		return bReturn;
-//	}
-
-	
+	}	
 
 	/**Removes the icon from the systemtray
 	 * AND removes any running "openvpn.exe" processes. (or how the exe-file is named)

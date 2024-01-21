@@ -103,6 +103,12 @@ public class EventObject4ProcessMonitorStatusLocalSetOVPN  extends AbstractEvent
 			return this.objStatusEnum.getStatusMessage();
 		}
 	}
+	
+	@Override
+	public void setStatusMessage(String sStatusMessage) {
+		this.sStatusMessage = sStatusMessage;
+		
+	}
 
 	
 	//### Aus dem Interface Comparable

@@ -74,18 +74,12 @@ import use.openvpn.serverui.component.tray.IServerTrayStatusMappedValueZZZ.Serve
  * @author Fritz Lindhauer, 11.10.2023, 07:46:15
  * 
  */
-public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayOVPN, IListenerObjectFlagZsetZZZ, IListenerObjectStatusLocalSetOVPN, IStatusLocalMapForStatusLocalUserZZZ {
-//	private SystemTray objTray = null;
-//	private TrayIcon objTrayIcon = null;
-//	private JPopupMenu objMenu = null;
-//	private IActionTrayZZZ objActionListener = null;
+public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayOVPN, IListenerObjectStatusLocalSetOVPN {
+	private static final long serialVersionUID = -6110753128564853105L;
+
 	private volatile ClientMainOVPN objMain = null;
 	
-	//Merke: Der Tray selbst hat keinen Status. Er nimmt aber Statusaenderungen vom Main-Objekt entgegen und mapped diese auf sein "Aussehen"
-	//       Wie in AbstractObjectWithStatusListeningZZZ wird für das Mappen des reinkommenden Status auf ein Enum eine Hashmap benötigt.		
-	private HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ> hmEnumSet =null; //Hier wird ggfs. der Eigene Status mit dem Status einer anderen Klasse (definiert durch das Interface) gemappt.
-
-	
+		
 	//TODOGOON 20210210: Realisiere die Idee
 	//Idee: In ClientMainUI eine/verschiedene HashMaps anbieten, in die dann diese Container-Objekte kommen.
 	//      Dadurch muss man sie nicht als Variable deklarieren und kann dynamischer neue Dialogboxen, etc. hinzufügen.
@@ -179,16 +173,18 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	 * @author Fritz Lindhauer, 11.10.2023, 07:56:09
 	 */
 	@Override
-	public boolean switchStatus(ClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ{	
+	public boolean switchStatus(IEnumSetMappedZZZ objEnumMappedIn) throws ExceptionZZZ{	
 		boolean bReturn = false;
 		main:{			
+			ClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ enumSTATUS = (ClientTrayStatusTypeZZZ) objEnumMappedIn;
+			
 			ImageIcon objIcon = this.getImageIconByStatus(enumSTATUS);
 			if(objIcon==null)break main;
 			
 			//+++++ Test: Logge den Menüpunkt			
-			IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ objEnum = (IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ) enumSTATUS.getAccordingTrayMenuType();
-			if(objEnum!=null){
-				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnum.getMenu();
+			IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ objEnumMenu = (IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ) enumSTATUS.getAccordingTrayMenuType();
+			if(objEnumMenu!=null){
+				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnumMenu.getMenu();
 				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 			}else {
@@ -205,32 +201,6 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 		return bReturn;
 	}
 	
-	@Override
-	public boolean switchStatus(ServerTrayStatusTypeZZZ enumSTATUS) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean switchStatus(IEnumSetMappedZZZ objEnum) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-//	/**Adds an icon ito the systemtray. 
-//	 * Right click on the item to show available menue entries.
-//	 * @return boolean
-//	 *
-//	 * javadoc created by: 0823, 11.07.2006 - 13:03:47
-//	 */
-//	public boolean load(){
-//		boolean bReturn = false;
-//		main:{		
-//			this.objTray.addTrayIcon(this.objTrayIcon);
-//			bReturn = true;
-//		}//END main:
-//		return bReturn;
-//	}
 	
 	/**Removes the icon from the systemtray
 	 * AND removes any running "openvpn.exe" processes. (or how the exe-file is named)
@@ -990,7 +960,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);
 			
-			boolean bRelevant = this.isEventRelevant(eventStatusLocalSet); 
+			boolean bRelevant = this.isEventRelevant2ChangeStatusLocal(eventStatusLocalSet); 
 			if(!bRelevant) {
 				sLog = 	ReflectCodeZZZ.getPositionCurrent() + ": Event / Status nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1055,7 +1025,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			if(objStatusEnum==null) break main;
 				
 			//Falls nicht zuständig, mache nix
-			boolean bProof = this.isEventRelevant(eventStatusLocalSet);
+			boolean bProof = this.isEventRelevant2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bProof) break main;
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
@@ -1296,7 +1266,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -1350,7 +1320,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			}
 			
 			//+++ Pruefungen
-			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByClass2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1374,7 +1344,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			//dito gibt es auch die Methode isStatusLocalRelevant(...) nicht, da der Tray kein AbstractObjectWithStatus ist, er verwaltet halt selbst keinen Status.
 			
 						
-			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1382,7 +1352,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				break main;
 			}
 			
-			bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByStatusLocal2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1390,7 +1360,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				break main;
 			}
 			
-			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1405,17 +1375,17 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	}
 
 	@Override
-	public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		return true;
 	}
 
 	@Override
-	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		return true;
 	}
 
 	@Override
-	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocalValue2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -1576,7 +1546,4 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 		}//end main:
 		return objReturn;
 	}
-
-	
-		
 }//END Class

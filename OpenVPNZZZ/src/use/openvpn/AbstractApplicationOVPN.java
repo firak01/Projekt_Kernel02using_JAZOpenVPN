@@ -10,23 +10,23 @@ import basic.zKernel.net.client.KernelPingHostZZZ;
 import use.openvpn.server.ServerMainOVPN;
 
 public abstract class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ implements IApplicationOVPN{
-	protected IMainOVPN objMain = null;
+	protected volatile IMainOVPN objMain = null;
 	
-	protected String sProxyHost = null;
-	protected String sProxyPort = null;	
+	protected volatile String sProxyHost = null;
+	protected volatile String sProxyPort = null;	
 	
-	protected String sVpnPortRemote = null;
-	protected String sVpnIpRemote = null;
-	protected String sVpnIpRemoteEstablished = null; //die VpnIp mit der aktuell die Verbindung existiert (diese IP wird dann ggfs. auch mit ping ueberwacht)
-	protected String sVpnIpLocal = null;
-	protected String sIPLocal = null;
-	protected String sIPIni = null;
-	protected String sTapAdapterUsed = null;
+	protected volatile String sVpnPortRemote = null;
+	protected volatile String sVpnIpRemote = null;
+	protected volatile String sVpnIpRemoteEstablished = null; //die VpnIp mit der aktuell die Verbindung existiert (diese IP wird dann ggfs. auch mit ping ueberwacht)
+	protected volatile String sVpnIpLocal = null;
+	protected volatile String sIPLocal = null;
+	protected volatile String sIPIni = null;
+	protected volatile String sTapAdapterUsed = null;
 	
-	protected String sCertifierConfiguredFilename=null;	
-	protected String sKeyConfiguredFilename=null;
+	protected volatile String sCertifierConfiguredFilename=null;	
+	protected volatile String sKeyConfiguredFilename=null;
 	
-	protected String sDirectoryOvpnLog=null;
+	protected volatile String sDirectoryOvpnLog=null;
 	
 	
 	

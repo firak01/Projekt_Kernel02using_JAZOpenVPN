@@ -104,6 +104,12 @@ public class EventObject4VpnIpPingerStatusLocalSetOVPN  extends AbstractEventObj
 			return this.objStatusEnum.getStatusMessage();
 		}
 	}
+	
+	@Override
+	public void setStatusMessage(String sStatusMessage) {
+		this.sStatusMessage = sStatusMessage;
+		
+	}
 
 	
 	//### Aus dem Interface Comparable
