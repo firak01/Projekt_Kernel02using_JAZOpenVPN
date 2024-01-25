@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.component.IModuleUserZZZ;
 import basic.zBasic.component.IModuleZZZ;
 import basic.zBasic.component.IProgramRunnableZZZ;
@@ -14,14 +13,11 @@ import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zKernel.IKernelZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusListeningCascadedZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
-import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
-import use.openvpn.client.status.EventObject4ClientMainStatusLocalSetOVPN;
-import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
 
 public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IMainOVPN {
 	protected volatile IModuleZZZ objModule=null; //Das Modul, in der KernelUI - Variante wäre das die Dialogbox aus der das Program gestartet wird.	
