@@ -97,10 +97,20 @@ private void ServerMonitorRunnerNew_(IServerMainOVPN objServerMain, String[] saF
 			
 			//Erst mal sehn, ob ueberhaupt was da ist.			
 			ArrayList<ServerConfigStarterOVPN> listaProcessStarter = objServerMain.getServerConfigStarterList();
-					
-			//Nun fuer alle in ServerMain gestarteten OpenVPN.exe - Processe einen Thread bereitstellen, der das VPN-IP-Adressen Ziel versuchen kann zu erreichen.
-			Thread[] threadaOVPN = new Thread[listaProcessStarter.size()];
-			ProcessWatchRunnerOVPN[] runneraOVPN = new ProcessWatchRunnerOVPN[listaProcessStarter.size()];
+			
+			//Vorbereitend: Process bereitstellen, der die Ausgabe des gestarteten Processes ueberwacht.
+			//              Das funktioniert beim Client per direktem Standard.out.
+			//              Beim Server aber nur per Beobachten des Log Files
+			ProcessWatchRunnerOVPN[] runneraProcessOVPN = null;
+			boolean bUseLogFileWatch = this.getFlag(IServerThreadProcessWatchMonitorOVPN.FLAGZ.USE_LOGFILE_WATCHRUNNER); 
+			if(bUseLogFileWatch) {
+				TODOGOON20240127;
+			}else {
+				runneraProcessOVPN = new ProcessWatchRunnerOVPN[listaProcessStarter.size()];
+			}
+			//Nun fuer alle in ServerMain bereitgestellten Konfigurationen einen OpenVPN.exe - Process bereitstellen.
+			//Den passenden WatchRunner starten den Monitor Prozess daran registrieren.				
+			Thread[] threadaOVPN = new Thread[listaProcessStarter.size()];			
 			int iNumberOfProcessStarted = 0;
 			for(int icount=0; icount < listaProcessStarter.size(); icount++){
 				iNumberOfProcessStarted++;
@@ -128,23 +138,42 @@ private void ServerMonitorRunnerNew_(IServerMainOVPN objServerMain, String[] saF
 						//runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted);
 						//String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
 						//String[]saFlagControl = {IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
-						String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name()};
-						runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, saFlagControl);
 						
-						runneraOVPN[icount].setServerBackendObject(this.getMainObject());
-						runneraOVPN[icount].setServerConfigStarterObject(objStarter);
-						
-					//Wichtig, den ProcessWatchMonitorOVPN an den ProcessWatchRunnerOVPN Listener registrieren.
-					//Dafuer gibt es dann auch ein Mapping, in dem steht wie mit den empfangenen Events umgegangen wird, bzw. welche eigenen Events geworfen werden sollen.
-					runneraOVPN[icount].registerForStatusLocalEvent((IListenerObjectStatusLocalSetOVPN)this);//Registriere den Monitor nun am ProcessWatchRunner
-					 						
-					threadaOVPN[icount] = new Thread(runneraOVPN[icount]);//Starte den ProcessWatchRunner					
-					threadaOVPN[icount].start();	 						 
-					this.getMainObject().logProtocolString("");
-					
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Finished starting thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() + " for watching connection.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
+						if(bUseLogFileWatch) {
+							TODOGOON20240127;//Projekt einbinden
+							String[]saFlagControl = {ILogFileWatchRunnerZZZ.FLAGZ.END_ON_FILTERFOUND.name()};
+							runneraProcessOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, saFlagControl);
+							
+							runneraProcessOVPN[icount].setServerBackendObject(this.getMainObject());
+							runneraProcessOVPN[icount].setServerConfigStarterObject(objStarter);
+							
+							//Wichtig, den ProcessWatchMonitorOVPN an den ProcessWatchRunnerOVPN Listener registrieren.
+							//Dafuer gibt es dann auch ein Mapping, in dem steht wie mit den empfangenen Events umgegangen wird, bzw. welche eigenen Events geworfen werden sollen.
+							runneraProcessOVPN[icount].registerForStatusLocalEvent((IListenerObjectStatusLocalSetOVPN)this);//Registriere den Monitor nun am ProcessWatchRunner
+							 						
+							threadaOVPN[icount] = new Thread(runneraProcessOVPN[icount]);//Starte den ProcessWatchRunner					
+							threadaOVPN[icount].start();	 	
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": ProcessWatchRunner started for thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() + ".";
+							this.getMainObject().logProtocolString(sLog);
+						}else {
+							String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name()};
+							runneraProcessOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, saFlagControl);
+							
+							runneraProcessOVPN[icount].setServerBackendObject(this.getMainObject());
+							runneraProcessOVPN[icount].setServerConfigStarterObject(objStarter);
+							
+							//Wichtig, den ProcessWatchMonitorOVPN an den ProcessWatchRunnerOVPN Listener registrieren.
+							//Dafuer gibt es dann auch ein Mapping, in dem steht wie mit den empfangenen Events umgegangen wird, bzw. welche eigenen Events geworfen werden sollen.
+							runneraProcessOVPN[icount].registerForStatusLocalEvent((IListenerObjectStatusLocalSetOVPN)this);//Registriere den Monitor nun am ProcessWatchRunner
+							 						
+							threadaOVPN[icount] = new Thread(runneraProcessOVPN[icount]);//Starte den ProcessWatchRunner					
+							threadaOVPN[icount].start();	 	
+							sLog = ReflectCodeZZZ.getPositionCurrent()+": ProcessWatchRunner started for thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() + ".";
+							this.getMainObject().logProtocolString(sLog);
+						}
+						sLog = ReflectCodeZZZ.getPositionCurrent()+": Finished starting thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() + " for watching connection.";
+						System.out.println(sLog);
+						this.getMainObject().logProtocolString(sLog);
  					}
 				}
 			}//END for

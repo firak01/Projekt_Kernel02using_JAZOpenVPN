@@ -78,6 +78,9 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 			System.out.println(sLog);
 			this.logLineDate(sLog);
 			
+			//Merke 20240127: Wenn das funktioniert nur wenn der Prozess auch Ausgaben in den Standard.Out schreibt.
+			//                Der OVPN server macht das nicht. Daher kann hier maximal die porzessstartende Batch und ihre Ausgabe beobachtet werden.
+			
 			//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
 			do{
 				//System.out.println("FGLTEST01");
@@ -85,7 +88,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 				this.writeOutputToLogPLUSanalyse();				
 				boolean bHasConnection = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
 				if(bHasConnection) {
-					sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
+					sLog = "ProcessWatchRunner #"+this.getNumber()+"# Connection wurde erstellt.";
 					this.logLineDate(sLog);						
 					
 					//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
@@ -101,7 +104,11 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 					
 					Thread.sleep(20);
 					boolean bStopRequested = this.getFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
-					if( bStopRequested) break main;
+					if( bStopRequested) {
+						sLog = "ProcessWatchRunner #"+this.getNumber() + "# Breche Schleife ab.";
+						this.logLineDate(sLog);
+						break main;
+					}
 				}
 				
 				
@@ -119,6 +126,8 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 				boolean bStopRequested = this.getFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP);//Merke: Das ist eine Anweisung und kein Status. Darum bleibt es beim Flag.
 				if(bStopRequested) break;					
 		}while(true);
+		bReturn = true;
+			
 		this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED,true);
 		this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
 		

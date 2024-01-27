@@ -11,7 +11,7 @@ import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuType
 
 public interface IServerThreadProcessWatchMonitorOVPN extends IServerMainUserOVPN {
 	public enum FLAGZ{
-		DUMMY,END_ON_CONNECTION
+		DUMMY,END_ON_CONNECTION,USE_LOGFILE_WATCHRUNNER
 	}
 	
 	boolean getFlag(FLAGZ objEnumFlag);
