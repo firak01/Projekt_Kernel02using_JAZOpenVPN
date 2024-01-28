@@ -8,7 +8,9 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.moduleExternal.monitor.AbstractProcessWatchMonitorZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusListeningCascadedZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -16,6 +18,9 @@ import basic.zKernel.flag.EventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.process.IProcessWatchRunnerZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
@@ -40,7 +45,8 @@ import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
  * @author 0823
  *
  */
-public class ServerThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+//public class ServerThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+public class ServerThreadProcessWatchMonitorOVPN extends AbstractProcessWatchMonitorZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
 	private IServerMainOVPN objServerMain = null;
 	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
@@ -452,7 +458,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			}
 			
 			//Merke: Bei einer anderen Klasse, die dieses DesingPattern nutzt, befindet sich der STATUSLOCAL in einer anderen Klasse
-			ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
+			IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) objEnumStatusIn;
 			String sStatusName = enumStatus.name();
 			if(StringZZZ.isEmpty(sStatusName)) break main;
 										
@@ -685,7 +691,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			}
 			
 			//+++++++++++++++++++++
-			ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL objEnum = (ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) hmEnum.get(enumStatus);							
+			IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL objEnum = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) hmEnum.get(enumStatus);							
 			if(objEnum==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status für en Status aus dem Event-Objekt erhalten. Breche ab";
 				System.out.println(sLog);
@@ -984,7 +990,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			if(enumStatusIn==null) {
 				break main;
 			}
-			ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) enumStatusIn;
 			
 			bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
 		}//end main:
@@ -1001,7 +1007,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			if(enumStatusIn==null) {
 				break main;
 			}
-			ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) enumStatusIn;
 			
 			bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
 		}//end main:
@@ -1017,7 +1023,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				if(enumStatusIn==null) {
 					break main;
 				}
-				ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) enumStatusIn;
 				
 				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
 			}//end main:
@@ -1031,7 +1037,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				if(enumStatusIn==null) {
 					break main;
 				}
-				ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) enumStatusIn;
 				
 				bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sMessage, bStatusValue);
 			}//end main:
@@ -1045,7 +1051,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				if(enumStatusIn==null) {
 					break main;
 				}
-				ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) enumStatusIn;
 				
 				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
 			}//end main:
@@ -1059,7 +1065,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				if(enumStatusIn==null) {
 					break main;
 				}
-				ServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+				IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) enumStatusIn;
 				
 				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
 			}//end main:

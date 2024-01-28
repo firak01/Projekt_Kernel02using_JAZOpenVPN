@@ -722,6 +722,9 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 		}
 
 		
+		/* (non-Javadoc)
+		 * @see use.openvpn.server.status.ISenderObjectStatusLocalSetUserOVPN#getSenderStatusLocalUsed()
+		 */
 		@Override
 		public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
 			if(this.objEventStatusLocalBroker==null) {
