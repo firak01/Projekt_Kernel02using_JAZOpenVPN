@@ -11,7 +11,7 @@ import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.moduleExternal.monitor.AbstractProcessWatchMonitorZZZ;
-import basic.zBasic.util.moduleExternal.watch.process.IProcessWatchRunnerZZZ;
+import basic.zBasic.util.moduleExternal.process.watch.IProcessWatchRunnerZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusListeningCascadedZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.IKernelZZZ;
