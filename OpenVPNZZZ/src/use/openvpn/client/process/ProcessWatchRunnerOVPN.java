@@ -11,11 +11,16 @@ import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.moduleExternal.process.watch.AbstractProcessWatchRunnerZZZ;
+import basic.zBasic.util.moduleExternal.process.watch.IProcessWatchRunnerZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
-import basic.zKernel.process.AbstractProcessWatchRunnerZZZ;
-import basic.zKernel.process.IProcessWatchRunnerZZZ;
+import basic.zKernel.status.IEventObjectStatusBasicZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IListenerObjectStatusBasicZZZ;
+import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
@@ -786,5 +791,5 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 
 			}//end main:
 			return bReturn;
-		}		
+		}
 }//END class

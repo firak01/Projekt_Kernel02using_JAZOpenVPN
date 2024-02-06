@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
-import basic.zKernel.process.IProcessWatchRunnerZZZ;
+import basic.zBasic.util.moduleExternal.process.watch.IProcessWatchRunnerZZZ;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
