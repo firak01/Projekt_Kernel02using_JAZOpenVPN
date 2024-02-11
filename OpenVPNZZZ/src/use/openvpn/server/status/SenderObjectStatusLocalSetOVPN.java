@@ -10,7 +10,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
-import basic.zKernel.status.IListenerObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import basic.zKernel.status.KernelSenderObjectStatusLocalSetZZZ;
 import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 

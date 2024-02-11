@@ -7,11 +7,10 @@ import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
-import use.openvpn.client.status.ISenderObjectStatusLocalSetUserOVPN;
+import use.openvpn.client.status.ISenderObjectStatusLocalUserOVPN;
 import use.openvpn.clientui.component.tray.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
-import use.openvpn.server.ServerConfigStarterOVPN;
 
-public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetUserOVPN{
+public interface IClientMainOVPN extends IMainOVPN, ISenderObjectStatusLocalUserOVPN{
 	//Spezielle ClientOVPN - Methoden
 	public ArrayList<ClientConfigStarterOVPN> getClientConfigStarterList();
 	public ClientConfigStarterOVPN getClientConfigStarter(int iPosition);

@@ -1,6 +1,7 @@
 package use.openvpn.client.status;
 
 import basic.zBasic.ExceptionZZZ;
+import use.openvpn.server.status.ISenderObjectStatusLocalSetUserOVPN;
 
 /** Interface muss von den Objekten implementiert werden, die den Event-Broker verwenden wollen, 
  *  um einen Event abzufeuern.
@@ -17,7 +18,7 @@ import basic.zBasic.ExceptionZZZ;
  *
  */
 public interface IEventBrokerStatusLocalSetUserOVPN extends ISenderObjectStatusLocalSetUserOVPN {
-	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;
-	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ;
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ;
 }
 

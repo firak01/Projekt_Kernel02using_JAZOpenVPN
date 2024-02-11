@@ -1,6 +1,7 @@
 package use.openvpn.client.status;
 
-import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalMessageReactZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalMessageZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
@@ -13,7 +14,7 @@ import use.openvpn.client.process.IProcessWatchRunnerOVPN;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4ProcessWatchStatusLocalSetOVPN  extends AbstractEventObjectStatusLocalSetZZZ implements IEventObject4ProcessWatchRunnerStatusLocalSetOVPN, Comparable<IEventObject4ProcessWatchMonitorStatusLocalSetOVPN>{
+public class EventObject4ProcessWatchStatusLocalOVPN  extends AbstractEventObjectStatusLocalMessageReactZZZ implements IEventObject4ProcessWatchRunnerStatusLocalOVPN, Comparable<IEventObject4ProcessWatchMonitorStatusLocalOVPN>{
 	private use.openvpn.client.process.IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
@@ -29,16 +30,16 @@ public class EventObject4ProcessWatchStatusLocalSetOVPN  extends AbstractEventOb
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
 	 */
-	public EventObject4ProcessWatchStatusLocalSetOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
+	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);		
 	}
 	
-	public EventObject4ProcessWatchStatusLocalSetOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
+	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);
 		this.sStatusAbbreviation = sStatusAbbreviation;
 	}
 	
-	public EventObject4ProcessWatchStatusLocalSetOVPN(Object source, int iID,  IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) {
+	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) {
 		super(source,iID,"",bStatusValue);
 		this.objStatusEnum=objStatusEnum;
 	}
@@ -86,16 +87,7 @@ public class EventObject4ProcessWatchStatusLocalSetOVPN  extends AbstractEventOb
 			return this.objStatusEnum.getAbbreviation();
 		}
 	}
-	
-	@Override
-	public String getStatusText(){
-		if(this.objStatusEnum==null) {
-			return this.sStatusText;
-		}else {
-			return this.objStatusEnum.name();
-		}
-	}
-	
+		
 	@Override
 	public String getStatusMessage() {
 		if(this.objStatusEnum==null) {
@@ -113,7 +105,7 @@ public class EventObject4ProcessWatchStatusLocalSetOVPN  extends AbstractEventOb
 
 	//### Aus dem Interface Comparable
 	@Override
-	public int compareTo(IEventObject4ProcessWatchMonitorStatusLocalSetOVPN o) {
+	public int compareTo(IEventObject4ProcessWatchMonitorStatusLocalOVPN o) {
 		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
 		int iReturn = 0;
 		main:{
@@ -134,8 +126,8 @@ public class EventObject4ProcessWatchStatusLocalSetOVPN  extends AbstractEventOb
    @Override 
    public boolean equals(Object aThat) {
      if (this == aThat) return true;
-     if (!(aThat instanceof EventObject4ProcessWatchStatusLocalSetOVPN)) return false;
-     EventObject4ProcessWatchStatusLocalSetOVPN that = (EventObject4ProcessWatchStatusLocalSetOVPN)aThat;
+     if (!(aThat instanceof EventObject4ProcessWatchStatusLocalOVPN)) return false;
+     EventObject4ProcessWatchStatusLocalOVPN that = (EventObject4ProcessWatchStatusLocalOVPN)aThat;
      
      String sNameToCompare = that.getStatusEnum().getName();
 	 boolean bValueToCompare = that.getStatusValue();

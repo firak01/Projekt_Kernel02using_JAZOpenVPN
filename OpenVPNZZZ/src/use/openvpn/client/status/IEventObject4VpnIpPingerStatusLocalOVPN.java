@@ -2,6 +2,6 @@ package use.openvpn.client.status;
 
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 
-public interface IEventObject4VpnIpPingerStatusLocalSetOVPN extends IEventObjectStatusLocalSetOVPN{
+public interface IEventObject4VpnIpPingerStatusLocalOVPN extends IEventObjectStatusLocalOVPN{
 	public IClientThreadVpnIpPingerOVPN.STATUSLOCAL getStatusEnum();
 }

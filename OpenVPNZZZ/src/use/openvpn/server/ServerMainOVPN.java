@@ -18,7 +18,7 @@ import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.StatusLocalHelperZZZ;
 import basic.zUtil.io.KernelFileExpansionZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;

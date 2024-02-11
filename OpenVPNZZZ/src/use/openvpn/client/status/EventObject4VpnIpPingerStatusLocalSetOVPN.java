@@ -1,6 +1,7 @@
 package use.openvpn.client.status;
 
-import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalMessageReactZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalMessageZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
@@ -15,7 +16,7 @@ import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4VpnIpPingerStatusLocalSetOVPN  extends AbstractEventObjectStatusLocalSetZZZ implements IEventObject4VpnIpPingerStatusLocalSetOVPN, Comparable<IEventObject4VpnIpPingerStatusLocalSetOVPN>{
+public class EventObject4VpnIpPingerStatusLocalOVPN  extends AbstractEventObjectStatusLocalMessageReactZZZ implements IEventObject4VpnIpPingerStatusLocalOVPN, Comparable<IEventObject4VpnIpPingerStatusLocalOVPN>{
 	private STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
@@ -30,16 +31,16 @@ public class EventObject4VpnIpPingerStatusLocalSetOVPN  extends AbstractEventObj
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
 	 */
-	public EventObject4VpnIpPingerStatusLocalSetOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
+	public EventObject4VpnIpPingerStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);		
 	}
 	
-	public EventObject4VpnIpPingerStatusLocalSetOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
+	public EventObject4VpnIpPingerStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);
 		this.sStatusAbbreviation = sStatusAbbreviation;
 	}
 	
-	public EventObject4VpnIpPingerStatusLocalSetOVPN(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) {
+	public EventObject4VpnIpPingerStatusLocalOVPN(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) {
 		super(source,iID,"",bStatusValue);
 		this.objStatusEnum=objStatusEnum;
 	}
@@ -88,15 +89,6 @@ public class EventObject4VpnIpPingerStatusLocalSetOVPN  extends AbstractEventObj
 	}
 	
 	@Override
-	public String getStatusText(){
-		if(this.objStatusEnum==null) {
-			return this.sStatusText;
-		}else {
-			return this.objStatusEnum.name();
-		}
-	}
-
-	@Override
 	public String getStatusMessage(){
 		if(this.objStatusEnum==null) {
 			return this.sStatusMessage;
@@ -114,7 +106,7 @@ public class EventObject4VpnIpPingerStatusLocalSetOVPN  extends AbstractEventObj
 	
 	//### Aus dem Interface Comparable
 	@Override
-	public int compareTo(IEventObject4VpnIpPingerStatusLocalSetOVPN o) {
+	public int compareTo(IEventObject4VpnIpPingerStatusLocalOVPN o) {
 		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
 		int iReturn = 0;
 		main:{
@@ -123,7 +115,7 @@ public class EventObject4VpnIpPingerStatusLocalSetOVPN  extends AbstractEventObj
 			String sTextToCompare = o.getStatusText();
 			boolean bValueToCompare = o.getStatusValue();
 			
-			String sText = this.getStatusText();
+			String sText = this.getStatusMessage();
 			boolean bValue = this.getStatusValue();
 			
 			if(sTextToCompare.equals(sText) && bValueToCompare==bValue) iReturn = 1;		
@@ -135,8 +127,8 @@ public class EventObject4VpnIpPingerStatusLocalSetOVPN  extends AbstractEventObj
    @Override 
    public boolean equals(Object aThat) {
      if (this == aThat) return true;
-     if (!(aThat instanceof EventObject4VpnIpPingerStatusLocalSetOVPN)) return false;
-     EventObject4VpnIpPingerStatusLocalSetOVPN that = (EventObject4VpnIpPingerStatusLocalSetOVPN)aThat;
+     if (!(aThat instanceof EventObject4VpnIpPingerStatusLocalOVPN)) return false;
+     EventObject4VpnIpPingerStatusLocalOVPN that = (EventObject4VpnIpPingerStatusLocalOVPN)aThat;
      
      String sNameToCompare = that.getStatusEnum().getName();
 	 boolean bValueToCompare = that.getStatusValue();

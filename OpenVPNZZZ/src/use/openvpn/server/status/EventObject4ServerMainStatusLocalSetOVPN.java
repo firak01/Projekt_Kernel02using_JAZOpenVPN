@@ -7,7 +7,7 @@ import basic.zBasic.IObjectZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
 import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
-import basic.zKernel.status.IEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;

@@ -1,6 +1,7 @@
 package use.openvpn.client.status;
 
-import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalMessageReactZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalMessageZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
@@ -14,7 +15,7 @@ import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOC
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4ProcessMonitorStatusLocalSetOVPN  extends AbstractEventObjectStatusLocalSetZZZ implements IEventObject4ProcessWatchMonitorStatusLocalSetOVPN, Comparable<IEventObject4ProcessWatchMonitorStatusLocalSetOVPN>{
+public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObjectStatusLocalMessageReactZZZ implements IEventObject4ProcessWatchMonitorStatusLocalOVPN, Comparable<IEventObject4ProcessWatchMonitorStatusLocalOVPN>{
 	private STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
@@ -29,16 +30,16 @@ public class EventObject4ProcessMonitorStatusLocalSetOVPN  extends AbstractEvent
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
 	 */
-	public EventObject4ProcessMonitorStatusLocalSetOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
+	public EventObject4ProcessMonitorStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);		
 	}
 	
-	public EventObject4ProcessMonitorStatusLocalSetOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
+	public EventObject4ProcessMonitorStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);
 		this.sStatusAbbreviation = sStatusAbbreviation;
 	}
 	
-	public EventObject4ProcessMonitorStatusLocalSetOVPN(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) {
+	public EventObject4ProcessMonitorStatusLocalOVPN(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) {
 		super(source,iID,"",bStatusValue);
 		this.objStatusEnum=objStatusEnum;
 	}
@@ -87,15 +88,6 @@ public class EventObject4ProcessMonitorStatusLocalSetOVPN  extends AbstractEvent
 	}
 	
 	@Override
-	public String getStatusText(){
-		if(this.objStatusEnum==null) {
-			return this.sStatusText;
-		}else {
-			return this.objStatusEnum.name();
-		}
-	}
-
-	@Override
 	public String getStatusMessage(){
 		if(this.objStatusEnum==null) {
 			return this.sStatusMessage;
@@ -113,7 +105,7 @@ public class EventObject4ProcessMonitorStatusLocalSetOVPN  extends AbstractEvent
 	
 	//### Aus dem Interface Comparable
 	@Override
-	public int compareTo(IEventObject4ProcessWatchMonitorStatusLocalSetOVPN o) {
+	public int compareTo(IEventObject4ProcessWatchMonitorStatusLocalOVPN o) {
 		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
 		int iReturn = 0;
 		main:{
@@ -134,8 +126,8 @@ public class EventObject4ProcessMonitorStatusLocalSetOVPN  extends AbstractEvent
    @Override 
    public boolean equals(Object aThat) {
      if (this == aThat) return true;
-     if (!(aThat instanceof EventObject4ProcessMonitorStatusLocalSetOVPN)) return false;
-     EventObject4ProcessMonitorStatusLocalSetOVPN that = (EventObject4ProcessMonitorStatusLocalSetOVPN)aThat;
+     if (!(aThat instanceof EventObject4ProcessMonitorStatusLocalOVPN)) return false;
+     EventObject4ProcessMonitorStatusLocalOVPN that = (EventObject4ProcessMonitorStatusLocalOVPN)aThat;
      
      String sNameToCompare = that.getStatusEnum().getName();
 	 boolean bValueToCompare = that.getStatusValue();
