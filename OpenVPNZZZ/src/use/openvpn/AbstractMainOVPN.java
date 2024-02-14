@@ -109,17 +109,18 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 				System.out.println(ez.getDetailAllLast());
 				e1.printStackTrace();
 			}			
-		} catch (InterruptedException e) {					
-			try {
-				String sLog = e.getMessage();
-				this.logLineDate("An error happend: '" + sLog + "'");
-			} catch (ExceptionZZZ e1) {
-				System.out.println(e1.getDetailAllLast());
-				e1.printStackTrace();
-			}
-			System.out.println(e.getMessage());
-			e.printStackTrace();
 		}
+//		catch (InterruptedException e) {					
+//		try {
+//			String sLogIE = e.getMessage();
+//			this.logProtocolString("An error happend: '" + sLogIE + "'");
+//		} catch (ExceptionZZZ e1) {
+//			System.out.println(e1.getDetailAllLast());
+//			e1.printStackTrace();
+//		}
+//		System.out.println(e.getMessage());
+//		e.printStackTrace();
+//		}
 	}
 
 	@Override
@@ -163,7 +164,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 
 	//### Aus IProgramZZZ
 	@Override
-	public abstract boolean start() throws ExceptionZZZ, InterruptedException;
+	public abstract boolean start() throws ExceptionZZZ;
 	
 		@Override
 		public String getProgramName() throws ExceptionZZZ{

@@ -23,13 +23,12 @@ import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
-import use.openvpn.client.status.EventObject4VpnIpPingerStatusLocalSetOVPN;
+import use.openvpn.client.status.EventObject4VpnIpPingerStatusLocalOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.client.status.IEventObject4VpnIpPingerStatusLocalSetOVPN;
-import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.IEventObject4VpnIpPingerStatusLocalOVPN;
+import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
+import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
+import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
 
 public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
 	protected volatile IModuleZZZ objModule = null;
@@ -38,7 +37,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	
 	
 	private IClientMainOVPN objMain = null;
-	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+	private ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
 	public ClientThreadVpnIpPingerOVPN(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
@@ -156,7 +155,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 * @see java.lang.Runnable#run()
 	 *TODO: Die Fehler ins Log-Schreiben.
 	 */
-	public boolean start() throws ExceptionZZZ, InterruptedException {
+	public boolean start() throws ExceptionZZZ {
 		boolean bReturn = false;
 		try {
 			main:{							
@@ -538,7 +537,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 
 	//### aus IListenerObjectStatusLocalSetZZZ
 	@Override
-	public boolean changedStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean changedStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{		
 			//Falls nicht zuständig, mache nix
@@ -554,7 +553,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -626,7 +625,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevantByStatusLocalValue2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocalValue2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -641,7 +640,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}
 	
 	@Override
-	public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
 	 	class Animal { }
 		class Dog2 extends Animal {
@@ -678,7 +677,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet)	throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
@@ -697,18 +696,18 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	//#######################################
 	//### aus ISenderObjectStatusLocalSetUserOVPN
 	@Override
-	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+	public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
 		if(this.objEventStatusLocalBroker==null) {
 			//++++++++++++++++++++++++++++++
 			//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
-			ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
+			ISenderObjectStatusLocalOVPN objSenderStatusLocal = new SenderObjectStatusLocalOVPN();
 			this.objEventStatusLocalBroker = objSenderStatusLocal;
 		}
 		return this.objEventStatusLocalBroker;
 	}
 
 	@Override
-	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
 		this.objEventStatusLocalBroker = objEventSender;
 	}
 
@@ -969,7 +968,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
 			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);				
-			IEventObject4VpnIpPingerStatusLocalSetOVPN event = new EventObject4VpnIpPingerStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);
+			IEventObject4VpnIpPingerStatusLocalOVPN event = new EventObject4VpnIpPingerStatusLocalOVPN(this,1,enumStatus, bStatusValue);
 			event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
 			
 			

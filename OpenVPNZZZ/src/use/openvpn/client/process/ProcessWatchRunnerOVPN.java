@@ -20,18 +20,17 @@ import basic.zKernel.status.IEventObjectStatusBasicZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IListenerObjectStatusBasicZZZ;
 import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
-import basic.zKernel.status.ISenderObjectStatusLocalSetZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
-import use.openvpn.client.status.EventObject4ProcessWatchRunnerStatusLocalSetOVPN;
-import use.openvpn.client.status.EventObject4ProcessWatchStatusLocalSetOVPN;
+import use.openvpn.client.status.EventObject4ProcessWatchRunnerStatusLocalOVPN;
+import use.openvpn.client.status.EventObject4ProcessWatchStatusLocalOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.client.status.IEventObject4ProcessWatchRunnerStatusLocalSetOVPN;
-import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.ISenderObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.SenderObjectStatusLocalSetOVPN;
+import use.openvpn.client.status.IEventObject4ProcessWatchRunnerStatusLocalOVPN;
+import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
+import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
+import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
+import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
 
@@ -42,7 +41,7 @@ import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
  *
  */
 public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implements IProcessWatchRunnerOVPN, IEventBrokerStatusLocalSetUserOVPN{	
-	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+	private ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	private ClientMainOVPN objMain = null;
 	private ClientConfigStarterOVPN objClientConfigStarter = null; //Das Konfigurationsobjekt, dem der Start zugrundeliegt.
 
@@ -67,7 +66,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	}
 	
 	//#####################################
-	public boolean start() throws ExceptionZZZ, InterruptedException{
+	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumber();
@@ -90,7 +89,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 						if(this.objEventStatusLocalBroker!=null) {
 							//IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,ClientMainOVPN.STATUSLOCAL.ISCONNECTED, true);
 							//TODOGOON20230914: Woher kommt nun das Enum? Es gibt ja kein konkretes Beispiel
-							IEventObjectStatusLocalSetOVPN event = new EventObject4ProcessWatchStatusLocalSetOVPN(this,1,(IProcessWatchRunnerOVPN.STATUSLOCAL)null, true);
+							IEventObjectStatusLocalOVPN event = new EventObject4ProcessWatchStatusLocalOVPN(this,1,(IProcessWatchRunnerOVPN.STATUSLOCAL)null, true);
 							event.setClientConfigStarterObjectUsed(this.getClientConfigStarterObject());
 							this.objEventStatusLocalBroker.fireEvent(event);
 						}		
@@ -628,7 +627,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
 				System.out.println(sLog);
 				this.logLineDate(sLog);
-				IEventObject4ProcessWatchRunnerStatusLocalSetOVPN event = new EventObject4ProcessWatchRunnerStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);			
+				IEventObject4ProcessWatchRunnerStatusLocalOVPN event = new EventObject4ProcessWatchRunnerStatusLocalOVPN(this,1,enumStatus, bStatusValue);			
 				event.setApplicationObjectUsed(this.getClientBackendObject().getApplicationObject());
 				
 				//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
@@ -646,29 +645,29 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 
 		
 		@Override
-		public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+		public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
 			if(this.objEventStatusLocalBroker==null) {
 				//++++++++++++++++++++++++++++++
 				//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
-				ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
+				ISenderObjectStatusLocalOVPN objSenderStatusLocal = new SenderObjectStatusLocalOVPN();
 				this.objEventStatusLocalBroker = objSenderStatusLocal;
 			}
 			return this.objEventStatusLocalBroker;
 		}
 
 		@Override
-		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
 			this.objEventStatusLocalBroker = objEventSender;
 		}
 
 		@Override
-		public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
-			this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
+		public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
+			this.getSenderStatusLocalUsed().addListenerObjectStatusLocal(objEventListener);
 		}
 
 		@Override
-		public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
-			this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
+		public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
+			this.getSenderStatusLocalUsed().removeListenerObjectStatusLocal(objEventListener);
 		}
 		
 		/** In dieser Methode werden die Ausgabezeilen eines Batch-Prozesses ( cmd.exe ) 

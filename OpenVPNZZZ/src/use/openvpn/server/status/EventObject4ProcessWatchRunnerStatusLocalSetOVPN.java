@@ -1,6 +1,5 @@
 package use.openvpn.server.status;
 
-import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.process.IProcessWatchRunnerOVPN;
@@ -14,7 +13,7 @@ import use.openvpn.server.process.IProcessWatchRunnerOVPN.STATUSLOCAL;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4ProcessWatchRunnerStatusLocalSetOVPN  extends AbstractEventObjectStatusLocalSetZZZ implements IEventObject4ProcessWatchRunnerStatusLocalSetOVPN, Comparable<IEventObject4ProcessWatchRunnerStatusLocalSetOVPN>{
+public class EventObject4ProcessWatchRunnerStatusLocalSetOVPN  extends AbstractEventObjectStatusLocalZZZ implements IEventObject4ProcessWatchRunnerStatusLocalSetOVPN, Comparable<IEventObject4ProcessWatchRunnerStatusLocalSetOVPN>{
 	private STATUSLOCAL  objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.

@@ -1,65 +1,33 @@
 package use.openvpn.clientui.component.tray;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 import java.net.InetAddress;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 
-import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.file.FileEasyZZZ;
-import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
-import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
-import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
-import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
-import basic.zKernel.status.IStatusBooleanZZZ;
-import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
-import basic.zKernelUI.component.AbstractKernelActionListenerCascadedZZZ;
-import basic.zKernelUI.component.IPanelCascadedZZZ;
-import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
-import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.tray.AbstractKernelActionTrayZZZ;
-import basic.zKernelUI.component.tray.ITrayZZZ;
-import basic.zWin32.com.wmi.KernelWMIZZZ;
 import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientApplicationOVPN;
-import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
-import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
-import use.openvpn.client.status.IEventObjectStatusLocalSetOVPN;
-import use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import use.openvpn.clientui.component.tray.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
 import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
-import use.openvpn.server.IServerMainOVPN;
-import use.openvpn.server.ServerMainOVPN;
-import use.openvpn.serverui.component.tray.ServerTrayStatusMappedValueOVPN;
-import use.openvpn.serverui.component.tray.ServerTrayUIOVPN;
 
 /** Der Icon unter Windows in der TaskLeiste.
  *  Aus ihm heraus werden:

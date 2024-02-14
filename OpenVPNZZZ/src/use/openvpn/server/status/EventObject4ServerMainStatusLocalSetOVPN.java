@@ -5,8 +5,6 @@ import java.util.EventObject;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ;
-import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
@@ -22,7 +20,7 @@ import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4ServerMainStatusLocalSetOVPN  extends AbstractEventObjectStatusLocalSetZZZ implements IEventObject4ServerMainStatusLocalSetOVPN, Comparable<IEventObject4ServerMainStatusLocalSetOVPN>{
+public class EventObject4ServerMainStatusLocalSetOVPN  extends AbstractEventObjectStatusLocalZZZ implements IEventObject4ServerMainStatusLocalSetOVPN, Comparable<IEventObject4ServerMainStatusLocalSetOVPN>{
 	private STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.

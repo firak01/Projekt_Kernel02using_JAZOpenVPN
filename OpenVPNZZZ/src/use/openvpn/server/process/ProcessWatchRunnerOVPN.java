@@ -19,7 +19,6 @@ import basic.zBasic.util.moduleExternal.process.watch.ProcessWatchRunnerZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
-import basic.zKernel.status.EventObject4ProcessWatchStatusLocalSetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import use.openvpn.server.ServerConfigStarterOVPN;
@@ -29,7 +28,6 @@ import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL;
 import use.openvpn.server.IServerMainOVPN;
-import use.openvpn.server.status.EventObject4ProcessMonitorStatusLocalSetOVPN;
 import use.openvpn.server.status.EventObject4ProcessWatchRunnerStatusLocalSetOVPN;
 import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.server.status.IEventObject4ProcessWatchMonitorStatusLocalSetOVPN;
@@ -71,7 +69,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	}
 	
 	//#####################################
-	public boolean start() throws ExceptionZZZ, InterruptedException{
+	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumber();
