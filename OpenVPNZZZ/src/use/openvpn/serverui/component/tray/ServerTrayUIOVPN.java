@@ -23,14 +23,11 @@ import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
-import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
-import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IStatusBooleanZZZ;
-import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
-import basic.zKernelUI.component.IActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.tray.AbstractKernelTrayUIZZZ;
 import basic.zKernelUI.component.tray.IActionTrayZZZ;
@@ -40,6 +37,7 @@ import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
+import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
@@ -51,7 +49,6 @@ import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
-import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 import use.openvpn.serverui.component.tray.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 
 public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOVPN, IListenerObjectStatusLocalSetOVPN {		
@@ -729,7 +726,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 
 	//+++ Aus IListenerObjectStatusLocalSetOVPN
 	@Override
-	public boolean changeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean changeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		//Der Tray ist am MainObjekt registriert.
 		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
 		boolean bReturn=false;
@@ -794,14 +791,14 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 19.10.2023, 09:43:19
 	 */
-	private boolean statusLocalChangedMainEvent_(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	private boolean statusLocalChangedMainEvent_(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn=false;
 		main:{	
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Fuer MainEvent.";
 			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);
 			
-			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
+			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusLocal();				
 			STATUSLOCAL objStatusEnum = (STATUSLOCAL) eventStatusLocalSet.getStatusEnum();
 			if(objStatusEnum==null) break main;
 				
@@ -810,11 +807,9 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			if(!bProof) break main;
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
-			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);	
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
-			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);
 				
 			//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
@@ -822,7 +817,6 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			ServerTrayStatusTypeZZZ objEnumForTray = (ServerTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
 			if(objEnumForTray==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
-				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 				break main;
 			}			
@@ -843,55 +837,46 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 				//++++++++ TESTEN - Ermittle die Indexwerte der aktuellen GroupId im CircularBuffer
 				int iGroupIdCurrent = this.getMainObject().getStatusLocalGroupIdFromCurrent();
 				int iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent);
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdCurrent +" ist="+iIndexLower;
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdCurrent +" ist="+iIndexLower;								
+				this.logProtocolString(sLog);
 				
 				int iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent, true);
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexLowerInterrupted;
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexLowerInterrupted;					
+				this.logProtocolString(sLog);
 				
 				int iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent);
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdCurrent +" ist="+iIndexUpper;
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);	
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdCurrent +" ist="+iIndexUpper;					
+				this.logProtocolString(sLog);
 
 				int iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent, true);
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexUpperInterrupted;
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexUpperInterrupted;					
+				this.logProtocolString(sLog);
 				
 				
 
 				//++++++++ TESTEN - Ermittle die vorherige GroupId
 				int iGroupIdPreviousDifferentFromCurrent = this.getMainObject().searchStatusLocalGroupIdPreviousDifferentFromCurrent();
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige, andere GroupId ist = " + iGroupIdPreviousDifferentFromCurrent +".";
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);	
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige, andere GroupId ist = " + iGroupIdPreviousDifferentFromCurrent +".";								
+				this.logProtocolString(sLog);
 				//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				
 				
 				//++++++++ TESTEN - Ermittle die Indexwerte der vorherigen GroupId im CircularBuffer
 				iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent);
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLower;
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLower;					
+				this.logProtocolString(sLog);
 				
 				iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLowerInterrupted;
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLowerInterrupted;					
+				this.logProtocolString(sLog);
 				
 				iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent);
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpper;
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);	
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpper;					
+				this.logProtocolString(sLog);	
 
 				iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpperInterrupted;
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);	
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpperInterrupted;				
+				this.logProtocolString(sLog);	
 				
 				
 				
@@ -902,20 +887,17 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 					objEnumForTray = (ServerTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious.getEnumObject());			
 					if(objEnumForTray==null) {
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
-						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);
+						this.logProtocolString(sLog);
 						break main;
 					}else {
 						//Erst einmal den gefundenen Status neu hinzufügen. Damit er auch bei einem weiteren "rueckwaerts Suchen" in der Liste auftaucht.
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf: '" + objEnumForTray.getAbbreviation() + "'";
-						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);							
+						this.logProtocolString(sLog);							
 						this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), "", true);											
 					}	
 				}else {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
+					this.logProtocolString(sLog);
 					break main;
 				}
 						
@@ -940,15 +922,13 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 				//#############################					
 				//Frage nach dem Status im Backend nach...
 				IEnumSetMappedStatusZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist '" + objStatusLocalCurrent.getAbbreviation()+"'.";
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist '" + objStatusLocalCurrent.getAbbreviation()+"'.";					
+				this.logProtocolString(sLog);
 			
 				int iGroupIdPrevious = this.getMainObject().getStatusLocalGroupIdFromPrevious();
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige GroupId ist= " + iGroupIdPrevious +".";
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.logLineDate(sLog);
-					
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige GroupId ist= " + iGroupIdPrevious +".";					
+				this.logProtocolString(sLog);
+				
 			}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {					
 			this.switchStatus(objEnumForTray); //Merke: Der Wert true wird angenommen.
 			
@@ -959,35 +939,30 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	
 
 	@Override
-	public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
 			
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Pruefe Relevanz des Events.";
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.logProtocolString(sLog);
 			
-			IEnumSetMappedZZZ enumStatusFromEvent = eventStatusLocalSet.getStatusEnum();				
+			IEnumSetMappedZZZ enumStatusFromEvent = eventStatusLocalSet.getStatusLocal();				
 			if(enumStatusFromEvent==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);							
+				this.logProtocolString(sLog);							
 				break main;
 			}
 			
 			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.logProtocolString(sLog);
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus hat class='"+enumStatusFromEvent.getClass()+"'";
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);	
+			this.logProtocolString(sLog);	
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus='" + enumStatusFromEvent.getAbbreviation()+"'";
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.logProtocolString(sLog);
 			
 			
 			//#### Problemansatz: Mappen des Lokalen Status auf einen Status aus dem Event, verschiedener Klassen.
@@ -999,15 +974,13 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			//###############################
 			
 			if(objEnumStatusLocal==null) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping nicht mit Wert vorhanden. Damit nicht relevant.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping nicht mit Wert vorhanden. Damit nicht relevant.";				
+				this.logProtocolString(sLog);
 				break main;
 				//sStatusAbbreviationLocal = enumStatusFromEvent.getAbbreviation();
 			}else {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping mit Wert vorhanden. Damit relevant.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.logProtocolString(sLog);
 				
 				sStatusAbbreviationLocal = objEnumStatusLocal.getAbbreviation();
 			}
@@ -1016,8 +989,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
+				this.logProtocolString(sLog);				
 				break main;
 			}
 			
@@ -1040,24 +1012,21 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
+				this.logProtocolString(sLog);				
 				break main;
 			}
 			
 			bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
+				this.logProtocolString(sLog);				
 				break main;
 			}
 			
 			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
+				this.logProtocolString(sLog);				
 				break main;
 			}
 
@@ -1069,25 +1038,24 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	}
 
 	@Override
-	public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByClass(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		return true;
 	}
 
 	@Override
-	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		return true;
 	}
 
 	@Override
-	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
 			
 			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.logProtocolString(sLog);
 		
 			if(!bStatusValue)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
 			

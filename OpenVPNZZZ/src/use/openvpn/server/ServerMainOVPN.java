@@ -954,6 +954,9 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		return this.proofStatusLocalValueChanged(objEnumStatus.name(), bValue);
 	}
 
+	/* (non-Javadoc)
+	 * @see basic.zBasic.AbstractObjectWithStatusZZZ#proofStatusLocalValueChanged(java.lang.String, boolean)
+	 */
 	@Override
 	public boolean proofStatusLocalValueChanged(String sStatusName, boolean bValue) throws ExceptionZZZ {
 		boolean bReturn = false;
