@@ -22,7 +22,7 @@ public class DebugServerMainZZZ {
 				objKernel.getLogObject().WriteLineDate("TEST");
 				 
 				ServerMainOVPN objConfig = new ServerMainOVPN(objKernel, null);
-				objConfig.start();
+				objConfig.startAsThread();
 			
 			} catch (ExceptionZZZ ez) {
 				if(objKernel!=null){

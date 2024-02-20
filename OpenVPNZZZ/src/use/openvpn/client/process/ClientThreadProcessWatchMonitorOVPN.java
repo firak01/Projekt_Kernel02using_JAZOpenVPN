@@ -172,7 +172,7 @@ private void MonitorNew_(IClientMainOVPN objMain, String[] saFlagControl) throws
 	
 	public void run() {
 		try {
-			this.start();
+			this.startAsThread();
 		} catch (ExceptionZZZ ez) {
 			try {
 				this.logLineDate(ez.getDetailAllLast());

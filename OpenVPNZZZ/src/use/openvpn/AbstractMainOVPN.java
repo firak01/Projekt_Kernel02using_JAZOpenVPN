@@ -91,7 +91,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	@Override
 	public void run() {
 		try {
-			this.start();
+			this.startAsThread();
 		} catch (ExceptionZZZ ez) {
 			try {
 				this.logLineDate(ez.getDetailAllLast());
@@ -164,7 +164,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 
 	//### Aus IProgramZZZ
 	@Override
-	public abstract boolean start() throws ExceptionZZZ;
+	public abstract boolean startAsThread() throws ExceptionZZZ;
 	
 		@Override
 		public String getProgramName() throws ExceptionZZZ{

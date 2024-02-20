@@ -98,7 +98,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 03.08.2023, 09:31:22
 	 */
-	public boolean start() throws ExceptionZZZ{
+	public boolean startAsThread() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{		
 			String sLog=null;
@@ -339,7 +339,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	
 	public void run() {
 		try {
-			this.start();
+			this.startAsThread();
 		} catch (ExceptionZZZ ez) {
 			try {
 				String sLog = ez.getDetailAllLast();

@@ -59,7 +59,7 @@ public class ClientMainUIOVPN implements IConstantZZZ {
 					bReturn = true;
 					break main;
 				}
-				bReturn = objClientTray.start();
+				bReturn = objClientTray.startAsThread();
 				if(!bReturn) {
 					bReturn = true;
 					break main;

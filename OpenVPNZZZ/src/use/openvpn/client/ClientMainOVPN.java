@@ -134,7 +134,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 *
 	 * javadoc created by: 0823, 30.06.2006 - 10:24:31
 	 */
-	public boolean start() throws ExceptionZZZ{
+	public boolean startAsThread() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.

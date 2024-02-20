@@ -122,7 +122,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	//###
 		public void run() {
 			try {
-				this.start();
+				this.startAsThread();
 			} catch (ExceptionZZZ ez) {
 				try {
 					this.logLineDate(ez.getDetailAllLast());
