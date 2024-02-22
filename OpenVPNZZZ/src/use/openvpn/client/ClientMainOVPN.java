@@ -1632,21 +1632,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		
 	
 	//#######################################
-	/* (non-Javadoc)
-	 * @see basic.zBasic.AbstractObjectWithStatusZZZ#isStatusLocalRelevant(basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ)
-	 */
-	@Override
-	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
-		boolean bReturn = false;
-		main:{
-			if(objEnumStatusIn==null) break main;
-				
-			//Fuer das Main-Objekt ist erst einmal jeder Status relevant
-			bReturn = true;
-		}//end main:
-		return bReturn;
-	}
-
+	
 	//### aus IListenerObjectStatusLocalMapForEventUserZZZ
 	@Override
 	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {

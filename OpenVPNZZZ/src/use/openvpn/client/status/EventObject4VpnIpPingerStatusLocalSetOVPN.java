@@ -1,7 +1,7 @@
 package use.openvpn.client.status;
 
 import basic.zKernel.status.AbstractEventObjectStatusLocalMessageReactZZZ;
-import basic.zKernel.status.AbstractEventObjectStatusLocalMessageZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
