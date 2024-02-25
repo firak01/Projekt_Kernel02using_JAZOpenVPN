@@ -1352,7 +1352,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				break main;
 			}
 			
-			bReturn = this.isEventRelevantByStatusLocal2ChangeStatusLocal(eventStatusLocalSet);
+			bReturn = this.isEventRelevantByReactionHashMap2ChangeStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
 				System.out.println(sLog);
