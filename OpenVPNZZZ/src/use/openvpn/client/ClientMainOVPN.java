@@ -878,7 +878,6 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			bReturn = this.proofStatusLocalExists(sStatusName);
 			if(!bReturn) {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMainOVPN would like to fire event, but this status is not available: '" + sStatusName + "'";
-				System.out.println(sLog);
 				this.logProtocolString(sLog);
 				break main;
 			}
@@ -886,7 +885,6 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			bReturn = this.proofStatusLocalValue(sStatusName, bStatusValue);
 			if(!bReturn) {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMainOVPN would like to fire event, but this status has a value to be ignored: '" + sStatusName + "'";
-				System.out.println(sLog);
 				this.logProtocolString(sLog);
 				break main;
 			}
@@ -912,13 +910,11 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 				sStatusMessageToSet = sStatusMessage;
 			}		
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMain verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-			System.out.println(sLog);
 			this.logProtocolString(sLog);
 
 		//Falls eine Message extra uebergeben worden ist, ueberschreibe...
 		if(sStatusMessageToSet!=null) {
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMain setze sStatusMessageToSet='" + sStatusMessageToSet + "'";
-			System.out.println(sLog);
 			this.logProtocolString(sLog);			
 		}
 		
@@ -934,7 +930,6 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			if(objClientConfigStarter!=null) {
 				if(sStatusName.equalsIgnoreCase(IClientMainOVPN.STATUSLOCAL.ISCONNECTED.getName())){
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ":  Nimm Konfiguration in die Liste der gestarteten auf: '" + sStatusName + "'";
-					System.out.println(sLog);
 					this.logProtocolString(sLog);				
 					
 					//fuege die Verbundene Konfiguration der entsprechenden Liste hinzu
@@ -948,14 +943,12 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		//Dann erzeuge den Event und feuer ihn ab.	
 		if(this.getSenderStatusLocalUsed()==null) {
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadProcessWatchMonitor for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-			System.out.println(sLog);
 			this.logProtocolString(sLog);	
 			break main;
 		}
 		
 		//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
-		sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-		System.out.println(sLog);
+		sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";
 		this.logProtocolString(sLog);
 		IEventObject4ClientMainStatusLocalMessageOVPN event = new EventObject4ClientMainStatusLocalMessageOVPN(this,1,enumStatus, bStatusValue);
 		event.setApplicationObjectUsed(objApplication);
@@ -967,7 +960,6 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		}
 			
 		sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMain feuert event '" + enumStatus.getAbbreviation() + "'";
-		System.out.println(sLog);
 		this.logProtocolString(sLog);
 		this.getSenderStatusLocalUsed().fireEvent(event);
 		
@@ -992,32 +984,27 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			//Dann erzeuge den Event und feuer ihn ab.				
 			EventObject4ClientMainStatusLocalMessageOVPN event = null;
 			if(sStatusName.equalsIgnoreCase(IClientMainOVPN.STATUSLOCAL.ISSTARTING.getName())){
-				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-				System.out.println(sLog);
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage=NICHT VORHANDEN";
 				this.logProtocolString(sLog);					
 				event = new EventObject4ClientMainStatusLocalMessageOVPN(this,1,IClientMainOVPN.STATUSLOCAL.ISSTARTING, true);
 				
 			}else if(sStatusName.equalsIgnoreCase(IClientMainOVPN.STATUSLOCAL.ISSTARTED.getName())) {
-				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-				System.out.println(sLog);
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage=NICHT VORHANDEN";
 				this.logProtocolString(sLog);					
 				event = new EventObject4ClientMainStatusLocalMessageOVPN(this,1,IClientMainOVPN.STATUSLOCAL.ISSTARTED, true);
 				
 			}else if(sStatusName.equalsIgnoreCase(IClientMainOVPN.STATUSLOCAL.ISCONNECTING.getName())){
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-					System.out.println(sLog);
+					String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage=NICHT VORHANDEN";
 					this.logProtocolString(sLog);				
 					event = new EventObject4ClientMainStatusLocalMessageOVPN(this,1,IClientMainOVPN.STATUSLOCAL.ISCONNECTING, true);
 					
 			}else if(sStatusName.equalsIgnoreCase(IClientMainOVPN.STATUSLOCAL.ISCONNECTED.getName())){
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-					System.out.println(sLog);
+					String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage=NICHT VORHANDEN";
 					this.logProtocolString(sLog);				
 					event = new EventObject4ClientMainStatusLocalMessageOVPN(this,1,IClientMainOVPN.STATUSLOCAL.ISCONNECTED, true);
 							
 			}else {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": KEIN Event erzeugt fuer '" + sStatusName + "'";
-				System.out.println(sLog);
 				this.logProtocolString(sLog);
 			}
 			

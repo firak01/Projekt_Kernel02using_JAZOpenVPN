@@ -566,17 +566,15 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				String sStatusName = enumStatus.name();
 				bFunction = this.proofStatusLocalExists(sStatusName);															
 				if(!bFunction){
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status is not available: '" + sStatusName + "'";
-					System.out.println(sLog);
-					this.logLineDate(sLog);			
+					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status is not available: '" + sStatusName + "'";					
+					this.logProtocolString(sLog);			
 					break main;				
 				}
 					
 				bFunction = this.proofStatusLocalValue(sStatusName, bStatusValue);
 				if(!bFunction) {
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status has not changed: '" + sStatusName + "'";
-					System.out.println(sLog);
-					this.logLineDate(sLog);	
+					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status has not changed: '" + sStatusName + "'";					
+					this.logProtocolString(sLog);
 					break main;
 				}
 				
@@ -601,15 +599,13 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 					sStatusMessageToSet = sStatusMessage;
 				}	
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
+				this.logProtocolString(sLog);
 
 				//Falls eine Message extra uebergeben worden ist, ueberschreibe...
 				if(sStatusMessage!=null) {
 					sStatusMessageToSet = sStatusMessage;
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
-					System.out.println(sLog);
-					this.logLineDate(sLog);				
+					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";					
+					this.logProtocolString(sLog);				
 				}
 				//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
 				this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
@@ -618,15 +614,13 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				//Dann erzeuge den Event und feuer ihn ab.			
 				if(this.getSenderStatusLocalUsed()==null) {
 					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-					System.out.println(sLog);
-					this.logLineDate(sLog);		
+					this.logProtocolString(sLog);		
 					break main;
 				}
 				
 				//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
-				sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";				
+				this.logProtocolString(sLog);
 				IEventObject4ProcessWatchRunnerStatusLocalOVPN event = new EventObject4ProcessWatchRunnerStatusLocalOVPN(this,1,enumStatus, bStatusValue);			
 				event.setApplicationObjectUsed(this.getClientBackendObject().getApplicationObject());
 				
@@ -634,8 +628,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				event.setClientConfigStarterObjectUsed(this.getClientConfigStarterObject());
 				
 				sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumber() + " fires event '" + enumStatus.getAbbreviation() + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
+				this.logProtocolString(sLog);
 				this.getSenderStatusLocalUsed().fireEvent(event);
 						
 				bFunction = true;								

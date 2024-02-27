@@ -645,16 +645,14 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				bFunction = this.proofStatusLocalExists(sStatusName);															
 				if(!bFunction){
 					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status is not available: '" + sStatusName + "'";
-					System.out.println(sLog);
-					this.logLineDate(sLog);			
+					this.logProtocolString(sLog);			
 					break main;				
 				}
 					
 				bFunction = this.proofStatusLocalValue(sStatusName, bStatusValue);
 				if(!bFunction) {
 					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status has not changed: '" + sStatusName + "'";
-					System.out.println(sLog);
-					this.logLineDate(sLog);	
+					this.logProtocolString(sLog);	
 					break main;
 				}
 				
@@ -677,15 +675,13 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 					sStatusMessageToSet = sStatusMessage;
 				}	
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
+				this.logProtocolString(sLog);
 
 				//Falls eine Message extra uebergeben worden ist, ueberschreibe...
 				if(sStatusMessage!=null) {
 					sStatusMessageToSet = sStatusMessage;
 					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
-					System.out.println(sLog);
-					this.logLineDate(sLog);				
+					this.logProtocolString(sLog);		
 				}
 				//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
 				this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
@@ -693,16 +689,14 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
 				//Dann erzeuge den Event und feuer ihn ab.			
 				if(this.getSenderStatusLocalUsed()==null) {
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-					System.out.println(sLog);
-					this.logLineDate(sLog);		
+					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";		
+					this.logProtocolString(sLog);
 					break main;
 				}
 				
 				//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
-				sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";
+				this.logProtocolString(sLog);
 				IEventObject4ProcessWatchRunnerStatusLocalSetOVPN event = new EventObject4ProcessWatchRunnerStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);			
 				event.setApplicationObjectUsed(this.getServerBackendObject().getApplicationObject());
 				
@@ -710,8 +704,7 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				event.setServerConfigStarterObjectUsed(this.getServerConfigStarterObject());
 				
 				sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumber() + " fires event '" + enumStatus.getAbbreviation() + "'";
-				System.out.println(sLog);
-				this.logLineDate(sLog);
+				this.logProtocolString(sLog);				
 				this.getSenderStatusLocalUsed().fireEvent(event);
 						
 				bFunction = true;								

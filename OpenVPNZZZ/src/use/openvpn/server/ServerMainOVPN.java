@@ -692,7 +692,6 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		bReturn = this.proofStatusLocalExists(sStatusName);
 		if(!bReturn) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMainOVPN would like to fire event, but this status is not available: '" + sStatusName + "'";
-			System.out.println(sLog);
 			this.logProtocolString(sLog);
 			break main;
 		}
@@ -700,7 +699,6 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		bReturn = this.proofStatusLocalValue(sStatusName, bStatusValue);
 		if(!bReturn) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMainOVPN would like to fire event, but this status has a value to be ignored: '" + sStatusName + "'";
-			System.out.println(sLog);
 			this.logProtocolString(sLog);
 			break main;
 		}
@@ -725,13 +723,11 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 			sStatusMessageToSet = sStatusMessage;
 		}			
 		String sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-		System.out.println(sLog);
 		this.logProtocolString(sLog);
 		
 		//Falls eine Message extra uebergeben worden ist, ueberschreibe...
 		if(sStatusMessageToSet!=null) {
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain setze sStatusMessageToSet='" + sStatusMessageToSet + "'";
-			System.out.println(sLog);
 			this.logProtocolString(sLog);			
 		}
 				
@@ -754,14 +750,12 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		//Merke: Nun aber ueber das enum			
 		if(this.getSenderStatusLocalUsed()==null) {
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-			System.out.println(sLog);
 			this.logProtocolString(sLog);	
 			break main;
 		}
 		
 		//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
-		sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-		System.out.println(sLog);
+		sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";
 		this.logProtocolString(sLog);
 		IEventObject4ServerMainStatusLocalSetOVPN event = new EventObject4ServerMainStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);
 		event.setApplicationObjectUsed(objApplication);
@@ -772,7 +766,6 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		}
 		
 		sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain feuert event '" + enumStatus.getAbbreviation() + "'";
-		System.out.println(sLog);
 		this.logProtocolString(sLog);
 		this.getSenderStatusLocalUsed().fireEvent(event);
 				
@@ -838,13 +831,11 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 			//Dann erzeuge den Event und feuer ihn ab.
 			IEventObject4ServerMainStatusLocalSetOVPN event = null;
 			if(sStatusName.equalsIgnoreCase(IServerMainOVPN.STATUSLOCAL.ISSTARTING.getName())){
-				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-				System.out.println(sLog);
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";				
 				this.logProtocolString(sLog);					
 				event = new EventObject4ServerMainStatusLocalSetOVPN(this,1,STATUSLOCAL.ISSTARTING, true);
 			}else {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": KEIN Event erzeugt fuer '" + sStatusName + "'";
-				System.out.println(sLog);
 				this.logProtocolString(sLog);
 			}
 			

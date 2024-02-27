@@ -764,7 +764,6 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			bFunction = this.proofStatusLocalExists(sStatusName);															
 			if(!bFunction) {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadProcessWatchMonitor for Process would like to fire event, but this status is not available: '" + sStatusName + "'";
-				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);			
 				break main;
 			}
@@ -772,7 +771,6 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			bFunction = this.proofStatusLocalValueChanged(sStatusName, bStatusValue);
 			if(!bFunction) {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadProcessWatchMonitor would like to fire event, but this status has not changed: '" + sStatusName + "'";
-				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);
 				break main;
 			}	
@@ -797,13 +795,11 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			}
 			
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMain verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);
 
 			//Falls eine Message extra uebergeben worden ist, ueberschreibe...
 			if(sStatusMessageToSet!=null) {
-				sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMain setze sStatusMessageToSet='" + sStatusMessageToSet + "'";
-				System.out.println(sLog);
+				sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientMain setze sStatusMessageToSet='" + sStatusMessageToSet + "'";				
 				this.getMainObject().logProtocolString(sLog);
 			}
 			//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
@@ -815,14 +811,12 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			//Dann erzeuge den Event und feuer ihn ab.	
 			if(this.getSenderStatusLocalUsed()==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadProcessWatchMonitor for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-				System.out.println(sLog);
 				this.getMainObject().logProtocolString(sLog);		
 				break main;
 			}
 			
 			//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
-			sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "'";
-			System.out.println(sLog);
+			sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";			
 			this.getMainObject().logProtocolString(sLog);
 			IEventObject4ProcessWatchMonitorStatusLocalOVPN event = new EventObject4ProcessMonitorStatusLocalOVPN(this,1,enumStatus, bStatusValue);			
 			event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
@@ -836,7 +830,6 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			}		
 			
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadProcessWatchMonitor for Process fires event '" + enumStatus.getAbbreviation() + "'";
-			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);
 			this.getSenderStatusLocalUsed().fireEvent(event);
 					
