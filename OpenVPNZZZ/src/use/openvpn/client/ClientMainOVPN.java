@@ -624,7 +624,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		main:{
 			if(this.objVpnIpPinger!=null) {
 				if(this.objVpnIpPinger.getFlagLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.ISSTARTING.getName())) {
-					this.objVpnIpPinger.setFlag(IProgramRunnableZZZ.FLAGZ.REQUESTSTOP, true);
+					this.objVpnIpPinger.setFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP, true);
 	
 					String sLog  = ReflectCodeZZZ.getPositionCurrent() + ": Set previous thread object to NULL";
 					System.out.println(sLog);
