@@ -53,7 +53,8 @@ public interface IClientTrayMenuOVPN {
 			Class<ClientTrayMenuTypeZZZ> enumClass = ClientTrayMenuTypeZZZ.class;
 			EnumSet<ClientTrayMenuTypeZZZ> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 			
-			for(Object obj : ClientTrayMenuTypeZZZ.class.getEnumConstants()){		
+			Enum[]objaEnum = (Enum[]) enumClass.getEnumConstants();
+			for(Object obj : objaEnum){		
 				set.add((ClientTrayMenuTypeZZZ) obj);
 			}
 			return set;

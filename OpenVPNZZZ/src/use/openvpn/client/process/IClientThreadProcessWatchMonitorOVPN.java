@@ -94,7 +94,8 @@ public interface IClientThreadProcessWatchMonitorOVPN extends IClientMainUserOVP
 			Class<STATUSLOCAL> enumClass = STATUSLOCAL.class;
 			EnumSet<STATUSLOCAL> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 			
-			for(Object obj : ServerTrayMenuTypeZZZ.class.getEnumConstants()){
+			Enum[]objaEnum = (Enum[]) enumClass.getEnumConstants();
+			for(Object obj : objaEnum){
 				//System.out.println(obj + "; "+obj.getClass().getName());
 				set.add((STATUSLOCAL) obj);
 			}

@@ -90,7 +90,8 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 			Class<STATUSLOCAL> enumClass = STATUSLOCAL.class;
 			EnumSet<STATUSLOCAL> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 			
-			for(Object obj : ProcessWatchRunnerOVPN.class.getEnumConstants()){
+			Enum[]objaEnum = (Enum[]) enumClass.getEnumConstants();
+			for(Object obj : objaEnum){
 				//System.out.println(obj + "; "+obj.getClass().getName());
 				set.add((STATUSLOCAL) obj);
 			}

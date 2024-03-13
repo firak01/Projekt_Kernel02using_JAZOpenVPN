@@ -77,7 +77,8 @@ public interface IServerTrayStatusMappedValueZZZ {
   		Class<ServerTrayStatusTypeZZZ> enumClass = ServerTrayStatusTypeZZZ.class;
   		EnumSet<ServerTrayStatusTypeZZZ> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
   		
-  		for(Object obj : ServerTrayStatusTypeZZZ.class.getEnumConstants()){
+  		Enum[]objaEnum = (Enum[]) enumClass.getEnumConstants();
+		for(Object obj : objaEnum){
   			//System.out.println(obj + "; "+obj.getClass().getName());
   			set.add((ServerTrayStatusTypeZZZ) obj);
   		}

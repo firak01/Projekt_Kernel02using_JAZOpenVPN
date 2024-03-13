@@ -77,7 +77,8 @@ public interface IClientTrayStatusMappedValueOVPN {
 			Class<ClientTrayStatusTypeZZZ> enumClass = ClientTrayStatusTypeZZZ.class;
 			EnumSet<ClientTrayStatusTypeZZZ> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 			
-			for(Object obj : ClientTrayStatusTypeZZZ.class.getEnumConstants()){
+			Enum[]objaEnum = (Enum[]) enumClass.getEnumConstants();
+			for(Object obj : objaEnum){
 				//System.out.println(obj + "; "+obj.getClass().getName());
 				set.add((ClientTrayStatusTypeZZZ) obj);
 			}
