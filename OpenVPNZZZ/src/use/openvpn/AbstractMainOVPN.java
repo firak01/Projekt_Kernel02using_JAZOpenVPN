@@ -15,7 +15,7 @@ import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusListeningMonitoredZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.status.StatusLocalHelperZZZ;
+import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 
@@ -344,7 +344,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		public String[] getStatusLocalAll() throws ExceptionZZZ {
 			String[] saReturn = null;
 			main:{	
-				saReturn = StatusLocalHelperZZZ.getStatusLocalDirectAvailable(this.getClass());				
+				saReturn = StatusLocalAvailableHelperZZZ.getStatusLocalDirect(this.getClass());				
 			}//end main:
 			return saReturn;
 		}
@@ -406,7 +406,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			boolean bReturn = false;
 			main:{
 				if(StringZZZ.isEmpty(sStatusName))break main;
-				bReturn = StatusLocalHelperZZZ.proofStatusLocalDirectExists(this.getClass(), sStatusName);				
+				bReturn = StatusLocalAvailableHelperZZZ.proofStatusLocalDirectExists(this.getClass(), sStatusName);				
 			}//end main:
 			return bReturn;
 		}

@@ -19,7 +19,7 @@ import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.net.client.KernelPortScanHostZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
-import basic.zKernel.status.StatusLocalHelperZZZ;
+import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
 import use.openvpn.FileFilterConfigOVPN;
