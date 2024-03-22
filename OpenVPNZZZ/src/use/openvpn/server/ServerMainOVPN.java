@@ -868,7 +868,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	public String[] getStatusLocalAll() throws ExceptionZZZ{
 		String[] saReturn = null;
 		main:{	
-			saReturn = StatusLocalAvailableHelperZZZ.getStatusLocalDirect(this.getClass());				
+			saReturn = StatusLocalAvailableHelperZZZ.getDirect(this.getClass());				
 		}//end main:
 		return saReturn;
 	}
@@ -935,7 +935,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		boolean bReturn = false;
 		main:{
 			if(StringZZZ.isEmpty(sStatusName))break main;
-			bReturn = StatusLocalAvailableHelperZZZ.proofStatusLocalDirectExists(this.getClass(), sStatusName);				
+			bReturn = StatusLocalAvailableHelperZZZ.proofDirectExists(this.getClass(), sStatusName);				
 		}//end main:
 		return bReturn;
 	}
@@ -955,7 +955,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 			if(StringZZZ.isEmpty(sStatusName))break main;
 			
 			HashMap<String,Boolean>hmStatusLocal = this.getHashMapStatusLocal();
-			bReturn = StatusLocalAvailableHelperZZZ.proofStatusLocalChanged(hmStatusLocal, sStatusName, bValue);
+			bReturn = StatusLocalAvailableHelperZZZ.proofOnChange(hmStatusLocal, sStatusName, bValue);
 			
 		}//end main:
 		return bReturn;

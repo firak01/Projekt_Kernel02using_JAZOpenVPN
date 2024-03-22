@@ -344,7 +344,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		public String[] getStatusLocalAll() throws ExceptionZZZ {
 			String[] saReturn = null;
 			main:{	
-				saReturn = StatusLocalAvailableHelperZZZ.getStatusLocalDirect(this.getClass());				
+				saReturn = StatusLocalAvailableHelperZZZ.getDirect(this.getClass());				
 			}//end main:
 			return saReturn;
 		}
@@ -406,7 +406,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			boolean bReturn = false;
 			main:{
 				if(StringZZZ.isEmpty(sStatusName))break main;
-				bReturn = StatusLocalAvailableHelperZZZ.proofStatusLocalDirectExists(this.getClass(), sStatusName);				
+				bReturn = StatusLocalAvailableHelperZZZ.proofDirectExists(this.getClass(), sStatusName);				
 			}//end main:
 			return bReturn;
 		}
