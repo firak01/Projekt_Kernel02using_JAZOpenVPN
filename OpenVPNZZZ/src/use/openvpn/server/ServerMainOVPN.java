@@ -868,7 +868,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	public String[] getStatusLocalAll() throws ExceptionZZZ{
 		String[] saReturn = null;
 		main:{	
-			saReturn = StatusLocalAvailableHelperZZZ.getDirect(this.getClass());				
+			saReturn = StatusLocalAvailableHelperZZZ.searchDirect(this.getClass());				
 		}//end main:
 		return saReturn;
 	}

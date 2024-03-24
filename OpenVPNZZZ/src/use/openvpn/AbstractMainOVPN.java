@@ -344,7 +344,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		public String[] getStatusLocalAll() throws ExceptionZZZ {
 			String[] saReturn = null;
 			main:{	
-				saReturn = StatusLocalAvailableHelperZZZ.getDirect(this.getClass());				
+				saReturn = StatusLocalAvailableHelperZZZ.searchDirect(this.getClass());				
 			}//end main:
 			return saReturn;
 		}
