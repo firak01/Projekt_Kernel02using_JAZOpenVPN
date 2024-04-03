@@ -22,9 +22,9 @@ import basic.zKernel.file.ini.IKernelJsonArrayIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonMapIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelZFormulaIniSolverZZZ;
-import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
-import basic.zKernel.flag.IListenerObjectFlagZsetZZZ;
-import basic.zKernel.flag.ISenderObjectFlagZsetZZZ;
+import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
+import basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ;
+import basic.zKernel.flag.event.ISenderObjectFlagZsetZZZ;
 import custom.zKernel.LogZZZ;
 
 public class ServerMainUIZZZ implements IConstantZZZ{

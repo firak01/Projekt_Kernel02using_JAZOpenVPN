@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
-import basic.zKernel.flag.EventObjectFlagZsetZZZ;
-import basic.zKernel.flag.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.IFlagZLocalUserZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.flag.event.EventObjectFlagZsetZZZ;
+import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.ServerConfigMapper4BatchOVPN;
 import use.openvpn.server.ServerMainOVPN;
