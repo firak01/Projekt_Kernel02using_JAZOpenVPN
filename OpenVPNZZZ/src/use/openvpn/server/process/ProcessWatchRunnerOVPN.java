@@ -21,6 +21,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.IFlagZUserZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
+import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.client.process.ClientThreadProcessWatchMonitorOVPN;
@@ -49,13 +50,13 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	private ServerConfigStarterOVPN objServerConfigStarter = null; //Das Konfigurationsobjekt, dem der Start zugrundeliegt.
 
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber) throws ExceptionZZZ{
-		super(objKernel, objProcess, iNumber);
+		super(objProcess);
 	}
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber, String sFlag) throws ExceptionZZZ{
-		super(objKernel, objProcess, iNumber, sFlag);
+		super(objProcess, sFlag);
 	}
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber, String[] saFlag) throws ExceptionZZZ{
-		super(objKernel, objProcess, iNumber, saFlag);
+		super(objProcess, saFlag);
 	}
 	
 	//### Speziel für OVPN
@@ -68,70 +69,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 		this.objServerConfigStarter = objStarter;
 	}
 	
-	//#####################################
-	public boolean start() throws ExceptionZZZ{
-		boolean bReturn = false;
-		main:{
-			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumber();
-			System.out.println(sLog);
-			this.logLineDate(sLog);
-			
-			//Merke 20240127: Wenn das funktioniert nur wenn der Prozess auch Ausgaben in den Standard.Out schreibt.
-			//                Der OVPN server macht das nicht. Daher kann hier maximal die porzessstartende Batch und ihre Ausgabe beobachtet werden.
-			
-			//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
-			do{
-				//System.out.println("FGLTEST01");
-				//Wichtig: Man muss wohl zuallererst den InputStream abgreifen, damit der Process weiterlaufen kann.
-				this.writeOutputToLogPLUSanalyse();				
-				boolean bHasConnection = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
-				if(bHasConnection) {
-					sLog = "ProcessWatchRunner #"+this.getNumber()+"# Connection wurde erstellt.";
-					this.logLineDate(sLog);						
-					
-					//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
-					//Dann erzeuge den Event und feuer ihn ab.
-					//Merke: Nun aber ueber das enum			
-					if(this.objEventStatusLocalBroker!=null) {
-						//IEventObjectStatusLocalSetZZZ event = new EventObjectStatusLocalSetZZZ(this,1,ClientMainOVPN.STATUSLOCAL.ISCONNECTED, true);
-						//TODOGOON20230914: Woher kommt nun das Enum? Es gibt ja kein konkretes Beispiel
-						IEventObjectStatusLocalSetOVPN event = new EventObject4ProcessWatchRunnerStatusLocalSetOVPN(this,1,(IProcessWatchRunnerOVPN.STATUSLOCAL)null, true);
-						event.setServerConfigStarterObjectUsed(this.getServerConfigStarterObject());
-						this.objEventStatusLocalBroker.fireEvent(event);
-					}		
-					
-					Thread.sleep(20);
-					boolean bStopRequested = this.getFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
-					if( bStopRequested) {
-						sLog = "ProcessWatchRunner #"+this.getNumber() + "# Breche Schleife ab.";
-						this.logLineDate(sLog);
-						break main;
-					}
-				}
-				
-				
-				//System.out.println("FGLTEST02");
-				this.writeErrorToLog();				
-				boolean bError = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR);
-				if(bError) break;
 	
-				//Nach irgendeiner Ausgabe enden ist hier falsch, in einer abstrakten Klasse vielleicht richtig, quasi als Muster.
-				//if(this.getFlag("hasOutput")) break;
-				//System.out.println("FGLTEST03");
-				
-				Thread.sleep(10);
-				
-				boolean bStopRequested = this.getFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP);//Merke: Das ist eine Anweisung und kein Status. Darum bleibt es beim Flag.
-				if(bStopRequested) break;					
-		}while(true);
-		bReturn = true;
-			
-		this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED,true);
-		this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
-		
-		}//END main
-		return bReturn;
-	}
 	
 	public void setServerBackendObject(IServerMainOVPN objServerBackend){
 		this.objMain = (ServerMainOVPN) objServerBackend;
@@ -375,10 +313,10 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 	 * @author Fritz Lindhauer, 03.09.2023, 07:35:31
 	 */
 	@Override
-	public boolean analyseInputLineCustom(String sLine) throws ExceptionZZZ {
+	public boolean analyseInputLineCustom(String sLine, String sLinefilter) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			int iProcess = this.getNumber();
+			
 			String sLog = ReflectCodeZZZ.getPositionCurrent() +  " Process#" + iProcess + ": sLine=" + sLine;		
 			System.out.println(sLog);
 			this.logLineDate(sLog);
@@ -451,296 +389,12 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 	//###### GETTER / SETTER
 	//sind eher in der Abstrakten Klasse
 	
-	//++++++ StatusLocal
-		@Override
-		public boolean getStatusLocal(Enum objEnumStatusIn) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(objEnumStatusIn==null) {
-					break main;
-				}
-				
-				//Merke: Bei einer anderen Klasse, die dieses DesingPattern nutzt, befindet sich der STATUSLOCAL in einer anderen Klasse
-				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) objEnumStatusIn;
-				String sStatusName = enumStatus.name();
-				if(StringZZZ.isEmpty(sStatusName)) break main;
-											
-				HashMap<String, Boolean> hmFlag = this.getHashMapStatusLocal();
-				Boolean objBoolean = hmFlag.get(sStatusName.toUpperCase());
-				if(objBoolean==null){
-					bFunction = false;
-				}else{
-					bFunction = objBoolean.booleanValue();
-				}
-								
-			}	// end main:
-			
-			return bFunction;	
-		}
-		
-
-		/* (non-Javadoc)
-		 * @see basic.zBasic.AbstractObjectWithStatusZZZ#setStatusLocal(java.lang.Enum, boolean)
-		 */
-		@Override 
-		public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-								
-				bFunction = this.offerStatusLocal(enumStatusIn, null, bStatusValue);
-			}//end main:
-			return bFunction;
-		}
-		
-		@Override
-		public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-			
-			    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
-			    IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-			
-			    bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, null, bStatusValue);
-			    
-			}//end main
-			return bFunction;
-		}
-		
-		@Override 
-		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-				
-				bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
-			}//end main:
-			return bReturn;
-		}
-		
-		@Override 
-		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-				
-				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
-			}//end main:
-			return bReturn;
-		}
-		
-		//################################################
-		//+++ aus IStatusLocalUserMessageZZZ			
-		@Override 
-		public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-				
-				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
-			}//end main:
-			return bFunction;
-		}
-		
-		@Override 
-		public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-				
-				bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sMessage, bStatusValue);
-			}//end main:
-			return bFunction;
-		}
-		
-		@Override 
-		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-				
-				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
-			}//end main:
-			return bReturn;
-		}				
-		
-		@Override 
-		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-				
-				bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
-			}//end main:
-			return bReturn;
-		}
-		
-		//++++++++++++++++++++++++++++++++++++++++++++++++++++
-		@Override
-		public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				
-			    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
-			    IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-			
-			    bFunction = this.offerStatusLocal_(-1, enumStatusIn, sStatusMessage, bStatusValue);
-			    
-			}//end main
-			return bFunction;
-		}
-		
-		@Override
-		public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(enumStatusIn==null) {
-					break main;
-				}
-				
-			    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
-			    IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-			
-			    bFunction = this.offerStatusLocal_(iIndexOfProcess, enumStatus, sStatusMessage, bStatusValue);
-			    
-			}//end main
-			return bFunction;
-		}
-		
-		private boolean offerStatusLocal_(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(enumStatusIn==null) break main;
-							
-			    //Merke: In anderen Klassen, die dieses Design-Pattern anwenden ist das eine andere Klasse fuer das Enum
-			    IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
-				String sStatusName = enumStatusIn.name();
-				bFunction = this.proofStatusLocalExists(sStatusName);															
-				if(!bFunction){
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status is not available: '" + sStatusName + "'";
-					this.logProtocolString(sLog);			
-					break main;				
-				}
-					
-				bFunction = this.proofStatusLocalValue(sStatusName, bStatusValue);
-				if(!bFunction) {
-					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status has not changed: '" + sStatusName + "'";
-					this.logProtocolString(sLog);	
-					break main;
-				}
-				
-				//++++++++++++++++++++	
-				//Setze den Status nun in die HashMap
-				HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
-				hmStatus.put(sStatusName.toUpperCase(), bStatusValue);
-				
-				//Den enumStatus als currentStatus im Objekt speichern...
-				//                   dito mit dem "vorherigen Status"
-				//Setze nun das Enum, und damit auch die Default-StatusMessage
-				String sStatusMessageToSet = null;
-				if(StringZZZ.isEmpty(sStatusMessage)){
-					if(bStatusValue) {
-						sStatusMessageToSet = enumStatus.getStatusMessage();
-					}else {
-						sStatusMessageToSet = "NICHT " + enumStatus.getStatusMessage();
-					}			
-				}else {
-					sStatusMessageToSet = sStatusMessage;
-				}	
-				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-				this.logProtocolString(sLog);
-
-				//Falls eine Message extra uebergeben worden ist, ueberschreibe...
-				if(sStatusMessage!=null) {
-					sStatusMessageToSet = sStatusMessage;
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
-					this.logProtocolString(sLog);		
-				}
-				//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
-				this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
-												
-				//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
-				//Dann erzeuge den Event und feuer ihn ab.			
-				if(this.getSenderStatusLocalUsed()==null) {
-					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";		
-					this.logProtocolString(sLog);
-					break main;
-				}
-				
-				//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
-				sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";
-				this.logProtocolString(sLog);
-				IEventObject4ProcessWatchRunnerStatusLocalSetOVPN event = new EventObject4ProcessWatchRunnerStatusLocalSetOVPN(this,1,enumStatus, bStatusValue);			
-				event.setApplicationObjectUsed(this.getServerBackendObject().getApplicationObject());
-				
-				//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
-				event.setServerConfigStarterObjectUsed(this.getServerConfigStarterObject());
-				
-				sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumber() + " fires event '" + enumStatus.getAbbreviation() + "'";
-				this.logProtocolString(sLog);				
-				this.getSenderStatusLocalUsed().fireEvent(event);
-						
-				bFunction = true;								
-			}// end main:
-		return bFunction;
-		}
 
 		
-		/* (non-Javadoc)
-		 * @see use.openvpn.server.status.ISenderObjectStatusLocalSetUserOVPN#getSenderStatusLocalUsed()
-		 */
-		@Override
-		public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
-			if(this.objEventStatusLocalBroker==null) {
-				//++++++++++++++++++++++++++++++
-				//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
-				ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
-				this.objEventStatusLocalBroker = objSenderStatusLocal;
-			}
-			return this.objEventStatusLocalBroker;
-		}
+				
+		
 
-		@Override
-		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
-			this.objEventStatusLocalBroker = objEventSender;
-		}
-
-		@Override
-		public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
-			this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
-		}
-
-		@Override
-		public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
-			this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
-		}
+		
 		
 		/** In dieser Methode werden die Ausgabezeilen eines Batch-Prozesses ( cmd.exe ) 
 		 *  aus dem Standard - Output gelesen.
@@ -938,100 +592,140 @@ Sun Nov 19 19:47:51 2023 us=75880 TCP/UDP: Closing socket
 		 * @throws ExceptionZZZ
 		 * @author Fritz Lindhauer, 03.09.2023, 07:35:31
 		 */
-		public void writeOutputToLogPLUSanalyse() throws ExceptionZZZ{	
-			main:{
-				try{
-					check:{
-						if(this.objProcess==null){
-							ExceptionZZZ ez = new ExceptionZZZ("Process-Object", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-							throw ez;
-						}
-					}//END check:
-				
-					BufferedReader in = new BufferedReader( new InputStreamReader(objProcess.getInputStream()) );
-					for ( String s; (s = in.readLine()) != null; ){
-					    //System.out.println( s );
-						this.getLogObject().WriteLine(this.getNumber() +"#"+ s);
-						this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASOUTPUT, true);
-						
-						boolean bAny = this.analyseInputLineCustom(s);
-										
-						Thread.sleep(20);
-					}								
-				} catch (IOException e) {
-					ExceptionZZZ ez = new ExceptionZZZ("IOException happend: '" + e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				} catch (InterruptedException e) {
-					ExceptionZZZ ez = new ExceptionZZZ("InterruptedException happend: '"+ e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}
-			}//END main:
-		}
+//		public void writeOutputToLogPLUSanalyse() throws ExceptionZZZ{	
+//			main:{
+//				try{
+//					check:{
+//						if(this.objProcess==null){
+//							ExceptionZZZ ez = new ExceptionZZZ("Process-Object", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+//							throw ez;
+//						}
+//					}//END check:
+//				
+//					BufferedReader in = new BufferedReader( new InputStreamReader(objProcess.getInputStream()) );
+//					for ( String s; (s = in.readLine()) != null; ){
+//					    //System.out.println( s );
+//						this.getLogObject().WriteLine(this.getNumber() +"#"+ s);
+//						this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASOUTPUT, true);
+//						
+//						boolean bAny = this.analyseInputLineCustom(s);
+//										
+//						Thread.sleep(20);
+//					}								
+//				} catch (IOException e) {
+//					ExceptionZZZ ez = new ExceptionZZZ("IOException happend: '" + e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//					throw ez;
+//				} catch (InterruptedException e) {
+//					ExceptionZZZ ez = new ExceptionZZZ("InterruptedException happend: '"+ e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//					throw ez;
+//				}
+//			}//END main:
+//		}
 		
-		@Override
-		public boolean writeErrorToLog() throws ExceptionZZZ{
-			boolean bReturn = false;
-			main:{			
-				try{
-					check:{
-						if(this.objProcess==null){
-							ExceptionZZZ ez = new ExceptionZZZ("Process-Object", iERROR_PROPERTY_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-							throw ez;
-						}
-					}//END check:
-				   		
-				    BufferedReader err = new BufferedReader(new InputStreamReader(objProcess.getErrorStream()) );
-				    for ( String s; (s = err.readLine()) != null; ){
-					      //System.out.println( s );
-				    	this.getLogObject().WriteLine(this.getNumber() + "# ERROR: "+ s);				    	
-				    	if( this.getFlag("stoprequested")==true) break main;
-					}
-				} catch (IOException e) {
-					ExceptionZZZ ez = new ExceptionZZZ("IOException happend: '" + e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}
-				bReturn = true;
-			}//END Main:	
-			return bReturn;
-		}
-		
-		@Override
-		public boolean writeErrorToLogWithStatus() throws ExceptionZZZ{
-			boolean bReturn = false;
-			main:{			
-				try{		   		
-					bReturn = this.writeErrorToLog();
-					if(!bReturn)break main;
+		//##############################
+		//### aus IWatchRunnerZZZ
+		/** In dieser Methode werden die Ausgabezeilen eines Batch-Prozesses ( cmd.exe ) 
+		 *  aus dem Standard - Output gelesen.
+		 *  - Sie werden in das Kernel-Log geschrieben.
+		 *  - Sie werden hinsichtlich bestimmter Schluesselsaetze analysiert,
+		 *    um z.B. den erfolgreichen Verbindungsaufbau mitzubekommen.
+		 *  
+		 *  Merke: 
+		 *  Merke1: Der aufgerufene OVPN-Prozess stellt irgendwann das schreiben ein
+						//Das ist dann z.B. der letzte Eintrag
+						//0#Sat Sep 02 07:39:48 2023 us=571873 NOTE: --mute triggered... 
+						//Der wert wird in der OVPN-Konfiguration eingestellt, z.B.:
+						//mute=20  
 					
-			    	this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR, true);
-			    	Thread.sleep(20);			
-			    	if( this.getFlag("stoprequested")==true) break main;
-			
-				} catch (InterruptedException e) {
-					ExceptionZZZ ez = new ExceptionZZZ("InterruptedException happend: '"+ e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}
-				bReturn = true;
-			}//END Main:	
+		 * Merke2: Wie über einen Erfolg benachrichtigen?
+				   Wenn die Verbindung erstellt wird, steht folgendes im Log.
+				   
+	TCP connection established with [AF_INET]192.168.3.116:4999
+	0#Sat Sep 02 12:53:10 2023 us=223095 TCPv4_CLIENT link local: [undef]
+	0#Sat Sep 02 12:53:10 2023 us=223095 TCPv4_CLIENT link remote: [AF_INET]192.168.3.116:4999
+	0#Sat Sep 02 12:53:10 2023 us=223095 TLS: Initial packet from [AF_INET]192.168.3.116:4999, sid=75fbf19d 73f20fdc
+	0#Sat Sep 02 12:53:10 2023 us=363726 VERIFY OK: depth=1, C=DE, ST=PREUSSEN, L=BERLIN, O=OpenVPN, OU=TEST, CN=PAUL.HINDENBURG, name=PAUL.HINDENBURG, emailAddress=paul.hindenburg@mailinator.com\09
+	0#Sat Sep 02 12:53:10 2023 us=363726 VERIFY OK: depth=0, C=DE, ST=PREUSSEN, L=BERLIN, O=OpenVPN, OU=TEST, CN=HANNIBALDEV06VM_SERVER, name=HANNIBALDEV06VM, emailAddress=paul.hindenburg@mailinator.com\09
+	0#Sat Sep 02 12:53:10 2023 us=551235 Data Channel Encrypt: Cipher 'BF-CBC' initialized with 128 bit key
+	0#Sat Sep 02 12:53:10 2023 us=551235 WARNING: INSECURE cipher with block size less than 128 bit (64 bit).  This allows attacks like SWEET32.  Mitigate by using a --cipher with a larger block size (e.g. AES-256-CBC).
+	0#Sat Sep 02 12:53:10 2023 us=551235 Data Channel Encrypt: Using 160 bit message hash 'SHA1' for HMAC authentication
+	0#Sat Sep 02 12:53:10 2023 us=551235 Data Channel Decrypt: Cipher 'BF-CBC' initialized with 128 bit key
+	0#Sat Sep 02 12:53:10 2023 us=551235 WARNING: INSECURE cipher with block size less than 128 bit (64 bit).  This allows attacks like SWEET32.  Mitigate by using a --cipher with a larger block size (e.g. AES-256-CBC).
+	0#Sat Sep 02 12:53:10 2023 us=551235 Data Channel Decrypt: Using 160 bit message hash 'SHA1' for HMAC authentication
+	0#Sat Sep 02 12:53:10 2023 us=551235 Control Channel: TLSv1.2, cipher TLSv1/SSLv3 DHE-RSA-AES256-GCM-SHA384, 1024 bit RSA
+	0#Sat Sep 02 12:53:10 2023 us=551235 [HANNIBALDEV06VM_SERVER] Peer Connection Initiated with [AF_INET]192.168.3.116:4999
+	0#Sat Sep 02 12:53:13 2023 us=20060 SENT CONTROL [HANNIBALDEV06VM_SERVER]: 'PUSH_REQUEST' (status=1)
+	0#Sat Sep 02 12:53:13 2023 us=176313 PUSH: Received control message: 'PUSH_REPLY,ping 10,ping-restart 240,ifconfig 10.0.0.2 10.0.0.1'
+	0#Sat Sep 02 12:53:13 2023 us=176313 OPTIONS IMPORT: timers and/or timeouts modified
+	0#Sat Sep 02 12:53:13 2023 us=176313 OPTIONS IMPORT: --ifconfig/up options modified
+	0#Sat Sep 02 12:53:13 2023 us=176313 do_ifconfig, tt->ipv6=0, tt->did_ifconfig_ipv6_setup=0
+	0#Sat Sep 02 12:53:13 2023 us=176313 ******** NOTE:  Please manually set the IP/netmask of 'OpenVPN2' to 10.0.0.2/255.255.255.252 (if it is not already set)
+	0#Sat Sep 02 12:53:13 2023 us=176313 open_tun, tt->ipv6=0
+	0#Sat Sep 02 12:53:13 2023 us=176313 TAP-WIN32 device [OpenVPN2] opened: \\.\Global\{9B00449E-0F90-4137-A063-CEA05D846AD8}.tap
+	0#Sat Sep 02 12:53:13 2023 us=176313 TAP-Windows Driver Version 9.9 
+	0#Sat Sep 02 12:53:13 2023 us=176313 TAP-Windows MTU=1500
+	0#Sat Sep 02 12:53:13 2023 us=176313 Sleeping for 3 seconds...
+	2023-9-2_12_53: Thread # 0 not jet ended or has reported an error.
+	0#Sat Sep 02 12:53:16 2023 us=176370 Successful ARP Flush on interface [4] {9B00449E-0F90-4137-A063-CEA05D846AD8}
+	0#Sat Sep 02 12:53:17 2023 us=410769 TEST ROUTES: 0/0 succeeded len=0 ret=0 a=0 u/d=down
+	0#Sat Sep 02 12:53:17 2023 us=410769 Route: Waiting for TUN/TAP interface to come up...
+	0#Sat Sep 02 12:53:18 2023 us=645168 TEST ROUTES: 0/0 succeeded len=0 ret=1 a=0 u/d=up
+	0#Sat Sep 02 12:53:18 2023 us=645168 WARNING: this configuration may cache passwords in memory -- use the auth-nocache option to prevent this
+	0#Sat Sep 02 12:53:18 2023 us=645168 Initialization Sequence Completed
+						 
+		 *  Obiges ist ein Beispiel für die Ausgabe eines Openvpn.exe Processes
+		 * @throws ExceptionZZZ
+		 * @author Fritz Lindhauer, 03.09.2023, 07:35:31
+		 */
+		/* (non-Javadoc)
+		 * @see basic.zBasic.util.moduleExternal.IWatchRunnerZZZ#writeOutputToLogPLUSanalyse(int, java.lang.String, java.lang.String)
+		 */
+		@Override
+		public boolean writeOutputToLogPLUSanalyse(int iLineCounter, String sLine, String sLineFilter) throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{									
+					if(StringZZZ.isEmpty(sLine)) break main;
+					
+					if(StringZZZ.isEmpty(sLineFilter)){
+						ExceptionZZZ ez = new ExceptionZZZ("LineFilter-String", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+						throw ez;
+					}
+					
+					String sLog;
+					
+					//+++ Die Zeile ausgeben und analysieren					
+	                sLog = ReflectCodeZZZ.getPositionCurrent() + "Gelesen aus InputStream - " + iLineCounter +"\t: '" + sLine + "'";
+	                this.logProtocolString(sLog);
+	               		
+					bReturn = this.analyseInputLineCustom(sLine, sLineFilter);												
+			}//END main:
 			return bReturn;
 		}
+		
+		
+		
+		
 		
 		//########################
-		//#######################################		
+		//#######################################						
 		@Override
-		public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnum) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
-				if(!(objEnum instanceof IProcessWatchRunnerOVPN.STATUSLOCAL) ){
-					String sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus wird wg. unpassender Klasse ignoriert.";
-					System.out.println(sLog);
-					//this.objMain.logMessageString(sLog);
-					break main;
-				}		
-				bReturn = true;
-
-			}//end main:
-			return bReturn;
+		public boolean isEventRelevant2ChangeStatusLocalByClass(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public boolean isEventRelevant2ChangeStatusLocalByStatusLocalValue(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+	
+		@Override
+		public boolean reactOnStatusLocalEvent4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
 		}	
 }//END class
