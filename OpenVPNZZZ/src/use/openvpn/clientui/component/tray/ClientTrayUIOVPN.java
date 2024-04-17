@@ -1129,7 +1129,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf: '" + objEnumForTray.getAbbreviation() + "'";
 						System.out.println(sLog);
 						this.getMainObject().logProtocolString(sLog);							
-						this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), "", true);											
+						this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), true, "");											
 					}	
 				}else {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";

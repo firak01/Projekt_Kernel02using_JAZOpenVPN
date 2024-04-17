@@ -429,7 +429,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 					System.out.println("... PING: Fehler...");	
 					String sMessage = ez.getDetailAllLast();
 					this.setStatusLocalError(sMessage);
-					this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASERROR, sMessage, true);
+					this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASERROR, true, sMessage);
 					
 					
 					Thread.sleep(5000);							
@@ -763,7 +763,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			}
 			IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (IClientThreadVpnIpPingerOVPN.STATUSLOCAL) enumStatusIn;
 			
-			bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
+			bFunction = this.offerStatusLocal(enumStatus, bStatusValue, null);
 		}//end main:
 		return bFunction;
 	}						
@@ -791,7 +791,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			}
 			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
-			bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+			bReturn = this.offerStatusLocal(enumStatus, bStatusValue, null);
 		}//end main:
 		return bReturn;
 	}	
@@ -814,7 +814,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	//################################################
 	//+++ aus IStatusLocalUserMessageZZZ			
 	@Override 
-	public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -822,7 +822,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			}
 			IClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
-			bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			bFunction = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 		}//end main:
 		return bFunction;
 	}
@@ -842,7 +842,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}
 	
 	@Override 
-	public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -850,7 +850,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			}
 			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
-			bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+			bReturn = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 		}//end main:
 		return bReturn;
 	}				
@@ -872,7 +872,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	
 	//+++++++++++++++++++++++++++++++++++
 	@Override 
-	public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean offerStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(enumStatusIn==null) break main;

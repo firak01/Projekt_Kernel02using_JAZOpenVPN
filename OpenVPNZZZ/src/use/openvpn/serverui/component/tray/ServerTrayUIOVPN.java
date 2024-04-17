@@ -893,7 +893,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 						//Erst einmal den gefundenen Status neu hinzufügen. Damit er auch bei einem weiteren "rueckwaerts Suchen" in der Liste auftaucht.
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf: '" + objEnumForTray.getAbbreviation() + "'";
 						this.logProtocolString(sLog);							
-						this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), "", true);											
+						this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), true, "");											
 					}	
 				}else {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";

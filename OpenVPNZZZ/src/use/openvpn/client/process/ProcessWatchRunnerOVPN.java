@@ -413,7 +413,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				}
 				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
 								
-				bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
+				bFunction = this.offerStatusLocal(enumStatus, bStatusValue, null);
 			}//end main:
 			return bFunction;
 		}
@@ -444,7 +444,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				}
 				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
 				
-				bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+				bReturn = this.offerStatusLocal(enumStatus, bStatusValue, null);
 			}//end main:
 			return bReturn;
 		}
@@ -466,7 +466,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		//################################################
 		//+++ aus IStatusLocalUserMessageZZZ			
 		@Override 
-		public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bFunction = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -474,7 +474,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				}
 				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
 				
-				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+				bFunction = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 			}//end main:
 			return bFunction;
 		}
@@ -494,7 +494,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		}
 		
 		@Override 
-		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -502,7 +502,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				}
 				IProcessWatchRunnerOVPN.STATUSLOCAL enumStatus = (IProcessWatchRunnerOVPN.STATUSLOCAL) enumStatusIn;
 				
-				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+				bReturn = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 			}//end main:
 			return bReturn;
 		}				
@@ -523,7 +523,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		
 		//++++++++++++++++++++++++++++++++++++++++++++++++
 		@Override
-		public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean offerStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			boolean bFunction = false;
 			main:{
 				if(enumStatusIn==null) {

@@ -611,7 +611,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				}
 				IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL) enumStatusIn;
 								
-				bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
+				bFunction = this.offerStatusLocal(enumStatus, bStatusValue, null);
 			}//end main:
 			return bFunction;
 		}
@@ -640,7 +640,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				}
 				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 				
-				bReturn = this.offerStatusLocal(enumStatus, null, bStatusValue);
+				bReturn = this.offerStatusLocal(enumStatus, bStatusValue, null);
 			}//end main:
 			return bReturn;
 		}
@@ -662,7 +662,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		//################################################
 		//+++ aus IStatusLocalUserMessageZZZ			
 		@Override 
-		public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bFunction = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -670,7 +670,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				}
 				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 				
-				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+				bFunction = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 			}//end main:
 			return bFunction;
 		}
@@ -690,7 +690,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}
 		
 		@Override 
-		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -698,7 +698,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				}
 				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 				
-				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+				bReturn = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 			}//end main:
 			return bReturn;
 		}				
@@ -723,7 +723,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		 * @see basic.zBasic.AbstractObjectWithStatusZZZ#setStatusLocal(java.lang.Enum, java.lang.String, boolean)
 		 */
 		@Override
-		public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean offerStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			boolean bFunction = false;
 			main:{
 				if(enumStatusIn==null) {

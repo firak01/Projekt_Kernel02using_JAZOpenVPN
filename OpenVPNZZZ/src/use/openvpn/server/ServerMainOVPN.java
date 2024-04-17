@@ -544,7 +544,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 			}
 			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
-			bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
+			bFunction = this.offerStatusLocal(enumStatus, bStatusValue, null);
 		}//end main:
 		return bFunction;
 	}
@@ -572,7 +572,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 			}
 			ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
-			bFunction = this.offerStatusLocal(enumStatus, null, bStatusValue);
+			bFunction = this.offerStatusLocal(enumStatus, bStatusValue, null);
 		}//end main:
 		return bFunction;
 	}
@@ -594,7 +594,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	//################################################
 		//+++ aus IStatusLocalUserMessageZZZ			
 		@Override 
-		public boolean setStatusLocal(Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bFunction = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -602,7 +602,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 				}
 				ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 				
-				bFunction = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+				bFunction = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 			}//end main:
 			return bFunction;
 		}
@@ -622,7 +622,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		}
 		
 		@Override 
-		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -630,7 +630,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 				}
 				ServerMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 				
-				bReturn = this.offerStatusLocal(enumStatus, sMessage, bStatusValue);
+				bReturn = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 			}//end main:
 			return bReturn;
 		}				
@@ -651,7 +651,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	@Override 
-	public boolean offerStatusLocal(Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean offerStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(enumStatusIn==null) {
