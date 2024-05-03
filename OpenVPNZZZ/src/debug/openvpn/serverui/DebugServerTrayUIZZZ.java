@@ -44,15 +44,22 @@ public class DebugServerTrayUIZZZ {
 //				objThreadMonitor.start();
 			
 			} catch (ExceptionZZZ ez) {
-				if(objKernel!=null){
-					LogZZZ objLog = objKernel.getLogObject();
-					if(objLog!=null){
-						objLog.WriteLineDate(ez.getDetailAllLast());
-					}else{
-						ez.printStackTrace();
-					}				
-				}else{
+				if(objKernel==null){
 					ez.printStackTrace();
+					System.out.println(ez.getDetailAllLast());
+				}else {
+					LogZZZ objLog = objKernel.getLogObject();
+					if(objLog==null){
+						ez.printStackTrace();
+						System.out.println(ez.getDetailAllLast());
+					}else {
+						try {
+							objLog.WriteLineDate(ez.getDetailAllLast());
+						} catch (ExceptionZZZ e) {						
+							e.printStackTrace();
+							System.out.println(e.getDetailAllLast());
+						}							
+					}
 				}
 			}//END Catch
 			}//END main:
