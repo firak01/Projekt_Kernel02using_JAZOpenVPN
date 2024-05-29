@@ -778,7 +778,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	public boolean[] setStatusLocal(Enum[] objaEnumStatus, boolean bStatusValue) throws ExceptionZZZ {
 		boolean[] baReturn=null;
 		main:{
-			if(!ArrayUtilZZZ.isEmpty(objaEnumStatus)) {
+			if(!ArrayUtilZZZ.isNull(objaEnumStatus)) {
 				baReturn = new boolean[objaEnumStatus.length];
 				int iCounter=-1;
 				for(Enum objEnumStatus:objaEnumStatus) {

@@ -277,7 +277,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		public boolean[] setStatusLocal(Enum[] objaEnumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 			boolean[] baReturn=null;
 			main:{
-				if(!ArrayUtilZZZ.isEmpty(objaEnumStatusIn)) {
+				if(!ArrayUtilZZZ.isNull(objaEnumStatusIn)) {
 					baReturn = new boolean[objaEnumStatusIn.length];
 					int iCounter=-1;
 					for(Enum objEnumStatus:objaEnumStatusIn) {
@@ -447,7 +447,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		public boolean[] setFlag(IProgramRunnableZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
 			boolean[] baReturn=null;
 			main:{
-				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+				if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
 					baReturn = new boolean[objaEnumFlag.length];
 					int iCounter=-1;
 					for(IProgramRunnableZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
@@ -484,7 +484,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		public boolean[] setFlag(IProgramZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
 			boolean[] baReturn=null;
 			main:{
-				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+				if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
 					baReturn = new boolean[objaEnumFlag.length];
 					int iCounter=-1;
 					for(IProgramZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
@@ -520,7 +520,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		public boolean[] setFlag(IModuleUserZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
 			boolean[] baReturn=null;
 			main:{
-				if(!ArrayUtilZZZ.isEmpty(objaEnumFlag)) {
+				if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
 					baReturn = new boolean[objaEnumFlag.length];
 					int iCounter=-1;
 					for(IModuleUserZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
