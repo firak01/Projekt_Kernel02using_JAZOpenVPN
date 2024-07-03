@@ -7,7 +7,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapCaseInsensitiveZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zKernel.AbstractKernelConfigZZZ;
-import basic.zKernel.config.KernelConfigEntryUtilZZZ;
+import basic.zKernel.config.KernelConfigSectionEntryUtilZZZ;
 import basic.zKernel.net.client.ConfigHtmlTableHandlerZZZ;
 import custom.zKernel.file.ini.FileIniZZZ;
 
