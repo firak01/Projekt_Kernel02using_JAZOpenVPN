@@ -39,7 +39,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernel.file.ini.KernelZFormulaIni_EmptyZZZ;
-import basic.zKernel.file.ini.KernelZFormulaIni_NullZZZ;
+import basic.zKernel.file.ini.ZTagFormulaIni_NullZZZ;
 
 public class ConfigChooserOVPN extends AbstractKernelUseObjectZZZ implements IApplicationUserOVPN{
 	private IApplicationOVPN objApplication = null;
@@ -65,7 +65,7 @@ public class ConfigChooserOVPN extends AbstractKernelUseObjectZZZ implements IAp
 				bUseSearch = true;
 			}else if(sFile.equals("")){
 				bUseSearch = true;
-			}else if(sFile.equalsIgnoreCase(KernelZFormulaIni_NullZZZ.getExpressionTagEmpty())) {
+			}else if(sFile.equalsIgnoreCase(ZTagFormulaIni_NullZZZ.getExpressionTagEmpty())) {
 				bUseSearch = true;
 			}else if(sFile.equalsIgnoreCase(KernelZFormulaIni_EmptyZZZ.getExpressionTagEmpty())) {
 				bUseSearch = true;
