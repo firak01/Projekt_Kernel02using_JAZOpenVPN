@@ -13,7 +13,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import basic.zBasic.util.abstractList.ArrayListZZZ;
+import basic.zBasic.util.abstractList.ArrayListUtilZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -314,7 +314,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 					listasFlagStarter.add(IConfigStarterOVPN.FLAGZ.BY_BATCH.name()); //Problem: Wenn man eine Batch startet, kann man nicht auf den Output eines in der Batch gestarteten Programs zugreifen.
 				}
 								
-				String[] saTemp = ArrayListZZZ.toStringArray(listasFlagStarter);
+				String[] saTemp = ArrayListUtilZZZ.toStringArray(listasFlagStarter);
 				ServerConfigStarterOVPN objStarter = new ServerConfigStarterOVPN(objKernel, (IMainOVPN) this, icount, objFileTemplateBatch, objFileConfigOvpn, sAlias, saTemp);
 				this.addProcessStarter(objStarter);
 			}//end for
@@ -389,7 +389,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	}
 	
 	public void logMessageString(ArrayList<String>lista) throws ExceptionZZZ {
-		String[]sa = ArrayListZZZ.toStringArray(lista);
+		String[]sa = ArrayListUtilZZZ.toStringArray(lista);
 		this.logMessageString(sa);
 	}
 	

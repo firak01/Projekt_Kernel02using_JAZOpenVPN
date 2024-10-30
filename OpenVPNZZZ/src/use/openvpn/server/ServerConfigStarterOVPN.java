@@ -23,7 +23,7 @@ import use.openvpn.IMainOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.util.abstractList.ArrayListZZZ;
+import basic.zBasic.util.abstractList.ArrayListUtilZZZ;
 import basic.zBasic.util.abstractList.SetUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
@@ -221,7 +221,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 						listaArgument.add(sValue);
 					}
 					
-					String[] saArgument = ArrayListZZZ.toStringArray(listaArgument);
+					String[] saArgument = ArrayListUtilZZZ.toStringArray(listaArgument);
 					
 						
 					//Merke: Das Konfigurationsverzeichnis muss hier auch wieder anders angegeben werden, ohne die angabe sucht er in einen auto-config Verzeichnis, oder so...					

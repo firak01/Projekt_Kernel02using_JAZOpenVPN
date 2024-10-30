@@ -24,7 +24,7 @@ import use.openvpn.client.FileFilterConfigOvpnTemplateOVPN;
 import use.openvpn.client.FileFilterConfigOvpnUsedOVPN;
 import use.openvpn.server.FileFilterServerClientConfigReadmeTemplateOVPN;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.util.abstractList.ArrayListZZZ;
+import basic.zBasic.util.abstractList.ArrayListUtilZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;

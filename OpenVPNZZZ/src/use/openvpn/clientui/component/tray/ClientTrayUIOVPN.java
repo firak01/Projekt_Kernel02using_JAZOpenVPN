@@ -21,7 +21,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
-import basic.zBasic.util.abstractList.ArrayListZZZ;
+import basic.zBasic.util.abstractList.ArrayListUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
@@ -1116,7 +1116,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				
 				//Nun kann man aus der ermittelten Liste den ersten Eintrag nehmen
 				ArrayList<IStatusBooleanZZZ>listaObjStatusLocalPrevious = this.getMainObject().searchStatusLocalGroupById(iGroupIdPreviousDifferentFromCurrent, true);
-				IStatusBooleanZZZ objStatusLocalPrevious = (IStatusBooleanZZZ) ArrayListZZZ.getFirst(listaObjStatusLocalPrevious);					
+				IStatusBooleanZZZ objStatusLocalPrevious = (IStatusBooleanZZZ) ArrayListUtilZZZ.getFirst(listaObjStatusLocalPrevious);					
 				if(objStatusLocalPrevious!=null) {
 					objEnumForTray = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusLocalPrevious.getEnumObject());			
 					if(objEnumForTray==null) {
