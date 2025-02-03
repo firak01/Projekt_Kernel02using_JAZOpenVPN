@@ -52,6 +52,19 @@ public class ProgramIpLocal2iniOVPN extends AbstractProgram2iniOVPN implements I
 			this.setPanelParent(panel);			
 		}//END main
 	}
+	
+	//### Aus IResettableValuesZZZ	
+	@Override
+	public boolean reset() throws ExceptionZZZ{
+		return super.reset();
+	}
+	
+	public boolean resetValues() throws ExceptionZZZ{
+		super.resetValues();
+		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.
+		return true;
+	}
+	
 		
 	
 	//### Getter / Setter
@@ -186,10 +199,6 @@ public class ProgramIpLocal2iniOVPN extends AbstractProgram2iniOVPN implements I
 		return bFunction;
 	}
 	
-	public void reset() {
-		super.reset();
-		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.			
-	}
 	
 	@Override
 	public void updateLabel(String stext) throws ExceptionZZZ {

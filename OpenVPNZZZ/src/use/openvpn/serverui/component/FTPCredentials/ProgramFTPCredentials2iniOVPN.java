@@ -63,6 +63,20 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 	}
 		
 	
+	//### Aus IResettableValues
+	@Override
+	public boolean reset() throws ExceptionZZZ{
+		return super.reset();
+	}
+	
+	@Override
+	public boolean resetValues() throws ExceptionZZZ{
+		super.resetValues();
+		this.sPasswordFromUi = ""; //Damit der Wert neu geholt wird.			
+		this.sUsernameFromUi = ""; //Damit der Wert neu geholt wird.
+		return true;
+	}
+	
 	//### Getter / Setter
 	public String getUsernameFromUi() throws ExceptionZZZ{
 		if(StringZZZ.isEmpty(this.sUsernameFromUi)){
@@ -254,11 +268,7 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 		return bFunction;
 	}
 	
-	public void reset() {
-		super.reset();
-		this.sPasswordFromUi = ""; //Damit der Wert neu geholt wird.			
-		this.sUsernameFromUi = ""; //Damit der Wert neu geholt wird.
-	}
+	
 	
 	@Override
 	public void updateLabel(String stext) throws ExceptionZZZ {

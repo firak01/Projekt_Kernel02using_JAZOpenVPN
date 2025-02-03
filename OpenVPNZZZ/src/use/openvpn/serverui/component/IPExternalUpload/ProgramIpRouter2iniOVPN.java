@@ -54,6 +54,20 @@ public class ProgramIpRouter2iniOVPN  extends AbstractProgram2iniOVPN implements
 		}//END main
 	}
 		
+	//Aus IResettableValuesZZZ
+	@Override
+	public boolean reset() throws ExceptionZZZ{
+		return super.reset();
+	}
+	
+	@Override 
+	public boolean resetValues() throws ExceptionZZZ{
+		super.resetValues();
+		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.
+		return true;
+	}
+
+
 	
 	//### Getter / Setter	
 	public String getIpFromUi() throws ExceptionZZZ{
@@ -187,12 +201,7 @@ public class ProgramIpRouter2iniOVPN  extends AbstractProgram2iniOVPN implements
 		return bFunction;
 	}
 	
-	public void reset() {
-		super.reset();
-		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.	
-	}
-
-
+	
 	@Override
 	public void updateLabel(String stext) throws ExceptionZZZ {
 		

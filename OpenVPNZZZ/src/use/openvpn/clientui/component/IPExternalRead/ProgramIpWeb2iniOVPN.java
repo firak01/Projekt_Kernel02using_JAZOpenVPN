@@ -47,6 +47,17 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 			this.setPanelParent(panel);			
 		}//END main
 	}
+	
+	//### Aus IResettableValues
+	public boolean reset() throws ExceptionZZZ {
+		return super.reset();				
+	}
+	
+	public boolean resetValues() throws ExceptionZZZ{
+		super.resetValues();
+		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.
+		return true;
+	}
 		
 	
 	//### Getter / Setter
@@ -186,9 +197,6 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 		super.updateComponent(IConstantProgramIpWebOVPN.sCOMPONENT_TEXTFIELD, stext);//Merke: ggfs. gibt es das Feld sogar gar nicht
 	}
 
-	public void reset() {
-		super.reset();
-		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.			
-	}
+	
 }
 
