@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.IObjectWithStatusZZZ;
+import basic.zBasic.IObjectWithStatusEnabledZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
@@ -72,7 +72,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 
 		//Mit diesen Flags auf Pruefung der Statusaenderung, wird u.a. das Neustarten des Watcher-Processes indirekt verhindert.
 		//           siehe: ClientThreadProcessWatchMonitorOVPN.run - Line: 93: Starting monitor thread canceled.
-		String[] saFlagMonitorProcess = {IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
+		String[] saFlagMonitorProcess = {IObjectWithStatusEnabledZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusEnabledZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
 		this.objMonitorProcess = new ServerThreadProcessWatchMonitorOVPN(this.getKernelObject(), this, saFlagMonitorProcess);				
 		this.registerForStatusLocalEvent(this.objMonitorProcess);//Den Thread am Main-Backend-Objekt registrieren			
 		this.objMonitorProcess.registerForStatusLocalEvent(this); //Das Main-Backend-Objekt am MonitorProcess registrieren

@@ -24,7 +24,7 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
 import basic.zKernel.KernelZZZ;
-import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.flag.IFlagZEnabledZZZ;
 
 public class ConfigFileTemplateReadmeOVPN extends AbstractKernelUseObjectZZZ{
 	public static String sFILE_TEMPLATE_PREFIX="readme_";
@@ -51,7 +51,7 @@ public class ConfigFileTemplateReadmeOVPN extends AbstractKernelUseObjectZZZ{
 						stemp = saFlagControl[iCount];
 						btemp = setFlag(stemp, true);
 						if(btemp==false){ 								   
-							   ExceptionZZZ ez = new ExceptionZZZ(stemp, IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							  
+							   ExceptionZZZ ez = new ExceptionZZZ(stemp, IFlagZEnabledZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 							  
 							   throw ez;		 
 						}
 					}

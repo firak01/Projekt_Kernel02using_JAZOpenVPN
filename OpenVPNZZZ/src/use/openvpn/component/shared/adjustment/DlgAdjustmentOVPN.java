@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.flag.IFlagZUserZZZ.FLAGZ;
+import basic.zKernel.flag.IFlagZEnabledZZZ.FLAGZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;

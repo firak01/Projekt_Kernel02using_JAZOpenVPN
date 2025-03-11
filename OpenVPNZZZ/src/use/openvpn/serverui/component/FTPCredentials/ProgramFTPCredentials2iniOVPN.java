@@ -19,7 +19,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.crypt.code.CryptAlgorithmFactoryZZZ;
 import basic.zBasic.util.crypt.code.CryptAlgorithmMappedValueZZZ;
-import basic.zBasic.util.crypt.code.ICharacterPoolUserConstantZZZ;
+import basic.zBasic.util.crypt.code.ICharacterPoolEnabledConstantZZZ;
 import basic.zBasic.util.crypt.code.ICryptZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
@@ -148,12 +148,12 @@ public class ProgramFTPCredentials2iniOVPN extends AbstractProgram2iniOVPN imple
 			ICryptZZZ objCrypt = objCryptFactory.createAlgorithmType(CryptAlgorithmMappedValueZZZ.CipherTypeZZZ.VIGENEREnn);
 			objCrypt.setCryptKey("Hundi");
 			
-			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USESTRATEGY_CHARACTERPOOL.name(), true);
+			objCrypt.setFlag(ICharacterPoolEnabledConstantZZZ.FLAGZ.USESTRATEGY_CHARACTERPOOL.name(), true);
 			objCrypt.setCharacterPoolBase(" abcdefghijklmnopqrstuvwxyz");
-			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USEUPPERCASE.name(), true);
-			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USELOWERCASE.name(), true);
-			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USENUMERIC.name(), true);
-			objCrypt.setFlag(ICharacterPoolUserConstantZZZ.FLAGZ.USEADDITIONALCHARACTER.name(), true);
+			objCrypt.setFlag(ICharacterPoolEnabledConstantZZZ.FLAGZ.USEUPPERCASE.name(), true);
+			objCrypt.setFlag(ICharacterPoolEnabledConstantZZZ.FLAGZ.USELOWERCASE.name(), true);
+			objCrypt.setFlag(ICharacterPoolEnabledConstantZZZ.FLAGZ.USENUMERIC.name(), true);
+			objCrypt.setFlag(ICharacterPoolEnabledConstantZZZ.FLAGZ.USEADDITIONALCHARACTER.name(), true);
 			objCrypt.setCharacterPoolAdditional("!");
 			
 			String sPasswordEncrypted = objCrypt.encrypt(sPasswordDecrypted);

@@ -28,6 +28,7 @@ import basic.zBasic.util.abstractList.ArrayListUtilZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceArrayZZZ;
 import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.datatype.xml.XmlUtilZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.JarEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
@@ -65,9 +66,9 @@ public class ConfigChooserOVPN extends AbstractKernelUseObjectZZZ implements IAp
 				bUseSearch = true;
 			}else if(sFile.equals("")){
 				bUseSearch = true;
-			}else if(sFile.equalsIgnoreCase(ZTagFormulaIni_NullZZZ.getExpressionTagEmpty())) {
+			}else if(sFile.equalsIgnoreCase(XmlUtilZZZ.computeTagEmpty(ZTagFormulaIni_NullZZZ.sTAG_NAME))) {
 				bUseSearch = true;
-			}else if(sFile.equalsIgnoreCase(KernelZFormulaIni_EmptyZZZ.getExpressionTagEmpty())) {
+			}else if(sFile.equalsIgnoreCase(XmlUtilZZZ.computeTagEmpty(KernelZFormulaIni_EmptyZZZ.sTAG_NAME))) {
 				bUseSearch = true;
 			}
 			
