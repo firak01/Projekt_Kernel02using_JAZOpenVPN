@@ -73,6 +73,5 @@ public class DlgAdjustmentOVPN extends KernelJDialogExtendedZZZ {
 		PanelDlgAdjustmentNavigatorOVPN panelNavigator = new PanelDlgAdjustmentNavigatorOVPN(this.getKernelObject(), this);
 		return panelNavigator;
 	}
-	
 }
 
