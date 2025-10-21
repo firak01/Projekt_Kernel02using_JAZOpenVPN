@@ -31,6 +31,7 @@ import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
 
@@ -45,14 +46,26 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	private ClientMainOVPN objMain = null;
 	private ClientConfigStarterOVPN objClientConfigStarter = null; //Das Konfigurationsobjekt, dem der Start zugrundeliegt.
 
+	//Fuer diese spezielle Klasse
+	private IKernelZZZ objKernel = null;
+	private int iNumberOfProcess=0;
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber) throws ExceptionZZZ{
-		super(objKernel, objProcess, iNumber);
+		super(objProcess);
+		ProcessWatchRunnerNew_(objKernel, iNumber);
 	}
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber, String sFlag) throws ExceptionZZZ{
-		super(objKernel, objProcess, iNumber, sFlag);
+		super(objProcess, sFlag);
+		ProcessWatchRunnerNew_(objKernel, iNumber);
 	}
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber, String[] saFlag) throws ExceptionZZZ{
-		super(objKernel, objProcess, iNumber, saFlag);
+		super(objProcess, saFlag);
+		ProcessWatchRunnerNew_(objKernel, iNumber);
+	}
+	
+	private boolean ProcessWatchRunnerNew_(IKernelZZZ objKernel, int iNumber) throws ExceptionZZZ{
+		this.objKernel = objKernel;
+		this.iNumberOfProcess = iNumber;
+		return true;
 	}
 	
 	//### Speziel für OVPN
@@ -371,7 +384,14 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 	}
 	
 	//###### GETTER / SETTER
-	//sind eher in der Abstrakten Klasse
+	@Override
+	public int getNumberOfProcess() throws ExceptionZZZ {
+		return this.iNumberOfProcess;
+	}
+	@Override
+	public void setNumberOfProcess(int iNumberOfProcess) throws ExceptionZZZ {
+		this.iNumberOfProcess = iNumberOfProcess;
+	}
 	
 	//++++++ StatusLocal
 		@Override
@@ -783,5 +803,56 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 
 			}//end main:
 			return bReturn;
+		}
+		@Override
+		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public boolean queryReactOnStatusLocalEventCustom(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public boolean isEventRelevant2ChangeStatusLocalByClass(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public boolean isEventRelevant2ChangeStatusLocalByStatusLocalValue(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public ISenderObjectStatusBasicZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public HashMap<IEnumSetMappedStatusZZZ, String> createHashMapStatusLocal4ReactionCustom() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
 		}
 }//END class

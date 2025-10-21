@@ -28,17 +28,24 @@ public class DebugClientMainZZZ {
 			} catch (ExceptionZZZ ez) {
 				if(objKernel!=null){
 					LogZZZ objLog = objKernel.getLogObject();
-					if(objLog!=null){
-						objLog.WriteLineDate(ez.getDetailAllLast());
-					}else{
+					if(objLog!=null){								
+						try {
+							objLog.WriteLineDate(ez.getDetailAllLast());
+						} catch (ExceptionZZZ e) {					
+							e.printStackTrace();
+							System.out.println(ez.getDetailAllLast());
+						}
+					}else {
 						ez.printStackTrace();
-					}				
+						System.out.println(ez.getDetailAllLast());
+					}
 				}else{
 					ez.printStackTrace();
+					System.out.println(ez.getDetailAllLast());
 				}
 			}//END Catch
-			}//END main:
-			System.out.println("finished everything");
+		}//END main:
+		System.out.println("finished everything");
 	}
 
 }

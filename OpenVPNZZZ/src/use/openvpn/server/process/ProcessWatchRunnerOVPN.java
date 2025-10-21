@@ -13,6 +13,7 @@ import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.moduleExternal.IWatchListenerZZZ;
 import basic.zBasic.util.moduleExternal.process.watch.AbstractProcessWatchRunnerZZZ;
 import basic.zBasic.util.moduleExternal.process.watch.IProcessWatchRunnerZZZ;
 import basic.zBasic.util.moduleExternal.process.watch.ProcessWatchRunnerZZZ;
@@ -44,20 +45,33 @@ import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
  * @author 0823
  *
  */
-public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implements IProcessWatchRunnerOVPN, IEventBrokerStatusLocalSetUserOVPN{	
+public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implements IProcessWatchRunnerOVPN {// das wird nun per ZZZ-Klasse erledigt über die abstrakte Klasse., IEventBrokerStatusLocalSetUserOVPN{	
 	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	private ServerMainOVPN objMain = null;
 	private ServerConfigStarterOVPN objServerConfigStarter = null; //Das Konfigurationsobjekt, dem der Start zugrundeliegt.
 
+	//Fuer diese spezielle Klasse
+	private IKernelZZZ objKernel = null;
+	private int iNumberOfProcess=0;
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber) throws ExceptionZZZ{
 		super(objProcess);
+		ProcessWatchRunnerNew_(objKernel, iNumber);
 	}
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber, String sFlag) throws ExceptionZZZ{
 		super(objProcess, sFlag);
+		ProcessWatchRunnerNew_(objKernel, iNumber);
 	}
 	public ProcessWatchRunnerOVPN(IKernelZZZ objKernel, Process objProcess, int iNumber, String[] saFlag) throws ExceptionZZZ{
 		super(objProcess, saFlag);
+		ProcessWatchRunnerNew_(objKernel, iNumber);
 	}
+	
+	private boolean ProcessWatchRunnerNew_(IKernelZZZ objKernel, int iNumber) throws ExceptionZZZ{
+		this.objKernel = objKernel;
+		this.iNumberOfProcess = iNumber;
+		return true;
+	}
+	
 	
 	//### Speziel für OVPN
 	@Override
@@ -76,6 +90,16 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	}
 	public ServerMainOVPN getServerBackendObject(){
 		return this.objMain;
+	}
+	
+	//###### GETTER / SETTER
+	@Override
+	public int getNumberOfProcess() throws ExceptionZZZ {
+		return this.iNumberOfProcess;
+	}
+	@Override
+	public void setNumberOfProcess(int iNumberOfProcess) throws ExceptionZZZ {
+		this.iNumberOfProcess = iNumberOfProcess;
 	}
 		
 	//###### FLAGS
@@ -317,6 +341,7 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 		boolean bReturn = false;
 		main:{
 			
+			int iProcess = this.getNumberOfProcess();
 			String sLog = ReflectCodeZZZ.getPositionCurrent() +  " Process#" + iProcess + ": sLine=" + sLine;		
 			System.out.println(sLog);
 			this.logLineDate(sLog);
@@ -326,7 +351,8 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				this.switchStatusLocalAllGroupTo(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht wird, dies hier tun
-				boolean bEndOnConnection = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION);
+				//boolean bEndOnConnection = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION);
+				boolean bEndOnConnection = this.getFlag(IWatchListenerZZZ.FLAGZ.END_ON_FILTER_FOUND);				
 				if(bEndOnConnection) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
 					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP, true);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
@@ -352,7 +378,8 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				this.switchStatusLocalAllGroupTo(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST);
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht wird, dies hier tun
-				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
+				//boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
+				boolean bEndOnConnectionLost = this.getFlag(IWatchListenerZZZ.FLAGZ.END_ON_FILTER_FOUND);
 				if(bEndOnConnectionLost) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
 					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP, true);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
@@ -372,11 +399,11 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht worden waere, dies hier wieder rueckgaengig machen
 				//Idee dahinter: Der Verbindungsverlust war so kurzfristig, der STOPREQUEST hat noch garnicht gezogen.
-				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
+				//boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
+				boolean bEndOnConnectionLost = this.getFlag(IWatchListenerZZZ.FLAGZ.END_ON_FILTER_FOUND);
 				if(bEndOnConnectionLost) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
-					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP, false);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
-					
+					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP, false);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status					
 				}
 				
 				bReturn = true;
@@ -721,9 +748,34 @@ Sun Nov 19 19:47:51 2023 us=75880 TCP/UDP: Closing socket
 			return false;
 		}
 		
-	
+		
 		@Override
-		public boolean reactOnStatusLocalEvent4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+		public boolean queryReactOnStatusLocalEventCustom(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+	
+		
+		
+		@Override
+		public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public HashMap<IEnumSetMappedStatusZZZ, String> createHashMapStatusLocal4ReactionCustom() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
 				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;

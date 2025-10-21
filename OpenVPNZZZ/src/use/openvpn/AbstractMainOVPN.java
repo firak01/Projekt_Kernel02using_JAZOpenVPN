@@ -13,13 +13,13 @@ import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusListeningMonitoredZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusOnStatusListeningZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 
-public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusListeningMonitoredZZZ implements IMainOVPN {
+public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusOnStatusListeningZZZ implements IMainOVPN {
 	protected volatile IModuleZZZ objModule=null; //Das Modul, in der KernelUI - Variante wäre das die Dialogbox aus der das Program gestartet wird.	
 	protected volatile String sProgramName = null;
 	protected volatile String sModuleName = null;

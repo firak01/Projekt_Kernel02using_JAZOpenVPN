@@ -13,6 +13,9 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	public ServerConfigStarterOVPN getServerConfigStarterObject();
 	public void setServerConfigStarterObject(ServerConfigStarterOVPN objStarter);
 	
+	public int getNumberOfProcess() throws ExceptionZZZ;
+	public void setNumberOfProcess(int iNumberOfProcess) throws ExceptionZZZ;
+	
 	//##############################
 	public enum FLAGZ{
 		DUMMY

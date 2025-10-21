@@ -14,7 +14,7 @@ import basic.zBasic.util.moduleExternal.monitor.AbstractProcessWatchMonitorZZZ;
 import basic.zBasic.util.moduleExternal.process.watch.IProcessWatchRunnerZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.flag.IFlagZUserZZZ;
+import basic.zKernel.flag.IFlagZEnabledZZZ;
 import basic.zKernel.flag.event.EventObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
 import use.openvpn.IApplicationOVPN;
@@ -43,16 +43,17 @@ import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
  *
  */
 //public class ServerThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
-public class ServerThreadProcessWatchMonitorOVPN extends AbstractProcessWatchMonitorZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+public class ServerThreadProcessWatchMonitorOVPN extends AbstractProcessWatchMonitorZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN {//Das wird nun über die Abstrakte Klasse gemacht., IEventBrokerStatusLocalSetUserOVPN{
+	private IKernelZZZ objKernel = null;
 	private IServerMainOVPN objServerMain = null;
 	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
 	public ServerThreadProcessWatchMonitorOVPN(IKernelZZZ objKernel, IServerMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
-		super(objKernel);
-		ServerMonitorRunnerNew_(objConfig, saFlagControl);
+		super();
+		ServerMonitorRunnerNew_(objKernel, objConfig, saFlagControl);
 	}
 
-private void ServerMonitorRunnerNew_(IServerMainOVPN objServerMain, String[] saFlagControl) throws ExceptionZZZ{
+private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objServerMain, String[] saFlagControl) throws ExceptionZZZ{
 	main:{	
 		if(saFlagControl != null){
 			String stemp; boolean btemp;
@@ -60,13 +61,13 @@ private void ServerMonitorRunnerNew_(IServerMainOVPN objServerMain, String[] saF
 				stemp = saFlagControl[iCount];
 				btemp = setFlag(stemp, true);
 				if(btemp==false){ 								   
-					   ExceptionZZZ ez = new ExceptionZZZ( stemp, IFlagZUserZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 						
+					   ExceptionZZZ ez = new ExceptionZZZ( stemp, IFlagZEnabledZZZ.iERROR_FLAG_UNAVAILABLE, this, ReflectCodeZZZ.getMethodCurrentName()); 						
 					   throw ez;		 
 				}
 			}
 			if(this.getFlag("init")) break main;
 		}
-					
+		this.objKernel = objKernel;
 		this.objServerMain = objServerMain;
 	}//END main
 }
