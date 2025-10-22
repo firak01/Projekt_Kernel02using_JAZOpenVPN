@@ -30,7 +30,7 @@ import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
 
-public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalSetUserOVPN{
 	protected volatile IModuleZZZ objModule = null;
 	protected volatile String sModuleName=null;
 	protected volatile String sProgramName = null;
@@ -1026,12 +1026,12 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}
 
 	@Override
-	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
 		this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
 	}
 
 	@Override
-	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
 		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);;
 	}
 	

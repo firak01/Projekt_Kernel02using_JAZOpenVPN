@@ -1,11 +1,16 @@
-package use.openvpn.client.status;
+package use.openvpn.server.status;
 
-import basic.zKernel.status.AbstractEventObjectStatusLocalMessageReactZZZ;
-import basic.zKernel.status.AbstractEventObjectStatusLocalZZZ;
+import java.util.EventObject;
+
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.IObjectZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
-import use.openvpn.client.ClientConfigStarterOVPN;
-import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
-import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL;
+import use.openvpn.server.ServerConfigStarterOVPN;
+import use.openvpn.server.ServerMainOVPN;
+import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
+
 
 /** 
  * Merke: Der gleiche "Design Pattern" wird auch im UI - Bereich fuer Komponenten verwendet ( package basic.zKernelUI.component.model; )  
@@ -15,11 +20,11 @@ import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOC
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObjectStatusLocalMessageReactZZZ implements IEventObject4ProcessWatchMonitorStatusLocalOVPN, Comparable<IEventObject4ProcessWatchMonitorStatusLocalOVPN>{
+public class EventObject4ServerMainStatusLocalOVPN  extends AbstractEventObjectStatusLocalZZZ implements IEventObject4ServerMainStatusLocalSetOVPN, Comparable<IEventObject4ServerMainStatusLocalSetOVPN>{
 	private STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
-	ClientConfigStarterOVPN objStarter=null;
+	ServerConfigStarterOVPN objStarter=null;
 	
 	//Merke: Diese Strings sind wichtig für das Interface und kommen nicht aus der abstrakten Klasse
 	private String sStatusAbbreviation=null;
@@ -30,16 +35,16 @@ public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObj
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
 	 */
-	public EventObject4ProcessMonitorStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
+	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);		
 	}
 	
-	public EventObject4ProcessMonitorStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
+	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
 		super(source,iID,sStatusText,bStatusValue);
 		this.sStatusAbbreviation = sStatusAbbreviation;
 	}
 	
-	public EventObject4ProcessMonitorStatusLocalOVPN(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) {
+	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) {
 		super(source,iID,"",bStatusValue);
 		this.objStatusEnum=objStatusEnum;
 	}
@@ -49,7 +54,7 @@ public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObj
 	 * @see basic.zKernel.status.AbstractEventObjectStatusLocalSetZZZ#getStatusEnum()
 	 */
 	@Override
-	public IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL getStatusEnum() {
+	public STATUSLOCAL getStatusEnum() {
 		return this.objStatusEnum;
 	}
 	
@@ -66,15 +71,15 @@ public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObj
 	}
 	
 	@Override
-	public void setClientConfigStarterObjectUsed(ClientConfigStarterOVPN objStarter) {
+	public void setServerConfigStarterObjectUsed(ServerConfigStarterOVPN objStarter) {
 		this.objStarter = objStarter;
 	}
 	
 	@Override
-	public ClientConfigStarterOVPN getClientConfigStarterObjectUsed() {
+	public ServerConfigStarterOVPN getServerConfigStarterObjectUsed() {
 		return this.objStarter;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see use.openvpn.client.status.IEventObjectStatusLocalSetOVPN#getStatusAbbreviation()
 	 */
@@ -86,9 +91,18 @@ public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObj
 			return this.objStatusEnum.getAbbreviation();
 		}
 	}
+
+	@Override
+	public String getStatusText(){
+		if(this.objStatusEnum==null) {
+			return this.sStatusText;
+		}else {
+			return this.objStatusEnum.name();
+		}
+	}
 	
 	@Override
-	public String getStatusMessage(){
+	public String getStatusMessage() {
 		if(this.objStatusEnum==null) {
 			return this.sStatusMessage;
 		}else {
@@ -96,16 +110,11 @@ public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObj
 		}
 	}
 	
-	@Override
-	public void setStatusMessage(String sStatusMessage) {
-		this.sStatusMessage = sStatusMessage;
-		
-	}
-
 	
+
 	//### Aus dem Interface Comparable
 	@Override
-	public int compareTo(IEventObject4ProcessWatchMonitorStatusLocalOVPN o) {
+	public int compareTo(IEventObject4ServerMainStatusLocalSetOVPN o) {
 		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
 		int iReturn = 0;
 		main:{
@@ -126,8 +135,8 @@ public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObj
    @Override 
    public boolean equals(Object aThat) {
      if (this == aThat) return true;
-     if (!(aThat instanceof EventObject4ProcessMonitorStatusLocalOVPN)) return false;
-     EventObject4ProcessMonitorStatusLocalOVPN that = (EventObject4ProcessMonitorStatusLocalOVPN)aThat;
+     if (!(aThat instanceof EventObject4ServerMainStatusLocalOVPN)) return false;
+     EventObject4ServerMainStatusLocalOVPN that = (EventObject4ServerMainStatusLocalOVPN)aThat;
      
      String sNameToCompare = that.getStatusEnum().getName();
 	 boolean bValueToCompare = that.getStatusValue();

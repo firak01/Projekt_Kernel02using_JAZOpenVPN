@@ -45,13 +45,13 @@ import use.openvpn.server.ServerApplicationOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
-import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
-import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.IEventObjectStatusLocalOVPN;
+import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
 import use.openvpn.serverui.component.tray.IServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ;
 
-public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOVPN, IListenerObjectStatusLocalSetOVPN {		
+public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOVPN, IListenerObjectStatusLocalOVPN {		
 	private static final long serialVersionUID = 4170579821557468353L;
 
 	private volatile ServerMainOVPN objMain = null;                            //Ein Thread, der die OpenVPN.exe mit der gew�nschten Konfiguration startet.

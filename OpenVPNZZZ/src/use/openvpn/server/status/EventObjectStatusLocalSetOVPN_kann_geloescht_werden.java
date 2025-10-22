@@ -13,7 +13,7 @@ import use.openvpn.server.ServerConfigStarterOVPN;;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObjectStatusLocalSetOVPN_kann_geloescht_werden extends  AbstractEventObjectStatusLocalZZZ implements IEventObjectStatusLocalSetOVPN, Comparable<IEventObjectStatusLocalSetOVPN>{
+public class EventObjectStatusLocalSetOVPN_kann_geloescht_werden extends  AbstractEventObjectStatusLocalZZZ implements IEventObjectStatusLocalOVPN, Comparable<IEventObjectStatusLocalOVPN>{
 	private STATUSLOCAL objStatusEnum=null;	
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
@@ -76,7 +76,7 @@ public class EventObjectStatusLocalSetOVPN_kann_geloescht_werden extends  Abstra
 	
 	//### Aus dem Interface Comparable
 	@Override
-	public int compareTo(IEventObjectStatusLocalSetOVPN o) {
+	public int compareTo(IEventObjectStatusLocalOVPN o) {
 		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
 		int iReturn = 0;
 		main:{

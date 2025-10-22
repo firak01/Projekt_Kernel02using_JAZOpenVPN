@@ -54,7 +54,7 @@ import use.openvpn.clientui.component.IPExternalRead.DlgIPExternalOVPN;
 import use.openvpn.clientui.component.tray.IClientTrayMenuOVPN.ClientTrayMenuTypeZZZ;
 import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
 import use.openvpn.component.shared.adjustment.DlgAdjustmentOVPN;
-import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 import use.openvpn.serverui.component.tray.ActionServerTrayUIOVPN;
 import use.openvpn.serverui.component.tray.ServerTrayUIOVPN;
@@ -74,7 +74,7 @@ import use.openvpn.serverui.component.tray.IServerTrayStatusMappedValueZZZ.Serve
  * @author Fritz Lindhauer, 11.10.2023, 07:46:15
  * 
  */
-public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayOVPN, IListenerObjectStatusLocalSetOVPN {
+public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayOVPN, IListenerObjectStatusLocalOVPN {
 	private static final long serialVersionUID = -6110753128564853105L;
 
 	private volatile ClientMainOVPN objMain = null;
@@ -1266,7 +1266,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;

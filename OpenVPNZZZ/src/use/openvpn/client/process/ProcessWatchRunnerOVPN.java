@@ -31,7 +31,7 @@ import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
 
@@ -805,7 +805,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			return bReturn;
 		}
 		@Override
-		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
 			// TODO Auto-generated method stub
 			
 		}

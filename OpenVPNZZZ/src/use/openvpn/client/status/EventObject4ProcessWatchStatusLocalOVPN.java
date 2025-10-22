@@ -1,10 +1,11 @@
 package use.openvpn.client.status;
 
-import basic.zKernel.status.AbstractEventObjectStatusLocalMessageReactZZZ;
+import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.status.AbstractEventObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
+import use.openvpn.client.process.IProcessWatchRunnerOVPN.STATUSLOCAL;
 
 /** 
  * Merke: Der gleiche "Design Pattern" wird auch im UI - Bereich fuer Komponenten verwendet ( package basic.zKernelUI.component.model; )  
@@ -14,7 +15,7 @@ import use.openvpn.client.process.IProcessWatchRunnerOVPN;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4ProcessWatchStatusLocalOVPN  extends AbstractEventObjectStatusLocalMessageReactZZZ implements IEventObject4ProcessWatchRunnerStatusLocalOVPN, Comparable<IEventObject4ProcessWatchMonitorStatusLocalOVPN>{
+public class EventObject4ProcessWatchStatusLocalOVPN  extends AbstractEventObjectStatusLocalZZZ implements IEventObject4ProcessWatchRunnerStatusLocalOVPN{//FGL20251022: Das der abstrakten Klasse überlassen, Comparable<IEventObject4ProcessWatchMonitorStatusLocalOVPN>{
 	private use.openvpn.client.process.IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
@@ -25,23 +26,34 @@ public class EventObject4ProcessWatchStatusLocalOVPN  extends AbstractEventObjec
 	private String sStatusAbbreviation=null;
 	private String sStatusMessage=null;
 	
+	private int iID=-1;
+	
 	/** In dem Konstruktor wird neben der ID dieses Events auch der identifizierende Name der neu gewaehlten Komponente �bergeben.
 	 * @param source
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
+	 * @throws ExceptionZZZ 
 	 */
-	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
-		super(source,iID,sStatusText,bStatusValue);		
+	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) throws ExceptionZZZ {
+		super(source,sStatusText,bStatusValue);		
+		EventObject4ProcessWatchStatusLocal_(iID, null, null);
 	}
 	
-	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
-		super(source,iID,sStatusText,bStatusValue);
+	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) throws ExceptionZZZ {
+		super(source,sStatusText,bStatusValue);
+		EventObject4ProcessWatchStatusLocal_(iID, sStatusAbbreviation, null);
+	}
+	
+	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) throws ExceptionZZZ {
+		super(source,"",bStatusValue);
+		EventObject4ProcessWatchStatusLocal_(iID, null, objStatusEnum);
+	}
+	
+	private boolean EventObject4ProcessWatchStatusLocal_(int iID, String sStatusAbbreviation, STATUSLOCAL objStatusEnum) throws ExceptionZZZ{		
+		this.iID = iID;
 		this.sStatusAbbreviation = sStatusAbbreviation;
-	}
-	
-	public EventObject4ProcessWatchStatusLocalOVPN(Object source, int iID,  IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum, boolean bStatusValue) {
-		super(source,iID,"",bStatusValue);
-		this.objStatusEnum=objStatusEnum;
+		this.objStatusEnum = objStatusEnum;
+		return true;
 	}
 	
 	//### speziell für OVPN
@@ -104,24 +116,25 @@ public class EventObject4ProcessWatchStatusLocalOVPN  extends AbstractEventObjec
 	}
 
 	//### Aus dem Interface Comparable
-	@Override
-	public int compareTo(IEventObject4ProcessWatchMonitorStatusLocalOVPN o) {
-		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
-		int iReturn = 0;
-		main:{
-			if(o==null)break main;
-			
-			String sTextToCompare = o.getStatusText();
-			boolean bValueToCompare = o.getStatusValue();
-			
-			String sText = this.getStatusText();
-			boolean bValue = this.getStatusValue();
-			
-			if(sTextToCompare.equals(sText) && bValueToCompare==bValue) iReturn = 1;		
-			
-		}
-		return iReturn;
-	}
+//	//FGL20251022: Das der abstrakten Klasse überlassen
+//	@Override
+//	public int compareTo(IEventObject4ProcessWatchMonitorStatusLocalOVPN o) {
+//		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
+//		int iReturn = 0;
+//		main:{
+//			if(o==null)break main;
+//			
+//			String sTextToCompare = o.getStatusText();
+//			boolean bValueToCompare = o.getStatusValue();
+//			
+//			String sText = this.getStatusText();
+//			boolean bValue = this.getStatusValue();
+//			
+//			if(sTextToCompare.equals(sText) && bValueToCompare==bValue) iReturn = 1;		
+//			
+//		}
+//		return iReturn;
+//	}
 	
    @Override 
    public boolean equals(Object aThat) {
@@ -140,11 +153,12 @@ public class EventObject4ProcessWatchStatusLocalOVPN  extends AbstractEventObjec
      return false;     
    }
 
-   /** A class that overrides equals must also override hashCode.*/
-   @Override 
-   public int hashCode() {
-	   return this.getStatusText().hashCode();
-   }
+// //FGL20251022: Das der abstrakten Klasse überlassen
+//   /** A class that overrides equals must also override hashCode.*/
+//   @Override 
+//   public int hashCode() {
+//	   return this.getStatusText().hashCode();
+//   }
 
 
 }

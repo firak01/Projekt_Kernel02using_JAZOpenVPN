@@ -15,8 +15,8 @@ import basic.zBasic.ExceptionZZZ;
  * @author lindhaueradmin
  *
  */
-public interface IEventBrokerStatusLocalSetUserOVPN extends ISenderObjectStatusLocalSetUserOVPN {	
-	public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;
-	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ;
+public interface IEventBrokerStatusLocalSetUserOVPN extends ISenderObjectStatusLocalUserOVPN {	
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ;
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ;
 }
 

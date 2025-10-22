@@ -30,14 +30,14 @@ import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOCAL;
 import use.openvpn.server.IServerMainOVPN;
-import use.openvpn.server.status.EventObject4ProcessWatchRunnerStatusLocalSetOVPN;
+import use.openvpn.server.status.EventObject4ProcessWatchRunnerStatusLocalOVPN;
 import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.server.status.IEventObject4ProcessWatchMonitorStatusLocalSetOVPN;
-import use.openvpn.server.status.IEventObject4ProcessWatchRunnerStatusLocalSetOVPN;
-import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
-import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
-import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.IEventObject4ProcessWatchMonitorStatusLocalOVPN;
+import use.openvpn.server.status.IEventObject4ProcessWatchRunnerStatusLocalOVPN;
+import use.openvpn.server.status.IEventObjectStatusLocalOVPN;
+import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
+import use.openvpn.server.status.SenderObjectStatusLocalOVPN;
 
 /**This class receives the stream from a process, which was started by the ConfigStarterZZZ class.
  * This is necessary, because the process will only goon working, if the streams were "catched" by a target.
@@ -46,7 +46,7 @@ import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
  *
  */
 public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implements IProcessWatchRunnerOVPN {// das wird nun per ZZZ-Klasse erledigt über die abstrakte Klasse., IEventBrokerStatusLocalSetUserOVPN{	
-	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+	private ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	private ServerMainOVPN objMain = null;
 	private ServerConfigStarterOVPN objServerConfigStarter = null; //Das Konfigurationsobjekt, dem der Start zugrundeliegt.
 

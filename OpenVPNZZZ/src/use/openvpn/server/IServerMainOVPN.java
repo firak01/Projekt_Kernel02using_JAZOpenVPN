@@ -6,10 +6,10 @@ import java.util.EnumSet;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalSetUserOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalUserOVPN;
 import use.openvpn.serverui.component.tray.IServerTrayMenuZZZ.ServerTrayMenuTypeZZZ;
 
-public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalSetUserOVPN{
+public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalUserOVPN{
 	//Spezielle ServerOVPN - Methoden
 	public ArrayList<ServerConfigStarterOVPN> getServerConfigStarterList();
 	public ServerConfigStarterOVPN getServerConfigStarter(int iPosition);

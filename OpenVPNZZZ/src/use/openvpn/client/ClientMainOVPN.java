@@ -44,7 +44,7 @@ import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.Clie
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
 
 /**This class is used as a backend worker.
  * For frontend features, use ConfigMainUIZZZ.
@@ -1034,7 +1034,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 
 	@Override
-	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
 		this.objEventStatusLocalBroker = objEventStatusLocalBroker;
 	}
 

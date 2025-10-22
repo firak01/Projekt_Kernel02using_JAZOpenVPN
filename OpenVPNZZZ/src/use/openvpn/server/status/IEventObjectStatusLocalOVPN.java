@@ -4,7 +4,7 @@ import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
 
-public interface IEventObjectStatusLocalSetOVPN extends IEventObjectStatusLocalZZZ{
+public interface IEventObjectStatusLocalOVPN extends IEventObjectStatusLocalZZZ{
 	public IApplicationOVPN getApplicationObjectUsed(); 
 	public void setApplicationObjectUsed(IApplicationOVPN objApplication);
 	String getStatusAbbreviation();
