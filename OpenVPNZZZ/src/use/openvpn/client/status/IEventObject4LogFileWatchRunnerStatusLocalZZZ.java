@@ -1,6 +1,5 @@
 package use.openvpn.client.status;
 
-import basic.zKernel.status.IEventObjectStatusLocalMessageZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN;
 

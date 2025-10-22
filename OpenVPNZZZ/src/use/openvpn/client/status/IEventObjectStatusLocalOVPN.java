@@ -1,11 +1,11 @@
 package use.openvpn.client.status;
 
-import basic.zKernel.status.IEventObjectStatusLocalMessageZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 
-public interface IEventObjectStatusLocalOVPN extends IEventObjectStatusLocalMessageZZZ{
+public interface IEventObjectStatusLocalOVPN extends IEventObjectStatusLocalZZZ{
 	public IApplicationOVPN getApplicationObjectUsed(); 
 	public void setApplicationObjectUsed(IApplicationOVPN objApplication);
 	String getStatusAbbreviation();

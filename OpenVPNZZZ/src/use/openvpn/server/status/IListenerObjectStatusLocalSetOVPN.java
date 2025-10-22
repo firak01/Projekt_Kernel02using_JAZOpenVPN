@@ -4,7 +4,7 @@ import java.util.EventListener;
 
 import basic.zBasic.ExceptionZZZ;
 import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
-
+//FGL20251022: Das durch IListenerObjectStatusLocalZZZ ablösen
 public interface IListenerObjectStatusLocalSetOVPN extends EventListener{
 	public boolean changeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ;
 	public boolean isEventRelevant(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ;

@@ -4,7 +4,8 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
 
 
-/**Dieses Interface enthaelt Methoden, die von den Klassen implementiert werden muessen, 
+/**TODO Kann raus, das nun alles auf ISenderObjectStatusBasicZZZ abzielt.
+ * Dieses Interface enthaelt Methoden, die von den Klassen implementiert werden muessen, 
  * die den Kernel eigenen Event verwalten sollen.
  * 
  * @author lindhaueradmin

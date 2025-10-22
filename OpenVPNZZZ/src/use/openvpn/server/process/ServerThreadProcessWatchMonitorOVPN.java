@@ -17,6 +17,8 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.IFlagZEnabledZZZ;
 import basic.zKernel.flag.event.EventObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalZZZ;
+import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
@@ -249,7 +251,7 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 		if(bReturn) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+ ": Status changed to '"+sStatusString+"'";
 			System.out.println(sLog);
-		    this.getLogObject().WriteLineDate(sLog);			
+		    this.getMainObject().logProtocolString(sLog);			
 		}
 		return bReturn;
 	}
@@ -396,7 +398,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 					
 					//!!! Ein mögliches init-Flag ist beim direkten setzen der Flags unlogisch.
 					//    Es wird entfernt.
-					this.setFlag(IFlagZUserZZZ.FLAGZ.INIT, false);
+					this.setFlag(IFlagZEnabledZZZ.FLAGZ.INIT, false);
 				}
 			}//end main:
 			return baReturn;
@@ -416,38 +418,42 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		
 
 		//### aus IEventBrokerStatusLocalSetUserOVPN
-		@Override
-		public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
-			this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);		
-		}
+		//FGL20251022: Versuche das über die Abstrakte Klasse zu erledigen
+//		@Override
+//		public void registerForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener)throws ExceptionZZZ {
+//			this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);		
+//		}
+//
+//		@Override
+//		public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
+//			this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);;
+//		}
+	
+		//FGL20251022: Versuche das über die Abstrakte Klasse zu erledigen
+//	@Override
+//	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
+//		boolean bReturn = false;
+//		main:{
+//			if(objEnumStatusIn==null) break main;
+//			
+//			
+//			//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
+////			if(!(objEnum instanceof IServerMainOVPN.STATUSLOCAL) ){
+////				String sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus wird wg. unpassender Klasse ignoriert.";
+////				System.out.println(sLog);
+////				//this.objMain.logMessageString(sLog);
+////				break main;
+////		}	
+//			
+//			//Fuer das Main-Objekt ist erst einmal jeder Status relevant
+//			bReturn = true;
+//		}//end main:
+//		return bReturn;
+//	}
+	
 
-		@Override
-		public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalSetOVPN objEventListener) throws ExceptionZZZ {
-			this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);;
-		}
-	
-		
+	//### aus IStatusLocalUserZZZ
 	@Override
-	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
-		boolean bReturn = false;
-		main:{
-			if(objEnumStatusIn==null) break main;
-			
-			
-			//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
-//			if(!(objEnum instanceof IServerMainOVPN.STATUSLOCAL) ){
-//				String sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus wird wg. unpassender Klasse ignoriert.";
-//				System.out.println(sLog);
-//				//this.objMain.logMessageString(sLog);
-//				break main;
-//		}	
-			
-			//Fuer das Main-Objekt ist erst einmal jeder Status relevant
-			bReturn = true;
-		}//end main:
-		return bReturn;
-	}
-	
 	public boolean getStatusLocal(Enum objEnumStatusIn) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
@@ -486,25 +492,47 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	
 	
 	//####### aus ISenderObjectStatusLocalSetUserOVPN
-	@Override
-	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
-		if(this.objEventStatusLocalBroker==null) {
-			//++++++++++++++++++++++++++++++
-			//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
-			ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
-			this.objEventStatusLocalBroker = objSenderStatusLocal;
-		}
-		return this.objEventStatusLocalBroker;
-	}
-
-	@Override
-	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
-		this.objEventStatusLocalBroker = objEventSender;
-	}
+	//FGL20251022: Versuche das über die Abstrakte Klasse zu erledigen
+//	@Override
+//	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+//		if(this.objEventStatusLocalBroker==null) {
+//			//++++++++++++++++++++++++++++++
+//			//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
+//			ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
+//			this.objEventStatusLocalBroker = objSenderStatusLocal;
+//		}
+//		return this.objEventStatusLocalBroker;
+//	}
+//
+//	@Override
+//	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+//		this.objEventStatusLocalBroker = objEventSender;
+//	}
 	
 
+	//FGL20251022: Versuche das über die Abstrakte Klasse zu erledigen: AbstractObjectWithStatusZZZ
+//	//#########################################################
+//		//### aus ISenderObjectStatusLocalUserZZZ
+//	@Override
+//	public ISenderObjectStatusLocalSetOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+//		if(this.objEventStatusLocalBroker==null) {
+//			//++++++++++++++++++++++++++++++
+//			//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
+//			ISenderObjectStatusLocalSetOVPN objSenderStatusLocal = new SenderObjectStatusLocalSetOVPN();
+//			this.objEventStatusLocalBroker = objSenderStatusLocal;
+//		}
+//		return this.objEventStatusLocalBroker;
+//	}
+//
+//	@Override
+//	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalSetOVPN objEventSender) {
+//		this.objEventStatusLocalBroker = objEventSender;
+//	}
+	
+
+
 	/* (non-Javadoc)
-	 * @see basic.zBasic.AbstractObjectWithStatusZZZ#setStatusLocal(java.lang.Enum, java.lang.String, boolean)
+	 * @see basic.zBasic.AbstractObjectWithStatusZZZ#offerStatusLocal(java.lang.Enum, boolean, java.lang.String)
 	 */
 	@Override
 	public boolean offerStatusLocal(Enum enumStatusIn, boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
@@ -521,7 +549,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		return bFunction;
 	}
 	
-	@Override
+	//@Override
 	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
@@ -621,293 +649,301 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	return bFunction;
 	}
 	
-	/* (non-Javadoc)
-	 * @see use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN#statusLocalChanged(use.openvpn.server.status.IEventObjectStatusLocalSetOVPN)
-	 */
-	@Override
-	public boolean changeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-		//Der Monitor ist am ProcessWatchRunner registriert.
-		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
-		boolean bReturn = false;
-		main:{
-			if(eventStatusLocalSet==null)break main;
-			
-			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Event gefangen.";
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
-			
-			boolean bRelevant = this.isEventRelevant(eventStatusLocalSet); 
-			if(!bRelevant) {
-				sLog = 	ReflectCodeZZZ.getPositionCurrent() + ": Event / Status nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				break main;
-			}
-			
-			//+++ Mappe nun die eingehenden Status-Enums auf die eigenen.
-			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();
-			if(enumStatus==null) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				break main;
-			}
-			
-			//+++++++++++++++++++++
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
-			if(hmEnum==null) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keine Mapping Hashmap fuer das StatusMapping vorhanden. Breche ab";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				break main;
-			}
-			
-			//+++++++++++++++++++++
-			IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL objEnum = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) hmEnum.get(enumStatus);							
-			if(objEnum==null) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status für en Status aus dem Event-Objekt erhalten. Breche ab";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				break main;
-			}
-			
-			boolean bValue = eventStatusLocalSet.getStatusValue();
-							
-//			boolean bHasError = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR)&& bValue;
-//			boolean bEnded = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED) && bValue;
-//			boolean bHasConnection = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION) && bValue;
-//			boolean bHasConnectionLost = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST) && bValue;
+//	//FGL20251022:Erste einmal raus und sich auf die abstrakte Klasse AbstractObjectWithStatusOnStatusListeningZZZ verlassen.
+//	//            und deren Methode public boolean reactOnStatusLocalEvent4Action(IEventObjectStatusLocalZZZ eventStatusLocal) throws ExceptionZZZ{
+//	/* (non-Javadoc)
+//	 * @see use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN#statusLocalChanged(use.openvpn.server.status.IEventObjectStatusLocalSetOVPN)
+//	 */
+//	@Override
+//	public boolean changeStatusLocal(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+//		//Der Monitor ist am ProcessWatchRunner registriert.
+//		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
+//		boolean bReturn = false;
+//		main:{
+//			if(eventStatusLocalSet==null)break main;
+//			
+//			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Event gefangen.";
+//			System.out.println(sLog);
+//			this.getMainObject().logProtocolString(sLog);
+//			
+//			boolean bRelevant = this.isEventRelevant(eventStatusLocalSet); 
+//			if(!bRelevant) {
+//				sLog = 	ReflectCodeZZZ.getPositionCurrent() + ": Event / Status nicht relevant. Breche ab.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				break main;
+//			}
+//			
+//			//+++ Mappe nun die eingehenden Status-Enums auf die eigenen.
+//			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();
+//			if(enumStatus==null) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				break main;
+//			}
+//			
+//			//+++++++++++++++++++++
+//			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+//			if(hmEnum==null) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keine Mapping Hashmap fuer das StatusMapping vorhanden. Breche ab";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				break main;
+//			}
+//			
+//			//+++++++++++++++++++++
+//			IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL objEnum = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) hmEnum.get(enumStatus);							
+//			if(objEnum==null) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status für en Status aus dem Event-Objekt erhalten. Breche ab";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				break main;
+//			}
+//			
+//			boolean bValue = eventStatusLocalSet.getStatusValue();
+//							
+////			boolean bHasError = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR)&& bValue;
+////			boolean bEnded = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED) && bValue;
+////			boolean bHasConnection = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION) && bValue;
+////			boolean bHasConnectionLost = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST) && bValue;
+////		
+//			boolean bEventHasError = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR);
+//			boolean bEventEnded = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED);
+//			boolean bEventHasConnection = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
+//			boolean bEventHasConnectionLost = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST);
+//			
 //		
-			boolean bEventHasError = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR);
-			boolean bEventEnded = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED);
-			boolean bEventHasConnection = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
-			boolean bEventHasConnectionLost = enumStatus.equals(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST);
-			
-		
-			//Wie an die sVpnIp rankommen.... Das geht über das ApplicationObjekt des erfolgreichen starters.								
-			//ClientConfigStarterOVPN objStarter2 = (ClientConfigStarterOVPN) listaStarter.get(icount2);
-			
-			//Wie an die sVpnIp rankommen.... Das geht über das ApplicationObjekt des Events.
-			IApplicationOVPN  objApplication = null;				
-			ServerConfigStarterOVPN objStarter=null;
-			int iIndex = -1;
-		
-			//Wie an die sVpnIp rankommen.... Das geht über das ApplicationObjekt des Events.
-			objApplication = eventStatusLocalSet.getApplicationObjectUsed();
-			if(objApplication==null) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEIN Application-Objekt aus dem Event-Objekt erhalten.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				break main;
-			}else {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Application-Objekt aus dem Event-Objekt erhalten.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				
-			}
-				
-			objStarter = eventStatusLocalSet.getServerConfigStarterObjectUsed();
-			if(objStarter==null) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEIN ConfigStarter-Objekt aus dem Event-Objekt erhalten.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				break main;
-			}else {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": ConfigStarter-Objekt aus dem Event-Objekt erhalten.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				
-				iIndex = objStarter.getIndex();
-			}
-						
-			boolean bStatusLocalSet = this.setStatusLocalEnum(iIndex, objEnum, bValue);//Es wird ein Event gefeuert, an dem das Backend-Objekt registriert wird und dann sich passend einstellen kann.
-			if(!bStatusLocalSet) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				break main;
-			}
-			//++++++++++++++
-			
-			if(bEventHasError && bEventEnded){
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status bEventHasError && bEventEnded";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);					
-			}else if((!bEventHasError) && bEventEnded){
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status !bEventHasError && bEventEnded";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				
-			}else if(bEventHasConnection){
-				//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status bEventHasConnection";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				
-				String sVpnIp = objApplication.getVpnIpRemote();
-				int iId = eventStatusLocalSet.getProcessID();
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Thread # fuer Event mit der ID" + (iId) + " - Verbindung mit remote VPNIP='"+sVpnIp+"'";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);										
-				
-				boolean bEndOnConnection = this.getFlag(IServerThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION);
-				if(bEndOnConnection) {
-					sLog = ReflectCodeZZZ.getPositionCurrent()+": Beende den Monitor.";
-					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
-				}
-				
-			}else if(bEventHasConnectionLost) {
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-			
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status bEventHasConnectionLost";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				
-				String sVpnIp = objApplication.getVpnIpRemote();
-				int iId = eventStatusLocalSet.getProcessID();
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Thread # fuer Event mit der ID" + (iId) + " - Verbindung verloren mit remote VPNIP='"+sVpnIp+"'";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);										
-	
-			}else {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status '"+enumStatus.getAbbreviation()+"' nicht weiter behandelt";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);	
-			}
-			
-			bReturn = true;
-		}//end main:			
-		return bReturn;
-	}
+//			//Wie an die sVpnIp rankommen.... Das geht über das ApplicationObjekt des erfolgreichen starters.								
+//			//ClientConfigStarterOVPN objStarter2 = (ClientConfigStarterOVPN) listaStarter.get(icount2);
+//			
+//			//Wie an die sVpnIp rankommen.... Das geht über das ApplicationObjekt des Events.
+//			IApplicationOVPN  objApplication = null;				
+//			ServerConfigStarterOVPN objStarter=null;
+//			int iIndex = -1;
+//		
+//			//Wie an die sVpnIp rankommen.... Das geht über das ApplicationObjekt des Events.
+//			objApplication = eventStatusLocalSet.getApplicationObjectUsed();
+//			if(objApplication==null) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEIN Application-Objekt aus dem Event-Objekt erhalten.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				break main;
+//			}else {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Application-Objekt aus dem Event-Objekt erhalten.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				
+//			}
+//				
+//			objStarter = eventStatusLocalSet.getServerConfigStarterObjectUsed();
+//			if(objStarter==null) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEIN ConfigStarter-Objekt aus dem Event-Objekt erhalten.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				break main;
+//			}else {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": ConfigStarter-Objekt aus dem Event-Objekt erhalten.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				
+//				iIndex = objStarter.getIndex();
+//			}
+//						
+//			boolean bStatusLocalSet = this.setStatusLocalEnum(iIndex, objEnum, bValue);//Es wird ein Event gefeuert, an dem das Backend-Objekt registriert wird und dann sich passend einstellen kann.
+//			if(!bStatusLocalSet) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				break main;
+//			}
+//			//++++++++++++++
+//			
+//			if(bEventHasError && bEventEnded){
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status bEventHasError && bEventEnded";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);					
+//			}else if((!bEventHasError) && bEventEnded){
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status !bEventHasError && bEventEnded";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				
+//			}else if(bEventHasConnection){
+//				//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status bEventHasConnection";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				
+//				String sVpnIp = objApplication.getVpnIpRemote();
+//				int iId = eventStatusLocalSet.getProcessID();
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Thread # fuer Event mit der ID" + (iId) + " - Verbindung mit remote VPNIP='"+sVpnIp+"'";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);										
+//				
+//				boolean bEndOnConnection = this.getFlag(IServerThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION);
+//				if(bEndOnConnection) {
+//					sLog = ReflectCodeZZZ.getPositionCurrent()+": Beende den Monitor.";
+//					System.out.println(sLog);
+//					this.getMainObject().logProtocolString(sLog);
+//				}
+//				
+//			}else if(bEventHasConnectionLost) {
+//				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//			
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status bEventHasConnectionLost";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				
+//				String sVpnIp = objApplication.getVpnIpRemote();
+//				int iId = eventStatusLocalSet.getProcessID();
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Thread # fuer Event mit der ID" + (iId) + " - Verbindung verloren mit remote VPNIP='"+sVpnIp+"'";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);										
+//	
+//			}else {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status '"+enumStatus.getAbbreviation()+"' nicht weiter behandelt";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);	
+//			}
+//			
+//			bReturn = true;
+//		}//end main:			
+//		return bReturn;
+//	}
 	
 	
-	//#########################################################
+//	//FGL20251022:Erste einmal raus und sich auf die abstrakte Klasse AbstractObjectWithStatusOnStatusListeningZZZ verlassen.
+//	//            und deren Methode public boolean isEventRelevant4ReactionOnStatusLocal(IEventObjectStatusLocalZZZ eventStatusLocalReact) throws ExceptionZZZ {
+//	//#######################################################
+//	/* (non-Javadoc)
+//	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+//	 */
+//	@Override
+//	public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+//		boolean bReturn = false;
+//		main:{
+//			if(eventStatusLocalSet==null)break main;
+//			
+//			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Pruefe Relevanz des Events.";
+//			System.out.println(sLog);
+//			this.getMainObject().logProtocolString(sLog);
+//			
+//			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
+//			if(enumStatus==null) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);							
+//				break main;
+//			}
+//							
+//			sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen.";
+//			System.out.println(sLog);
+//			this.getMainObject().logProtocolString(sLog);
+//				
+//			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
+//			System.out.println(sLog);
+//			this.getMainObject().logProtocolString(sLog);	
+//				
+//			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
+//			System.out.println(sLog);
+//			this.getMainObject().logProtocolString(sLog);
+//			
+//			//+++ Pruefungen
+//			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
+//			if(!bReturn) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);				
+//				break main;
+//			}
+//			
+//			bReturn = this.isStatusChanged(eventStatusLocalSet.getStatusText());
+//			if(!bReturn) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status nicht geaendert. Breche ab.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				break main;
+//			}
+//						
+//			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
+//			if(!bReturn) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);				
+//				break main;
+//			}
+//			
+//			bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
+//			if(!bReturn) {
+//				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);				
+//				break main;
+//			}
+//													
+//			bReturn = true;
+//		}//end main:
+//		return bReturn;
+//	}
+	
+//	//FGL20251022:Erste einmal raus und sich auf die abstrakte Klasse AbstractObjectWithStatusOnStatusListeningZZZ verlassen.
+//	//            und deren Methode public boolean isEventRelevant4ReactionOnStatusLocal(IEventObjectStatusLocalZZZ eventStatusLocalReact) throws ExceptionZZZ {
+//	/* (non-Javadoc)
+//	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+//	 */
+//	@Override
+//	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+//		boolean bReturn = false;
+//		main:{
+//			if(eventStatusLocalSet==null)break main;
+//			
+//			//boolean bStatusValue = eventStatusLocalSet.getStatusValue();
+//			//Merke: Beim Monitor interessieren auch "false" Werte, um den Status ggfs. wieder zuruecksetzen zu koennen
+//			//if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+//			
+//			bReturn = true;
+//		}
+//		return bReturn;
+//	}
+	
+//	//FGL20251022:Erste einmal raus und sich auf die abstrakte Klasse AbstractObjectWithStatusOnStatusListeningZZZ verlassen.
+//	//            und deren Methode ?????
+//	@Override
+//	public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
+//		/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
+//	 	class Animal { }
+//		class Dog2 extends Animal {
+//			static void method(Animal j) {
+//			if(j instanceof Dog2){
+//			Dog2 d=(Dog2)j;//downcasting
+//			System.out.println(“downcasting done”);
+//			}
+//			}
+//			public static void main (String [] args) {
+//			Animal j=new Dog2();
+//			Dog2.method(j);
+//			}
+//		}
+//	 */
+//	
+//		boolean bReturn = false;
+//		main:{
+//			//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
+//			if(eventStatusLocalSet.getStatusEnum() instanceof IProcessWatchRunnerOVPN.STATUSLOCAL){
+//				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Enum Klasse ist instanceof IProcessWatchRunnerOVPN. Damit relevant.";
+//				System.out.println(sLog);
+//				this.getMainObject().logProtocolString(sLog);
+//				bReturn = true;
+//				break main;
+//			}		
+//			
+//			
+//		}//end main:
+//		return bReturn;
+//	}
+	
 	/* (non-Javadoc)
-	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
-	 */
-	@Override
-	public boolean isEventRelevant(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-		boolean bReturn = false;
-		main:{
-			if(eventStatusLocalSet==null)break main;
-			
-			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Pruefe Relevanz des Events.";
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
-			
-			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
-			if(enumStatus==null) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);							
-				break main;
-			}
-							
-			sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen.";
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
-				
-			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);	
-				
-			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
-			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
-			
-			//+++ Pruefungen
-			bReturn = this.isEventRelevantByClass(eventStatusLocalSet);
-			if(!bReturn) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
-				break main;
-			}
-			
-			bReturn = this.isStatusChanged(eventStatusLocalSet.getStatusText());
-			if(!bReturn) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status nicht geaendert. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				break main;
-			}
-						
-			bReturn = this.isEventRelevantByStatusLocalValue(eventStatusLocalSet);
-			if(!bReturn) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
-				break main;
-			}
-			
-			bReturn = this.isEventRelevantByStatusLocal(eventStatusLocalSet);
-			if(!bReturn) {
-				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
-				break main;
-			}
-													
-			bReturn = true;
-		}//end main:
-		return bReturn;
-	}
-	
-	/* (non-Javadoc)
-	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
-	 */
-	@Override
-	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-		boolean bReturn = false;
-		main:{
-			if(eventStatusLocalSet==null)break main;
-			
-			//boolean bStatusValue = eventStatusLocalSet.getStatusValue();
-			//Merke: Beim Monitor interessieren auch "false" Werte, um den Status ggfs. wieder zuruecksetzen zu koennen
-			//if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
-			
-			bReturn = true;
-		}
-		return bReturn;
-	}
-	
-	@Override
-	public boolean isEventRelevantByClass(IEventObjectStatusLocalSetOVPN eventStatusLocalSet) throws ExceptionZZZ {
-		/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
-	 	class Animal { }
-		class Dog2 extends Animal {
-			static void method(Animal j) {
-			if(j instanceof Dog2){
-			Dog2 d=(Dog2)j;//downcasting
-			System.out.println(“downcasting done”);
-			}
-			}
-			public static void main (String [] args) {
-			Animal j=new Dog2();
-			Dog2.method(j);
-			}
-		}
-	 */
-	
-		boolean bReturn = false;
-		main:{
-			//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
-			if(eventStatusLocalSet.getStatusEnum() instanceof IProcessWatchRunnerOVPN.STATUSLOCAL){
-				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Enum Klasse ist instanceof IProcessWatchRunnerOVPN. Damit relevant.";
-				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
-				bReturn = true;
-				break main;
-			}		
-			
-			
-		}//end main:
-		return bReturn;
-	}
-
-	/* (non-Javadoc)
-	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+	 * @see use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalOVPN)
 	 */
 	@Override
 	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
@@ -1070,5 +1106,88 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 						
 		}//end main:
 		return hmReturn;	
+	}
+
+	@Override
+	public boolean queryReactOnStatusLocalEventCustom(IEventObjectStatusLocalZZZ eventStatusLocal) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevant2ChangeStatusLocalByClass(IEventObjectStatusLocalZZZ eventStatusLocal)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevant2ChangeStatusLocalByStatusLocalValue(IEventObjectStatusLocalZZZ eventStatusLocal)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ISenderObjectStatusBasicZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean changeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevant(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevantByClass(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevantByStatusLocalValue(IEventObjectStatusLocalOVPN eventStatusLocalSet)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean startCustom() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public HashMap createHashMapStatusLocal4ReactionCustom() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }//END class
