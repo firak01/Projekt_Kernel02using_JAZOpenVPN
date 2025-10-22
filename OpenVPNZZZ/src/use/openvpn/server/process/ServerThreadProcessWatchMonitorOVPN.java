@@ -32,11 +32,11 @@ import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
-import use.openvpn.server.status.IEventObject4ProcessWatchMonitorStatusLocalSetOVPN;
-import use.openvpn.server.status.IEventObjectStatusLocalSetOVPN;
-import use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalSetOVPN;
-import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
+import use.openvpn.server.status.IEventObject4ProcessWatchMonitorStatusLocalOVPN;
+import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
+import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
+import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
+import use.openvpn.server.status.SenderObjectStatusLocalOVPN;
 
 /**This class watches the ServerMainZZZ-class and the ServerConnectionListenerRuner-objects.
  * This class runs in a seperate thread, so the TrayIcon stays "clickable", that means that clicking on the icon will be processed.
@@ -45,10 +45,10 @@ import use.openvpn.server.status.SenderObjectStatusLocalSetOVPN;
  *
  */
 //public class ServerThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
-public class ServerThreadProcessWatchMonitorOVPN extends AbstractProcessWatchMonitorZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN {//Das wird nun über die Abstrakte Klasse gemacht., IEventBrokerStatusLocalSetUserOVPN{
+public class ServerThreadProcessWatchMonitorOVPN extends AbstractProcessWatchMonitorZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalOVPN {//Das wird nun über die Abstrakte Klasse gemacht., IEventBrokerStatusLocalSetUserOVPN{
 	private IKernelZZZ objKernel = null;
 	private IServerMainOVPN objServerMain = null;
-	private ISenderObjectStatusLocalSetOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
+	private ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
 	public ServerThreadProcessWatchMonitorOVPN(IKernelZZZ objKernel, IServerMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 		super();

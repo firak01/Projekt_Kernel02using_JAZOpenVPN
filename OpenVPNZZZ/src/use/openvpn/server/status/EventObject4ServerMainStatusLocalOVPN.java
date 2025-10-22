@@ -5,6 +5,7 @@ import java.util.EventObject;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
+import basic.zKernel.status.AbstractEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
@@ -20,7 +21,7 @@ import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
  *  
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
-public class EventObject4ServerMainStatusLocalOVPN  extends AbstractEventObjectStatusLocalZZZ implements IEventObject4ServerMainStatusLocalSetOVPN, Comparable<IEventObject4ServerMainStatusLocalSetOVPN>{
+public class EventObject4ServerMainStatusLocalOVPN  extends AbstractEventObjectStatusLocalZZZ implements IEventObject4ServerMainStatusLocalSetOVPN{//FGL20251022: Das der abstrakten Klasse überlassen, Comparable<IEventObject4ServerMainStatusLocalSetOVPN>{
 	private STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
@@ -30,23 +31,34 @@ public class EventObject4ServerMainStatusLocalOVPN  extends AbstractEventObjectS
 	private String sStatusAbbreviation=null;
 	private String sStatusMessage=null;
 	
+	private int iID=-1;
+	
 	/** In dem Konstruktor wird neben der ID dieses Events auch der identifizierende Name der neu gewaehlten Komponente �bergeben.
 	 * @param source
 	 * @param iID
 	 * @param sComponentItemText, z.B. fuer einen DirectoryJTree ist es der Pfad, fuer eine JCombobox der Name des ausgew�hlten Items 
+	 * @throws ExceptionZZZ 
 	 */
-	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) {
-		super(source,iID,sStatusText,bStatusValue);		
+	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  String sStatusText, boolean bStatusValue) throws ExceptionZZZ {
+		super(source,sStatusText,bStatusValue);	
+		EventObject4ServerMainStatusLocal_(iID, sStatusAbbreviation, null);
 	}
 	
-	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) {
-		super(source,iID,sStatusText,bStatusValue);
+	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  String sStatusAbbreviation, String sStatusText, boolean bStatusValue) throws ExceptionZZZ {
+		super(source,sStatusText,bStatusValue);
+		EventObject4ServerMainStatusLocal_(iID, sStatusAbbreviation, null);
+	}
+	
+	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) throws ExceptionZZZ {
+		super(source,"",bStatusValue);
+		EventObject4ServerMainStatusLocal_(iID, null, objStatusEnum);
+	}
+	
+	private boolean EventObject4ServerMainStatusLocal_(int iID, String sStatusAbbreviation, STATUSLOCAL objStatusEnum) throws ExceptionZZZ{		
+		this.iID = iID;
 		this.sStatusAbbreviation = sStatusAbbreviation;
-	}
-	
-	public EventObject4ServerMainStatusLocalOVPN(Object source, int iID,  STATUSLOCAL objStatusEnum, boolean bStatusValue) {
-		super(source,iID,"",bStatusValue);
-		this.objStatusEnum=objStatusEnum;
+		this.objStatusEnum = objStatusEnum;
+		return true;
 	}
 	
 	//### Aus Interface
@@ -92,14 +104,15 @@ public class EventObject4ServerMainStatusLocalOVPN  extends AbstractEventObjectS
 		}
 	}
 
-	@Override
-	public String getStatusText(){
-		if(this.objStatusEnum==null) {
-			return this.sStatusText;
-		}else {
-			return this.objStatusEnum.name();
-		}
-	}
+//	//FGL20251022: Das der abstrakten Klasse überlassen
+//	@Override
+//	public String getStatusText(){
+//		if(this.objStatusEnum==null) {
+//			return this.sStatusText;
+//		}else {
+//			return this.objStatusEnum.name();
+//		}
+//	}
 	
 	@Override
 	public String getStatusMessage() {
@@ -113,24 +126,25 @@ public class EventObject4ServerMainStatusLocalOVPN  extends AbstractEventObjectS
 	
 
 	//### Aus dem Interface Comparable
-	@Override
-	public int compareTo(IEventObject4ServerMainStatusLocalSetOVPN o) {
-		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
-		int iReturn = 0;
-		main:{
-			if(o==null)break main;
-			
-			String sTextToCompare = o.getStatusText();
-			boolean bValueToCompare = o.getStatusValue();
-			
-			String sText = this.getStatusText();
-			boolean bValue = this.getStatusValue();
-			
-			if(sTextToCompare.equals(sText) && bValueToCompare==bValue) iReturn = 1;		
-			
-		}
-		return iReturn;
-	}
+//	//FGL20251022: Das der abstrakten Klasse überlassen
+//	@Override
+//	public int compareTo(IEventObject4ServerMainStatusLocalSetOVPN o) {
+//		//Das macht lediglich .sort funktionsfähig und wird nicht bei .equals(...) verwendet.
+//		int iReturn = 0;
+//		main:{
+//			if(o==null)break main;
+//			
+//			String sTextToCompare = o.getStatusText();
+//			boolean bValueToCompare = o.getStatusValue();
+//			
+//			String sText = this.getStatusText();
+//			boolean bValue = this.getStatusValue();
+//			
+//			if(sTextToCompare.equals(sText) && bValueToCompare==bValue) iReturn = 1;		
+//			
+//		}
+//		return iReturn;
+//	}
 	
    @Override 
    public boolean equals(Object aThat) {
@@ -149,10 +163,11 @@ public class EventObject4ServerMainStatusLocalOVPN  extends AbstractEventObjectS
      return false;     
    }
 
-   /** A class that overrides equals must also override hashCode.*/
-   @Override 
-   public int hashCode() {
-	   return this.getStatusText().hashCode();
-   }
+ //FGL20251022: Das der abstrakten Klasse überlassen
+//   /** A class that overrides equals must also override hashCode.*/
+//   @Override 
+//   public int hashCode() {
+//	   return this.getStatusText().hashCode();
+//   }
 }
 

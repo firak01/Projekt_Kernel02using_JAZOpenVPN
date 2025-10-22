@@ -16,6 +16,7 @@ import use.openvpn.client.process.IClientThreadProcessWatchMonitorOVPN.STATUSLOC
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
 public class EventObject4ProcessMonitorStatusLocalOVPN  extends AbstractEventObjectStatusLocalZZZ implements IEventObject4ProcessWatchMonitorStatusLocalOVPN { //FGL20251022 das nun der abstrakten Klasse überlassen, Comparable<IEventObject4ProcessWatchMonitorStatusLocalOVPN>{
+	private static final long serialVersionUID = -156402696788401261L;
 	private STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.

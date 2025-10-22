@@ -24,6 +24,7 @@ import use.openvpn.server.ServerMainOVPN;
  * @author Fritz Lindhauer, 02.04.2023, 12:00:33  
  */
 public class EventObject4ProcessWatchRunnerStatusLocalOVPN  extends AbstractEventObjectStatusLocalZZZ implements IEventObject4ProcessWatchRunnerStatusLocalOVPN{//FGL20251022: Das nun der abstrakten Klasse überlassen, Comparable<IEventObject4ProcessWatchRunnerStatusLocalOVPN>{
+	private static final long serialVersionUID = 4088208220227731164L;
 	private IProcessWatchRunnerOVPN.STATUSLOCAL objStatusEnum=null;
 	private IApplicationOVPN objApplication=null;//Falls Änderungen auch das Backend-Application-Objekt betreffen, wird die aktuelle Version davon dem Event mitgegeben.
 	                                             //Hier können dann beim Empfangen des Events die benoetigen Informationen ausgelesen werden.
