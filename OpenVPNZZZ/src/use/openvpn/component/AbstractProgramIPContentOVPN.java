@@ -37,10 +37,10 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 //20210222 Mache dies abstrakt, Package use.openvpn.common
 //                   Mache dann ProgramIPContentWebOVPN, ProgramIPConententLocalOVPN extends AbstractProgramIPContenOVPN
 public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgramUIZZZ{
-	private String sURL2Read=null;
-	private String sIPExternal = null;
-	private String sIPProxy = null;
-	private String sPortProxy = null;
+	protected String sURL2Read=null;
+	protected String sIPExternal = null;
+	protected String sIPProxy = null;
+	protected String sPortProxy = null;
 	
 	
 	
@@ -209,85 +209,101 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 		return bReturn;
 	}
 	
-//	######### GetFlags - Handled ##############################################
-	/** (non-Javadoc)
-	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
-	Flags used:<CR>
-	-  isConnected
-	- useProxy
-	- haserror
-	 */
-	public boolean getFlag(String sFlagName){
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.getFlag(sFlagName);
-			if(bFunction==true) break main;
-							
-			//getting the flags of this object
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("useproxy")){
-				bFunction = bFlagUseProxy;
-				break main;			
-				/*
-			}else if(stemp.equals("isconnected")){
-				bFunction = bFlagIsConnected;
-				break main;
-			}else if(stemp.equals("haserror")){				
-				bFunction = bFlagHasError;
-				break main;
-			}else if(stemp.equals("portscanallfinished")){				
-				bFunction = bFlagPortScanAllFinished;
-				break main; 
-				*/
-			}
-		}//end main:
-		return bFunction;
-	}
+////	######### GetFlags - Handled ##############################################
+//	/** (non-Javadoc)
+//	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
+//	Flags used:<CR>
+//	-  isConnected
+//	- useProxy
+//	- haserror
+//	 */
+//	public boolean getFlag(String sFlagName){
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.getFlag(sFlagName);
+//			if(bFunction==true) break main;
+//							
+//			//getting the flags of this object
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("useproxy")){
+//				bFunction = bFlagUseProxy;
+//				break main;			
+//				/*
+//			}else if(stemp.equals("isconnected")){
+//				bFunction = bFlagIsConnected;
+//				break main;
+//			}else if(stemp.equals("haserror")){				
+//				bFunction = bFlagHasError;
+//				break main;
+//			}else if(stemp.equals("portscanallfinished")){				
+//				bFunction = bFlagPortScanAllFinished;
+//				break main; 
+//				*/
+//			}
+//		}//end main:
+//		return bFunction;
+//	}
 	
 	
 
 
-	/**
-	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
-	 * @param sFlagName
-	 * Flags used:<CR>
-	 * - isconnected
-	 * - useproxy
-	 * - haserror
-	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
-	 * @throws ExceptionZZZ 
-	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.setFlag(sFlagName, bFlagValue);
-		if(bFunction==true) break main;
+//	/**
+//	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+//	 * @param sFlagName
+//	 * Flags used:<CR>
+//	 * - isconnected
+//	 * - useproxy
+//	 * - haserror
+//	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+//	 * @throws ExceptionZZZ 
+//	 */
+//	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.setFlag(sFlagName, bFlagValue);
+//		if(bFunction==true) break main;
+//	
+//		//setting the flags of this object
+//		String stemp = sFlagName.toLowerCase();
+//		if(stemp.equals("useproxy")){
+//			bFlagUseProxy = bFlagValue;
+//			bFunction = true;			
+//			break main;
+//			/*
+//		}else if(stemp.equals("isconnected")){
+//			bFlagIsConnected = bFlagValue;
+//			bFunction = true;
+//			break main;
+//		}else if(stemp.equals("haserror")){
+//			bFlagHasError = bFlagValue;
+//			bFunction = true;
+//			break main;
+//		}else if(stemp.equals("portscanallfinished")){
+//			bFlagPortScanAllFinished = bFlagValue;
+//			bFunction = true;
+//			break main;
+//			*/
+//		}
+//		}//end main:
+//		return bFunction;
+//	}
 	
-		//setting the flags of this object
-		String stemp = sFlagName.toLowerCase();
-		if(stemp.equals("useproxy")){
-			bFlagUseProxy = bFlagValue;
-			bFunction = true;			
-			break main;
-			/*
-		}else if(stemp.equals("isconnected")){
-			bFlagIsConnected = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("haserror")){
-			bFlagHasError = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("portscanallfinished")){
-			bFlagPortScanAllFinished = bFlagValue;
-			bFunction = true;
-			break main;
-			*/
-		}
-		}//end main:
-		return bFunction;
+	
+	@Override
+	public boolean resetValues(Object objDefault) throws ExceptionZZZ {
+		boolean bReturn = false;
+		
+		//Wenn irgendetwas gesetzt war true zurueckgeben
+		if(this.sURL2Read!=null||this.sIPExternal!= null||this.sIPProxy!= null||this.sPortProxy!= null) bReturn = true;
+
+		this.sURL2Read=null;
+		this.sIPExternal = null;
+		this.sIPProxy = null;
+		this.sPortProxy = null;
+		return bReturn;		
 	}
+
 }
 

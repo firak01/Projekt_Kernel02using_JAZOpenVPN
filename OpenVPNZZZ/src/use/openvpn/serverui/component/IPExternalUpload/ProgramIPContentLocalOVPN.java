@@ -69,5 +69,12 @@ public class ProgramIPContentLocalOVPN extends AbstractProgramIPContentOVPN impl
 	public void updateMessage(String stext) throws ExceptionZZZ {
 		
 	}
+
+
+	@Override
+	public boolean resetValues(Object objDefault) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
 

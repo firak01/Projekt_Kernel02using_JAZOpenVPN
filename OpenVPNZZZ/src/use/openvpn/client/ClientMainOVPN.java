@@ -35,6 +35,7 @@ import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.client.status.EventObject4ClientMainStatusLocalMessageOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
+import use.openvpn.client.status.IEventBrokerStatusLocalUserOVPN;
 import use.openvpn.client.status.IEventObject4ClientMainStatusLocalMessageSetOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
@@ -52,7 +53,7 @@ import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
  * @author 0823
  *
  */
-public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,IEventBrokerStatusLocalSetUserOVPN,IListenerObjectStatusLocalOVPN{		
+public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,IEventBrokerStatusLocalUserOVPN,IListenerObjectStatusLocalOVPN{		
 	private volatile ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 		
 	private volatile ClientConfigFileZZZ objFileConfigReached = null;

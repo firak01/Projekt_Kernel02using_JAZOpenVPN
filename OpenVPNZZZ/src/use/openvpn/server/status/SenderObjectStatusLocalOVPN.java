@@ -20,15 +20,13 @@ import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
 public class SenderObjectStatusLocalOVPN implements ISenderObjectStatusLocalOVPN,Serializable{
 	private static final long serialVersionUID = 8999783685575147532L;
 	private IEventObjectStatusLocalOVPN eventPrevious=null;
+	private ArrayListUniqueZZZ<IListenerObjectStatusLocalOVPN> listaLISTENER_REGISTERED = new ArrayListUniqueZZZ<IListenerObjectStatusLocalOVPN>();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden
 	
 	public SenderObjectStatusLocalOVPN() throws ExceptionZZZ{
 		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see use.via.client.module.export.ISenderEventComponentReset#fireEvent(basic.zKernelUI.component.model.KernelEventComponentSelectionResetZZZ)
-	 */
-	private ArrayListUniqueZZZ<IListenerObjectStatusLocalOVPN> listaLISTENER_REGISTERED = new ArrayListUniqueZZZ<IListenerObjectStatusLocalOVPN>();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden 
+	 
 																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht m�glich ist 
 	@Override                                                                                     //             mehrere Events, an verschiedenen Komponenten, unabhaengig voneinander zu verwalten.
 	public final void fireEvent(IEventObjectStatusLocalOVPN event){	
@@ -62,7 +60,8 @@ public class SenderObjectStatusLocalOVPN implements ISenderObjectStatusLocalOVPN
 						
 			try {
 				for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
-					IListenerObjectStatusLocalOVPN l = (IListenerObjectStatusLocalOVPN) this.getListenerRegisteredAll().get(i);				
+					//IListenerObjectStatusLocalOVPN l = (IListenerObjectStatusLocalOVPN) this.getListenerRegisteredAll().get(i);				
+					IListenerObjectStatusLocalOVPN l = (IListenerObjectStatusLocalOVPN) this.getListenerRegisteredAll().get(i);
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + "# IListenerObjectStatusLocalSetOVPN by " + this.getClass().getName() + " - object (d.h. this - object) fired: " + i);
 					try {
 						boolean bStatusLocalChanged = l.changeStatusLocal(event);

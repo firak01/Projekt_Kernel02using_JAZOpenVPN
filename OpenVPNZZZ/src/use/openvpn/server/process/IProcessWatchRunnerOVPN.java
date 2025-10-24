@@ -18,7 +18,7 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	
 	//##############################
 	public enum FLAGZ{
-		DUMMY
+		DUMMY,END_ON_CONNECTION
 	}
 	
 	boolean getFlag(FLAGZ objEnumFlag);

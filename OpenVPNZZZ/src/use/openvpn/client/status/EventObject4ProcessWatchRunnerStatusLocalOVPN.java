@@ -168,6 +168,16 @@ public class EventObject4ProcessWatchRunnerStatusLocalOVPN  extends AbstractEven
      return false;     
    }
 
+   @Override
+	public int getProcessID() {
+		return this.iID;
+	}
+	
+	@Override
+	public void setProcessID(int iProcessID) {
+		this.iID = iProcessID;
+	}
+
 //   //FGL20251022: Das nun der abstrakten Klasse überlassen
 //   /** A class that overrides equals must also override hashCode.*/
 //   @Override 

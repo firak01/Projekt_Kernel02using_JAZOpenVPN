@@ -10,20 +10,25 @@ import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.moduleExternal.IWatchListenerZZZ;
+import basic.zBasic.util.moduleExternal.log.watch.ILogFileWatchRunnerZZZ;
 import basic.zBasic.util.moduleExternal.monitor.AbstractProcessWatchMonitorZZZ;
 import basic.zBasic.util.moduleExternal.process.watch.IProcessWatchRunnerZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusOnStatusListeningZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.flag.IFlagZEnabledZZZ;
 import basic.zKernel.flag.event.EventObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.process.ClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
-import use.openvpn.client.status.EventObject4ProcessMonitorStatusLocalOVPN;
-import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
+import use.openvpn.server.status.EventObject4ProcessMonitorStatusLocalOVPN;
+import use.openvpn.server.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.IProcessWatchRunnerOVPN;
@@ -31,7 +36,7 @@ import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN.STATUSLOC
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
-import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
+import use.openvpn.server.status.IEventBrokerStatusLocalUserOVPN;
 import use.openvpn.server.status.IEventObject4ProcessWatchMonitorStatusLocalOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
@@ -44,7 +49,7 @@ import use.openvpn.server.status.SenderObjectStatusLocalOVPN;
  * @author 0823
  *
  */
-//public class ServerThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusListeningCascadedZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalSetOVPN, IEventBrokerStatusLocalSetUserOVPN{
+//NEIN: public class ServerThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusOnStatusListeningZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalSetUserOVPN{
 public class ServerThreadProcessWatchMonitorOVPN extends AbstractProcessWatchMonitorZZZ implements IServerThreadProcessWatchMonitorOVPN, Runnable, IListenerObjectStatusLocalOVPN {//Das wird nun über die Abstrakte Klasse gemacht., IEventBrokerStatusLocalSetUserOVPN{
 	private IKernelZZZ objKernel = null;
 	private IServerMainOVPN objServerMain = null;
@@ -110,7 +115,7 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 			ProcessWatchRunnerOVPN[] runneraProcessOVPN = null;
 			boolean bUseLogFileWatch = this.getFlag(IServerThreadProcessWatchMonitorOVPN.FLAGZ.USE_LOGFILE_WATCHRUNNER); 
 			if(bUseLogFileWatch) {
-				TODOGOON20240127;
+				//TODOGOON20240127;
 			}else {
 				runneraProcessOVPN = new ProcessWatchRunnerOVPN[listaProcessStarter.size()];
 			}
@@ -146,8 +151,10 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 						//String[]saFlagControl = {IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
 						
 						if(bUseLogFileWatch) {
-							TODOGOON20240127;//Projekt einbinden
-							String[]saFlagControl = {ILogFileWatchRunnerZZZ.FLAGZ.END_ON_FILTERFOUND.name()};
+							//TODOGOON20240127;//Projekt einbinden
+							//String[]saFlagControl = {ILogFileWatchRunnerZZZ.FLAGZ.END_ON_FILTERFOUND.name()};
+							//String[]saFlagControl = {IProcessWatchRunnerOVPN.FLAGZ.END_ON_FILTER_FOUND.name()};
+							String[]saFlagControl = {IWatchListenerZZZ.FLAGZ.END_ON_FILTER_FOUND.name()};
 							runneraProcessOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, saFlagControl);
 							
 							runneraProcessOVPN[icount].setServerBackendObject(this.getMainObject());
@@ -155,14 +162,14 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 							
 							//Wichtig, den ProcessWatchMonitorOVPN an den ProcessWatchRunnerOVPN Listener registrieren.
 							//Dafuer gibt es dann auch ein Mapping, in dem steht wie mit den empfangenen Events umgegangen wird, bzw. welche eigenen Events geworfen werden sollen.
-							runneraProcessOVPN[icount].registerForStatusLocalEvent((IListenerObjectStatusLocalSetOVPN)this);//Registriere den Monitor nun am ProcessWatchRunner
+							runneraProcessOVPN[icount].registerForStatusLocalEvent((IListenerObjectStatusLocalZZZ)this);//Registriere den Monitor nun am ProcessWatchRunner
 							 						
 							threadaOVPN[icount] = new Thread(runneraProcessOVPN[icount]);//Starte den ProcessWatchRunner					
 							threadaOVPN[icount].start();	 	
 							sLog = ReflectCodeZZZ.getPositionCurrent()+": ProcessWatchRunner started for thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() + ".";
 							this.getMainObject().logProtocolString(sLog);
 						}else {
-							String[]saFlagControl = {IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name()};
+							String[]saFlagControl = {IProcessWatchRunnerOVPN.FLAGZ.END_ON_CONNECTION.name()};
 							runneraProcessOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, saFlagControl);
 							
 							runneraProcessOVPN[icount].setServerBackendObject(this.getMainObject());
@@ -170,7 +177,7 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 							
 							//Wichtig, den ProcessWatchMonitorOVPN an den ProcessWatchRunnerOVPN Listener registrieren.
 							//Dafuer gibt es dann auch ein Mapping, in dem steht wie mit den empfangenen Events umgegangen wird, bzw. welche eigenen Events geworfen werden sollen.
-							runneraProcessOVPN[icount].registerForStatusLocalEvent((IListenerObjectStatusLocalSetOVPN)this);//Registriere den Monitor nun am ProcessWatchRunner
+							runneraProcessOVPN[icount].registerForStatusLocalEvent((IListenerObjectStatusLocalZZZ)this);//Registriere den Monitor nun am ProcessWatchRunner
 							 						
 							threadaOVPN[icount] = new Thread(runneraProcessOVPN[icount]);//Starte den ProcessWatchRunner					
 							threadaOVPN[icount].start();	 	
@@ -549,7 +556,6 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		return bFunction;
 	}
 	
-	//@Override
 	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
@@ -630,7 +636,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
 		sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";
 		this.getMainObject().logProtocolString(sLog);
-		IEventObject4ProcessWatchMonitorStatusLocalOVPN event = new EventObject4ProcessMonitorStatusLocalOVPN(this,1,enumStatus, bStatusValue);			
+		IEventObject4ProcessWatchMonitorStatusLocalOVPN event = (IEventObject4ProcessWatchMonitorStatusLocalOVPN) new EventObject4ProcessMonitorStatusLocalOVPN(this,1,enumStatus, bStatusValue);			
 		event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
 					
 		//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
@@ -942,15 +948,18 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 //		return bReturn;
 //	}
 	
+
 	/* (non-Javadoc)
-	 * @see use.openvpn.server.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalOVPN)
+	 * @see use.openvpn.server.status.IListenerObjectStatusLocalOVPN#isEventRelevantByStatusLocal(use.openvpn.server.status.IEventObjectStatusLocalOVPN)
 	 */
 	@Override
 	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
-			bReturn = this.isStatusLocalRelevant(enumStatus);
+			// enumStatus = (IEnumSetMappedStatusZZZ) eventStatusLocalSet.getStatusEnum();							
+			Enum enumStatus = eventStatusLocalSet.getStatusEnum();
+			//bReturn = this.isStatusLocalRelevant(enumStatus);
+			bReturn = this.isEventRelevantByStatusLocal((IEventObjectStatusLocalOVPN) enumStatus);
 			if(!bReturn) break main;
 			
 			
@@ -962,6 +971,9 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		return bReturn;
 	}
 
+	/* (non-Javadoc)
+	 * @see basic.zBasic.AbstractObjectWithStatusZZZ#setStatusLocal(java.lang.Enum, boolean)
+	 */
 	@Override
 	public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bFunction = false;
@@ -1052,6 +1064,9 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			return bFunction;
 		}
 		
+		/* (non-Javadoc)
+		 * @see basic.zBasic.AbstractObjectWithStatusZZZ#setStatusLocalEnum(basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ, boolean, java.lang.String)
+		 */
 		@Override 
 		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bReturn = false;
@@ -1080,6 +1095,20 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			return bReturn;
 		}
 		//++++++++++++++++++++++++++++++++++++++++
+
+		public boolean setStatusLocalEnum(IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+			boolean bReturn = false;
+			main:{
+				if(enumStatusIn==null) {
+					break main;
+				}
+				IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL enumStatus = (IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL) enumStatusIn;
+				
+				bReturn = this.offerStatusLocal(enumStatus, bStatusValue);
+			}//end main:
+			return bReturn;
+		}
+
 
 	
 	//Weil auf den Status anderer Thread gehoert wird und diese weitergeleitet werden sollen.
@@ -1135,12 +1164,10 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		return false;
 	}
 
-	@Override
-	public ISenderObjectStatusBasicZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
+	/* (non-Javadoc)
+	 * @see use.openvpn.server.status.IListenerObjectStatusLocalOVPN#changeStatusLocal(use.openvpn.server.status.IEventObjectStatusLocalOVPN)
+	 */
 	@Override
 	public boolean changeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
@@ -1166,11 +1193,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		return false;
 	}
 
-	@Override
-	public boolean startCustom() throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 	@Override
 	public HashMap createHashMapStatusLocal4ReactionCustom() {
@@ -1187,6 +1210,12 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 
 	@Override
 	public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean startCustom() throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
 	}

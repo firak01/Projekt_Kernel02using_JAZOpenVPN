@@ -54,7 +54,7 @@ public class ProgramPageWebUploadUiOVPN  extends AbstractKernelProgramUIZZZ impl
 	private String sPortProxy = null;
 	
 	private KernelJPanelCascadedZZZ panel = null;
-	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
+	private String sText2Update = null;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
 	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
 
 	private boolean bFlagUseProxy = false;
@@ -131,6 +131,28 @@ public class ProgramPageWebUploadUiOVPN  extends AbstractKernelProgramUIZZZ impl
 			sReturn = objEntry.getValue();
 		}
 		return sReturn;		
+	}
+	
+	//### Aus IResettableValuesZZZ
+	public boolean resetValues() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			bReturn = super.resetValues();
+			if(!bReturn & this.sText2Update!=null) bReturn = true;
+			this.sText2Update = null; //Damit der Wert neu geholt wird.
+		}//end main:
+		return bReturn;
+	}
+	
+	@Override
+	public boolean resetValues(Object objDefault) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			bReturn = super.resetValues();
+			if(!bReturn & this.sText2Update!=null) bReturn = true;
+			this.sText2Update = objDefault.toString(); //Damit der Wert neu geholt wird.
+		}//end main:
+		return bReturn;
 	}
 
 	public boolean uploadPageWeb() throws ExceptionZZZ{

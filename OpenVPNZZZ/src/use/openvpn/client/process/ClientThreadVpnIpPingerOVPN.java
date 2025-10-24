@@ -19,6 +19,9 @@ import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.IFlagZEnabledZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
+import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
+import basic.zKernel.status.SenderObjectStatusLocalZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
@@ -27,6 +30,7 @@ import use.openvpn.client.status.EventObject4VpnIpPingerStatusLocalOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.client.status.IEventObject4VpnIpPingerStatusLocalOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
+import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
 
@@ -416,7 +420,9 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 					bReturn = true;
 											
 			}//END main:
-			
+		} catch (InterruptedException e) {
+			ExceptionZZZ ez2 = new ExceptionZZZ(e);
+			throw ez2;
 		}catch(ExceptionZZZ ez){
 			String sLog;
 			try {
@@ -562,7 +568,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);
 			
-			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
+			IEnumSetMappedZZZ enumStatus = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();				
 			if(enumStatus==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
 				System.out.println(sLog);
@@ -680,7 +686,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
+			IEnumSetMappedStatusZZZ enumStatus = (IEnumSetMappedStatusZZZ) eventStatusLocalSet.getStatusEnum();							
 			bReturn = this.isStatusLocalRelevant(enumStatus);
 			if(!bReturn) break main;
 		
@@ -696,20 +702,33 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	//#######################################
 	//### aus ISenderObjectStatusLocalSetUserOVPN
 	@Override
-	public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+	//public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+	public ISenderObjectStatusLocalZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
 		if(this.objEventStatusLocalBroker==null) {
 			//++++++++++++++++++++++++++++++
 			//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
 			ISenderObjectStatusLocalOVPN objSenderStatusLocal = new SenderObjectStatusLocalOVPN();
 			this.objEventStatusLocalBroker = objSenderStatusLocal;
 		}
-		return this.objEventStatusLocalBroker;
+		return (ISenderObjectStatusLocalZZZ) this.objEventStatusLocalBroker;
 	}
+	
+	
+//	@Override
+//	public ISenderObjectStatusLocalZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
+//		if(this.objEventStatusLocalBroker==null) {
+//			//++++++++++++++++++++++++++++++
+//			//Nun geht es darum den Sender/Broker fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung des Status zu informiert
+//			ISenderObjectStatusLocalZZZ objSenderStatusLocal = new SenderObjectStatusLocalZZZ();			
+//			this.objEventStatusLocalBroker = objSenderStatusLocal;
+//		}		
+//		return this.objEventStatusLocalBroker;
+//	}
 
-	@Override
-	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
-		this.objEventStatusLocalBroker = objEventSender;
-	}
+//	@Override
+//	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
+//		this.objEventStatusLocalBroker = objEventSender;
+//	}
 
 	@Override
 	public boolean getFlag(use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.FLAGZ objEnumFlag) {
@@ -1244,6 +1263,30 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			return this.proofFlagExists(objEnumFlag.name());
 		}		
 		//##########################
+
+		@Override
+		public boolean startAsThread() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean startCustom() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void setSenderStatusLocalUsed(use.openvpn.server.status.ISenderObjectStatusLocalOVPN objEventSender) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	
 	
 }//END class

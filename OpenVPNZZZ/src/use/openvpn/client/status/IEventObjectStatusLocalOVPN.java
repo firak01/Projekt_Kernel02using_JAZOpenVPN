@@ -13,4 +13,7 @@ public interface IEventObjectStatusLocalOVPN extends IEventObjectStatusLocalZZZ{
 	//Speziell für OVPN Client
 	public void setClientConfigStarterObjectUsed(ClientConfigStarterOVPN clientConfigStarterOVPN);
 	public  ClientConfigStarterOVPN getClientConfigStarterObjectUsed();	 
+	
+	public int getProcessID();
+	public void setProcessID(int iProcessID);
 }

@@ -49,7 +49,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKernelProgramUIZZZ implements IConstantProgramPageWebCreateUiOVPN{
 		
 	private KernelJPanelCascadedZZZ panel = null;
-	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
+	private String sText2Update = null;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
 	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
 
 	private boolean bFlagUseProxy = false;
@@ -70,7 +70,19 @@ public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKe
 		this.panel = panel;
 	}
 	
-	
+	//### Aus IResettableValuesZZZ
+	@Override
+	public boolean resetValues(Object objDefault) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			bReturn = super.resetValues();
+			if(!bReturn & this.sText2Update!=null) bReturn = true;
+			this.sText2Update = objDefault.toString(); //Damit der Wert neu geholt wird.
+		}//end main:
+		return bReturn;
+	}
+		
+		
 	public boolean createPageWeb() throws ExceptionZZZ{
 		boolean bReturn = false;
 		System.out.println("Start");
@@ -210,86 +222,86 @@ public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKe
 	
 
 	
-//	######### GetFlags - Handled ##############################################
-	/** (non-Javadoc)
-	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
-	Flags used:<CR>
-	-  isConnected
-	- useProxy
-	- haserror
-	 */
-	public boolean getFlag(String sFlagName){
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.getFlag(sFlagName);
-			if(bFunction==true) break main;
-							
-			//getting the flags of this object
-			/*
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("useproxy")){
-				bFunction = bFlagUseProxy;
-				break main;						
-			}else if(stemp.equals("isconnected")){
-				bFunction = bFlagIsConnected;
-				break main;
-			}else if(stemp.equals("haserror")){				
-				bFunction = bFlagHasError;
-				break main;
-			}else if(stemp.equals("portscanallfinished")){				
-				bFunction = bFlagPortScanAllFinished;
-				break main; 				
-			}
-			*/
-		}//end main:
-		return bFunction;
-	}
+////	######### GetFlags - Handled ##############################################
+//	/** (non-Javadoc)
+//	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
+//	Flags used:<CR>
+//	-  isConnected
+//	- useProxy
+//	- haserror
+//	 */
+//	public boolean getFlag(String sFlagName){
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.getFlag(sFlagName);
+//			if(bFunction==true) break main;
+//							
+//			//getting the flags of this object
+//			/*
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("useproxy")){
+//				bFunction = bFlagUseProxy;
+//				break main;						
+//			}else if(stemp.equals("isconnected")){
+//				bFunction = bFlagIsConnected;
+//				break main;
+//			}else if(stemp.equals("haserror")){				
+//				bFunction = bFlagHasError;
+//				break main;
+//			}else if(stemp.equals("portscanallfinished")){				
+//				bFunction = bFlagPortScanAllFinished;
+//				break main; 				
+//			}
+//			*/
+//		}//end main:
+//		return bFunction;
+//	}
 	
 	
 
 
-	/**
-	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
-	 * @param sFlagName
-	 * Flags used:<CR>
-	 * - isconnected
-	 * - useproxy
-	 * - haserror
-	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
-	 * @throws ExceptionZZZ 
-	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.setFlag(sFlagName, bFlagValue);
-		if(bFunction==true) break main;
-	
-		//setting the flags of this object
-		/*
-		String stemp = sFlagName.toLowerCase();
-		if(stemp.equals("useproxy")){
-			bFlagUseProxy = bFlagValue;
-			bFunction = true;			
-			break main;
-		}else if(stemp.equals("isconnected")){
-			bFlagIsConnected = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("haserror")){
-			bFlagHasError = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("portscanallfinished")){
-			bFlagPortScanAllFinished = bFlagValue;
-			bFunction = true;
-			break main;			
-		}
-		*/
-		}//end main:
-		return bFunction;
-	}
+//	/**
+//	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+//	 * @param sFlagName
+//	 * Flags used:<CR>
+//	 * - isconnected
+//	 * - useproxy
+//	 * - haserror
+//	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+//	 * @throws ExceptionZZZ 
+//	 */
+//	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.setFlag(sFlagName, bFlagValue);
+//		if(bFunction==true) break main;
+//	
+//		//setting the flags of this object
+//		/*
+//		String stemp = sFlagName.toLowerCase();
+//		if(stemp.equals("useproxy")){
+//			bFlagUseProxy = bFlagValue;
+//			bFunction = true;			
+//			break main;
+//		}else if(stemp.equals("isconnected")){
+//			bFlagIsConnected = bFlagValue;
+//			bFunction = true;
+//			break main;
+//		}else if(stemp.equals("haserror")){
+//			bFlagHasError = bFlagValue;
+//			bFunction = true;
+//			break main;
+//		}else if(stemp.equals("portscanallfinished")){
+//			bFlagPortScanAllFinished = bFlagValue;
+//			bFunction = true;
+//			break main;			
+//		}
+//		*/
+//		}//end main:
+//		return bFunction;
+//	}
 	
 	
 	

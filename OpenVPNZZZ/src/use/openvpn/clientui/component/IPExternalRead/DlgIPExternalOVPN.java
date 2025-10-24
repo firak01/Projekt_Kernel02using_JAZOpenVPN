@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelZZZ;
-
+import basic.zKernel.flag.IFlagZEnabledZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -63,8 +63,5 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
 		return panelNavigator;
 	}
-	
-	
-
 }
 

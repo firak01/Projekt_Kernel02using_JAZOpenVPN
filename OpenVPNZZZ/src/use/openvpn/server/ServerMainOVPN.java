@@ -19,6 +19,7 @@ import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
+import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
 import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
 import basic.zUtil.io.KernelFileExpansionZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
@@ -40,7 +41,7 @@ import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.server.status.SenderObjectStatusLocalOVPN;
 
-public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,IEventBrokerStatusLocalSetUserOVPN,IListenerObjectStatusLocalOVPN{
+public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,IEventBrokerStatusLocalUserOVPN,IListenerObjectStatusLocalOVPN{
 	protected ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
 	volatile ArrayList<File> listaConfigFile = null;
@@ -1395,6 +1396,91 @@ private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalOVPN event
 		
 			}//end main:
 			return hmReturn;
+		}
+
+		@Override
+		public boolean start() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean startCustom() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void setSenderStatusLocalUsed(use.openvpn.client.status.ISenderObjectStatusLocalOVPN objEventSender) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean queryReactOnStatusLocalEventCustom(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isEventRelevant2ChangeStatusLocalByClass(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isEventRelevant2ChangeStatusLocalByStatusLocalValue(IEventObjectStatusLocalZZZ eventStatusLocal)
+				throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public ISenderObjectStatusBasicZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void registerForStatusLocalEvent(
+				use.openvpn.client.status.IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void unregisterForStatusLocalEvent(
+				use.openvpn.client.status.IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public HashMap createHashMapStatusLocal4ReactionCustom() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
+			// TODO Auto-generated method stub
+			return false;
 		}
 		
 }//END class

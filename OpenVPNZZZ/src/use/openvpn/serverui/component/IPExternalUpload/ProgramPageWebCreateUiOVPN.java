@@ -41,7 +41,7 @@ import basic.zKernel.file.ini.IKernelJavaCallIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonArrayIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonMapIniSolverZZZ;
-import basic.zKernel.file.ini.IKernelZFormulaIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelZFormulaIniZZZ;
 import basic.zKernel.html.ConfigHtmlTableHandlerByJobZZZ;
 import basic.zKernel.html.TagInputZZZ;
 import basic.zKernel.html.TagTypeInputZZZ;
@@ -69,7 +69,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ implements IConstantProgramPageWebCreateUiOVPN, IApplicationUserOVPN{
 	private IApplicationOVPN objApplication = null;
 	private KernelJPanelCascadedZZZ panel = null;
-	private String sText2Update;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
+	private String sText2Update=null;    //Der Wert, der ins Label geschreiben werden soll. Hier als Variable, damit die interne Runner-Klasse darauf zugreifen kann.
 	// Auch: Dieser Wert wird aus dem Web ausgelesen und danach in das Label des Panels geschrieben.
 
 	private boolean bFlagUseProxy = false;
@@ -90,6 +90,27 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 		this.panel = panel;
 	}
 	
+	//### Aus IResettableValuesZZZ
+	public boolean resetValues() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			bReturn = super.resetValues();
+			if(!bReturn & this.sText2Update!=null) bReturn = true;
+			this.sText2Update = null; //Damit der Wert neu geholt wird.
+		}//end main:
+		return bReturn;
+	}
+	
+	@Override
+	public boolean resetValues(Object objDefault) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			bReturn = super.resetValues();
+			if(!bReturn & this.sText2Update!=null) bReturn = true;
+			this.sText2Update = objDefault.toString(); //Damit der Wert neu geholt wird.
+		}//end main:
+		return bReturn;
+	}
 	
 	public boolean createPageWeb() throws ExceptionZZZ{
 		boolean bReturn = false;
@@ -98,7 +119,7 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 			//### Neuere Version: Mit Job und Xslt
 			try {
 				//Parameter aus args auslesen
-				String[]saFlag = {IKernelExpressionIniSolverZZZ.FLAGZ.USEEXPRESSION.name(),IKernelZFormulaIniSolverZZZ.FLAGZ.USEFORMULA.name(), IKernelZFormulaIniSolverZZZ.FLAGZ.USEFORMULA_MATH.name(),IKernelJsonIniSolverZZZ.FLAGZ.USEJSON.name(),IKernelJsonArrayIniSolverZZZ.FLAGZ.USEJSON_ARRAY.name(),IKernelJsonMapIniSolverZZZ.FLAGZ.USEJSON_MAP.name(), IKernelEncryptionIniSolverZZZ.FLAGZ.USEENCRYPTION.name(),IKernelCallIniSolverZZZ.FLAGZ.USECALL.name(), IKernelJavaCallIniSolverZZZ.FLAGZ.USECALL_JAVA.name()};
+				String[]saFlag = {IKernelExpressionIniSolverZZZ.FLAGZ.USEEXPRESSION_SOLVER.name(),IKernelZFormulaIniZZZ.FLAGZ.USEFORMULA.name(), IKernelZFormulaIniZZZ.FLAGZ.USEFORMULA_MATH.name(),IKernelJsonIniSolverZZZ.FLAGZ.USEJSON.name(),IKernelJsonArrayIniSolverZZZ.FLAGZ.USEJSON_ARRAY.name(),IKernelJsonMapIniSolverZZZ.FLAGZ.USEJSON_MAP.name(), IKernelEncryptionIniSolverZZZ.FLAGZ.USEENCRYPTION.name(),IKernelCallIniSolverZZZ.FLAGZ.USECALL.name(), IKernelJavaCallIniSolverZZZ.FLAGZ.USECALL_JAVA.name()};
 				//IKernelConfigZZZ objConfig = new ConfigHtmlTableHandlerByJobZZZ(saArg, saFlag);
 				IKernelConfigZZZ objConfig = new ConfigHtmlTableHandlerByJobZZZ();
 				IKernelZZZ objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man über die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
@@ -288,86 +309,86 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 	
 
 	
-//	######### GetFlags - Handled ##############################################
-	/** (non-Javadoc)
-	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
-	Flags used:<CR>
-	-  isConnected
-	- useProxy
-	- haserror
-	 */
-	public boolean getFlag(String sFlagName){
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.getFlag(sFlagName);
-			if(bFunction==true) break main;
-							
-			//getting the flags of this object
-			/*
-			String stemp = sFlagName.toLowerCase();
-			if(stemp.equals("useproxy")){
-				bFunction = bFlagUseProxy;
-				break main;						
-			}else if(stemp.equals("isconnected")){
-				bFunction = bFlagIsConnected;
-				break main;
-			}else if(stemp.equals("haserror")){				
-				bFunction = bFlagHasError;
-				break main;
-			}else if(stemp.equals("portscanallfinished")){				
-				bFunction = bFlagPortScanAllFinished;
-				break main; 				
-			}
-			*/
-		}//end main:
-		return bFunction;
-	}
+////	######### GetFlags - Handled ##############################################
+//	/** (non-Javadoc)
+//	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
+//	Flags used:<CR>
+//	-  isConnected
+//	- useProxy
+//	- haserror
+//	 */
+//	public boolean getFlag(String sFlagName){
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.getFlag(sFlagName);
+//			if(bFunction==true) break main;
+//							
+//			//getting the flags of this object
+//			/*
+//			String stemp = sFlagName.toLowerCase();
+//			if(stemp.equals("useproxy")){
+//				bFunction = bFlagUseProxy;
+//				break main;						
+//			}else if(stemp.equals("isconnected")){
+//				bFunction = bFlagIsConnected;
+//				break main;
+//			}else if(stemp.equals("haserror")){				
+//				bFunction = bFlagHasError;
+//				break main;
+//			}else if(stemp.equals("portscanallfinished")){				
+//				bFunction = bFlagPortScanAllFinished;
+//				break main; 				
+//			}
+//			*/
+//		}//end main:
+//		return bFunction;
+//	}
 	
 	
 
 
-	/**
-	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
-	 * @param sFlagName
-	 * Flags used:<CR>
-	 * - isconnected
-	 * - useproxy
-	 * - haserror
-	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
-	 * @throws ExceptionZZZ 
-	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.setFlag(sFlagName, bFlagValue);
-		if(bFunction==true) break main;
-	
-		//setting the flags of this object
-		/*
-		String stemp = sFlagName.toLowerCase();
-		if(stemp.equals("useproxy")){
-			bFlagUseProxy = bFlagValue;
-			bFunction = true;			
-			break main;
-		}else if(stemp.equals("isconnected")){
-			bFlagIsConnected = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("haserror")){
-			bFlagHasError = bFlagValue;
-			bFunction = true;
-			break main;
-		}else if(stemp.equals("portscanallfinished")){
-			bFlagPortScanAllFinished = bFlagValue;
-			bFunction = true;
-			break main;			
-		}
-		*/
-		}//end main:
-		return bFunction;
-	}
+//	/**
+//	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+//	 * @param sFlagName
+//	 * Flags used:<CR>
+//	 * - isconnected
+//	 * - useproxy
+//	 * - haserror
+//	 * - PortScanAllFinished //das ist zusammen mit "isconnected" das Zeichen f�r den ConnectionMonitor des Frontends, das er starten darf. Grund: Die PortScans f�hren ggf. zu timeouts.
+//	 * @throws ExceptionZZZ 
+//	 */
+//	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.setFlag(sFlagName, bFlagValue);
+//		if(bFunction==true) break main;
+//	
+//		//setting the flags of this object
+//		/*
+//		String stemp = sFlagName.toLowerCase();
+//		if(stemp.equals("useproxy")){
+//			bFlagUseProxy = bFlagValue;
+//			bFunction = true;			
+//			break main;
+//		}else if(stemp.equals("isconnected")){
+//			bFlagIsConnected = bFlagValue;
+//			bFunction = true;
+//			break main;
+//		}else if(stemp.equals("haserror")){
+//			bFlagHasError = bFlagValue;
+//			bFunction = true;
+//			break main;
+//		}else if(stemp.equals("portscanallfinished")){
+//			bFlagPortScanAllFinished = bFlagValue;
+//			bFunction = true;
+//			break main;			
+//		}
+//		*/
+//		}//end main:
+//		return bFunction;
+//	}
 	
 	
 	

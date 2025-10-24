@@ -56,9 +56,24 @@ public class ProgramIpWeb2iniOVPN extends AbstractProgram2iniOVPN implements ICo
 	}
 	
 	public boolean resetValues() throws ExceptionZZZ{
-		super.resetValues();
-		this.sIpFromUi = ""; //Damit der Wert neu geholt wird.
-		return true;
+		boolean bReturn = false;
+		main:{
+			bReturn = super.resetValues();
+			if(!bReturn & this.sIpFromUi!=null) bReturn = true;
+			this.sIpFromUi = null; //Damit der Wert neu geholt wird.
+		}//end main:
+		return bReturn;
+	}
+	
+	@Override
+	public boolean resetValues(Object objDefault) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			bReturn = super.resetValues();
+			if(!bReturn & this.sIpFromUi!=null) bReturn = true;
+			this.sIpFromUi = objDefault.toString(); //Damit der Wert neu geholt wird.
+		}//end main:
+		return bReturn;
 	}
 	
 	//### Getter / Setter	
