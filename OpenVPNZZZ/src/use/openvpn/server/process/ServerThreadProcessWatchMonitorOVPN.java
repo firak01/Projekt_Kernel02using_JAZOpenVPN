@@ -1196,7 +1196,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	
 
 	@Override
-	public HashMap createHashMapStatusLocal4ReactionCustom() {
+	public HashMap createHashMapStatusLocal4ReactionCustom_String() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1216,6 +1216,12 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 
 	@Override
 	public boolean startCustom() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
 	}

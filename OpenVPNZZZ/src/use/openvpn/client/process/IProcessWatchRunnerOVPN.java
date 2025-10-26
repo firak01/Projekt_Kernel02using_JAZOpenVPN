@@ -15,9 +15,16 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	public int getNumberOfProcess() throws ExceptionZZZ;
 	public void setNumberOfProcess(int iNumberOfProcess) throws ExceptionZZZ;
 	
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ;
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ;
+	
+	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ;
+	
 	//##############################
 	public enum FLAGZ{
-		DUMMY,END_ON_CONNECTION
+		DUMMY,END_ON_CONNECTION,END_ON_CONNECTIONLOST
 	}
 	
 	boolean getFlag(FLAGZ objEnumFlag);

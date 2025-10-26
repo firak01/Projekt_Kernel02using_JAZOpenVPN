@@ -21,7 +21,7 @@ import basic.zKernel.file.ini.IKernelJavaCallIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonArrayIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonMapIniSolverZZZ;
-import basic.zKernel.file.ini.IKernelZFormulaIniSolverZZZ;
+import basic.zKernel.file.ini.IKernelZFormulaIniZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.ISenderObjectFlagZsetZZZ;
@@ -48,7 +48,7 @@ public class ServerMainUIZZZ implements IConstantZZZ{
 				main:{						
 					try {
 //						Parameter aus args auslesen
-						String[]saFlag = {IKernelExpressionIniSolverZZZ.FLAGZ.USEEXPRESSION.name(),IKernelZFormulaIniSolverZZZ.FLAGZ.USEFORMULA.name(), IKernelZFormulaIniSolverZZZ.FLAGZ.USEFORMULA_MATH.name(),IKernelJsonIniSolverZZZ.FLAGZ.USEJSON.name(),IKernelJsonArrayIniSolverZZZ.FLAGZ.USEJSON_ARRAY.name(),IKernelJsonMapIniSolverZZZ.FLAGZ.USEJSON_MAP.name(), IKernelEncryptionIniSolverZZZ.FLAGZ.USEENCRYPTION.name(),IKernelCallIniSolverZZZ.FLAGZ.USECALL.name(), IKernelJavaCallIniSolverZZZ.FLAGZ.USECALL_JAVA.name()};
+						String[]saFlag = {IKernelExpressionIniSolverZZZ.FLAGZ.USEEXPRESSION_SOLVER.name(),IKernelZFormulaIniZZZ.FLAGZ.USEFORMULA.name(), IKernelZFormulaIniZZZ.FLAGZ.USEFORMULA_MATH.name(),IKernelJsonIniSolverZZZ.FLAGZ.USEJSON.name(),IKernelJsonArrayIniSolverZZZ.FLAGZ.USEJSON_ARRAY.name(),IKernelJsonMapIniSolverZZZ.FLAGZ.USEJSON_MAP.name(), IKernelEncryptionIniSolverZZZ.FLAGZ.USEENCRYPTION.name(),IKernelCallIniSolverZZZ.FLAGZ.USECALL.name(), IKernelJavaCallIniSolverZZZ.FLAGZ.USECALL_JAVA.name()};
 						ConfigOVPN objConfig = new ConfigOVPN(saArg, saFlag);
 						this.objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man ueber die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 
@@ -84,18 +84,24 @@ public class ServerMainUIZZZ implements IConstantZZZ{
 							break main;
 						}
 						
-					} catch (ExceptionZZZ ez) {
+					} catch (ExceptionZZZ ez1) {
 						if(objKernel!=null){
 							LogZZZ objLog = objKernel.getLogObject();
 							if(objLog!=null){
-								objLog.WriteLineDate(ez.getDetailAllLast());
+								try {
+									objLog.WriteLineDate(ez1.getDetailAllLast());
+								} catch (ExceptionZZZ ez2) {
+									ez2.printStackTrace();
+									System.out.println(ez1.getDetailAllLast());
+									System.out.println(ez2.getDetailAllLast());									
+								}
 							}else{
-								ez.printStackTrace();
-								System.out.println(ez.getDetailAllLast());
+								ez1.printStackTrace();
+								System.out.println(ez1.getDetailAllLast());
 							}				
 						}else{
-							ez.printStackTrace();
-							System.out.println(ez.getDetailAllLast());
+							ez1.printStackTrace();
+							System.out.println(ez1.getDetailAllLast());
 						}
 					}//END Catch
 					}//END main:

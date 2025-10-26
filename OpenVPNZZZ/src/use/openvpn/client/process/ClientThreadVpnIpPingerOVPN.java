@@ -27,14 +27,15 @@ import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
 import use.openvpn.client.status.EventObject4VpnIpPingerStatusLocalOVPN;
-import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
+import use.openvpn.client.status.IEventBrokerStatusLocalUserOVPN;
 import use.openvpn.client.status.IEventObject4VpnIpPingerStatusLocalOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
 
-public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalSetUserOVPN{
+public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalUserOVPN{
+	private static final long serialVersionUID = 4598201201165618817L;
 	protected volatile IModuleZZZ objModule = null;
 	protected volatile String sModuleName=null;
 	protected volatile String sProgramName = null;
@@ -133,25 +134,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 				} catch (ExceptionZZZ e1) {
 					System.out.println(e1.getDetailAllLast());
 					e1.printStackTrace();
-				}
-				
-				try {
-					String sLog = ez.getDetailAllLast();
-					this.logLineDate("An error happend: '" + sLog + "'");
-				} catch (ExceptionZZZ e1) {				
-					System.out.println(ez.getDetailAllLast());
-					e1.printStackTrace();
-				}			
-			} catch (InterruptedException e) {					
-				try {
-					String sLog = e.getMessage();
-					this.logLineDate("An error happend: '" + sLog + "'");
-				} catch (ExceptionZZZ e1) {
-					System.out.println(e1.getDetailAllLast());
-					e1.printStackTrace();
-				}
-				System.out.println(e.getMessage());
-				e.printStackTrace();
+				}		
 			}
 		}
 	
@@ -1046,12 +1029,12 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 
 	@Override
 	public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-		this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
+		((use.openvpn.server.status.ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).addListenerObjectStatusLocalSet((use.openvpn.server.status.IListenerObjectStatusLocalOVPN) objEventListener);
 	}
 
 	@Override
 	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);;
+		((use.openvpn.server.status.ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).removeListenerObjectStatusLocalSet((use.openvpn.server.status.IListenerObjectStatusLocalOVPN) objEventListener);;
 	}
 	
 	//### Aus IModuleZZZ
@@ -1276,16 +1259,17 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			return false;
 		}
 
-		@Override
-		public void setSenderStatusLocalUsed(use.openvpn.server.status.ISenderObjectStatusLocalOVPN objEventSender) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		
 		@Override
 		public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
+		}
+
+		@Override
+		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
+			// TODO Auto-generated method stub
+			
 		}
 	
 	

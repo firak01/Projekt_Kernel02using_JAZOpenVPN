@@ -1613,7 +1613,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
+			IEnumSetMappedStatusZZZ enumStatus = (IEnumSetMappedStatusZZZ) eventStatusLocalSet.getStatusEnum();							
 			bReturn = this.isStatusLocalRelevant(enumStatus);
 			if(!bReturn) break main;
 		}//end main:
@@ -1623,9 +1623,11 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	
 	//#######################################
 	
-	//### aus IListenerObjectStatusLocalMapForEventUserZZZ
+	//### aus IListenerStatusLocalZZZ
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus(){
+	//### aus IListenerObjectStatusLocalMapForEventUserZZZ
+	//public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
 		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>();
 		main:{
 			
@@ -1651,6 +1653,12 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			hmReturn.put(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASERROR, IClientMainOVPN.STATUSLOCAL.HASERROR);
 		}//end main:
 		return hmReturn;
+	}
+	
+	@Override
+	public HashMap createHashMapStatusLocal4ReactionCustom_Enum() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -1729,7 +1737,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 
 	@Override
-	public HashMap createHashMapStatusLocal4ReactionCustom() {
+	public HashMap createHashMapStatusLocal4ReactionCustom_String() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1746,6 +1754,10 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	
+
+	
 
 
 

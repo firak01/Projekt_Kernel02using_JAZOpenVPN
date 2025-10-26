@@ -174,13 +174,13 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 			 */
 			public void updateTextField(final ProgramIpWeb2iniOVPN objProg, final String stext){
 								
-//				Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
+				//Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
 				Runnable runnerUpdateLabel= new Runnable(){
 
 					public void run(){
-//						In das Textfeld eintragen, das etwas passiert.
-						logLineDate("TextField updated with '" + stext + "'");						
 						try {
+							//In das Textfeld eintragen, das etwas passiert.
+							logLineDate("TextField updated with '" + stext + "'");												
 							objProg.updateLabel(stext);
 						} catch (ExceptionZZZ e) {
 							e.printStackTrace();

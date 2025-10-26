@@ -19,19 +19,20 @@ import basic.zKernel.flag.IFlagZEnabledZZZ;
 import basic.zKernel.status.IEventObjectStatusBasicZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IListenerObjectStatusBasicZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
 import use.openvpn.client.status.EventObject4ProcessWatchRunnerStatusLocalOVPN;
 import use.openvpn.client.status.EventObject4ProcessWatchStatusLocalOVPN;
-import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
+import use.openvpn.client.status.IEventBrokerStatusLocalUserOVPN;
 import use.openvpn.client.status.IEventObject4ProcessWatchRunnerStatusLocalOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
 
@@ -41,7 +42,8 @@ import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
  * @author 0823
  *
  */
-public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implements IProcessWatchRunnerOVPN, IEventBrokerStatusLocalSetUserOVPN{	
+public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implements IProcessWatchRunnerOVPN, IEventBrokerStatusLocalUserOVPN{	
+	private static final long serialVersionUID = -5295874469072527211L;
 	private ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	private ClientMainOVPN objMain = null;
 	private ClientConfigStarterOVPN objClientConfigStarter = null; //Das Konfigurationsobjekt, dem der Start zugrundeliegt.
@@ -82,7 +84,8 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumber();
+			try {
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumberOfProcess();
 				System.out.println(sLog);
 				this.logLineDate(sLog);
 				
@@ -93,7 +96,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 					this.writeOutputToLogPLUSanalyse();				
 					boolean bHasConnection = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
 					if(bHasConnection) {
-						sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumber();
+						sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumberOfProcess();
 						this.logLineDate(sLog);						
 						
 						//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
@@ -108,6 +111,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 						}		
 						
 						Thread.sleep(20);
+						
 						boolean bStopRequested = this.getFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
 						if( bStopRequested) break main;
 						
@@ -117,27 +121,26 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 					
 					
 					//System.out.println("FGLTEST02");
-					this.writeErrorToLog();				
+					//this.writeErrorToLogWithStatus();				
 					boolean bError = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR);
 					if(bError) break;
 	
 					//Nach irgendeiner Ausgabe enden ist hier falsch, in einer abstrakten Klasse vielleicht richtig, quasi als Muster.
 					//if(this.getFlag("hasOutput")) break;
 					//System.out.println("FGLTEST03");
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						ExceptionZZZ ez = new ExceptionZZZ("An InterruptedException happened: '" + e.getMessage() + "''", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-						throw ez;
-					}
+					Thread.sleep(10);
 					
 					boolean bStopRequested = this.getFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP);//Merke: Das ist eine Anweisung und kein Status. Darum bleibt es beim Flag.
 					if(bStopRequested) break;					
 			}while(true);
 			this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED,true);
-			this.getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumber() + " ended.");
+			this.getClientBackendObject().getKernelObject().getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumberOfProcess() + " ended.");
 		
-		
+			} catch (InterruptedException e) {
+				ExceptionZZZ ez = new ExceptionZZZ("An InterruptedException happened: '" + e.getMessage() + "''", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			
 			bReturn = true;
 		}//END main
 		return bReturn;
@@ -194,67 +197,67 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	}		
 
 	
-	/* (non-Javadoc)
-	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
-	Flags used: 
-	- hasError
-	- hasOutput
-	- hasInput
-	- stoprequested
-	 */
-	public boolean getFlag(String sFlagName){
-		boolean bFunction = false;
-		main:{
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.getFlag(sFlagName);
-			if(bFunction==true) break main;
-		
-			//getting the flags of this object
-//			String stemp = sFlagName.toLowerCase();
-//			if(stemp.equals("haserror")){
-//				bFunction = bFlagHasError;
-//				break main;
-//			}else if(stemp.equals("hasconnection")) {
-//				bFunction = bFlagHasConnection;
-//				break main;
-//			}
-			
-		}//end main:
-		return bFunction;
-	}
+//	/* (non-Javadoc)
+//	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
+//	Flags used: 
+//	- hasError
+//	- hasOutput
+//	- hasInput
+//	- stoprequested
+//	 */
+//	public boolean getFlag(String sFlagName){
+//		boolean bFunction = false;
+//		main:{
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.getFlag(sFlagName);
+//			if(bFunction==true) break main;
+//		
+//			//getting the flags of this object
+////			String stemp = sFlagName.toLowerCase();
+////			if(stemp.equals("haserror")){
+////				bFunction = bFlagHasError;
+////				break main;
+////			}else if(stemp.equals("hasconnection")) {
+////				bFunction = bFlagHasConnection;
+////				break main;
+////			}
+//			
+//		}//end main:
+//		return bFunction;
+//	}
 
-	/**
-	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
-	 * @param sFlagName
-	 * Flags used:<CR>
-	 	- hasError
-	- hasOutput
-	- hasInput
-	- stoprequested
-	 * @throws ExceptionZZZ 
-	 */
-	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
-		boolean bFunction = false;
-		main:{			
-			if(StringZZZ.isEmpty(sFlagName)) break main;
-			bFunction = super.setFlag(sFlagName, bFlagValue);
-			if(bFunction==true) break main;
-		
-		//setting the flags of this object
-//		String stemp = sFlagName.toLowerCase();
-//		if(stemp.equals("haserror")){
-//			bFlagHasError = bFlagValue;
-//			bFunction = true;
-//			break main;
-//		}else if(stemp.equals("hasconnection")) {
-//			bFlagHasConnection = bFlagValue;
-//			bFunction = true;
-//			break main;
-//		}
-
-		}//end main:
-		return bFunction;
-	}
+//	/**
+//	 * @see AbstractKernelUseObjectZZZ.basic.KernelUseObjectZZZ#setFlag(java.lang.String, boolean)
+//	 * @param sFlagName
+//	 * Flags used:<CR>
+//	 	- hasError
+//	- hasOutput
+//	- hasInput
+//	- stoprequested
+//	 * @throws ExceptionZZZ 
+//	 */
+//	public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ{
+//		boolean bFunction = false;
+//		main:{			
+//			if(StringZZZ.isEmpty(sFlagName)) break main;
+//			bFunction = super.setFlag(sFlagName, bFlagValue);
+//			if(bFunction==true) break main;
+//		
+//		//setting the flags of this object
+////		String stemp = sFlagName.toLowerCase();
+////		if(stemp.equals("haserror")){
+////			bFlagHasError = bFlagValue;
+////			bFunction = true;
+////			break main;
+////		}else if(stemp.equals("hasconnection")) {
+////			bFlagHasConnection = bFlagValue;
+////			bFunction = true;
+////			break main;
+////		}
+//
+//		}//end main:
+//		return bFunction;
+//	}
 
 	//+++ aus IProcessWatchRunnerZZZ
 	
@@ -312,10 +315,10 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 	 * @author Fritz Lindhauer, 03.09.2023, 07:35:31
 	 */
 	@Override
-	public boolean analyseInputLineCustom(String sLine) throws ExceptionZZZ {
+	public boolean analyseInputLineCustom(String sLine, String sLineFilter) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			int iProcess = this.getNumber();
+			int iProcess = this.getNumberOfProcess();
 			String sLog = ReflectCodeZZZ.getPositionCurrent() +  " Process#" + iProcess + ": sLine=" + sLine;		
 			System.out.println(sLog);
 			this.logLineDate(sLog);
@@ -324,7 +327,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, true);
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht wird, dies hier tun
-				boolean bEndOnConnection = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION);
+				boolean bEndOnConnection = this.getFlag(IProcessWatchRunnerOVPN.FLAGZ.END_ON_CONNECTION);
 				if(bEndOnConnection) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
 					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP, true);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
@@ -350,7 +353,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST, true);
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht wird, dies hier tun
-				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
+				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerOVPN.FLAGZ.END_ON_CONNECTIONLOST);
 				if(bEndOnConnectionLost) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
 					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP, true);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
@@ -369,7 +372,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				
 				//Falls ein Abbruch nach der Verbindung gewuenscht worden waere, dies hier wieder rueckgaengig machen
 				//Idee dahinter: Der Verbindungsverlust war so kurzfristig, der STOPREQUEST hat noch garnicht gezogen.
-				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTIONLOST);
+				boolean bEndOnConnectionLost = this.getFlag(IProcessWatchRunnerOVPN.FLAGZ.END_ON_CONNECTIONLOST);
 				if(bEndOnConnectionLost) {
 					//Den Process selbst an dieser Stelle nicht beenden, sondern nur ein Flag setzten, auf das reagiert werden kann.
 					boolean bStopRequested = this.setFlag(IProgramRunnableZZZ.FLAGZ.REQUEST_STOP, false);//Merke: STOPREQUEST ist eine Anweisung.. bleibt also ein Flag und ist kein Status
@@ -647,7 +650,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
 				event.setClientConfigStarterObjectUsed(this.getClientConfigStarterObject());
 				
-				sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumber() + " fires event '" + enumStatus.getAbbreviation() + "'";
+				sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumberOfProcess() + " fires event '" + enumStatus.getAbbreviation() + "'";
 				this.logProtocolString(sLog);
 				this.getSenderStatusLocalUsed().fireEvent(event);
 						
@@ -658,14 +661,14 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 
 		
 		@Override
-		public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+		public ISenderObjectStatusLocalZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
 			if(this.objEventStatusLocalBroker==null) {
 				//++++++++++++++++++++++++++++++
 				//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
 				ISenderObjectStatusLocalOVPN objSenderStatusLocal = new SenderObjectStatusLocalOVPN();
 				this.objEventStatusLocalBroker = objSenderStatusLocal;
 			}
-			return this.objEventStatusLocalBroker;
+			return (ISenderObjectStatusLocalZZZ) this.objEventStatusLocalBroker;
 		}
 
 		@Override
@@ -674,13 +677,18 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		}
 
 		@Override
+		public void registerForStatusLocalEvent(IListenerObjectStatusLocalZZZ objEventListener) throws ExceptionZZZ {
+			((ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).addListenerObjectStatusLocal((IListenerObjectStatusLocalOVPN) objEventListener);
+		}
+		
+		@Override
 		public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-			this.getSenderStatusLocalUsed().addListenerObjectStatusLocal(objEventListener);
+			((ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).addListenerObjectStatusLocal(objEventListener);
 		}
 
 		@Override
 		public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-			this.getSenderStatusLocalUsed().removeListenerObjectStatusLocal(objEventListener);
+			((ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).removeListenerObjectStatusLocal(objEventListener);
 		}
 		
 		/** In dieser Methode werden die Ausgabezeilen eines Batch-Prozesses ( cmd.exe ) 
@@ -746,13 +754,14 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 						}
 					}//END check:
 				
+					String sLineFilter = this.getLineFilter();
 					BufferedReader in = new BufferedReader( new InputStreamReader(objProcess.getInputStream()) );
-					for ( String s; (s = in.readLine()) != null; ){
+					for ( String sLine; (sLine = in.readLine()) != null; ){
 					    //System.out.println( s );
-						this.getLogObject().WriteLine(this.getNumber() +"#"+ s);
+						this.getClientBackendObject().getLogObject().WriteLine(this.getNumberOfProcess() +"#"+ sLine);
 						this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASOUTPUT, true);
 						
-						boolean bAny = this.analyseInputLineCustom(s);
+						boolean bAny = this.analyseInputLineCustom(sLine, sLineFilter);
 										
 						Thread.sleep(20);
 					}								
@@ -766,49 +775,45 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			}//END main:
 		}
 		
-		@Override
-		public boolean writeErrorToLogWithStatus() throws ExceptionZZZ{
-			boolean bReturn = false;
-			main:{			
-				try{
-					bReturn = this.writeErrorToLog();
-					if(!bReturn)break main;
-					
-				    this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR, true);
-				    Thread.sleep(20);			
-
-				} catch (InterruptedException e) {
-					ExceptionZZZ ez = new ExceptionZZZ("InterruptedException happend: '"+ e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}
-				bReturn = true;
-			}//END Main:	
-			return bReturn;
-		}
+//		@Override
+//		public boolean writeErrorToLogWithStatus() throws ExceptionZZZ{
+//			boolean bReturn = false;
+//			main:{			
+//				try{
+//					bReturn = this.writeErrorToLog();
+//					if(!bReturn)break main;
+//					
+//				    this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASERROR, true);
+//				    Thread.sleep(20);			
+//
+//				} catch (InterruptedException e) {
+//					ExceptionZZZ ez = new ExceptionZZZ("InterruptedException happend: '"+ e.getMessage() + "'", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//					throw ez;
+//				}
+//				bReturn = true;
+//			}//END Main:	
+//			return bReturn;
+//		}
 		
 		//########################
 		//#######################################		
-		@Override
-		public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnum) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
-				if(!(objEnum instanceof IProcessWatchRunnerOVPN.STATUSLOCAL) ){
-					String sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus wird wg. unpassender Klasse ignoriert.";
-					System.out.println(sLog);
-					//this.objMain.logMessageString(sLog);
-					break main;
-				}		
-				bReturn = true;
+//		@Override
+//		public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnum) throws ExceptionZZZ {
+//			boolean bReturn = false;
+//			main:{
+//				//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
+//				if(!(objEnum instanceof IProcessWatchRunnerOVPN.STATUSLOCAL) ){
+//					String sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus wird wg. unpassender Klasse ignoriert.";
+//					System.out.println(sLog);
+//					//this.objMain.logMessageString(sLog);
+//					break main;
+//				}		
+//				bReturn = true;
+//
+//			}//end main:
+//			return bReturn;
+//		}
 
-			}//end main:
-			return bReturn;
-		}
-		@Override
-		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
-			// TODO Auto-generated method stub
-			
-		}
 		@Override
 		public boolean queryReactOnStatusLocalEventCustom(IEventObjectStatusLocalZZZ eventStatusLocal)
 				throws ExceptionZZZ {
@@ -833,11 +838,6 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			// TODO Auto-generated method stub
 			return false;
 		}
-		@Override
-		public ISenderObjectStatusBasicZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
-			// TODO Auto-generated method stub
-			return null;
-		}
 		
 		@Override
 		public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
@@ -845,7 +845,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			return false;
 		}
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, String> createHashMapStatusLocal4ReactionCustom() {
+		public HashMap<IEnumSetMappedStatusZZZ, String> createHashMapStatusLocal4ReactionCustom_String() {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -855,4 +855,5 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			// TODO Auto-generated method stub
 			return false;
 		}
+		
 }//END class

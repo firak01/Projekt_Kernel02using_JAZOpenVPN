@@ -1135,9 +1135,6 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		
 	//#######################################
 	//#######################################		
-	/* (non-Javadoc)
-	 * @see basic.zBasic.AbstractObjectWithStatusZZZ#isStatusLocalRelevant(basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ)
-	 */
 	@Override
 	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
 		boolean bReturn = false;
@@ -1200,6 +1197,27 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 						
 		}//end main:
 		return hmReturn;	
+	}
+	
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_String() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see basic.zBasic.AbstractObjectWithStatusMonitoringZZZ#createHashMapEnumSetForCascadingStatusLocalCustom()
+	 */
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -1277,13 +1295,6 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		return false;
 	}
 
-
-	@Override
-	public HashMap createHashMapStatusLocal4ReactionCustom() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
 			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
@@ -1296,4 +1307,6 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	
 }//END class

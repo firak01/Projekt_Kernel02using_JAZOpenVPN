@@ -23,6 +23,7 @@ import basic.zBasic.util.abstractList.ArrayListUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
+import basic.zKernel.IKernelContextZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
@@ -32,20 +33,21 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.tray.AbstractKernelTrayUIZZZ;
 import basic.zKernelUI.component.tray.IActionTrayZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
+import custom.zKernel.LogZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientConfigFileZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN;
-import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.ClientTrayStatusTypeZZZ;
+
+import use.openvpn.server.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.server.IServerMainOVPN;
 import use.openvpn.server.IServerMainOVPN.STATUSLOCAL;
 import use.openvpn.server.ServerApplicationOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
-import use.openvpn.server.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.serverui.component.FTPCredentials.DlgFTPCredentialsOVPN;
 import use.openvpn.serverui.component.IPExternalUpload.DlgIPExternalOVPN;
@@ -830,7 +832,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			//########################################	
 			if(objEnumForTray == ServerTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
 				//++++++++ TESTEN - Ermittle u.a. die StatusGroupIds über alle vorherigen Events...
-				this.getMainObject().debugCircularBufferStatusLocalMessage();				
+				this.getMainObject().debugCircularBufferStatusLocal();				
 				//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 					
 
@@ -1065,21 +1067,22 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	}
 	
 	
-	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
-		if(this.hmEnumSet==null) {
-			this.hmEnumSet = this.createHashMapEnumSetForStatusLocalCustom();
-		}
-		return this.hmEnumSet;
-	}
-
-	@Override
-	public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
-		this.hmEnumSet = hmEnumSet;
-	}
+//	@Override
+//	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
+//		if(this.hmEnumSet==null) {
+//			this.hmEnumSet = this.createHashMapEnumSetForStatusLocalCustom();
+//		}
+//		return this.hmEnumSet;
+//	}
+//
+//	@Override
+//	public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
+//		this.hmEnumSet = hmEnumSet;
+//	}
 	
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForStatusLocalCustom() {
+//	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForStatusLocalCustom() {
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_String(){
 		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>();
 		main:{
 			
@@ -1206,6 +1209,160 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			
 		}//end main:
 		return objReturn;
+	}
+
+	@Override
+	public boolean getFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag, boolean bFlagValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean[] setFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ[] objaEnumFlag,
+			boolean bFlagValue) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean proofFlagExists(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean proofFlagSetBefore(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public IKernelZZZ getKernelObject() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setKernelObject(IKernelZZZ objKernel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public LogZZZ getLogObject() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setLogObject(LogZZZ objLog) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setContextUsed(IKernelContextZZZ objContext) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IKernelContextZZZ getContextUsed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean queryReactOnStatusLocalEventCustom(IEventObjectStatusLocalZZZ eventStatusLocal) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage,
+			boolean bStatusValue) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> getHashMapEnumSetForCascadingStatusLocal() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }//END Class
 

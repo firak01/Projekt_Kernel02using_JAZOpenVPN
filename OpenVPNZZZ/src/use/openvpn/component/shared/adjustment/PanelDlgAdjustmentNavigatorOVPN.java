@@ -388,7 +388,11 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
-							logLineDate("label updatede ..... TODOGOON '" + stext + "'");
+							try {
+								logLineDate("label updatede ..... TODOGOON '" + stext + "'");
+							} catch (ExceptionZZZ ez) {
+								ez.printStackTrace();
+							}
 							
 							objProg.updateLabel(stext);  
 							

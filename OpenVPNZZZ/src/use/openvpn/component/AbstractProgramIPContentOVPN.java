@@ -298,10 +298,10 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 		//Wenn irgendetwas gesetzt war true zurueckgeben
 		if(this.sURL2Read!=null||this.sIPExternal!= null||this.sIPProxy!= null||this.sPortProxy!= null) bReturn = true;
 
-		this.sURL2Read=null;
-		this.sIPExternal = null;
-		this.sIPProxy = null;
-		this.sPortProxy = null;
+		this.sURL2Read=objDefault.toString();
+		this.sIPExternal = objDefault.toString();
+		this.sIPProxy = objDefault.toString();
+		this.sPortProxy = objDefault.toString();
 		return bReturn;		
 	}
 

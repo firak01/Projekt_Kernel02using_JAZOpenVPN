@@ -19,7 +19,9 @@ import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
 import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
 import basic.zUtil.io.KernelFileExpansionZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
@@ -34,7 +36,7 @@ import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.STATUSLOCAL;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.status.EventObject4ServerMainStatusLocalOVPN;
-import use.openvpn.server.status.IEventBrokerStatusLocalSetUserOVPN;
+import use.openvpn.server.status.IEventBrokerStatusLocalUserOVPN;
 import use.openvpn.server.status.IEventObject4ServerMainStatusLocalSetOVPN;
 import use.openvpn.server.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.server.status.IListenerObjectStatusLocalOVPN;
@@ -832,7 +834,8 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 			//Dann erzeuge den Event und feuer ihn ab.
 			IEventObject4ServerMainStatusLocalSetOVPN event = null;
 			if(sStatusName.equalsIgnoreCase(IServerMainOVPN.STATUSLOCAL.ISSTARTING.getName())){
-				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";				
+				//String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";				
+				String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "'";
 				this.logProtocolString(sLog);					
 				event = new EventObject4ServerMainStatusLocalOVPN(this,1,STATUSLOCAL.ISSTARTING, true);
 			}else {
@@ -963,16 +966,16 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	}
 
 	
-	//### aus IEventBrokerStatusLocalSetUserOVPN
+	//### aus IEventBrokerStatusLocalUserOVPN
 	@Override
-	public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {		
+	public ISenderObjectStatusLocalZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {		
 		if(this.objEventStatusLocalBroker==null) {
 			//++++++++++++++++++++++++++++++
 			//Nun geht es darum den Sender fuer Aenderungen an den Flags zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
 			ISenderObjectStatusLocalOVPN objSenderStatusLocal = new SenderObjectStatusLocalOVPN();
 			this.objEventStatusLocalBroker = objSenderStatusLocal;
 		}
-		return this.objEventStatusLocalBroker;
+		return (ISenderObjectStatusLocalZZZ) this.objEventStatusLocalBroker;
 		
 	}
 
@@ -982,13 +985,13 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	}
 	
 	@Override
-	public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-		this.getSenderStatusLocalUsed().addListenerObjectStatusLocalSet(objEventListener);
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalZZZ objEventListener) throws ExceptionZZZ {
+		((ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).addListenerObjectStatusLocalSet((IListenerObjectStatusLocalOVPN) objEventListener);
 	}
 
 	@Override
-	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocalSet(objEventListener);
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalZZZ objEventListener) throws ExceptionZZZ {
+		((ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).removeListenerObjectStatusLocalSet((IListenerObjectStatusLocalOVPN) objEventListener);
 	}
 	
 	//#############################
@@ -1104,10 +1107,11 @@ private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalOVPN event
 
 		
 		//+++ Mappe nun die eingehenden Status-Enums auf die eigenen.
-		IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();
+		IEnumSetMappedZZZ enumStatus = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();
 					
 		//+++++++++++++++++++++
-		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+		//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapStatusLocal();
 		IServerMainOVPN.STATUSLOCAL objEnum = (IServerMainOVPN.STATUSLOCAL) hmEnum.get(enumStatus);			
 		if(objEnum==null) {
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1153,7 +1157,7 @@ private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalOVPN event
 		
 		
 		String sStatusMessage = eventStatusLocalSet.getStatusMessage();	
-		boolean bStatusLocalSet = this.switchStatusLocalForGroupTo(iIndex, (IEnumSetMappedStatusZZZ)objEnum, sStatusMessage, bValue);//Es wird ein Event gefeuert, an dem das Tray-Objekt und andere registriert sind und dann sich passend einstellen kann.
+		boolean bStatusLocalSet = this.switchStatusLocalForGroupTo(iIndex, (Enum)objEnum, sStatusMessage, bValue);//Es wird ein Event gefeuert, an dem das Tray-Objekt und andere registriert sind und dann sich passend einstellen kann.
 		if(!bStatusLocalSet) {
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
 			System.out.println(sLog);
@@ -1225,7 +1229,7 @@ private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalOVPN event
 			System.out.println(sLog);
 			this.logProtocolString(sLog);
 			
-			IEnumSetMappedZZZ enumStatusFromEvent = eventStatusLocalSet.getStatusEnum();				
+			IEnumSetMappedZZZ enumStatusFromEvent = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();				
 			if(enumStatusFromEvent==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
 				System.out.println(sLog);
@@ -1252,7 +1256,7 @@ private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalOVPN event
 			IEnumSetMappedZZZ objEnumStatusLocal = null;
 
 			//HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForCascadingStatusLocalCustom();
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hm = this.getHashMapEnumSetForCascadingStatusLocal();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hm = this.getHashMapStatusLocal();
 			objEnumStatusLocal = hm.get(enumStatusFromEvent);					
 			//###############################
 			
@@ -1320,7 +1324,7 @@ private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalOVPN event
 	public boolean isEventRelevantByStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			IEnumSetMappedStatusZZZ enumStatus = eventStatusLocalSet.getStatusEnum();							
+			IEnumSetMappedStatusZZZ enumStatus = (IEnumSetMappedStatusZZZ) eventStatusLocalSet.getStatusEnum();							
 			bReturn = this.isStatusLocalRelevant(enumStatus);
 			if(!bReturn) break main;
 		}//end main:
@@ -1445,12 +1449,6 @@ private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalOVPN event
 		}
 
 		@Override
-		public ISenderObjectStatusBasicZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public void registerForStatusLocalEvent(
 				use.openvpn.client.status.IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
@@ -1465,7 +1463,7 @@ private boolean changeStatusLocalMonitorEvent_(IEventObjectStatusLocalOVPN event
 		}
 
 		@Override
-		public HashMap createHashMapStatusLocal4ReactionCustom() {
+		public HashMap createHashMapStatusLocal4ReactionCustom_String() {
 			// TODO Auto-generated method stub
 			return null;
 		}

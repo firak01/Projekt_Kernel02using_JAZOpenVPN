@@ -27,10 +27,12 @@ import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.file.ResourceEasyZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
+import basic.zKernel.IKernelContextZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ;
+import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IStatusBooleanZZZ;
 import basic.zKernel.status.IStatusLocalMapForStatusLocalUserZZZ;
 import basic.zKernelUI.component.IActionCascadedZZZ;
@@ -38,6 +40,7 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.tray.AbstractKernelTrayUIZZZ;
 import basic.zKernelUI.component.tray.IActionTrayZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
+import custom.zKernel.LogZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientApplicationOVPN;
@@ -947,9 +950,10 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 		return bReturn;
 	}
 	
-	//+++ Aus IListenerObjectStatusLocalSetOVPN
+	//+++ Aus IListenerObjectStatusLocalOVPN
 	@Override
-	public boolean changedStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean reactOnStatusLocalEvent(IEventObjectStatusLocalZZZ eventStatusLocalSet) throws ExceptionZZZ {
+	//public boolean changedStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		//Der Tray ist am MainObjekt registriert.
 		//Wenn ein Event geworfen wird, dann reagiert er darauf, hiermit....
 		boolean bReturn=false;
@@ -1013,7 +1017,8 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	 * @throws ExceptionZZZ
 	 * @author Fritz Lindhauer, 19.10.2023, 09:43:19
 	 */
-	private boolean statusLocalChangedMainEvent_(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	private boolean statusLocalChangedMainEvent_(IEventObjectStatusLocalZZZ eventStatusLocalSet) throws ExceptionZZZ {
+	//private boolean statusLocalChangedMainEvent_(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn=false;
 		main:{	
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Fuer MainEvent.";
@@ -1037,7 +1042,8 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			this.getMainObject().logProtocolString(sLog);
 				
 			//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForStatusLocal();		
+			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForStatusLocal();		
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapStatusLocal4Reaction_Enum();
 			ClientTrayStatusTypeZZZ objEnumForTray = (ClientTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
 			if(objEnumForTray==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1055,7 +1061,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			//########################################	
 			if(objEnumForTray == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {
 				//++++++++ TESTEN - Ermittle u.a. die StatusGroupIds über alle vorherigen Events...
-				this.getMainObject().debugCircularBufferStatusLocalMessage();				
+				this.getMainObject().debugCircularBufferStatusLocal();				
 				//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 					
 
@@ -1266,7 +1272,8 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isStatusLocalRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
 	 */
 	@Override
-	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalZZZ eventStatusLocalSet) throws ExceptionZZZ {
+	//public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -1275,7 +1282,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			System.out.println(sLog);
 			this.getMainObject().logProtocolString(sLog);
 			
-			IEnumSetMappedZZZ enumStatusFromEvent = eventStatusLocalSet.getStatusEnum();				
+			IEnumSetMappedZZZ enumStatusFromEvent = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();				
 			if(enumStatusFromEvent==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
 				System.out.println(sLog);
@@ -1301,7 +1308,8 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			String sStatusAbbreviationLocal = null;
 			IEnumSetMappedZZZ objEnumStatusLocal = null;
 
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForStatusLocalCustom();
+			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForStatusLocalCustom_Enum();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.createHashMapStatusLocal4ReactionCustom_Enum();
 			objEnumStatusLocal = hm.get(enumStatusFromEvent);					
 			//###############################
 			
@@ -1344,7 +1352,8 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			//dito gibt es auch die Methode isStatusLocalRelevant(...) nicht, da der Tray kein AbstractObjectWithStatus ist, er verwaltet halt selbst keinen Status.
 			
 						
-			bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
+			//bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
+			bReturn = this.isEventRelevant2ChangeStatusLocalByStatusLocalValue(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1352,7 +1361,8 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				break main;
 			}
 			
-			bReturn = this.isEventRelevantByReactionHashMap2ChangeStatusLocal(eventStatusLocalSet);
+			//bReturn = this.isEventRelevantByReactionHashMap2ChangeStatusLocal(eventStatusLocalSet);
+			bReturn = this.isEventRelevant4ReactionOnStatusLocal(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1360,7 +1370,8 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				break main;
 			}
 			
-			bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
+			//bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
+			bReturn = this.isEventRelevant2ChangeStatusLocalByStatusLocalValue(eventStatusLocalSet);
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 				System.out.println(sLog);
@@ -1375,17 +1386,17 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	}
 
 	@Override
-	public boolean isEventRelevant2ChangeStatusLocalByClass(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant2ChangeStatusLocalByClass(IEventObjectStatusLocalZZZ eventStatusLocalSet) throws ExceptionZZZ {
 		return true;
 	}
 
-	@Override
-	public boolean isEventRelevant2ChangeStatusLocalByStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
-		return true;
-	}
+//	@Override
+//	public boolean isEventRelevant2ChangeStatusLocalByStatusLocal(IEventObjectStatusLocalZZZ eventStatusLocalSet)	throws ExceptionZZZ {
+//		return true;
+//	}
 
 	@Override
-	public boolean isEventRelevant2ChangeStatusLocalByStatusLocalValue(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+	public boolean isEventRelevant2ChangeStatusLocalByStatusLocalValue(IEventObjectStatusLocalZZZ eventStatusLocalSet) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(eventStatusLocalSet==null)break main;
@@ -1402,21 +1413,25 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 		return bReturn;
 	}
 
-	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
-		if(this.hmEnumSet==null) {
-			this.hmEnumSet = this.createHashMapEnumSetForStatusLocalCustom();
-		}
-		return this.hmEnumSet;
-	}
+	//Merke: Selbst hat der Tray keinen status und feuert auch keine Events ab.
+//	@Override
+//	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
+//		if(this.hmEnumSet==null) {
+//			this.hmEnumSet = this.createHashMapEnumSetForStatusLocalCustom();
+//		}
+//		return this.hmEnumSet;
+//	}
+//
+//	@Override
+//	public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
+//		this.hmEnumSet = hmEnumSet;
+//	}
 
+	/* (non-Javadoc)
+	 * @see basic.zKernel.status.IListenerObjectStatusLocalZZZ#createHashMapStatusLocal4ReactionCustom_Enum()
+	 */
 	@Override
-	public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
-		this.hmEnumSet = hmEnumSet;
-	}
-
-	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForStatusLocalCustom() {
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
 		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>();
 		main:{
 			
@@ -1545,5 +1560,214 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			
 		}//end main:
 		return objReturn;
+	}
+
+	@Override
+	public boolean getFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag, boolean bFlagValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean[] setFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ[] objaEnumFlag,
+			boolean bFlagValue) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean proofFlagExists(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean proofFlagSetBefore(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public IKernelZZZ getKernelObject() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setKernelObject(IKernelZZZ objKernel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public LogZZZ getLogObject() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setLogObject(LogZZZ objLog) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setContextUsed(IKernelContextZZZ objContext) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IKernelContextZZZ getContextUsed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean queryReactOnStatusLocalEventCustom(IEventObjectStatusLocalZZZ eventStatusLocal) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean changeStatusLocal(use.openvpn.server.status.IEventObjectStatusLocalOVPN eventStatusLocalSet)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevant(use.openvpn.server.status.IEventObjectStatusLocalOVPN eventStatusLocalSet)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevantByClass(use.openvpn.server.status.IEventObjectStatusLocalOVPN eventStatusLocalSet)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevantByStatusLocal(
+			use.openvpn.server.status.IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEventRelevantByStatusLocalValue(
+			use.openvpn.server.status.IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage,
+			boolean bStatusValue) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapStatusLocal4Reaction_Enum() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setHashMapStatusLocal4Reaction_Enum(
+			HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSetForReaction) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setHashMapStatusLocal4Reaction_EnumSet(
+			HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> hmEnumSetForReaction) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> getHashMapStatusLocal4Reaction_EnumStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashMap createHashMapStatusLocal4ReactionCustom_String() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }//END Class
