@@ -1225,4 +1225,16 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public HashMap createHashMapStatusLocal4ReactionCustom_Enum() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashMap createHashMapStatusLocal4ReactionCustom_EnumStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }//END class

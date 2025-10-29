@@ -1746,26 +1746,6 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	}
 
 	@Override
-	public void setHashMapStatusLocal4Reaction_Enum(
-			HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSetForReaction) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setHashMapStatusLocal4Reaction_EnumSet(
-			HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> hmEnumSetForReaction) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> getHashMapStatusLocal4Reaction_EnumStatus() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public HashMap createHashMapStatusLocal4ReactionCustom_String() {
 		// TODO Auto-generated method stub
 		return null;

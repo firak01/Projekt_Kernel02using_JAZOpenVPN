@@ -815,7 +815,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			this.getMainObject().logProtocolString(sLog);
 				
 			//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForStatusLocal();		
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapStatusLocal4Reaction_Enum();		
 			ServerTrayStatusTypeZZZ objEnumForTray = (ServerTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
 			if(objEnumForTray==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -971,7 +971,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			String sStatusAbbreviationLocal = null;
 			IEnumSetMappedZZZ objEnumStatusLocal = null;
 
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForStatusLocalCustom();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.getHashMapStatusLocal4Reaction_Enum();
 			objEnumStatusLocal = hm.get(enumStatusFromEvent);					
 			//###############################
 			
@@ -1083,33 +1083,8 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	@Override
 //	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForStatusLocalCustom() {
 	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_String(){
-		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>();
-		main:{
-			
-			//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISSTARTNEW, ServerTrayStatusTypeZZZ.NEW);
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISSTARTING, ServerTrayStatusTypeZZZ.STARTING);
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISSTARTED, ServerTrayStatusTypeZZZ.STARTED);
-			
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERSTARTNEW, ServerTrayStatusTypeZZZ.STARTED);
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERSTARTING, ServerTrayStatusTypeZZZ.LISTENERSTARTING);
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERSTARTED, ServerTrayStatusTypeZZZ.LISTENERSTARTED);
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERSTARTNO, ServerTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE);//Wieder einen Status im Menue zurueckgehen
-			
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERCONNECTED, ServerTrayStatusTypeZZZ.CONNECTED);
-			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERINTERRUPTED, ServerTrayStatusTypeZZZ.INTERRUPTED);
-			
-			
-			//++++++++++++++++++++++++
-			//Berechne den wirklichen Typen anschliessend, dynamisch. Es wird auf auf einen vorherigen Event zugegriffen durch eine zweite Abfrage
-			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTOPPED, ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE);
-			
-			//+++++++++++++++++++++++
-			
-			hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASPINGERROR, ClientTrayStatusTypeZZZ.FAILED);
-			hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASERROR, ClientTrayStatusTypeZZZ.ERROR);
-		}//end main:
-		return hmReturn;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -1328,28 +1303,10 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	}
 
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> getHashMapEnumSetForCascadingStatusLocal() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
 			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapEnumSetForStatusLocal() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setHashMapEnumSetForStatusLocal(HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSet) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -1363,6 +1320,43 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashMap createHashMapStatusLocal4ReactionCustom_Enum() {
+		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>();
+		main:{
+			
+			//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISSTARTNEW, ServerTrayStatusTypeZZZ.NEW);
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISSTARTING, ServerTrayStatusTypeZZZ.STARTING);
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISSTARTED, ServerTrayStatusTypeZZZ.STARTED);
+			
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERSTARTNEW, ServerTrayStatusTypeZZZ.STARTED);
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERSTARTING, ServerTrayStatusTypeZZZ.LISTENERSTARTING);
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERSTARTED, ServerTrayStatusTypeZZZ.LISTENERSTARTED);
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERSTARTNO, ServerTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE);//Wieder einen Status im Menue zurueckgehen
+			
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERCONNECTED, ServerTrayStatusTypeZZZ.CONNECTED);
+			hmReturn.put(IServerMainOVPN.STATUSLOCAL.ISLISTENERINTERRUPTED, ServerTrayStatusTypeZZZ.INTERRUPTED);
+			
+			
+			//++++++++++++++++++++++++
+			//Berechne den wirklichen Typen anschliessend, dynamisch. Es wird auf auf einen vorherigen Event zugegriffen durch eine zweite Abfrage
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.ISPINGSTOPPED, ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE);
+			
+			//+++++++++++++++++++++++
+			
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASPINGERROR, ClientTrayStatusTypeZZZ.FAILED);
+			hmReturn.put(IClientMainOVPN.STATUSLOCAL.HASERROR, ClientTrayStatusTypeZZZ.ERROR);
+		}//end main:
+		return hmReturn;
 	}
 }//END Class
 

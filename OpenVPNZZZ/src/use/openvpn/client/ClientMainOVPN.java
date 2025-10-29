@@ -21,6 +21,7 @@ import basic.zKernel.net.client.KernelPortScanHostZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
 import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
@@ -34,9 +35,8 @@ import use.openvpn.client.process.IClientThreadVpnIpPingerOVPN;
 import use.openvpn.client.process.IProcessWatchRunnerOVPN;
 import use.openvpn.client.process.ProcessWatchRunnerOVPN;
 import use.openvpn.client.status.EventObject4ClientMainStatusLocalMessageOVPN;
-import use.openvpn.client.status.IEventBrokerStatusLocalSetUserOVPN;
 import use.openvpn.client.status.IEventBrokerStatusLocalUserOVPN;
-import use.openvpn.client.status.IEventObject4ClientMainStatusLocalMessageSetOVPN;
+import use.openvpn.client.status.IEventObject4ClientMainStatusLocalMessageOVPN;
 import use.openvpn.client.status.IEventObjectStatusLocalOVPN;
 import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
@@ -45,7 +45,6 @@ import use.openvpn.clientui.component.tray.IClientTrayStatusMappedValueOVPN.Clie
 import use.openvpn.server.ServerConfigStarterOVPN;
 import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
-import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
 
 /**This class is used as a backend worker.
  * For frontend features, use ConfigMainUIZZZ.
@@ -54,6 +53,8 @@ import use.openvpn.server.status.ISenderObjectStatusLocalOVPN;
  *
  */
 public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,IEventBrokerStatusLocalUserOVPN,IListenerObjectStatusLocalOVPN{		
+	private static final long serialVersionUID = -6421999748119451565L;
+
 	private volatile ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 		
 	private volatile ClientConfigFileZZZ objFileConfigReached = null;
@@ -1024,14 +1025,14 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	
 	//### aus IEventBrokerStatusLocalSetUserOVPN
 	@Override
-	public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+	public ISenderObjectStatusLocalZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
 		if(this.objEventStatusLocalBroker==null) {
 			//++++++++++++++++++++++++++++++
 			//Nun geht es darum den Sender fuer Aenderungen an den Flags zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
 			ISenderObjectStatusLocalOVPN objSenderStatusLocal = new SenderObjectStatusLocalOVPN();
 			this.objEventStatusLocalBroker = objSenderStatusLocal;
 		}
-		return this.objEventStatusLocalBroker;
+		return (ISenderObjectStatusLocalZZZ) this.objEventStatusLocalBroker;
 	}
 
 	@Override
@@ -1041,12 +1042,12 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 
 	@Override
 	public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-		this.getSenderStatusLocalUsed().addListenerObjectStatusLocal(objEventListener);
+		((ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).addListenerObjectStatusLocal(objEventListener);
 	}
 
 	@Override
 	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-		this.getSenderStatusLocalUsed().removeListenerObjectStatusLocal(objEventListener);
+		((ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).removeListenerObjectStatusLocal(objEventListener);
 	}
 
 
@@ -1218,10 +1219,11 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 
 			
 			//+++ Mappe nun die eingehenden Status-Enums auf die eigenen.
-			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();
+			IEnumSetMappedZZZ enumStatus = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();
 						
 			//+++++++++++++++++++++
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapStatusLocal4Reaction_EnumStatus();
 			IClientMainOVPN.STATUSLOCAL objEnum = (IClientMainOVPN.STATUSLOCAL) hmEnum.get(enumStatus);			
 			if(objEnum==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1333,7 +1335,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			System.out.println(sLog);
 			this.logProtocolString(sLog);
 			
-			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusEnum();				
+			IEnumSetMappedZZZ enumStatus = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();				
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++			
 //			boolean bRelevant = this.isEventRelevant(eventStatusLocalSet); 
 //			if(!bRelevant) {
@@ -1374,7 +1376,8 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
 			//+++++++++++++++++++++
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapStatusLocal4Reaction_EnumStatus();
 			IClientMainOVPN.STATUSLOCAL objEnum = (IClientMainOVPN.STATUSLOCAL) hmEnum.get(enumStatus);			
 			if(objEnum==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1463,7 +1466,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			System.out.println(sLog);
 			this.logProtocolString(sLog);
 			
-			IEnumSetMappedZZZ enumStatusFromEvent = eventStatusLocalSet.getStatusEnum();				
+			IEnumSetMappedZZZ enumStatusFromEvent = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();				
 			if(enumStatusFromEvent==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
 				System.out.println(sLog);
@@ -1490,7 +1493,8 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			IEnumSetMappedZZZ objEnumStatusLocal = null;
 
 			//HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForCascadingStatusLocalCustom();
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hm = this.getHashMapEnumSetForCascadingStatusLocal();
+			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hm = this.getHashMapEnumSetForCascadingStatusLocal();
+			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hm = this.getHashMapStatusLocal4Reaction_EnumStatus();
 			objEnumStatusLocal = hm.get(enumStatusFromEvent);					
 			//###############################
 			
@@ -1698,12 +1702,6 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 
 	@Override
-	public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public boolean queryReactOnStatusLocalEventCustom(IEventObjectStatusLocalZZZ eventStatusLocal) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
@@ -1731,12 +1729,6 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 
 	@Override
-	public ISenderObjectStatusBasicZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public HashMap createHashMapStatusLocal4ReactionCustom_String() {
 		// TODO Auto-generated method stub
 		return null;
@@ -1751,6 +1743,12 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 
 	@Override
 	public boolean queryOfferStatusLocalCustom() throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
 	}
