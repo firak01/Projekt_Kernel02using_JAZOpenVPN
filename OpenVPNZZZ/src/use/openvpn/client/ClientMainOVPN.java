@@ -101,8 +101,8 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		//           siehe: ClientThreadProcessWatchMonitorOVPN.run - Line: 93: Starting monitor thread canceled.
 		String[] saFlagMonitorProcess = {IObjectWithStatusEnabledZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusEnabledZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};		
 		this.objMonitorProcess = new ClientThreadProcessWatchMonitorOVPN(this.getKernelObject(), this, saFlagMonitorProcess);
-		this.registerForStatusLocalEvent(this.objMonitorProcess);//Den Thread am Main-Backend-Objekt registrieren			
-		this.objMonitorProcess.registerForStatusLocalEvent(this); //Das Main-Backend-Objekt am MonitorProcess registrieren
+		this.registerForStatusLocalEvent((IListenerObjectStatusLocalOVPN)this.objMonitorProcess);//Den Thread am Main-Backend-Objekt registrieren			
+		this.objMonitorProcess.registerForStatusLocalEvent((IListenerObjectStatusLocalOVPN)this); //Das Main-Backend-Objekt am MonitorProcess registrieren
 		
 		//Monitor noch nicht starten!!!
 		//Thread objThreadProcessMonitor = new Thread(this.objMonitorProcess);
@@ -118,7 +118,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		String[] saFlagVpnIpPinger = null;
 		this.objVpnIpPinger = new ClientThreadVpnIpPingerOVPN(this.getKernelObject(), this, saFlagVpnIpPinger);
 		this.registerForStatusLocalEvent(this.objVpnIpPinger);
-		this.objVpnIpPinger.registerForStatusLocalEvent(this); //Das Main-Backend-Objekt am MonitorProcess registrieren
+		this.objVpnIpPinger.registerForStatusLocalEvent((IListenerObjectStatusLocalOVPN)this); //Das Main-Backend-Objekt am MonitorProcess registrieren
 					
 		//Monitor noch nicht starten!!!
 		//Thread objThreadVpnIpPinger = new Thread(this.objVpnIpPinger);
@@ -1752,13 +1752,5 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	
-
-	
-
-
-
-	
 }//END class
 
