@@ -212,6 +212,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	 * javadoc created by: 0823, 11.07.2006 - 13:05:25
 	 * @throws ExceptionZZZ 
 	 */
+	@Override
 	public boolean unload() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{					
@@ -233,6 +234,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 		return bReturn;
 	}
 
+	@Override
 	public boolean start() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{

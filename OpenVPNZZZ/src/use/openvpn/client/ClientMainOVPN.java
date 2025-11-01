@@ -138,6 +138,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	 *
 	 * javadoc created by: 0823, 30.06.2006 - 10:24:31
 	 */
+	@Override
 	public boolean startAsThread() throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{

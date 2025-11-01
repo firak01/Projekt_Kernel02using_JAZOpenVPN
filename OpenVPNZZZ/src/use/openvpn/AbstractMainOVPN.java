@@ -162,257 +162,263 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 //	}
 	
 
-	//### Aus IProgramZZZ
+	//### Aus IProgramRunnableZZZ
 	@Override
-	public abstract boolean startAsThread() throws ExceptionZZZ;
+	public boolean startAsThread() throws ExceptionZZZ{
+		
+		Thread objThread = new Thread(this);
+		objThread.start();//Damit wird run() aufgerufen, was wiederum start_() als private Methode aufruft
+		
+		return true;
+	}
 	
-		@Override
-		public String getProgramName() throws ExceptionZZZ{
-			if(StringZZZ.isEmpty(this.sProgramName)) {
-				if(this.getFlag(IProgramZZZ.FLAGZ.ISPROGRAM.name())) {
-					this.sProgramName = this.getClass().getName();
+	@Override
+	public String getProgramName() throws ExceptionZZZ{
+		if(StringZZZ.isEmpty(this.sProgramName)) {
+			if(this.getFlag(IProgramZZZ.FLAGZ.ISPROGRAM.name())) {
+				this.sProgramName = this.getClass().getName();
+			}
+		}
+		return this.sProgramName;
+	}
+	
+	@Override
+	public String getProgramAlias() throws ExceptionZZZ {		
+		return null;
+	}
+		
+	@Override
+	public void resetProgramUsed() {
+		this.sProgramName = null;
+	}
+			
+	@Override
+	public boolean reset() throws ExceptionZZZ {
+		this.resetProgramUsed();
+		this.resetModuleUsed();
+		this.resetFlags();
+		return true;
+	}
+	
+	//### Aus IModuleUserZZZ	
+	@Override
+	public String readModuleName() throws ExceptionZZZ {
+		String sReturn = null;
+		main:{
+			IModuleZZZ objModule = this.getModule();
+			if(objModule!=null) {
+				sReturn = objModule.getModuleName();
+			}
+		}//end main:
+		return sReturn;
+	}
+	
+	@Override
+	public String getModuleName() throws ExceptionZZZ{
+		if(StringZZZ.isEmpty(this.sModuleName)) {
+			this.sModuleName = this.readModuleName();
+		}
+		return this.sModuleName;
+	}
+	
+	@Override
+	public void setModuleName(String sModuleName){
+		this.sModuleName=sModuleName;
+	}
+	
+	@Override
+	public void resetModuleUsed() {
+		this.objModule = null;
+		this.sModuleName = null;
+	}
+	
+	@Override
+	public IModuleZZZ getModule() {
+		return this.objModule;
+	}
+	
+	@Override
+	public void setModule(IModuleZZZ objModule) {
+		this.objModule = objModule;
+	}
+
+	//####### aus IStatusLocalUserZZZ
+	/* (non-Javadoc)
+	 * @see basic.zKernel.status.IStatusLocalUserZZZ#getStatusLocal(java.lang.Enum)
+	 */
+	@Override
+	public boolean getStatusLocal(Enum objEnumStatusIn) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(objEnumStatusIn==null) {
+				break main;
+			}
+			
+			ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
+			String sStatusName = enumStatus.name();
+			if(StringZZZ.isEmpty(sStatusName)) break main;
+										
+			HashMap<String, Boolean> hmFlag = this.getHashMapStatusLocal();
+			Boolean objBoolean = hmFlag.get(sStatusName.toUpperCase());
+			if(objBoolean==null){
+				bFunction = false;
+			}else{
+				bFunction = objBoolean.booleanValue();
+			}
+							
+		}	// end main:
+		
+		return bFunction;	
+	}
+
+	
+
+	@Override
+	abstract public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
+
+	@Override 
+	abstract public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
+				
+	@Override
+	public boolean[] setStatusLocal(Enum[] objaEnumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!ArrayUtilZZZ.isNull(objaEnumStatusIn)) {
+				baReturn = new boolean[objaEnumStatusIn.length];
+				int iCounter=-1;
+				for(Enum objEnumStatus:objaEnumStatusIn) {
+					iCounter++;
+					boolean bReturn = this.setStatusLocal(objEnumStatus, bStatusValue);
+					baReturn[iCounter]=bReturn;
 				}
 			}
-			return this.sProgramName;
-		}
-		
-		@Override
-		public String getProgramAlias() throws ExceptionZZZ {		
-			return null;
-		}
-			
-		@Override
-		public void resetProgramUsed() {
-			this.sProgramName = null;
-		}
-				
-		@Override
-		public boolean reset() throws ExceptionZZZ {
-			this.resetProgramUsed();
-			this.resetModuleUsed();
-			this.resetFlags();
-			return true;
-		}
-		
-		//### Aus IModuleUserZZZ	
-		@Override
-		public String readModuleName() throws ExceptionZZZ {
-			String sReturn = null;
-			main:{
-				IModuleZZZ objModule = this.getModule();
-				if(objModule!=null) {
-					sReturn = objModule.getModuleName();
-				}
-			}//end main:
-			return sReturn;
-		}
-		
-		@Override
-		public String getModuleName() throws ExceptionZZZ{
-			if(StringZZZ.isEmpty(this.sModuleName)) {
-				this.sModuleName = this.readModuleName();
-			}
-			return this.sModuleName;
-		}
-		
-		@Override
-		public void setModuleName(String sModuleName){
-			this.sModuleName=sModuleName;
-		}
-		
-		@Override
-		public void resetModuleUsed() {
-			this.objModule = null;
-			this.sModuleName = null;
-		}
-		
-		@Override
-		public IModuleZZZ getModule() {
-			return this.objModule;
-		}
-		
-		@Override
-		public void setModule(IModuleZZZ objModule) {
-			this.objModule = objModule;
-		}
+		}//end main:
+		return baReturn;
+	}		
 	
-		//####### aus IStatusLocalUserZZZ
-		/* (non-Javadoc)
-		 * @see basic.zKernel.status.IStatusLocalUserZZZ#getStatusLocal(java.lang.Enum)
-		 */
-		@Override
-		public boolean getStatusLocal(Enum objEnumStatusIn) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(objEnumStatusIn==null) {
-					break main;
+	@Override
+	public boolean proofStatusLocalExists(Enum objEnumStatus) throws ExceptionZZZ {
+		return this.proofStatusLocalExists(objEnumStatus.name());
+	}
+	
+	@Override
+	public boolean getStatusLocal(String sStatusName) throws ExceptionZZZ {
+		boolean bFunction = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName)) break main;
+										
+			HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
+			Boolean objBoolean = hmStatus.get(sStatusName.toUpperCase());
+			if(objBoolean==null){
+				bFunction = false;
+			}else{
+				bFunction = objBoolean.booleanValue();
+			}
+							
+		}	// end main:
+		
+		return bFunction;	
+	}
+	
+	@Override
+	abstract public boolean setStatusLocal(String sStatusName, boolean bStatusValue) throws ExceptionZZZ;
+	
+	@Override
+	public boolean[] setStatusLocal(String[] saStatusName, boolean bStatusValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!StringArrayZZZ.isEmptyTrimmed(saStatusName)) {
+				baReturn = new boolean[saStatusName.length];
+				int iCounter=-1;
+				for(String sStatusName:saStatusName) {
+					iCounter++;
+					boolean bReturn = this.setStatusLocal(sStatusName, bStatusValue);
+					baReturn[iCounter]=bReturn;
 				}
-				
-				ClientMainOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
-				String sStatusName = enumStatus.name();
-				if(StringZZZ.isEmpty(sStatusName)) break main;
-											
-				HashMap<String, Boolean> hmFlag = this.getHashMapStatusLocal();
-				Boolean objBoolean = hmFlag.get(sStatusName.toUpperCase());
-				if(objBoolean==null){
-					bFunction = false;
-				}else{
-					bFunction = objBoolean.booleanValue();
-				}
-								
-			}	// end main:
+			}
+		}//end main:
+		return baReturn;
+	}
+	
+
+
+	/**Gibt alle möglichen StatusLocal Werte als Array zurück. 
+	 * @return
+	 * @throws ExceptionZZZ 
+	 */
+	@Override
+	public String[] getStatusLocalAll() throws ExceptionZZZ {
+		String[] saReturn = null;
+		main:{	
+			saReturn = StatusLocalAvailableHelperZZZ.searchDirect(this.getClass());				
+		}//end main:
+		return saReturn;
+	}
+	
+	/**Gibt alle "true" gesetzten StatusLocal - Werte als Array zurück. 
+	 * @return
+	 * @throws ExceptionZZZ 
+	 */
+	@Override
+	public String[] getStatusLocal(boolean bValueToSearchFor) throws ExceptionZZZ {
+		return this.getStatusLocal_(bValueToSearchFor, false);
+	}
+	
+	@Override
+	public String[] getStatusLocal(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap)throws ExceptionZZZ {
+		return this.getStatusLocal_(bValueToSearchFor, bLookupExplizitInHashMap);
+	}
+	
+	private String[]getStatusLocal_(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
+		String[] saReturn = null;
+		main:{
+			ArrayList<String>listasTemp=new ArrayList<String>();
 			
-			return bFunction;	
-		}
-
-		
-
-		@Override
-		abstract public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
-
-		@Override 
-		abstract public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
-					
-		@Override
-		public boolean[] setStatusLocal(Enum[] objaEnumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
-			boolean[] baReturn=null;
-			main:{
-				if(!ArrayUtilZZZ.isNull(objaEnumStatusIn)) {
-					baReturn = new boolean[objaEnumStatusIn.length];
-					int iCounter=-1;
-					for(Enum objEnumStatus:objaEnumStatusIn) {
-						iCounter++;
-						boolean bReturn = this.setStatusLocal(objEnumStatus, bStatusValue);
-						baReturn[iCounter]=bReturn;
-					}
-				}
-			}//end main:
-			return baReturn;
-		}		
-		
-		@Override
-		public boolean proofStatusLocalExists(Enum objEnumStatus) throws ExceptionZZZ {
-			return this.proofStatusLocalExists(objEnumStatus.name());
-		}
-		
-		@Override
-		public boolean getStatusLocal(String sStatusName) throws ExceptionZZZ {
-			boolean bFunction = false;
-			main:{
-				if(StringZZZ.isEmpty(sStatusName)) break main;
-											
-				HashMap<String, Boolean> hmStatus = this.getHashMapStatusLocal();
-				Boolean objBoolean = hmStatus.get(sStatusName.toUpperCase());
-				if(objBoolean==null){
-					bFunction = false;
-				}else{
-					bFunction = objBoolean.booleanValue();
-				}
-								
-			}	// end main:
-			
-			return bFunction;	
-		}
-		
-		@Override
-		abstract public boolean setStatusLocal(String sStatusName, boolean bStatusValue) throws ExceptionZZZ;
-		
-		@Override
-		public boolean[] setStatusLocal(String[] saStatusName, boolean bStatusValue) throws ExceptionZZZ {
-			boolean[] baReturn=null;
-			main:{
-				if(!StringArrayZZZ.isEmptyTrimmed(saStatusName)) {
-					baReturn = new boolean[saStatusName.length];
-					int iCounter=-1;
-					for(String sStatusName:saStatusName) {
-						iCounter++;
-						boolean bReturn = this.setStatusLocal(sStatusName, bStatusValue);
-						baReturn[iCounter]=bReturn;
-					}
-				}
-			}//end main:
-			return baReturn;
-		}
-		
-
-
-		/**Gibt alle möglichen StatusLocal Werte als Array zurück. 
-		 * @return
-		 * @throws ExceptionZZZ 
-		 */
-		@Override
-		public String[] getStatusLocalAll() throws ExceptionZZZ {
-			String[] saReturn = null;
-			main:{	
-				saReturn = StatusLocalAvailableHelperZZZ.searchDirect(this.getClass());				
-			}//end main:
-			return saReturn;
-		}
-		
-		/**Gibt alle "true" gesetzten StatusLocal - Werte als Array zurück. 
-		 * @return
-		 * @throws ExceptionZZZ 
-		 */
-		@Override
-		public String[] getStatusLocal(boolean bValueToSearchFor) throws ExceptionZZZ {
-			return this.getStatusLocal_(bValueToSearchFor, false);
-		}
-		
-		@Override
-		public String[] getStatusLocal(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap)throws ExceptionZZZ {
-			return this.getStatusLocal_(bValueToSearchFor, bLookupExplizitInHashMap);
-		}
-		
-		private String[]getStatusLocal_(boolean bValueToSearchFor, boolean bLookupExplizitInHashMap) throws ExceptionZZZ{
-			String[] saReturn = null;
-			main:{
-				ArrayList<String>listasTemp=new ArrayList<String>();
+			//FALLUNTERSCHEIDUNG: Alle gesetzten Status werden in der HashMap gespeichert. Aber die noch nicht gesetzten FlagZ stehen dort nicht drin.
+			//                                  Diese kann man nur durch Einzelprüfung ermitteln.
+			if(bLookupExplizitInHashMap) {
+				HashMap<String,Boolean>hmStatus=this.getHashMapStatusLocal();
+				if(hmStatus==null) break main;
 				
-				//FALLUNTERSCHEIDUNG: Alle gesetzten Status werden in der HashMap gespeichert. Aber die noch nicht gesetzten FlagZ stehen dort nicht drin.
-				//                                  Diese kann man nur durch Einzelprüfung ermitteln.
-				if(bLookupExplizitInHashMap) {
-					HashMap<String,Boolean>hmStatus=this.getHashMapStatusLocal();
-					if(hmStatus==null) break main;
-					
-					Set<String> setKey = hmStatus.keySet();
-					for(String sKey : setKey){
-						boolean btemp = hmStatus.get(sKey);
-						if(btemp==bValueToSearchFor){
-							listasTemp.add(sKey);
-						}
-					}
-				}else {
-					//So bekommt man alle Flags zurück, also auch die, die nicht explizit true oder false gesetzt wurden.						
-					String[]saStatus = this.getStatusLocalAll();
-					
-					//20211201:
-					//Problem: Bei der Suche nach true ist das egal... aber bei der Suche nach false bekommt man jedes der Flags zurück,
-					//         auch wenn sie garnicht gesetzt wurden.
-					//Lösung:  Statt dessen explitzit über die HashMap der gesetzten Werte gehen....						
-					for(String sStatus : saStatus){
-						boolean btemp = this.getStatusLocal(sStatus);
-						if(btemp==bValueToSearchFor ){ //also 'true'
-							listasTemp.add(sStatus);
-						}
+				Set<String> setKey = hmStatus.keySet();
+				for(String sKey : setKey){
+					boolean btemp = hmStatus.get(sKey);
+					if(btemp==bValueToSearchFor){
+						listasTemp.add(sKey);
 					}
 				}
-				saReturn = listasTemp.toArray(new String[listasTemp.size()]);
-			}//end main:
-			return saReturn;
-		}
-		
-		@Override
-		public boolean proofStatusLocalExists(String sStatusName) throws ExceptionZZZ {
-			boolean bReturn = false;
-			main:{
-				if(StringZZZ.isEmpty(sStatusName))break main;
-				bReturn = StatusLocalAvailableHelperZZZ.proofDirectExists(this.getClass(), sStatusName);				
-			}//end main:
-			return bReturn;
-		}
-		
-		
-		
+			}else {
+				//So bekommt man alle Flags zurück, also auch die, die nicht explizit true oder false gesetzt wurden.						
+				String[]saStatus = this.getStatusLocalAll();
+				
+				//20211201:
+				//Problem: Bei der Suche nach true ist das egal... aber bei der Suche nach false bekommt man jedes der Flags zurück,
+				//         auch wenn sie garnicht gesetzt wurden.
+				//Lösung:  Statt dessen explitzit über die HashMap der gesetzten Werte gehen....						
+				for(String sStatus : saStatus){
+					boolean btemp = this.getStatusLocal(sStatus);
+					if(btemp==bValueToSearchFor ){ //also 'true'
+						listasTemp.add(sStatus);
+					}
+				}
+			}
+			saReturn = listasTemp.toArray(new String[listasTemp.size()]);
+		}//end main:
+		return saReturn;
+	}
+	
+	@Override
+	public boolean proofStatusLocalExists(String sStatusName) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(StringZZZ.isEmpty(sStatusName))break main;
+			bReturn = StatusLocalAvailableHelperZZZ.proofDirectExists(this.getClass(), sStatusName);				
+		}//end main:
+		return bReturn;
+	}
+	
+	
+	
 //		@Override
 //		public boolean proofStatusLocalChanged(Enum objEnumStatus, boolean bValue) throws ExceptionZZZ {
 //			return this.proofStatusLocalChanged(objEnumStatus.name(), bValue);
@@ -430,119 +436,118 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 //			}//end main:
 //			return bReturn;
 //		}
-		
-		
-		//##########################################
-		//### FLAG HANDLING aus IProgramRunnable
-		@Override
-		public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) {
-			return this.getFlag(objEnumFlag.name());
-		}
-		@Override
-		public boolean setFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
-			return this.setFlag(objEnumFlag.name(), bFlagValue);
-		}
-		
-		@Override
-		public boolean[] setFlag(IProgramRunnableZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
-			boolean[] baReturn=null;
-			main:{
-				if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
-					baReturn = new boolean[objaEnumFlag.length];
-					int iCounter=-1;
-					for(IProgramRunnableZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
-						iCounter++;
-						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
-						baReturn[iCounter]=bReturn;
-					}
+	
+	
+	//##########################################
+	//### FLAG HANDLING aus IProgramRunnable
+	@Override
+	public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) {
+		return this.getFlag(objEnumFlag.name());
+	}
+	@Override
+	public boolean setFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+		return this.setFlag(objEnumFlag.name(), bFlagValue);
+	}
+	
+	@Override
+	public boolean[] setFlag(IProgramRunnableZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
+				baReturn = new boolean[objaEnumFlag.length];
+				int iCounter=-1;
+				for(IProgramRunnableZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+					iCounter++;
+					boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+					baReturn[iCounter]=bReturn;
 				}
-			}//end main:
-			return baReturn;
-		}
-		
-		@Override
-		public boolean proofFlagExists(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
-				return this.proofFlagExists(objEnumFlag.name());
 			}
-		
-		@Override
-		public boolean proofFlagSetBefore(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
-			return this.proofFlagSetBefore(objEnumFlag.name());
-		}	
-		
-		//### FLAG HANDLING AUS IProgramZZZ
-		@Override
-		public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) {
-			return this.getFlag(objEnumFlag.name());
-		}
-		@Override
-		public boolean setFlag(IProgramZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
-			return this.setFlag(objEnumFlag.name(), bFlagValue);
-		}
-		
-		@Override
-		public boolean[] setFlag(IProgramZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
-			boolean[] baReturn=null;
-			main:{
-				if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
-					baReturn = new boolean[objaEnumFlag.length];
-					int iCounter=-1;
-					for(IProgramZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
-						iCounter++;
-						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
-						baReturn[iCounter]=bReturn;
-					}
-				}
-			}//end main:
-			return baReturn;
-		}
-		
-		@Override
-		public boolean proofFlagExists(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
-				return this.proofFlagExists(objEnumFlag.name());
-			}
-		
-		@Override
-		public boolean proofFlagSetBefore(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
-			return this.proofFlagSetBefore(objEnumFlag.name());
-		}	
-		
-		@Override
-		public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) {
-			return this.getFlag(objEnumFlag.name());
-		}
-		@Override
-		public boolean setFlag(IModuleUserZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
-			return this.setFlag(objEnumFlag.name(), bFlagValue);
-		}
-		
-		@Override
-		public boolean[] setFlag(IModuleUserZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
-			boolean[] baReturn=null;
-			main:{
-				if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
-					baReturn = new boolean[objaEnumFlag.length];
-					int iCounter=-1;
-					for(IModuleUserZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
-						iCounter++;
-						boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
-						baReturn[iCounter]=bReturn;
-					}
-				}
-			}//end main:
-			return baReturn;
-		}
-		
-		@Override
-		public boolean proofFlagExists(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
-				return this.proofFlagExists(objEnumFlag.name());
-		}
-		
-		@Override
-		public boolean proofFlagSetBefore(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+		}//end main:
+		return baReturn;
+	}
+	
+	@Override
+	public boolean proofFlagExists(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 			return this.proofFlagExists(objEnumFlag.name());
 		}
-		
-		//##########################	
-		
+	
+	@Override
+	public boolean proofFlagSetBefore(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+		return this.proofFlagSetBefore(objEnumFlag.name());
+	}	
+	
+	//### FLAG HANDLING AUS IProgramZZZ
+	@Override
+	public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) {
+		return this.getFlag(objEnumFlag.name());
+	}
+	@Override
+	public boolean setFlag(IProgramZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+		return this.setFlag(objEnumFlag.name(), bFlagValue);
+	}
+	
+	@Override
+	public boolean[] setFlag(IProgramZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
+				baReturn = new boolean[objaEnumFlag.length];
+				int iCounter=-1;
+				for(IProgramZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+					iCounter++;
+					boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+					baReturn[iCounter]=bReturn;
+				}
+			}
+		}//end main:
+		return baReturn;
+	}
+	
+	@Override
+	public boolean proofFlagExists(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagExists(objEnumFlag.name());
+		}
+	
+	@Override
+	public boolean proofFlagSetBefore(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+		return this.proofFlagSetBefore(objEnumFlag.name());
+	}	
+	
+	@Override
+	public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) {
+		return this.getFlag(objEnumFlag.name());
+	}
+	@Override
+	public boolean setFlag(IModuleUserZZZ.FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+		return this.setFlag(objEnumFlag.name(), bFlagValue);
+	}
+	
+	@Override
+	public boolean[] setFlag(IModuleUserZZZ.FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ {
+		boolean[] baReturn=null;
+		main:{
+			if(!ArrayUtilZZZ.isNull(objaEnumFlag)) {
+				baReturn = new boolean[objaEnumFlag.length];
+				int iCounter=-1;
+				for(IModuleUserZZZ.FLAGZ objEnumFlag:objaEnumFlag) {
+					iCounter++;
+					boolean bReturn = this.setFlag(objEnumFlag, bFlagValue);
+					baReturn[iCounter]=bReturn;
+				}
+			}
+		}//end main:
+		return baReturn;
+	}
+	
+	@Override
+	public boolean proofFlagExists(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+			return this.proofFlagExists(objEnumFlag.name());
+	}
+	
+	@Override
+	public boolean proofFlagSetBefore(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
+		return this.proofFlagExists(objEnumFlag.name());
+	}
+	
+	//##########################			
 }
