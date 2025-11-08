@@ -90,8 +90,9 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		//#################
         //Definiere einen Monitor, der die OVPN-Watch Processe beobachtet (die ihren jeweiligen, eigentlichen OVPN.exe Process beobachten)
 		//Er wird auch am Backend-Objekt registriert, um dortige Aenderungen mitzubekommen.
-		String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientThreadProcessWatchMonitorOVPN-Object";
-		System.out.println(sLog);
+		//String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientThreadProcessWatchMonitorOVPN-Object";
+		//System.out.println(sLog);
+		String sLog = "Creating ClientThreadProcessWatchMonitorOVPN-Object";
 		this.getLogObject().WriteLineDate(sLog);
 		
 		//Idee: Den Monitor nach der erfolgreichen Verbindung einfach beenden.
