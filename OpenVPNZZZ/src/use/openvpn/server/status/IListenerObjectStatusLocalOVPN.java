@@ -5,9 +5,10 @@ import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import use.openvpn.server.status.IEventObjectStatusLocalOVPN;
 
-public interface IListenerObjectStatusLocalOVPN extends EventListener{
+public interface IListenerObjectStatusLocalOVPN extends IListenerObjectStatusLocalZZZ { //EventListener{
 	public boolean changeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ;
 	public boolean isEventRelevant(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ;
 	public boolean isEventRelevantByClass(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ;

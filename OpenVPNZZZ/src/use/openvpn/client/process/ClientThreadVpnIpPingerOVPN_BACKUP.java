@@ -37,7 +37,7 @@ import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
 
-public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusOnStatusListeningZZZ implements IClientThreadVpnIpPingerOVPN{ //AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalUserOVPN{
+public class ClientThreadVpnIpPingerOVPN_BACKUP extends AbstractKernelUseObjectWithStatusOnStatusListeningZZZ implements IClientThreadVpnIpPingerOVPN{ //AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalUserOVPN{
 	private static final long serialVersionUID = 4598201201165618817L;
 	protected volatile IModuleZZZ objModule = null;
 	protected volatile String sModuleName=null;
@@ -47,7 +47,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	private IClientMainOVPN objMain = null;
 	private ISenderObjectStatusLocalOVPN objEventStatusLocalBroker=null;//Das Broker Objekt, an dem sich andere Objekte regristrieren können, um ueber Aenderung eines StatusLocal per Event informiert zu werden.
 	
-	public ClientThreadVpnIpPingerOVPN(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
+	public ClientThreadVpnIpPingerOVPN_BACKUP(IKernelZZZ objKernel, ClientMainOVPN objConfig, String[] saFlagControl) throws ExceptionZZZ{
 		super(objKernel);
 		PingerNew_(objConfig, saFlagControl);
 	}
@@ -527,6 +527,164 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		return bFunction;
 	}
 
+	//### aus IListenerObjectStatusLocalSetZZZ
+	@Override
+	public boolean changedStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{		
+			//Falls nicht zuständig, mache nix
+		    boolean bProof = this.isEventRelevant2ChangeStatusLocal(eventStatusLocalSet);
+			if(!bProof) break main;
+		    
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
+	
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevant(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+	 */
+	@Override
+	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(eventStatusLocalSet==null)break main;
+			
+			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Pruefe Relevanz des Events.";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			
+			IEnumSetMappedZZZ enumStatus = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();				
+			if(enumStatus==null) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);							
+				break main;
+			}
+							
+			sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen.";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+				
+			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);	
+				
+			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
+			System.out.println(sLog);
+			this.getMainObject().logProtocolString(sLog);
+			
+			//+++ Pruefungen
+			bReturn = this.isEventRelevantByClass2ChangeStatusLocal(eventStatusLocalSet);
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);				
+				break main;
+			}
+					
+			
+			bReturn = this.isStatusChanged(eventStatusLocalSet.getStatusText());
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status nicht geaendert. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+				break main;
+			}
+						
+			bReturn = this.isEventRelevantByStatusLocalValue2ChangeStatusLocal(eventStatusLocalSet);
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);				
+				break main;
+			}
+			
+			bReturn = this.isEventRelevantByStatusLocal2ChangeStatusLocal(eventStatusLocalSet);
+			if(!bReturn) {
+				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);				
+				break main;
+			}
+				
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
+	
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocalValue(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+	 */
+	@Override
+	public boolean isEventRelevantByStatusLocalValue2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			if(eventStatusLocalSet==null)break main;
+			
+			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
+			//Merke: Beim Monitor interessieren auch "false" Werte, um den Status ggfs. wieder zuruecksetzen zu koennen
+			//if(bStatusValue==false)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
+			
+			bReturn = true;
+		}
+		return bReturn;
+	}
+	
+	@Override
+	public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ {
+		/* Loesung: DOWNCASTING mit instanceof , s.: https://www.positioniseverything.net/typeof-java/
+	 	class Animal { }
+		class Dog2 extends Animal {
+			static void method(Animal j) {
+			if(j instanceof Dog2){
+			Dog2 d=(Dog2)j;//downcasting
+			System.out.println(“downcasting done”);
+			}
+			}
+			public static void main (String [] args) {
+			Animal j=new Dog2();
+			Dog2.method(j);
+			}
+		}
+	 */
+	
+		boolean bReturn = false;
+		main:{
+			//Merke: enumStatus hat class='class use.openvpn.client.process.IClientThreadVpnIpPingerOVPN$STATUSLOCAL'				
+			if(eventStatusLocalSet.getStatusEnum() instanceof IClientThreadVpnIpPingerOVPN.STATUSLOCAL){
+				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Enum Klasse ist instanceof IProcessWatchRunnerOVPN. Damit relevant.";
+				System.out.println(sLog);
+				this.getMainObject().logProtocolString(sLog);
+				bReturn = true;
+				break main;
+			}		
+			
+			
+		}//end main:
+		return bReturn;
+	}
+
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IListenerObjectStatusLocalSetOVPN#isEventRelevantByStatusLocal(use.openvpn.client.status.IEventObjectStatusLocalSetOVPN)
+	 */
+	@Override
+	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
+		boolean bReturn = false;
+		main:{
+			IEnumSetMappedStatusZZZ enumStatus = (IEnumSetMappedStatusZZZ) eventStatusLocalSet.getStatusEnum();							
+			bReturn = this.isStatusLocalRelevant(enumStatus);
+			if(!bReturn) break main;
+		
+			String sAbr = eventStatusLocalSet.getStatusAbbreviation();
+			if(!StringZZZ.startsWith(sAbr, "hasconnection")) break main;
+			
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
+	
+	
 	//#######################################
 	//### aus ISenderObjectStatusLocalSetUserOVPN
 	@Override
@@ -636,7 +794,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			if(enumStatusIn==null) {
 				break main;
 			}
-			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			ClientThreadVpnIpPingerOVPN2.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
 			bReturn = this.offerStatusLocal(enumStatus, bStatusValue, null);
 		}//end main:
@@ -651,7 +809,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			if(enumStatusIn==null) {
 				break main;
 			}
-			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			ClientThreadVpnIpPingerOVPN2.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
 			bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
 		}//end main:
@@ -695,7 +853,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			if(enumStatusIn==null) {
 				break main;
 			}
-			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			ClientThreadVpnIpPingerOVPN2.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
 			bReturn = this.offerStatusLocal(enumStatus, bStatusValue, sMessage);
 		}//end main:
@@ -709,7 +867,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			if(enumStatusIn==null) {
 				break main;
 			}
-			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
+			ClientThreadVpnIpPingerOVPN2.STATUSLOCAL enumStatus = (STATUSLOCAL) enumStatusIn;
 			
 			bReturn = this.offerStatusLocal(iIndexOfProcess, enumStatus, null, bStatusValue);
 		}//end main:
@@ -855,7 +1013,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			}
 			
 			//Merke: Bei einer anderen Klasse, die dieses DesingPattern nutzt, befindet sich der STATUSLOCAL in einer anderen Klasse
-			ClientThreadVpnIpPingerOVPN.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
+			ClientThreadVpnIpPingerOVPN2.STATUSLOCAL enumStatus = (STATUSLOCAL) objEnumStatusIn;
 			String sStatusName = enumStatus.name();
 			if(StringZZZ.isEmpty(sStatusName)) break main;
 										
@@ -872,6 +1030,18 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		return bFunction;	
 	}
 
+	/* (non-Javadoc)
+	 * @see use.openvpn.client.status.IEventBrokerStatusLocalUserOVPN#registerForStatusLocalEvent(use.openvpn.client.status.IListenerObjectStatusLocalOVPN)
+	 */
+	@Override
+	public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
+		this.getSenderStatusLocalUsed()).addListenerObjectStatusLocalSet(objEventListener);
+	}
+
+	@Override
+	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
+		((use.openvpn.server.status.ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).removeListenerObjectStatusLocalSet((use.openvpn.server.status.IListenerObjectStatusLocalOVPN) objEventListener);;
+	}
 	
 	//### Aus IModuleZZZ
 	public String readModuleName() throws ExceptionZZZ {
@@ -1103,6 +1273,12 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		}
 
 		@Override
+		public void setSenderStatusLocalUsed(ISenderObjectStatusLocalOVPN objEventSender) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
 		public HashMap<IEnumSetMappedStatusZZZ, String> createHashMapStatusLocal4ReactionCustom_String() {
 			// TODO Auto-generated method stub
 			return null;
@@ -1114,6 +1290,12 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			return null;
 		}
 
+		@Override
+		public void setHashMapStatusLocal4Reaction_String(
+				HashMap<IEnumSetMappedStatusZZZ, String> hmEnumSetForReaction) {
+			// TODO Auto-generated method stub
+			
+		}
 
 		@Override
 		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
@@ -1128,6 +1310,13 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		}
 
 		@Override
+		public void setHashMapStatusLocal4Reaction_Enum(
+				HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> hmEnumSetForReaction) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
 		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
 			// TODO Auto-generated method stub
 			return null;
@@ -1137,6 +1326,13 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> getHashMapStatusLocal4Reaction_EnumStatus() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		public void setHashMapStatusLocal4Reaction_EnumStatus(
+				HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> hmEnumSetForReaction) {
+			// TODO Auto-generated method stub
+			
 		}
 
 		@Override

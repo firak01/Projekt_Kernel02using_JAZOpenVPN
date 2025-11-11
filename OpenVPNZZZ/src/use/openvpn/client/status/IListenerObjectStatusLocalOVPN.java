@@ -4,8 +4,9 @@ import java.util.EventListener;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 
-public interface IListenerObjectStatusLocalOVPN extends EventListener{
+public interface IListenerObjectStatusLocalOVPN extends IListenerObjectStatusLocalZZZ{ //EventListener{
 	public boolean changedStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ;
 	public boolean isEventRelevant2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ;
 	public boolean isEventRelevantByClass2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet) throws ExceptionZZZ;

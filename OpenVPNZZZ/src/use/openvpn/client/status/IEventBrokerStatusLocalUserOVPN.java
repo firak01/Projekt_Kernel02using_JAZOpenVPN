@@ -1,6 +1,7 @@
 package use.openvpn.client.status;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zKernel.status.IEventBrokerStatusLocalUserZZZ;
 import use.openvpn.client.status.ISenderObjectStatusLocalUserOVPN;
 
 /** Interface muss von den Objekten implementiert werden, die den Event-Broker verwenden wollen, 
@@ -18,7 +19,7 @@ import use.openvpn.client.status.ISenderObjectStatusLocalUserOVPN;
  *
  */
 //FGL20251022: Das nicht mehr verwenden, verlassen auf abstrakte Klasse
-public interface IEventBrokerStatusLocalUserOVPN extends ISenderObjectStatusLocalUserOVPN {
+public interface IEventBrokerStatusLocalUserOVPN extends IEventBrokerStatusLocalUserZZZ, ISenderObjectStatusLocalUserOVPN {
 	public void registerForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ;
 	public void unregisterForStatusLocalEvent(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ;
 }
