@@ -76,7 +76,5 @@ public class DlgFTPCredentialsOVPN extends KernelJDialogExtendedZZZ {
 		panelNavigator.setAlias("NAVIGATOR");
 		return panelNavigator;
 	}
-	
-	
 }
 

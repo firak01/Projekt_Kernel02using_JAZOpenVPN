@@ -28,63 +28,54 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	}
 
 	@Override
-	public void fireEvent(IEventObjectStatusBasicZZZ event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setEventPrevious(IEventObjectStatusBasicZZZ event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeListenerObject(IListenerObjectStatusBasicZZZ objEventListener) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addListenerObject(IListenerObjectStatusBasicZZZ objEventListener) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ArrayListUniqueZZZ<IListenerObjectStatusBasicZZZ> getListenerRegisteredAll() throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void fireEvent(IEventObjectStatusLocalOVPN event) {
-		// TODO Auto-generated method stub
-		
+		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
+		try {
+			this.logProtocolString(sLog);
+		} catch (ExceptionZZZ e) {		
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public IEventObjectStatusLocalOVPN getEventPrevious() {
-		// TODO Auto-generated method stub
+		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
+		try {
+			this.logProtocolString(sLog);
+		} catch (ExceptionZZZ e) {		
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
 	public void setEventPrevious(IEventObjectStatusLocalOVPN event) {
-		// TODO Auto-generated method stub
-		
+		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
+		try {
+			this.logProtocolString(sLog);
+		} catch (ExceptionZZZ e) {		
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void removeListenerObjectStatusLocal(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		
+		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
+		try {
+			this.logProtocolString(sLog);
+		} catch (ExceptionZZZ e) {		
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void addListenerObjectStatusLocal(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		
+		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
+		try {
+			this.logProtocolString(sLog);
+		} catch (ExceptionZZZ e) {		
+			e.printStackTrace();
+		}
 	}
 }
 
