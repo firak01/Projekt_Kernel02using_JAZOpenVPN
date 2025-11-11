@@ -242,18 +242,18 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 		 								//if(bConnected){											
 	 							            //darin das Pruefen auf Erreichbarkeit einbauen...
 	 		 								
-//	 						//Das Pr�fen auf Erreichbarkeit
-//	 						//In this.scanVPNIPFirstEstablished wird schon eine Schleife durchgef�hrt......     for(int icount3=0; icount3 < listaFileNotFinished.size(); icount3++){	
+//	 						//Das Pr fen auf Erreichbarkeit
+//	 						//In this.scanVPNIPFirstEstablished wird schon eine Schleife durchgef hrt......     for(int icount3=0; icount3 < listaFileNotFinished.size(); icount3++){	
 //	 							//1. Diese ArrayList der StarterObjecte nun hinsichtlich der VPN-IP-Erreichbarkeit scannen.
 //	 							this.objMain.logMessageString("Checking success. Pinging all not jet finished configurations for the configured vpn-ip."); //DEN PORT ZU PINGEN IST QUATSCH  + ":" + objStarter.getVpnPort();					
 //	 							String sIP = this.scanVpnIpFirstEstablished(listaFileNotFinished);
 //	 							
 //	 							//2.Falls eine der konfigurierten Adressen erreichbar ist: Flag "Connected" setzen. Alle anderen Processe zum Verbindungsaufbau stoppen.
-//	 							//TODO: Sollen alle Verbindungen aufgebaut werden, dann lediglich aus der Liste herausnehmen. Nat�rlich daf�r sorgen, dass das Frontend �ber die neue VPN M�glichkeit informiert wird. 
+//	 							//TODO: Sollen alle Verbindungen aufgebaut werden, dann lediglich aus der Liste herausnehmen. Nat rlich daf r sorgen, dass das Frontend  ber die neue VPN M glichkeit informiert wird. 
 //	 							if(sIP!=null){
-//	 								((ClientApplicationOVPN)this.getApplicationObject()).setVpnIpEstablished(sIP);  //Wichtig: Die erreichbare IP - Adresse f�r das Frontend greifbar machen.
+//	 								((ClientApplicationOVPN)this.getApplicationObject()).setVpnIpEstablished(sIP);  //Wichtig: Die erreichbare IP - Adresse f r das Frontend greifbar machen.
 //	 								//this.sPortVPN = objStarter.getVpnPort();	
-//	 								this.logMessageString( "Connection successfully established with '"+ ((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished() +"'"); //Der Port ist nicht aussagekr�ftig !!! + ":" + this.getVpnPortEstablished() + "'";)					
+//	 								this.logMessageString( "Connection successfully established with '"+ ((ClientApplicationOVPN)this.getApplicationObject()).getVpnIpEstablished() +"'"); //Der Port ist nicht aussagekr ftig !!! + ":" + this.getVpnPortEstablished() + "'";)					
 //	 								bReturn = true;					
 //	 								this.setFlag("isconnected", bReturn);  //DAS SOLL DANN z.B: dem Frontend sagen, dass die Verbindung steht.
 //	 								
@@ -275,7 +275,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 //	 											if(sPath.equalsIgnoreCase(sPathStarter) == false){											
 //	 												this.logMessageString("Requesting to end thread # " + icount2);							
 //	 													
-//	 												//TODO GOON: VERSUCHE DEN STEUERCODE F�R "BEENDEN" ZU SENDEN, DAS GEHT ABER NOCH NICHT
+//	 												//TODO GOON: VERSUCHE DEN STEUERCODE F R "BEENDEN" ZU SENDEN, DAS GEHT ABER NOCH NICHT
 //	 												runneraOVPN[icount2].sendStringToProcess("hard");   //???????
 //	 												runneraOVPN[icount2].setFlag("StopRequested", true); // DAMIT WIRD DAS RUNNER OBJEKT ANGEHALTEN SICH SELBST ZU BEENDEN
 //	 																																		
@@ -304,7 +304,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 //	 							}//END if sIP != null																
 	 					//}//END for
 	 					
-	 								/*TODO WARUM GEHT DAS NICHT. Kl�ren, ob Firewall oder Proxy-Einstellungen bei mir oder bei der itelligence das verhindern !!!
+	 								/*TODO WARUM GEHT DAS NICHT. Kl ren, ob Firewall oder Proxy-Einstellungen bei mir oder bei der itelligence das verhindern !!!
 	 								//+++ Vorab: Checken, ob die Remote-Verbindungen erreichbar sind !!!
 	 								//       Die Konfigurationen, die nicht erreichbar sind, hier schon entfernen !!!
 	 								sStatus = "Checking if the remote connection connection is available.";
@@ -328,13 +328,13 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 										objKernel.getLogObject().WriteLineDate(sStatus);				
 	 										this.addStatusString(sStatus);
 	 										
-	 										//DIESE KONFIGURATION DEMN�CHST ENTFERNEN
+	 										//DIESE KONFIGURATION DEMN CHST ENTFERNEN
 	 										listaPos.add(new Integer(icount));					
 	 									}
 	 								}//END for
 	 								
 	 								//TODO DAS ENTFERNEN AUS DER ARRAYLIST ALS KERNEL-STATIC-METHODE ANBIETEN !!!
-	 								//NUN DAS TATS�CHLICHE ENTFERNEN, Von hinten nach vorne und dann immer um 1 abnehmend.
+	 								//NUN DAS TATS CHLICHE ENTFERNEN, Von hinten nach vorne und dann immer um 1 abnehmend.
 	 								if(listaPos.isEmpty()==false){
 	 									for(int icount=listaPos.size()-1;icount >=0;icount--){
 	 									Integer inttemp = (Integer)listaPos.get(icount);
@@ -351,7 +351,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 //	 								//Sollen die Ports der Gegenseite "gescannt" werden ?
 //	 						if(this.isPortScanEnabled()==true){
 //	 								
-//	 								//Nun die zur Verf�gung stehenden Ports erfassen	
+//	 								//Nun die zur Verf gung stehenden Ports erfassen	
 //	 								//1. VPN-Ports
 //	 								IKernelConfigSectionEntryZZZ entryPortLow=objKernel.getParameterByProgramAlias("OVPN","ProgPortScan","VPNPortLow");
 //	 								String sPortLow=entryPortLow.getValue();
@@ -383,7 +383,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 //	 									}//END if getFlag("useProxy")
 //	 								
 //	 							//########################################
-//	 							//Merke: Das Frontend wird nun ggf. einen Thread starten, der die Verbindung �berwacht
+//	 							//Merke: Das Frontend wird nun ggf. einen Thread starten, der die Verbindung  berwacht
 //	 									this.setFlag("PortScanAllFinished", true);	
 //	 								}//END if(this.isPortScanEnabled()){
 	 					
@@ -685,15 +685,15 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	//#######################################
 	//### aus ISenderObjectStatusLocalSetUserOVPN
 	@Override
-	//public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
-	public ISenderObjectStatusLocalZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
+	public ISenderObjectStatusLocalOVPN getSenderStatusLocalUsed() throws ExceptionZZZ {
+	//public ISenderObjectStatusLocalZZZ getSenderStatusLocalUsed() throws ExceptionZZZ {
 		if(this.objEventStatusLocalBroker==null) {
 			//++++++++++++++++++++++++++++++
 			//Nun geht es darum den Sender fuer Aenderungen am Status zu erstellen, der dann registrierte Objekte ueber Aenderung von Flags informiert
 			ISenderObjectStatusLocalOVPN objSenderStatusLocal = new SenderObjectStatusLocalOVPN();
 			this.objEventStatusLocalBroker = objSenderStatusLocal;
 		}
-		return (ISenderObjectStatusLocalZZZ) this.objEventStatusLocalBroker;
+		return this.objEventStatusLocalBroker;
 	}
 	
 	

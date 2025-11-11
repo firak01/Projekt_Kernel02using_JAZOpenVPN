@@ -2,6 +2,8 @@ package use.openvpn.client.status;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
+import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
+import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
 
 
 /**Dieses Interface enthaelt Methoden, die von den Klassen implementiert werden muessen, 
@@ -10,12 +12,12 @@ import basic.zBasic.util.abstractList.ArrayListUniqueZZZ;
  * @author lindhaueradmin
  *
  */
-public interface ISenderObjectStatusLocalOVPN{
+public interface ISenderObjectStatusLocalOVPN extends ISenderObjectStatusLocalZZZ{
 	public abstract void fireEvent(IEventObjectStatusLocalOVPN event);
 	public abstract IEventObjectStatusLocalOVPN getEventPrevious();
 	public void setEventPrevious(IEventObjectStatusLocalOVPN event);
 	
 	public abstract void removeListenerObjectStatusLocal(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ;
 	public abstract void addListenerObjectStatusLocal(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ;	
-	public abstract ArrayListUniqueZZZ<IListenerObjectStatusLocalOVPN> getListenerRegisteredAll() throws ExceptionZZZ;
+	//public abstract ArrayListUniqueZZZ<IListenerObjectStatusLocalOVPN> getListenerRegisteredAll() throws ExceptionZZZ;
 }
