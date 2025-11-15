@@ -89,7 +89,7 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 				
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Trying to establish a new connection with every OVPN-configuration-file. Starting threads.";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 		
 			//NUN DAS BACKEND-AUFRUFEN. Merke, dass muss in einem eigenen Thread geschehen, damit das Icon anclickbar bleibt.								
 			//Merke: Wenn über das enum der setStatusLocal gemacht wird, dann kann über das enum auch weiteres uebergeben werden. Z.B. StatusMeldungen.				
@@ -100,7 +100,7 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 			if(!bStatusLocalSet) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				break main;
 			}			
 			Thread.sleep(5000);
@@ -130,19 +130,19 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 					//Hier nicht abbrechen, sondern die Verarbeitung bei der naechsten Datei fortfuehren
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"' for thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size();
 					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
+					this.getMainObject().logProtocol(sLog);
 				}else {
 					Process objProcess = objStarter.requestStart();	
 					if(objProcess==null){
  						//Hier nicht abbrechen, sondern die Verarbeitung bei der naechsten Datei fortfuehren
  						sLog = ReflectCodeZZZ.getPositionCurrent()+": Unable to create process, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"' for thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size();
  						System.out.println(sLog);
- 						this.getMainObject().logProtocolString(sLog); 						
+ 						this.getMainObject().logProtocol(sLog); 						
  					}else{	
 						//NEU: Einen anderen Thread zum "Monitoren" des Inputstreams des Processes verwenden. Dadurch werden die anderen Prozesse nicht angehalten.
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Successfull process created, using file: '"+ objStarter.getFileConfigOvpn().getPath()+"' for thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() +". Starting Thread as Monitor for this process.";
 						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);
+						this.getMainObject().logProtocol(sLog);
 							
 						//TEST, Flagübergabe: Ohne, z.B. die Pruefung auf vorherige Werte wird immer ein Event geworfen fuer "HASOUTPUT"
 						//runneraOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, IProcessWatchRunnerZZZ.FLAGZ.END_ON_CONNECTION.name());
@@ -167,7 +167,7 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 							threadaOVPN[icount] = new Thread(runneraProcessOVPN[icount]);//Starte den ProcessWatchRunner					
 							threadaOVPN[icount].start();	 	
 							sLog = ReflectCodeZZZ.getPositionCurrent()+": ProcessWatchRunner started for thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() + ".";
-							this.getMainObject().logProtocolString(sLog);
+							this.getMainObject().logProtocol(sLog);
 						}else {
 							String[]saFlagControl = {IProcessWatchRunnerOVPN.FLAGZ.END_ON_CONNECTION.name()};
 							runneraProcessOVPN[icount] =new ProcessWatchRunnerOVPN(objKernel, objProcess,iNumberOfProcessStarted, saFlagControl);
@@ -182,11 +182,11 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 							threadaOVPN[icount] = new Thread(runneraProcessOVPN[icount]);//Starte den ProcessWatchRunner					
 							threadaOVPN[icount].start();	 	
 							sLog = ReflectCodeZZZ.getPositionCurrent()+": ProcessWatchRunner started for thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() + ".";
-							this.getMainObject().logProtocolString(sLog);
+							this.getMainObject().logProtocol(sLog);
 						}
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Finished starting thread #" + iNumberOfProcessStarted + " von " + listaProcessStarter.size() + " for watching connection.";
 						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);
+						this.getMainObject().logProtocol(sLog);
  					}
 				}
 			}//END for
@@ -194,25 +194,25 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 				//Hier nicht abbrechen, sondern den Status wieder zurücksetzen.
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": No process started.";
 				System.out.println(sLog);									
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				
 				bStatusLocalSet = this.switchStatusLocalForGroupTo(IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISSTARTNO, true); //Damit der ISSTOPPED Wert auf jeden Fall auch beseitigt wird
 				if(!bStatusLocalSet) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
 					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
+					this.getMainObject().logProtocol(sLog);
 					break main;
 				}			
 			}else if(iNumberOfProcessStarted>=1) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": " + iNumberOfProcessStarted + " process started.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				
 				bStatusLocalSet = this.switchStatusLocalForGroupTo(IServerThreadProcessWatchMonitorOVPN.STATUSLOCAL.ISSTARTED, true); //Damit der ISSTOPPED Wert auf jeden Fall auch beseitigt wird
 				if(!bStatusLocalSet) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
 					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
+					this.getMainObject().logProtocol(sLog);
 					break main;
 				}	
 			}
@@ -258,7 +258,7 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 		if(bReturn) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+ ": Status changed to '"+sStatusString+"'";
 			System.out.println(sLog);
-		    this.getMainObject().logProtocolString(sLog);			
+		    this.getMainObject().logProtocol(sLog);			
 		}
 		return bReturn;
 	}
@@ -582,14 +582,14 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		bFunction = this.proofStatusLocalExists(sStatusName);															
 		if(!bFunction) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerThreadProcessWatchMonitor for Process would like to fire event, but this status is not available: '" + sStatusName + "'";
-			this.getMainObject().logProtocolString(sLog);			
+			this.getMainObject().logProtocol(sLog);			
 			break main;
 		}
 			
 		bFunction = this.proofStatusLocalValueChanged(sStatusName, bStatusValue);
 		if(!bFunction) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerThreadProcessWatchMonitor would like to fire event, but this status has not changed: '" + sStatusName + "'";
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			break main;
 		}	
 		
@@ -613,12 +613,12 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}
 		
 		String sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-		this.getMainObject().logProtocolString(sLog);
+		this.getMainObject().logProtocol(sLog);
 
 		//Falls eine Message extra uebergeben worden ist, ueberschreibe...
 		if(sStatusMessageToSet!=null) {
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerMain setze sStatusMessageToSet='" + sStatusMessageToSet + "'";
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 		}
 		//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
 		this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
@@ -629,25 +629,25 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		//Dann erzeuge den Event und feuer ihn ab.	
 		if(this.getSenderStatusLocalUsed()==null) {
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerThreadProcessWatchMonitor for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-			this.getMainObject().logProtocolString(sLog);		
+			this.getMainObject().logProtocol(sLog);		
 			break main;
 		}
 		
 		//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
 		sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";
-		this.getMainObject().logProtocolString(sLog);
+		this.getMainObject().logProtocol(sLog);
 		IEventObject4ProcessWatchMonitorStatusLocalOVPN event = (IEventObject4ProcessWatchMonitorStatusLocalOVPN) new EventObject4ProcessMonitorStatusLocalOVPN(this,1,enumStatus, bStatusValue);			
 		event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
 					
 		//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
 		sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerThreadProcessWatchMonitor for Process iIndex= '" + iIndexOfProcess + "'";		
-		this.getMainObject().logProtocolString(sLog);
+		this.getMainObject().logProtocol(sLog);
 		if(iIndexOfProcess>=0) {
 			event.setServerConfigStarterObjectUsed(this.getMainObject().getServerConfigStarterList().get(iIndexOfProcess));
 		}		
 		
 		sLog = ReflectCodeZZZ.getPositionCurrent() + " ServerThreadProcessWatchMonitor for Process fires event '" + enumStatus.getAbbreviation() + "'";
-		this.getMainObject().logProtocolString(sLog);
+		this.getMainObject().logProtocol(sLog);
 		this.getSenderStatusLocalUsed().fireEvent(event);
 				
 		bFunction = true;				

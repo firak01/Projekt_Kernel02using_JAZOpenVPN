@@ -189,11 +189,11 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			if(objEnumMenu!=null){
 				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Menuepunkt=" + objEnumMenu.getMenu();
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 			}else {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() +": Kein Menuepunkt vorhanden.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 			}
 			//++++++++++++++++++++++++++++++++
 						
@@ -964,13 +964,13 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Event gefangen.";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			
 			boolean bRelevant = this.isEventRelevant2ChangeStatusLocal(eventStatusLocalSet); 
 			if(!bRelevant) {
 				sLog = 	ReflectCodeZZZ.getPositionCurrent() + ": Event / Status nicht relevant. Breche ab.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				break main;
 			}
 			
@@ -1005,7 +1005,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			else {	
 				sLog = ReflectCodeZZZ.getPositionCurrent() +" : Status-Enum wird von der Klasse her nicht betrachtet.";
 				System.out.println(sLog);	
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 			}											
 			bReturn = true;
 		}//end main:
@@ -1025,7 +1025,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 		main:{	
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Fuer MainEvent.";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			
 			IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusLocal();				
 			STATUSLOCAL objStatusEnum = (STATUSLOCAL) eventStatusLocalSet.getStatusEnum();
@@ -1037,11 +1037,11 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus hat class='"+enumStatus.getClass()+"'";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);	
+			this.getMainObject().logProtocol(sLog);	
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus='" + enumStatus.getAbbreviation()+"'";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 				
 			//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
 			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapEnumSetForStatusLocal();		
@@ -1050,7 +1050,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			if(objEnumForTray==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				break main;
 			}			
 		
@@ -1130,19 +1130,19 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 					if(objEnumForTray==null) {
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
 						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);
+						this.getMainObject().logProtocol(sLog);
 						break main;
 					}else {
 						//Erst einmal den gefundenen Status neu hinzufügen. Damit er auch bei einem weiteren "rueckwaerts Suchen" in der Liste auftaucht.
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Nimm den gefundenen Status in die Liste als neuen Status auf: '" + objEnumForTray.getAbbreviation() + "'";
 						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);							
+						this.getMainObject().logProtocol(sLog);							
 						this.getMainObject().offerStatusLocal((Enum) objStatusLocalPrevious.getEnumObject(), true, "");											
 					}	
 				}else {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen Status aus dem Event-Objekt erhalten. Breche ab";
 					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);
+					this.getMainObject().logProtocol(sLog);
 					break main;
 				}
 						
@@ -1282,28 +1282,28 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Pruefe Relevanz des Events.";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			
 			IEnumSetMappedZZZ enumStatusFromEvent = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();				
 			if(enumStatusFromEvent==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);							
+				this.getMainObject().logProtocol(sLog);							
 				break main;
 			}
 			
 			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus hat class='"+enumStatusFromEvent.getClass()+"'";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);	
+			this.getMainObject().logProtocol(sLog);	
 				
 			sLog = ReflectCodeZZZ.getPositionCurrent()+": enumFromEventStatus='" + enumStatusFromEvent.getAbbreviation()+"'";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			
 			
 			//#### Problemansatz: Mappen des Lokalen Status auf einen Status aus dem Event, verschiedener Klassen.
@@ -1318,13 +1318,13 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			if(objEnumStatusLocal==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping nicht mit Wert vorhanden. Damit nicht relevant.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				break main;
 				//sStatusAbbreviationLocal = enumStatusFromEvent.getAbbreviation();
 			}else {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Klasse '" + enumStatusFromEvent.getClass() + "' ist im Mapping mit Wert vorhanden. Damit relevant.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				
 				sStatusAbbreviationLocal = objEnumStatusLocal.getAbbreviation();
 			}
@@ -1334,7 +1334,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Event werfenden Klasse ist fuer diese Klasse hinsichtlich eines Status nicht relevant. Breche ab.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
+				this.getMainObject().logProtocol(sLog);				
 				break main;
 			}
 			
@@ -1359,7 +1359,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
+				this.getMainObject().logProtocol(sLog);				
 				break main;
 			}
 			
@@ -1368,7 +1368,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Status an sich aus dem Event ist fuer diese Klasse nicht relevant. Breche ab.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
+				this.getMainObject().logProtocol(sLog);				
 				break main;
 			}
 			
@@ -1377,7 +1377,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			if(!bReturn) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Statuswert nicht relevant. Breche ab.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);				
+				this.getMainObject().logProtocol(sLog);				
 				break main;
 			}
 
@@ -1406,7 +1406,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			boolean bStatusValue = eventStatusLocalSet.getStatusValue();
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Einen enumStatus empfangen. Wert: " + bStatusValue;
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 		
 			if(!bStatusValue)break main; //Hier interessieren nur "true" werte, die also etwas neues setzen.
 			

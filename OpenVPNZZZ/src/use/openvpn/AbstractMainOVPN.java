@@ -43,7 +43,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	 * @throws ExceptionZZZ 
 	 */	
 	@Override
-	public void logProtocolString(String sProtocol) throws ExceptionZZZ{
+	public void logProtocol(String sProtocol) throws ExceptionZZZ{
 		if(sProtocol!=null){
 			this.addProtocolString(sProtocol);
 			

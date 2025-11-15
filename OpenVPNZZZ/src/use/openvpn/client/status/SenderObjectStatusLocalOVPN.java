@@ -31,7 +31,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public void fireEvent(IEventObjectStatusLocalOVPN event) {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.logProtocolStringWithPosition(sLog);
+			this.logProtocolWithPosition(sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}
@@ -41,7 +41,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public IEventObjectStatusLocalOVPN getEventPrevious() {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.logProtocolStringWithPosition(sLog);
+			this.logProtocolWithPosition(sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}
@@ -52,7 +52,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public void setEventPrevious(IEventObjectStatusLocalOVPN event) {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.logProtocolStringWithPosition(sLog);
+			this.logProtocolWithPosition(sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}
@@ -62,7 +62,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public void removeListenerObjectStatusLocal(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.logProtocolStringWithPosition(sLog);
+			this.logProtocolWithPosition(sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}
@@ -72,7 +72,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public void addListenerObjectStatusLocal(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.logProtocolStringWithPosition(sLog);
+			this.logProtocolWithPosition(sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}

@@ -155,7 +155,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	 				//+++ Noch keine Verbindung/Noch fehlende Verbindungen, dann wird es aber Zeit verschiedene Threads damit zu beauftragen
 	 				String sLog = ReflectCodeZZZ.getPositionCurrent()+": Trying to establish a new connection with every OVPN-configuration-file. Starting threads.";
 					System.out.println(sLog);
-					this.getMainObject().logProtocolString(sLog);	
+					this.getMainObject().logProtocol(sLog);	
 	 				
 					//Setze ggfs. vorher gesetzte Werte zurück.
 					this.reset();
@@ -169,7 +169,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 					if(!bStatusLocalSet) {
 						sLog = ReflectCodeZZZ.getPositionCurrent()+": Lokaler Status nicht gesetzt, aus Gruenden. Breche ab";
 						System.out.println(sLog);
-						this.getMainObject().logProtocolString(sLog);
+						this.getMainObject().logProtocol(sLog);
 						break main;
 					}
 					
@@ -180,13 +180,13 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 						if(listaClientConfigStarterRunning==null) {
 							sLog = ReflectCodeZZZ.getPositionCurrent()+": PING: Keine Konfigurationen aus OVPN-configuration-file vorhanden (NULL). Breche ab.";
 							System.out.println(sLog);
-							this.getMainObject().logProtocolString(sLog);
+							this.getMainObject().logProtocol(sLog);
 							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED, true);
 							break main;
 						}else if(listaClientConfigStarterRunning.size()==0) {
 							sLog = ReflectCodeZZZ.getPositionCurrent()+": PING: Konfigurationen aus OVPN-configuration-file vorhanden (0). Breche ab.";
 							System.out.println(sLog);
-							this.getMainObject().logProtocolString(sLog);
+							this.getMainObject().logProtocol(sLog);
 							this.setStatusLocal(IClientThreadVpnIpPingerOVPN.STATUSLOCAL.HASCLIENTNOTSTARTED, true);
 							break main;							
 						}
@@ -414,7 +414,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			try {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": "+ez.getDetailAllLast();
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 					
 				try {
 					Thread.sleep(5000);
@@ -757,14 +757,14 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			bFunction = this.proofStatusLocalExists(sStatusName);															
 			if(!bFunction){
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status is not available: '" + sStatusName + "'";
-				this.getMainObject().logProtocolString(sLog);			
+				this.getMainObject().logProtocol(sLog);			
 				break main;
 			}
 			
 			bFunction = this.proofStatusLocalValueChanged(sStatusName, bStatusValue);
 			if(!bFunction) {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event, but this status has not changed: '" + sStatusName + "'";
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				break main;
 			}
 		
@@ -785,12 +785,12 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 				}			
 			}else {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				
 				sStatusMessageToSet = sStatusMessage;
 			}
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			
 			//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
 			boolean bSuccess = this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
@@ -802,26 +802,26 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			//Dann erzeuge den Event und feuer ihn ab.	
 			if(this.getSenderStatusLocalUsed()==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-				this.getMainObject().logProtocolString(sLog);			
+				this.getMainObject().logProtocol(sLog);			
 				break main;
 			}
 			
 			//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
 			sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";
-			this.getMainObject().logProtocolString(sLog);				
+			this.getMainObject().logProtocol(sLog);				
 			IEventObject4VpnIpPingerStatusLocalOVPN event = new EventObject4VpnIpPingerStatusLocalOVPN(this,1,enumStatus, bStatusValue);
 			event.setApplicationObjectUsed(this.getMainObject().getApplicationObject());
 			
 			
 			//das ClientStarterObjekt nun auch noch dem Event hinzufuegen
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger for Process iIndex= '" + iIndexOfProcess + "'";
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			if(iIndexOfProcess>=0) {
 				event.setClientConfigStarterObjectUsed(this.getMainObject().getClientConfigStarterList().get(iIndexOfProcess));
 			}
 			
 			sLog = ReflectCodeZZZ.getPositionCurrent() + " ClientThreadVpnIpPinger fires event '" + enumStatus.getAbbreviation() + "'";
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			this.getSenderStatusLocalUsed().fireEvent(event);
 				
 			bFunction = true;	
@@ -838,7 +838,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			if(!(objEnumStatusIn instanceof IClientThreadVpnIpPingerOVPN.STATUSLOCAL) ){
 				String sLog = ReflectCodeZZZ.getPositionCurrent()+": enumStatus wird wg. unpassender Klasse ignoriert.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);
+				this.getMainObject().logProtocol(sLog);
 				break main;
 			}		
 			bReturn = true;

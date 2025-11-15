@@ -58,7 +58,7 @@ public abstract class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ
 			if(objEntryHost.hasAnyValue()){		//Eine Proxy-Konfiguration ist nicht Pflicht
 				this.sProxyHost = objEntryHost.getValue();	
 				if(StringZZZ.isEmpty(this.sProxyHost)) {
-					this.getMainObject().logProtocolString("Proxy host as empty configured.");
+					this.getMainObject().logProtocol("Proxy host as empty configured.");
 					break main;
 				}
 				
@@ -67,26 +67,26 @@ public abstract class AbstractApplicationOVPN extends AbstractKernelUseObjectZZZ
 				if(objEntryHost.hasAnyValue()){
 					this.sProxyPort = objEntryPort.getValue();
 					if(StringZZZ.isEmpty(this.sProxyPort)) {
-						this.getMainObject().logProtocolString("Proxy port as empty configured.");
+						this.getMainObject().logProtocol("Proxy port as empty configured.");
 						break main;
 					}
 					
 					//+++ Nun versuchen herauszufinden, ob der Proxy auch erreichbar ist und existiert. Nur nutzen, falls er existiert
 					KernelPingHostZZZ objPing = new KernelPingHostZZZ(objKernel, null);
 					try{ //Hier soll nicht abgebrochen werden, wenn es nicht klappt. Lediglich ins Log soll etwas geschrieben werden.
-						this.getMainObject().logProtocolString( "Trying to reach the proxy configured. '" + sProxyHost + " : " + sProxyPort +"'");									
+						this.getMainObject().logProtocol( "Trying to reach the proxy configured. '" + sProxyHost + " : " + sProxyPort +"'");									
 						bReturn = objPing.ping(sProxyHost, sProxyPort);								
-						this.getMainObject().logProtocolString("Configured proxy reached. " + sProxyHost + " : " + sProxyPort +"'");
+						this.getMainObject().logProtocol("Configured proxy reached. " + sProxyHost + " : " + sProxyPort +"'");
 										
 					}catch(ExceptionZZZ ez){
 						objKernel.getLogObject().WriteLineDate("Will not use the proxy configured, because: " + ez.getDetailAllLast());
-						this.getMainObject().logProtocolString("Configured proxy unreachable. " + sProxyHost + " : " + sProxyPort +"'. No proxy will be enabled.");
+						this.getMainObject().logProtocol("Configured proxy unreachable. " + sProxyHost + " : " + sProxyPort +"'. No proxy will be enabled.");
 					}	
 				}else {
-					this.getMainObject().logProtocolString("No proxy port configured.");
+					this.getMainObject().logProtocol("No proxy port configured.");
 				}				
 			}else{
-				this.getMainObject().logProtocolString("No proxy host configured.");								
+				this.getMainObject().logProtocol("No proxy host configured.");								
 			}//END 	if(sProxyHost!=null && sProxyHost.equals("")==false){		//Eine Proxy-Konfiguration ist nicht Pflicht		
 		}//END main
 		this.setFlag("UseProxy", bReturn);
