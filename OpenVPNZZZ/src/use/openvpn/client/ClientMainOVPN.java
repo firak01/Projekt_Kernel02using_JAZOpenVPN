@@ -115,6 +115,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientThreadConnectionVpnIpMonitorOVPN-Object";
 		System.out.println(sLog);
 		this.getLogObject().WriteLineDate(sLog);			
+		this.getLogObject().logProtocol(sLog);
 		
 		String[] saFlagVpnIpPinger = null;
 		this.objVpnIpPinger = new ClientThreadVpnIpPingerOVPN(this.getKernelObject(), this, saFlagVpnIpPinger);
