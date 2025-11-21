@@ -112,7 +112,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		//#################
         //Definiere den VpnIpPinger, der permanent id IP-Adresse der VPN Verbindung ueberwacht
 		//Er wird auch am Backend-Objekt registriert, um dortige Aenderungen mitzubekommen.
-		sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientThreadConnectionVpnIpMonitorOVPN-Object";
+		sLog = ReflectCodeZZZ.getPositionCurrent() + "Creating ClientThreadConnectionVpnIpMonitorOVPN-Object";
 		System.out.println(sLog);
 		this.getLogObject().WriteLineDate(sLog);			
 		this.getLogObject().logProtocol(sLog);
