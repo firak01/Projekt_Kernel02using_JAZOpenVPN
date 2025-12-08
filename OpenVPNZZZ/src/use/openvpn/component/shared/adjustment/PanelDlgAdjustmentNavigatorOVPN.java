@@ -17,7 +17,7 @@ import use.openvpn.serverui.component.IPExternalUpload.IConstantProgramIpWebOVPN
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
+import basic.zBasic.util.abstractList.HashMapZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.thread.SwingWorker;
@@ -146,7 +146,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 				
 					
 					//TODOGOON; //20210727 eine HashMapExtended aus der HashMap bauen.									
-					HashMapExtendedZZZ<String,String>hmzzz = HashMapExtendedZZZ.toHashMapExtended(hm);
+					HashMapZZZ<String,String>hmzzz = HashMapZZZ.toHashMapExtended(hm);
 					                                // .clone(hm);
 					
 					sValue = (String) hmzzz.getValueByIndex(iRow-1);
