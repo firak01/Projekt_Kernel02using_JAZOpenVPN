@@ -13,7 +13,7 @@ import java.util.TreeMap;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
-import basic.zBasic.util.abstractList.HashMapZZZ;
+import basic.zBasic.util.abstractList.HashMapUtilZZZ;
 import basic.zBasic.util.abstractList.HashtableIndexedZZZ;
 import basic.zBasic.util.abstractList.SetUtilZZZ;
 import basic.zBasic.util.abstractList.VectorZZZ;
@@ -72,7 +72,7 @@ public class ServerConfigMapper4ServerClientConfigOVPN extends AbstractConfigMap
 						
 			//Die Sortierung ist im Set nicht sichergestellt. Darum explizit sortieren und die Kernel-HashMap (iterierbar) verwenden
 			//Nur so bleiben die Codezeilen in der passenden Reihenfolge.
-			HashMapIterableKeyZZZ<String,Object> hmPatternSorted = HashMapZZZ.sortByKeyAsInteger_StringString(hmPattern);			
+			HashMapIterableKeyZZZ<String,Object> hmPatternSorted = HashMapUtilZZZ.sortByKeyAsInteger_StringString(hmPattern);			
 			for(String sKey : hmPatternSorted) {
 				String sLine = (String) hmPattern.get(sKey);	
 				
