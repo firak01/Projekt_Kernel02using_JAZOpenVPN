@@ -10,11 +10,11 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import custom.zKernel.ILogZZZ;
 import custom.zKernel.file.ini.FileIniZZZ;
 import custom.zKernel.net.ftp.FTPSZZZ;
 import custom.zKernel.net.ftp.SFTPZZZ;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
-import basic.zKernel.IKernelLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelSingletonZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -166,7 +166,7 @@ public class ProgramPageWebUploadUiOVPN  extends AbstractKernelProgramUIZZZ impl
 		IKernelZZZ objKernel = this.getKernelObject(); //KernelSingletonZZZ.getInstance("FGL", "01", "", "ZKernelConfigFTP_test.ini",(String[]) null);
 		
 		//2. Protokoll
-		IKernelLogZZZ objLog = objKernel.getLogObject();
+		ILogZZZ objLog = objKernel.getLogObject();
 
 		//3. FTPZZZ-Objekt, als Wrapper um den passenden FTP-Client
 		SFTPZZZ objFTP = new SFTPZZZ(objKernel, objLog, (String[]) null);

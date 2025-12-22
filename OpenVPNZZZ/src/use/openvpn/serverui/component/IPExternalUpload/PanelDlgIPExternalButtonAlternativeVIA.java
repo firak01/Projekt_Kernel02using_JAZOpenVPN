@@ -26,7 +26,7 @@ import custom.zKernel.LogZZZ;
 import use.openvpn.serverui.component.IPExternalUpload.PanelDlgIPExternalContentOVPN.ActionIpWeb2iniOVPN.SwingWorker4ProgramIpWeb2iniOVPN;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelLogZZZ;
+import basic.zKernel.AbstractKernelLogZZZ;
 
 /**
  * @author 0823

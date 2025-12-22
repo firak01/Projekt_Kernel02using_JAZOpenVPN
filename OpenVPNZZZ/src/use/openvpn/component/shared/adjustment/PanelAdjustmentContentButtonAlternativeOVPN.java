@@ -26,7 +26,7 @@ import custom.zKernel.LogZZZ;
 import use.openvpn.clientui.component.IPExternalRead.ProgramIpWeb2iniOVPN;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelLogZZZ;
+import basic.zKernel.AbstractKernelLogZZZ;
 
 /**
  * @author 0823
@@ -207,7 +207,7 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 			public void logLineDate(String sLog) throws ExceptionZZZ {
 				LogZZZ objLog = this.getLogObject();
 				if(objLog==null) {
-					String sTemp = KernelLogZZZ.computeLineDate(sLog);
+					String sTemp = AbstractKernelLogZZZ.computeLineDate(sLog);
 					System.out.println(sTemp);
 				}else {
 					objLog.WriteLineDate(sLog);

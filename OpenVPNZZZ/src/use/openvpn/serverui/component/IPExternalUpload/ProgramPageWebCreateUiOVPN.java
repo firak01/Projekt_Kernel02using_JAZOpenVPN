@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import custom.zKernel.ILogZZZ;
 import custom.zKernel.LogZZZ;
 import custom.zKernel.file.ini.FileIniZZZ;
 import custom.zKernel.html.writer.WriterHtmlZZZ;
@@ -22,7 +23,6 @@ import use.openvpn.IApplicationOVPN;
 import use.openvpn.IApplicationUserOVPN;
 import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelConfigZZZ;
-import basic.zKernel.IKernelLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelSingletonZZZ;
 import basic.zBasic.ExceptionZZZ;
