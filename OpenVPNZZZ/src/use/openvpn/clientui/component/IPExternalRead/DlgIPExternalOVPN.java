@@ -63,5 +63,6 @@ public class DlgIPExternalOVPN extends KernelJDialogExtendedZZZ {
 		PanelDialogContentEmptyZZZ panelNavigator = new PanelDialogContentEmptyZZZ(this.getKernelObject(), this);
 		return panelNavigator;
 	}
+	
 }
 
