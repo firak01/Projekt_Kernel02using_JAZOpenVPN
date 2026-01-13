@@ -308,7 +308,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 	}
 
 	@Override
-	public ArrayList<RowSpec> buildRowSpecs() {		
+	public ArrayList<RowSpec> buildRowSpecs() throws ExceptionZZZ {		
 		//"5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu"
 		ArrayList<RowSpec>listReturn=new ArrayList<RowSpec>();
 		main:{
@@ -582,7 +582,11 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 					updateValue(objProg, sIp);
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
-					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+					try {
+						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+					} catch (ExceptionZZZ e) {
+						e.printStackTrace();
+					}					
 				}
 				return "all done";
 			}
@@ -697,7 +701,11 @@ class ActionIpRouter2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ /
 				updateValue(objProg, sIp);
 			}catch(ExceptionZZZ ez){
 				System.out.println(ez.getDetailAllLast());
-				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+				try {
+					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+				} catch (ExceptionZZZ e) {
+					e.printStackTrace();
+				}					
 			}
 			return "all done";
 		}
@@ -786,7 +794,11 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 				updateValue(objProg, sIp);
 			}catch(ExceptionZZZ ez){
 				System.out.println(ez.getDetailAllLast());
-				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+				try {
+					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+				} catch (ExceptionZZZ e) {
+					e.printStackTrace();
+				}					
 			}
 			return "all done";
 		}
@@ -874,7 +886,11 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 						updateValue(objProg, sIp);
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
-						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+						try {
+							ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+						} catch (ExceptionZZZ e) {
+							e.printStackTrace();
+						}					
 					}
 					return "all done";
 				}
@@ -958,7 +974,11 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 							updateValue(objProg, sIp);
 						}catch(ExceptionZZZ ez){
 							System.out.println(ez.getDetailAllLast());
-							ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+							try {
+								ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+							} catch (ExceptionZZZ e) {
+								e.printStackTrace();
+							}					
 						}
 						return "all done";
 					}
@@ -1050,7 +1070,11 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 						}
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
-						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+						try {
+							ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+						} catch (ExceptionZZZ e) {
+							e.printStackTrace();
+						}					
 					}
 					return "all done";
 				}
@@ -1142,7 +1166,11 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 						}
 					}catch(ExceptionZZZ ez){
 						System.out.println(ez.getDetailAllLast());
-						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+						try {
+							ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+						} catch (ExceptionZZZ e) {
+							e.printStackTrace();
+						}					
 					}
 //					catch (JSchException jsche) {
 //						System.out.println(jsche.getMessage());

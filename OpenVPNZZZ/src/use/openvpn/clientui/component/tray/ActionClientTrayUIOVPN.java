@@ -510,8 +510,9 @@ public class ActionClientTrayUIOVPN extends AbstractKernelActionTrayZZZ {
 	* @return String
 	* 
 	* lindhaueradmin; 10.08.2006 11:32:16
+	 * @throws ExceptionZZZ 
 	 */
-	public String readVpnIpPingerStatusMessage(){
+	public String readVpnIpPingerStatusMessage() throws ExceptionZZZ{
 		String sReturn = "";
 		main:{
 			if(this.getMainObject()==null)break main;

@@ -24,7 +24,7 @@ public class FileFilterServerClientConfigReadmeTemplateOVPN extends AbstractFile
 	
 
 	//##### GETTER / SETTER		
-		public void setPrefix(String sPrefix) {
+		public void setPrefix(String sPrefix) throws ExceptionZZZ {
 			if(StringZZZ.isEmpty(sPrefix)) {
 				super.setPrefix(FileFilterServerClientConfigReadmeTemplateOVPN.sPREFIX);
 			}else {
@@ -33,7 +33,7 @@ public class FileFilterServerClientConfigReadmeTemplateOVPN extends AbstractFile
 		}
 		
 		
-		public void setMiddle(String sMiddle) {
+		public void setMiddle(String sMiddle) throws ExceptionZZZ {
 			if(StringZZZ.isEmpty(sMiddle)) {
 				super.setMiddle(FileFilterServerClientConfigReadmeTemplateOVPN.sMIDDLE);
 			}else {
@@ -41,7 +41,7 @@ public class FileFilterServerClientConfigReadmeTemplateOVPN extends AbstractFile
 			}
 		}
 		
-		public void setSuffix(String sSuffix) {
+		public void setSuffix(String sSuffix) throws ExceptionZZZ {
 			if(StringZZZ.isEmpty(sSuffix)) {
 				super.setSuffix(FileFilterServerClientConfigReadmeTemplateOVPN.sSUFFIX);
 			}else {
@@ -49,7 +49,7 @@ public class FileFilterServerClientConfigReadmeTemplateOVPN extends AbstractFile
 			}
 		}
 					
-		public void setEnding(String sEnding) {
+		public void setEnding(String sEnding) throws ExceptionZZZ {
 			if(StringZZZ.isEmpty(sEnding)) {
 				super.setEnding(FileFilterServerClientConfigReadmeTemplateOVPN.sENDING);
 			}else {

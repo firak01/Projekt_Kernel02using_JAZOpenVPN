@@ -484,7 +484,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	@see zzzKernel.basic.KernelObjectZZZ#getFlag(java.lang.String)
 	Flags used: 
 	- connectionrunnerstarted	 */
-	public boolean getFlag(String sFlagName){
+	public boolean getFlag(String sFlagName) throws ExceptionZZZ{
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
@@ -559,7 +559,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 //	}
 
 	@Override
-	public boolean getFlag(use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.FLAGZ objEnumFlag) {
+	public boolean getFlag(use.openvpn.client.process.IClientThreadVpnIpPingerOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.getFlag(objEnumFlag.name());
 	}
 
@@ -895,7 +895,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}
 	
 	@Override
-	public boolean getFlag(IKernelModuleZZZ.FLAGZ objEnumFlag) {
+	public boolean getFlag(IKernelModuleZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.getFlag(objEnumFlag.name());
 	}
 	@Override
@@ -938,7 +938,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	//##########################################
 		//### FLAG HANDLING
 		@Override
-		public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) {
+		public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 			return this.getFlag(objEnumFlag.name());
 		}
 		@Override
@@ -976,7 +976,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		
 		//### Aus IProgramZZZ
 		@Override
-		public String getProgramName(){
+		public String getProgramName() throws ExceptionZZZ{
 			if(StringZZZ.isEmpty(this.sProgramName)) {
 				if(this.getFlag(IProgramZZZ.FLAGZ.ISPROGRAM.name())) {
 					this.sProgramName = this.getClass().getName();
@@ -996,7 +996,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		}
 		
 		@Override
-		public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) {
+		public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 			return this.getFlag(objEnumFlag.name());
 		}
 		@Override
@@ -1047,7 +1047,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		
 		
 		@Override
-		public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) {
+		public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 			return this.getFlag(objEnumFlag.name());
 		}
 		@Override

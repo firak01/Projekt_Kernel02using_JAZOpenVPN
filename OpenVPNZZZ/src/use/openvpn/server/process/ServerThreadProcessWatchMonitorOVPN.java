@@ -273,7 +273,7 @@ private void ServerMonitorRunnerNew_(IKernelZZZ objKernel, IServerMainOVPN objSe
 	 * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
 	 * - Innere Klassen muessen auch public deklariert werden.(non-Javadoc)
 	 */
-	public boolean getFlag(String sFlagName) {
+	public boolean getFlag(String sFlagName) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
@@ -382,7 +382,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 //	
 	
 		@Override
-		public boolean getFlag(IServerThreadProcessWatchMonitorOVPN.FLAGZ objEnumFlag) {
+		public boolean getFlag(IServerThreadProcessWatchMonitorOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
 			return this.getFlag(objEnumFlag.name());
 		}
 		@Override

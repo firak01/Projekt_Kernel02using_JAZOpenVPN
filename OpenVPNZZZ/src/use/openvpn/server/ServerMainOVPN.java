@@ -800,7 +800,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 	}
 	
 	@Override
-	public boolean getStatusLocal(String sStatusName) {
+	public boolean getStatusLocal(String sStatusName) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sStatusName)) break main;

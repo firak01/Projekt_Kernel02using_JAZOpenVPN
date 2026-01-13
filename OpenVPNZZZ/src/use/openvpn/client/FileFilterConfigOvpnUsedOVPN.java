@@ -34,12 +34,12 @@ public class FileFilterConfigOvpnUsedOVPN extends AbstractFileFilterZZZ {
 		super();				
 		OVPNFileFilterConfigOvpnUsedNew_();
 	} 
-	private void OVPNFileFilterConfigOvpnUsedNew_() {
+	private void OVPNFileFilterConfigOvpnUsedNew_() throws ExceptionZZZ {
 		this.setPrefix(this.getOvpnContext());
 	}
 	
 	//##### GETTER / SETTER	
-		public void setPrefix(String sPrefix) {
+		public void setPrefix(String sPrefix) throws ExceptionZZZ {
 			if(StringZZZ.isEmpty(sPrefix)) {
 				super.setPrefix(FileFilterConfigOvpnUsedOVPN.sPREFIX);
 			}else {
@@ -48,7 +48,7 @@ public class FileFilterConfigOvpnUsedOVPN extends AbstractFileFilterZZZ {
 		}
 		
 		
-		public void setMiddle(String sMiddle) {
+		public void setMiddle(String sMiddle) throws ExceptionZZZ {
 			if(StringZZZ.isEmpty(sMiddle)) {
 				super.setMiddle(FileFilterConfigOvpnUsedOVPN.sMIDDLE);
 			}else {
@@ -56,7 +56,7 @@ public class FileFilterConfigOvpnUsedOVPN extends AbstractFileFilterZZZ {
 			}
 		}
 		
-		public void setSuffix(String sSuffix) {
+		public void setSuffix(String sSuffix) throws ExceptionZZZ {
 			if(StringZZZ.isEmpty(sSuffix)) {
 				super.setSuffix(FileFilterConfigOvpnUsedOVPN.sSUFFIX);
 			}else {
@@ -64,7 +64,7 @@ public class FileFilterConfigOvpnUsedOVPN extends AbstractFileFilterZZZ {
 			}
 		}
 					
-		public void setEnding(String sEnding) {
+		public void setEnding(String sEnding) throws ExceptionZZZ {
 			if(StringZZZ.isEmpty(sEnding)) {
 				super.setEnding(FileFilterConfigOvpnUsedOVPN.sENDING);
 			}else {

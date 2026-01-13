@@ -112,7 +112,11 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 		} catch (ExceptionZZZ ez) {					
 			System.out.println(ez.getDetailAllLast()+"\n");
 			ez.printStackTrace();
-			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());			
+			try {
+				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+			} catch (ExceptionZZZ e) {
+				e.printStackTrace();
+			}			
 		}
 	}//END Konstruktor
 	
@@ -353,7 +357,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 	}
 
 	@Override
-	public ArrayList<RowSpec> buildRowSpecs() {		
+	public ArrayList<RowSpec> buildRowSpecs() throws ExceptionZZZ {		
 		//"5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu, center:10dlu, 5dlu"
 		ArrayList<RowSpec>listReturn=new ArrayList<RowSpec>();
 		main:{
@@ -611,7 +615,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 			}
 			
 			//#### abstracte - Method aus SwingWorker
-			public Object construct() {
+			public Object construct(){
 				try{
 					//1. Auslesen
 					ProgramFTPCredentials2iniOVPN objProg = new ProgramFTPCredentials2iniOVPN(objKernel, this.panel, this.saFlag4Program);
@@ -636,7 +640,11 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 					//   Dann stehen nach einem CANCEL die Werte zur Verfuegung aus dem CACHE.
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
-					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
+					try {
+						ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+					} catch (ExceptionZZZ e) {
+						e.printStackTrace();
+					}					
 				}
 				return "all done";
 			}

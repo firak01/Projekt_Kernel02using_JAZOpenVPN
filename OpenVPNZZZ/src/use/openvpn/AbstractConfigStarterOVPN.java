@@ -237,7 +237,7 @@ public abstract class AbstractConfigStarterOVPN extends AbstractKernelUseObjectZ
 	 * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
 	 * - Innere Klassen muessen auch public deklariert werden.(non-Javadoc)
 	 */
-	public boolean getFlag(String sFlagName) {
+	public boolean getFlag(String sFlagName) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;

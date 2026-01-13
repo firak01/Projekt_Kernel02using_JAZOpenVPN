@@ -104,7 +104,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 	//###### FLAGS
 	//#######################################
 	@Override
-	public boolean getFlag(IProcessWatchRunnerOVPN.FLAGZ objEnumFlag) {
+	public boolean getFlag(IProcessWatchRunnerOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.getFlag(objEnumFlag.name());
 	}
 

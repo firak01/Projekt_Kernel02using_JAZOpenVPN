@@ -441,7 +441,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	//##########################################
 	//### FLAG HANDLING aus IProgramRunnable
 	@Override
-	public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) {
+	public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.getFlag(objEnumFlag.name());
 	}
 	@Override
@@ -478,7 +478,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	
 	//### FLAG HANDLING AUS IProgramZZZ
 	@Override
-	public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) {
+	public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.getFlag(objEnumFlag.name());
 	}
 	@Override
@@ -514,7 +514,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	}	
 	
 	@Override
-	public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) {
+	public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.getFlag(objEnumFlag.name());
 	}
 	@Override

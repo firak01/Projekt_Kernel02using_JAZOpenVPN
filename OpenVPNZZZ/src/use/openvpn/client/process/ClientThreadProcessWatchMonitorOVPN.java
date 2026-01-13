@@ -242,7 +242,7 @@ private void MonitorNew_(IClientMainOVPN objMain, String[] saFlagControl) throws
 	 * - Public Default Konstruktor der Klasse, damit die Klasse instanziiert werden kann.
 	 * - Innere Klassen muessen auch public deklariert werden.(non-Javadoc)
 	 */
-	public boolean getFlag(String sFlagName) {
+	public boolean getFlag(String sFlagName) throws ExceptionZZZ {
 		boolean bFunction = false;
 		main:{
 			if(StringZZZ.isEmpty(sFlagName)) break main;
@@ -351,7 +351,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 //	
 	
 		@Override
-		public boolean getFlag(IClientThreadProcessWatchMonitorOVPN.FLAGZ objEnumFlag) {
+		public boolean getFlag(IClientThreadProcessWatchMonitorOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
 			return this.getFlag(objEnumFlag.name());
 		}
 		@Override
@@ -421,7 +421,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		//##########################################
 			//### FLAG HANDLING
 			@Override
-			public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) {
+			public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 				return this.getFlag(objEnumFlag.name());
 			}
 			@Override
@@ -459,7 +459,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			
 			//### Aus IProgramZZZ
 			@Override
-			public String getProgramName(){
+			public String getProgramName() throws ExceptionZZZ{
 				if(StringZZZ.isEmpty(this.sProgramName)) {
 					if(this.getFlag(IProgramZZZ.FLAGZ.ISPROGRAM.name())) {
 						this.sProgramName = this.getClass().getName();
@@ -479,7 +479,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			}
 			
 			@Override
-			public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) {
+			public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 				return this.getFlag(objEnumFlag.name());
 			}
 			@Override
@@ -530,7 +530,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 			
 			
 			@Override
-			public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) {
+			public boolean getFlag(IModuleUserZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 				return this.getFlag(objEnumFlag.name());
 			}
 			@Override

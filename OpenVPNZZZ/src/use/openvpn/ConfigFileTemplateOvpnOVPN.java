@@ -180,14 +180,14 @@ public class ConfigFileTemplateOvpnOVPN extends AbstractKernelUseObjectZZZ{
 		return sReturn;
 	}
 	
-	public String getVpnIpRemote(){
+	public String getVpnIpRemote() throws ExceptionZZZ{
 		if(this.sTargetIP==null){
 			this.sTargetIP = this.readVpnIpRemote();
 		}
 		return this.sTargetIP;
 	}
 	
-	public String getVpnIpLocal(){
+	public String getVpnIpLocal() throws ExceptionZZZ{
 		if(this.sLocalIP==null){
 			this.sLocalIP = this.readVpnIpLocal();
 		}
@@ -198,8 +198,9 @@ public class ConfigFileTemplateOvpnOVPN extends AbstractKernelUseObjectZZZ{
 	 * @return String
 	 *
 	 * javadoc created by: 0823, 18.07.2006 - 09:24:22
+	 * @throws ExceptionZZZ 
 	 */
-	public String readVpnIpRemote(){
+	public String readVpnIpRemote() throws ExceptionZZZ{
 		String sReturn=null;
 		main:{
 			String sLine = this.getProperties().getProperty("ifconfig");
@@ -212,8 +213,9 @@ public class ConfigFileTemplateOvpnOVPN extends AbstractKernelUseObjectZZZ{
 	 * @return String
 	 *
 	 * javadoc created by: 0823, 18.07.2006 - 09:24:22
+	 * @throws ExceptionZZZ 
 	 */
-	public String readVpnIpLocal(){
+	public String readVpnIpLocal() throws ExceptionZZZ{
 		String sReturn = null;
 		main:{
 			String sLine = this.getProperties().getProperty("ifconfig");

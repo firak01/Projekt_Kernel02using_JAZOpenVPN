@@ -552,13 +552,13 @@ public class ClientThreadVpnIpPingerOVPN_BACKUP extends AbstractKernelUseObjectW
 			
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+": Pruefe Relevanz des Events.";
 			System.out.println(sLog);
-			this.getMainObject().logProtocolString(sLog);
+			this.getMainObject().logProtocol(sLog);
 			
 			IEnumSetMappedZZZ enumStatus = (IEnumSetMappedZZZ) eventStatusLocalSet.getStatusEnum();				
 			if(enumStatus==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": KEINEN enumStatus empfangen. Beende.";
 				System.out.println(sLog);
-				this.getMainObject().logProtocolString(sLog);							
+				this.getMainObject().logProtocol(sLog);							
 				break main;
 			}
 							

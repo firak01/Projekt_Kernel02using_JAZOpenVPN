@@ -22,7 +22,7 @@ public interface IClientThreadVpnIpPingerOVPN extends IKernelModuleZZZ, IClientM
 	}
 
 	
-	boolean getFlag(FLAGZ objEnumFlag);
+	boolean getFlag(FLAGZ objEnumFlag) throws ExceptionZZZ;
 	boolean setFlag(FLAGZ objEnumFlag, boolean bFlagValue) throws ExceptionZZZ;
 	boolean[] setFlag(FLAGZ[] objaEnumFlag, boolean bFlagValue) throws ExceptionZZZ;
 	boolean proofFlagExists(FLAGZ objEnumFlag) throws ExceptionZZZ;
