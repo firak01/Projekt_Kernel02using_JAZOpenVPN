@@ -379,7 +379,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 //}
 	
 		@Override
-		public boolean getFlag(IConfigStarterOVPN.FLAGZ objEnumFlag) {
+		public boolean getFlag(IConfigStarterOVPN.FLAGZ objEnumFlag) throws ExceptionZZZ {
 			return this.getFlag(objEnumFlag.name());
 		}
 		@Override

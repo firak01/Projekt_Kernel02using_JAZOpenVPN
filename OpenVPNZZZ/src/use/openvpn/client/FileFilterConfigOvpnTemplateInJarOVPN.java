@@ -37,7 +37,7 @@ public class FileFilterConfigOvpnTemplateInJarOVPN extends AbstractFileFileFilte
 		super();		
 		OVPNFileFilterConfigOvpnTemplateNew_();
 	}
-	private void OVPNFileFilterConfigOvpnTemplateNew_() {
+	private void OVPNFileFilterConfigOvpnTemplateNew_() throws ExceptionZZZ {
 		//Merke: Das Verzeichnis wird in einer "Nicht Jar Struktur nicht gebraucht"
 		this.setPrefix(ConfigFileTemplateOvpnOVPN.sFILE_TEMPLATE_PREFIX);
 		this.setMiddle(this.getOvpnContext());
