@@ -11,11 +11,11 @@ import basic.zBasic.component.IModuleZZZ;
 import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.component.IProgramZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusLocalZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.moduleExternal.process.watch.IProcessWatchRunnerZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusMonitoringZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusLocalMonitoringZZZ;
 import basic.zKernel.IKernelContextZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
@@ -40,7 +40,7 @@ import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
 import use.openvpn.server.process.ServerThreadProcessWatchMonitorOVPN;
 
-public class ClientThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusMonitoringZZZ implements IClientThreadProcessWatchMonitorOVPN,IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalUserOVPN{
+public class ClientThreadProcessWatchMonitorOVPN extends AbstractKernelUseObjectWithStatusLocalMonitoringZZZ implements IClientThreadProcessWatchMonitorOVPN,IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalUserOVPN{
 	protected volatile IModuleZZZ objModule = null;
 	protected volatile String sModuleName=null;
 	protected volatile String sProgramName = null;
@@ -631,7 +631,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}
 		
 		@Override 
-		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -645,7 +645,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}
 		
 		@Override 
-		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -689,7 +689,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}
 		
 		@Override 
-		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -703,7 +703,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		}				
 		
 		@Override 
-		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -861,7 +861,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 				IEnumSetMappedZZZ enumStatus = eventStatusLocalSet.getStatusLocal();
 				
 				//+++++++++++++++++++++
-				HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
+				HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedStatusLocalZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
 				ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL objEnum = (ClientThreadProcessWatchMonitorOVPN.STATUSLOCAL) hmEnum.get(enumStatus);							
 				if(objEnum==null) {
 					sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1111,7 +1111,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 		public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
-				IEnumSetMappedStatusZZZ enumStatus = (IEnumSetMappedStatusZZZ) eventStatusLocalSet.getStatusEnum();							
+				IEnumSetMappedStatusLocalZZZ enumStatus = (IEnumSetMappedStatusLocalZZZ) eventStatusLocalSet.getStatusEnum();							
 				bReturn = this.isStatusLocalRelevant(enumStatus);
 				if(!bReturn) break main;
 				
@@ -1136,7 +1136,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	//#######################################
 	//#######################################		
 	@Override
-	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusLocalZZZ objEnumStatusIn) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(objEnumStatusIn==null) break main;
@@ -1175,13 +1175,13 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	
 	//Weil auf den Status anderer Thread gehoert wird und diese weitergeleitet werden sollen.
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+	public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedStatusLocalZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
 		
 		//Es wird auf Events des ProcessWatchRunnerOVPN gehoert.
 		//Die dort geworfenen Events werden hier auf LokaleEvents gemappt.
 		//Aufbau der Map: Ankommender externer Event = Lokaler Event
 		//Lokale Events, die keine externe Entsprechung haben, tauchen hier nicht auf
-		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>();
+		HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedStatusLocalZZZ>hmReturn = new HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedStatusLocalZZZ>();
 		main:{
 			
 			//Merke: Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 			
@@ -1200,13 +1200,13 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	}
 	
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_String() {
+	public HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_String() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
+	public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1215,7 +1215,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	 * @see basic.zBasic.AbstractObjectWithStatusMonitoringZZZ#createHashMapEnumSetForCascadingStatusLocalCustom()
 	 */
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
+	public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedStatusLocalZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1275,7 +1275,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	}
 
 	@Override
-	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusLocalZZZ enumStatus,
 			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
@@ -1296,7 +1296,7 @@ public boolean setFlag(String sFlagName, boolean bFlagValue) throws ExceptionZZZ
 	}
 
 	@Override
-	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusLocalZZZ enumStatus,
 			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;

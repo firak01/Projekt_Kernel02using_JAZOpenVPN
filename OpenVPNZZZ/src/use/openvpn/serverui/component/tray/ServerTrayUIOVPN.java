@@ -17,7 +17,7 @@ import org.jdesktop.jdic.tray.TrayIcon;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusLocalZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.abstractList.ArrayListUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -815,7 +815,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			this.getMainObject().logProtocol(sLog);
 				
 			//+++ Weiterverarbeitung des relevantenStatus. Merke: Das ist keine CascadingStatus-Enum. Sondern hier ist nur der Bilddateiname drin.
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapStatusLocal4Reaction_Enum();		
+			HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedZZZ>hmEnum	= this.getHashMapStatusLocal4Reaction_Enum();		
 			ServerTrayStatusTypeZZZ objEnumForTray = (ServerTrayStatusTypeZZZ) hmEnum.get(objStatusEnum);			
 			if(objEnumForTray==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -923,7 +923,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 				
 				//#############################					
 				//Frage nach dem Status im Backend nach...
-				IEnumSetMappedStatusZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
+				IEnumSetMappedStatusLocalZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist '" + objStatusLocalCurrent.getAbbreviation()+"'.";					
 				this.logProtocol(sLog);
 			
@@ -971,7 +971,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			String sStatusAbbreviationLocal = null;
 			IEnumSetMappedZZZ objEnumStatusLocal = null;
 
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hm=this.getHashMapStatusLocal4Reaction_Enum();
+			HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedZZZ>hm=this.getHashMapStatusLocal4Reaction_Enum();
 			objEnumStatusLocal = hm.get(enumStatusFromEvent);					
 			//###############################
 			
@@ -1082,7 +1082,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	
 	@Override
 //	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapEnumSetForStatusLocalCustom() {
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_String(){
+	public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_String(){
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1263,7 +1263,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	}
 
 	@Override
-	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusLocalZZZ enumStatus,
 			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
@@ -1276,7 +1276,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	}
 
 	@Override
-	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue)
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue)
 			throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
@@ -1290,20 +1290,20 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	}
 
 	@Override
-	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage,
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, String sMessage,
 			boolean bStatusValue) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
+	public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedStatusLocalZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusLocalZZZ enumStatus,
 			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
@@ -1317,20 +1317,20 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 	}
 
 	@Override
-	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusLocalZZZ objEnumStatusIn) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
+	public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedStatusLocalZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public HashMap createHashMapStatusLocal4ReactionCustom_Enum() {
-		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedZZZ>();
+		HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedZZZ>hmReturn = new HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedZZZ>();
 		main:{
 			
 			//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 

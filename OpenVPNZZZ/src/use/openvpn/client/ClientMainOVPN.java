@@ -11,7 +11,7 @@ import basic.zBasic.IObjectWithStatusEnabledZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusLocalZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -739,7 +739,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 	
 	@Override 
-	public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocalEnum(IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -753,7 +753,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 	
 	@Override 
-	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -812,7 +812,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		}
 		
 		@Override 
-		public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -826,7 +826,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		}				
 		
 		@Override 
-		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+		public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
 			boolean bReturn = false;
 			main:{
 				if(enumStatusIn==null) {
@@ -1226,7 +1226,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 						
 			//+++++++++++++++++++++
 			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapStatusLocal4Reaction_EnumStatus();
+			HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedStatusLocalZZZ>hmEnum = this.getHashMapStatusLocal4Reaction_EnumStatus();
 			IClientMainOVPN.STATUSLOCAL objEnum = (IClientMainOVPN.STATUSLOCAL) hmEnum.get(enumStatus);			
 			if(objEnum==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1380,7 +1380,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			
 			//+++++++++++++++++++++
 			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapEnumSetForCascadingStatusLocal();
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmEnum = this.getHashMapStatusLocal4Reaction_EnumStatus();
+			HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedStatusLocalZZZ>hmEnum = this.getHashMapStatusLocal4Reaction_EnumStatus();
 			IClientMainOVPN.STATUSLOCAL objEnum = (IClientMainOVPN.STATUSLOCAL) hmEnum.get(enumStatus);			
 			if(objEnum==null) {
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Keinen gemappten Status aus dem Event-Objekt erhalten. Breche ab";
@@ -1497,7 +1497,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 
 			//HashMap<IEnumSetMappedZZZ,IEnumSetMappedZZZ>hm=this.createHashMapEnumSetForCascadingStatusLocalCustom();
 			//HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hm = this.getHashMapEnumSetForCascadingStatusLocal();
-			HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hm = this.getHashMapStatusLocal4Reaction_EnumStatus();
+			HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedStatusLocalZZZ>hm = this.getHashMapStatusLocal4Reaction_EnumStatus();
 			objEnumStatusLocal = hm.get(enumStatusFromEvent);					
 			//###############################
 			
@@ -1620,7 +1620,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	public boolean isEventRelevantByStatusLocal2ChangeStatusLocal(IEventObjectStatusLocalOVPN eventStatusLocalSet)	throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
-			IEnumSetMappedStatusZZZ enumStatus = (IEnumSetMappedStatusZZZ) eventStatusLocalSet.getStatusEnum();							
+			IEnumSetMappedStatusLocalZZZ enumStatus = (IEnumSetMappedStatusLocalZZZ) eventStatusLocalSet.getStatusEnum();							
 			bReturn = this.isStatusLocalRelevant(enumStatus);
 			if(!bReturn) break main;
 		}//end main:
@@ -1632,10 +1632,10 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	
 	//### aus IListenerStatusLocalZZZ
 	@Override
-	public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus(){
+	public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedStatusLocalZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus(){
 	//### aus IListenerObjectStatusLocalMapForEventUserZZZ
 	//public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapEnumSetForCascadingStatusLocalCustom() {
-		HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>hmReturn = new HashMap<IEnumSetMappedStatusZZZ,IEnumSetMappedStatusZZZ>();
+		HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedStatusLocalZZZ>hmReturn = new HashMap<IEnumSetMappedStatusLocalZZZ,IEnumSetMappedStatusLocalZZZ>();
 		main:{
 			
 			//Reine Lokale Statuswerte kommen nicht aus einem Event und werden daher nicht gemapped. 
@@ -1711,7 +1711,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 
 	@Override
-	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+	public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusLocalZZZ enumStatus,
 			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
@@ -1738,7 +1738,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 
 	@Override
-	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+	public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusLocalZZZ enumStatus,
 			boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
@@ -1751,7 +1751,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 	}
 
 	@Override
-	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusLocalZZZ objEnumStatusIn) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return false;
 	}

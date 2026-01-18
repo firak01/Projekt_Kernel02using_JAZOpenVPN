@@ -3,7 +3,7 @@ package use.openvpn.client.process;
 import java.util.EnumSet;
 
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusLocalZZZ;
 import basic.zBasic.util.moduleExternal.process.watch.IProcessWatchRunnerZZZ;
 import use.openvpn.client.ClientConfigStarterOVPN;
 
@@ -16,9 +16,9 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	public void setNumberOfProcess(int iNumberOfProcess) throws ExceptionZZZ;
 	
 	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
-	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
 	public boolean setStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ;
-	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ;
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ;
 	
 	public boolean offerStatusLocal(int iIndexOfProcess, Enum enumStatusIn, String sStatusMessage, boolean bStatusValue) throws ExceptionZZZ;
 	
@@ -43,7 +43,7 @@ public interface IProcessWatchRunnerOVPN extends IProcessWatchRunnerZZZ{
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
-	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum STATUSLOCAL implements IEnumSetMappedStatusLocalZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		ISSTARTNEW(iSTATUSLOCAL_GROUPID,"isstartnew","ProcessWatchRunner: Nicht gestartet",""),
 		ISSTARTING(iSTATUSLOCAL_GROUPID,"isstarting","ProcessWatchRunner: Startet...",""),
 		ISSTARTED(iSTATUSLOCAL_GROUPID,"isstarted","ProcessWatchRunner: Gestartet",""),

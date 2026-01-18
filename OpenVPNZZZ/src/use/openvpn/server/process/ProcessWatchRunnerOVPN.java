@@ -10,7 +10,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusLocalZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.moduleExternal.IWatchListenerZZZ;
@@ -755,7 +755,7 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 			return false;
 		}
 		@Override
-		public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+		public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusLocalZZZ enumStatus,
 				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
@@ -769,7 +769,7 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 			return false;
 		}
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, String> createHashMapStatusLocal4ReactionCustom_String() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, String> createHashMapStatusLocal4ReactionCustom_String() {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -777,18 +777,18 @@ Sun Nov 26 08:07:39 2023 us=253375 HANNIBALDEV04VM_CLIENT/192.168.3.179:3937 SEN
 		 * @see basic.zBasic.AbstractObjectWithStatusOnStatusListeningZZZ#reactOnStatusLocal4ActionCustom(java.lang.String, basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ, boolean, java.lang.String)
 		 */
 		@Override
-		public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusZZZ enumStatus,
+		public boolean reactOnStatusLocal4ActionCustom(String sAction, IEnumSetMappedStatusLocalZZZ enumStatus,
 				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
 		}
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedStatusLocalZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
 			// TODO Auto-generated method stub
 			return null;
 		}	

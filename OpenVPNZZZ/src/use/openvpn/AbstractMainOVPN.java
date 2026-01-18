@@ -10,16 +10,16 @@ import basic.zBasic.component.IModuleZZZ;
 import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.component.IProgramZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusLocalZZZ;
 import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusOnStatusListeningZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusLocalOnStatusLocalListeningZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 
-public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusOnStatusListeningZZZ implements IMainOVPN {
+public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatusLocalOnStatusLocalListeningZZZ implements IMainOVPN {
 	protected volatile IModuleZZZ objModule=null; //Das Modul, in der KernelUI - Variante wäre das die Dialogbox aus der das Program gestartet wird.	
 	protected volatile String sProgramName = null;
 	protected volatile String sModuleName = null;
@@ -277,7 +277,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	abstract public boolean setStatusLocal(Enum enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
 
 	@Override 
-	abstract public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
+	abstract public boolean setStatusLocalEnum(IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ;
 				
 	@Override
 	public boolean[] setStatusLocal(Enum[] objaEnumStatusIn, boolean bStatusValue) throws ExceptionZZZ {

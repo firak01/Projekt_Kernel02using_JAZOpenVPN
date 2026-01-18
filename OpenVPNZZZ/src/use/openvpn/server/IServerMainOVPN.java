@@ -3,7 +3,7 @@ package use.openvpn.server;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusLocalZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.server.process.IServerThreadProcessWatchMonitorOVPN;
 import use.openvpn.server.status.ISenderObjectStatusLocalUserOVPN;
@@ -27,7 +27,7 @@ public interface IServerMainOVPN extends IMainOVPN, ISenderObjectStatusLocalUser
 	
 	//Merke: Obwohl fullName und abbr nicht direkt abgefragt werden, müssen Sie im Konstruktor sein, um die Enumeration so zu definieren.
 	//ALIAS("Uniquename","Statusmeldung","Beschreibung, wird nicht genutzt....",)
-	public enum STATUSLOCAL implements IEnumSetMappedStatusZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum STATUSLOCAL implements IEnumSetMappedStatusLocalZZZ{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		ISSTARTNEW(iSTATUSLOCAL_GROUPID, "isstartnew","SERVER: Noch nicht gestartet.", ""),
 		ISSTARTING(iSTATUSLOCAL_GROUPID, "isstarting","SERVER: Startet. Warte ggfs. auf Task.",""),		
 		ISSTARTED(iSTATUSLOCAL_GROUPID, "isstarted","SEVER: OVPN Konfigurationen gebaut und Server gestartet.",""),

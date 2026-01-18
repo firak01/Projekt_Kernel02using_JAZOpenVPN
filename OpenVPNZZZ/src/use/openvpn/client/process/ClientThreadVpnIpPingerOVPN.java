@@ -3,7 +3,7 @@ package use.openvpn.client.process;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import basic.zBasic.AbstractObjectWithStatusOnStatusListeningZZZ;
+import basic.zBasic.AbstractObjectWithStatusLocalOnStatusLocalListeningZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.component.IModuleUserZZZ;
@@ -11,11 +11,11 @@ import basic.zBasic.component.IModuleZZZ;
 import basic.zBasic.component.IProgramRunnableZZZ;
 import basic.zBasic.component.IProgramZZZ;
 import basic.zBasic.util.abstractArray.ArrayUtilZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedStatusLocalZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusOnStatusListeningZZZ;
-import basic.zKernel.AbstractKernelUseObjectWithStatusZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusLocalOnStatusLocalListeningZZZ;
+import basic.zKernel.AbstractKernelUseObjectWithStatusLocalZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
@@ -37,7 +37,7 @@ import use.openvpn.client.status.IListenerObjectStatusLocalOVPN;
 import use.openvpn.client.status.ISenderObjectStatusLocalOVPN;
 import use.openvpn.client.status.SenderObjectStatusLocalOVPN;
 
-public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusOnStatusListeningZZZ implements IClientThreadVpnIpPingerOVPN{ //AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalUserOVPN{
+public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStatusLocalOnStatusLocalListeningZZZ implements IClientThreadVpnIpPingerOVPN{ //AbstractKernelUseObjectWithStatusZZZ implements IClientThreadVpnIpPingerOVPN, IListenerObjectStatusLocalOVPN, IEventBrokerStatusLocalUserOVPN{
 	private static final long serialVersionUID = 4598201201165618817L;
 	protected volatile IModuleZZZ objModule = null;
 	protected volatile String sModuleName=null;
@@ -630,7 +630,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}
 	
 	@Override 
-	public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocalEnum(IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -645,7 +645,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	
 	
 	@Override 
-	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -689,7 +689,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}
 	
 	@Override 
-	public boolean setStatusLocalEnum(IEnumSetMappedStatusZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
+	public boolean setStatusLocalEnum(IEnumSetMappedStatusLocalZZZ enumStatusIn, boolean bStatusValue, String sMessage) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -703,7 +703,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 	}				
 	
 	@Override 
-	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
+	public boolean setStatusLocalEnum(int iIndexOfProcess, IEnumSetMappedStatusLocalZZZ enumStatusIn, String sMessage, boolean bStatusValue) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			if(enumStatusIn==null) {
@@ -831,7 +831,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 
 	//################################
 	@Override
-	public boolean isStatusLocalRelevant(IEnumSetMappedStatusZZZ objEnumStatusIn) throws ExceptionZZZ {
+	public boolean isStatusLocalRelevant(IEnumSetMappedStatusLocalZZZ objEnumStatusIn) throws ExceptionZZZ {
 		boolean bReturn = false;
 		main:{
 			//Merke: enumStatus hat class='class use.openvpn.client.process.IProcessWatchRunnerOVPN$STATUSLOCAL'				
@@ -1103,44 +1103,44 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		}
 
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, String> createHashMapStatusLocal4ReactionCustom_String() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, String> createHashMapStatusLocal4ReactionCustom_String() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, String> getHashMapStatusLocal4Reaction_String() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, String> getHashMapStatusLocal4Reaction_String() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedZZZ> createHashMapStatusLocal4ReactionCustom_Enum() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedZZZ> getHashMapStatusLocal4Reaction_Enum() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedZZZ> getHashMapStatusLocal4Reaction_Enum() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedStatusLocalZZZ> createHashMapStatusLocal4ReactionCustom_EnumStatus() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public HashMap<IEnumSetMappedStatusZZZ, IEnumSetMappedStatusZZZ> getHashMapStatusLocal4Reaction_EnumStatus() {
+		public HashMap<IEnumSetMappedStatusLocalZZZ, IEnumSetMappedStatusLocalZZZ> getHashMapStatusLocal4Reaction_EnumStatus() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public String getActionAliasString(IEnumSetMappedStatusZZZ enumStatus) {
+		public String getActionAliasString(IEnumSetMappedStatusLocalZZZ enumStatus) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -1178,28 +1178,28 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 		}
 
 		@Override
-		public boolean queryReactOnStatusLocal4Action(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+		public boolean queryReactOnStatusLocal4Action(String sActionAlias, IEnumSetMappedStatusLocalZZZ enumStatus,
 				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+		public boolean queryReactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusLocalZZZ enumStatus,
 				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public boolean reactOnStatusLocal4Action(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+		public boolean reactOnStatusLocal4Action(String sActionAlias, IEnumSetMappedStatusLocalZZZ enumStatus,
 				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public boolean reactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusZZZ enumStatus,
+		public boolean reactOnStatusLocal4ActionCustom(String sActionAlias, IEnumSetMappedStatusLocalZZZ enumStatus,
 				boolean bStatusValue, String sStatusMessage) throws ExceptionZZZ {
 			// TODO Auto-generated method stub
 			return false;
