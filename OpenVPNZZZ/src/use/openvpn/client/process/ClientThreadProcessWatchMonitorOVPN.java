@@ -231,7 +231,7 @@ private void MonitorNew_(IClientMainOVPN objMain, String[] saFlagControl) throws
 		if(bReturn) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+ ": Status changed to '"+sStatusString+"'";
 			System.out.println(sLog);
-		    this.getLogObject().WriteLineDate(sLog);			
+		    this.getLogObject().writeLineDate(sLog);			
 		}
 		return bReturn;
 	}

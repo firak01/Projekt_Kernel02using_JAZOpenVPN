@@ -199,7 +199,7 @@ public abstract class AbstractProgramIPContentOVPN extends AbstractKernelProgram
 					break main;
 					
 				}catch(ExceptionZZZ ez){
-					objKernel.getLogObject().WriteLineDate("Will not use the proxy configured, because: " + ez.getDetailAllLast());
+					objKernel.getLogObject().writeLineDate("Will not use the proxy configured, because: " + ez.getDetailAllLast());
 					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Configured proxy unreachable. " + sProxyHost + " : " + sProxyPort +"'. No proxy will be enabled.");
 				}	
 			}else{

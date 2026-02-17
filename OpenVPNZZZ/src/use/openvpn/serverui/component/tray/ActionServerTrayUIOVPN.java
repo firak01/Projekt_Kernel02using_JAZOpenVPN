@@ -121,7 +121,7 @@ public class ActionServerTrayUIOVPN extends AbstractKernelActionTrayZZZ{
 					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
 					ez.printStackTrace();
 					String stemp = ez.getDetailAllLast();
-					this.getKernelObject().getLogObject().WriteLineDate(stemp);
+					this.getKernelObject().getLogObject().writeLineDate(stemp);
 					System.out.println(ez.getDetailAllLast());
 					this.getTrayParent().switchStatus(ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {
@@ -504,7 +504,7 @@ public class ActionServerTrayUIOVPN extends AbstractKernelActionTrayZZZ{
 			//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.				
 			ez.printStackTrace();
 			String stemp = ez.getDetailAllLast();
-			this.getKernelObject().getLogObject().WriteLineDate(stemp);
+			this.getKernelObject().getLogObject().writeLineDate(stemp);
 			System.out.println(stemp);
 			this.getTrayParent().switchStatus(ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ.ERROR);			
 		}

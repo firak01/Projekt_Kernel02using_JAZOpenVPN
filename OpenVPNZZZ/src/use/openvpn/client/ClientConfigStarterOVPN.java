@@ -45,7 +45,7 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			String sCommandConcrete=null;
 			try {
 				sLog = "Trying to find OVPNExecutable.";
-				this.getLogObject().WriteLineDate(sLog);
+				this.getLogObject().writeLineDate(sLog);
 				File objFileExe = ConfigFileTemplateOvpnOVPN.findFileExe();
 				if(objFileExe==null){
 					ExceptionZZZ ez = new ExceptionZZZ( "Executabel associated with .ovpn can not be found.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName());
@@ -58,20 +58,20 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					throw ez;
 				}
 				sLog = "OVPNExecutable found";
-				this.getLogObject().WriteLineDate(sLog);
+				this.getLogObject().writeLineDate(sLog);
 
 				//Vor dem Start - egal ob by_batch oder GUI - muss sichergestellt sein, dass das Log-Verzeichnis existiert.				
 				//String sDirectoryPath="c:\\fglkernel\\kernellog\\ovpnClient";
 				String sDirectoryPath=this.getMainObject().getApplicationObject().getDirectoryOvpnLog();
 				sLog = ReflectCodeZZZ.getPositionCurrent() + " Using as LogDirectory: '" + sDirectoryPath + "'";//bybatch als Suchtag
 				System.out.println(sLog);
-				this.getLogObject().WriteLineDate(sLog);
+				this.getLogObject().writeLineDate(sLog);
 				
 				boolean bCreated = FileEasyZZZ.createDirectory(sDirectoryPath);
 				if(bCreated) {
 					sLog = ReflectCodeZZZ.getPositionCurrent() + " Directory created: '" + sDirectoryPath + "'";//bybatch als Suchtag
 					System.out.println(sLog);
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 				}
 
 				//Anders als beim Server hier nur der "direkte" Weg OVPN zu starten.
@@ -105,11 +105,11 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				*/								
 				if (this.getFlag(IConfigStarterOVPN.FLAGZ.BY_BATCH.name())){
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Excecuting by batch 'not implemented'.";//bybatch als Suchtag
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 				}else {
 					// DAS FUNKTIONIERT BEIM CLIENT
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Executing direct - " + sCommandConcrete;
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 					
 					Runtime load = Runtime.getRuntime();
 					objReturn = load.exec("cmd /c " + sCommandConcrete);
@@ -128,7 +128,7 @@ public class ClientConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			} catch (IOException e) {
 				String sError = ReflectCodeZZZ.getPositionCurrent() + ": IOException ('"+e.getMessage()+"') executing the commandline: '"+ sCommandConcrete +"'";
 				System.out.println(sError);
-				this.getLogObject().WriteLineDate(sError);
+				this.getLogObject().writeLineDate(sError);
 				ExceptionZZZ ez = new ExceptionZZZ(sError, iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			} 

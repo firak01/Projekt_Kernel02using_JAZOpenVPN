@@ -124,7 +124,7 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 			worker.start();  			
 			
 		/*} catch (ExceptionZZZ ez) {				
-			this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+			this.getLogObject().writeLineDate(ez.getDetailAllLast());
 			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 		}	*/
 			
@@ -214,7 +214,7 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 					String sTemp = AbstractKernelLogZZZ.computeLineDate(sLog);
 					System.out.println(sTemp);
 				}else {
-					objLog.WriteLineDate(sLog);
+					objLog.writeLineDate(sLog);
 				}		
 			}	
 			

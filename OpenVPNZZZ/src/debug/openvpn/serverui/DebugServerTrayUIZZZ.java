@@ -23,7 +23,7 @@ public class DebugServerTrayUIZZZ {
 			KernelZZZ objKernel = null;		
 			try {
 				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNServer_test.ini", (String)null);
-				objKernel.getLogObject().WriteLineDate("TEST");
+				objKernel.getLogObject().writeLineDate("TEST");
 				 
 				ServerMainOVPN objServer = new ServerMainOVPN(objKernel, null);//Das Backendobjekt, das pro Konfigurationsfile eine OVPN.exe Datei als Process startet.
 				
@@ -54,7 +54,7 @@ public class DebugServerTrayUIZZZ {
 						System.out.println(ez.getDetailAllLast());
 					}else {
 						try {
-							objLog.WriteLineDate(ez.getDetailAllLast());
+							objLog.writeLineDate(ez.getDetailAllLast());
 						} catch (ExceptionZZZ e) {						
 							e.printStackTrace();
 							System.out.println(e.getDetailAllLast());

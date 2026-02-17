@@ -105,7 +105,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			//Er wird später auch am Backend-Objekt registriert, um dort Änderungen mitzubekommen.
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ServerMonitorRunner-Object";
 			System.out.println(sLog);
-			this.getLogObject().WriteLineDate(sLog);
+			this.getLogObject().writeLineDate(sLog);
 			
 			//### Registriere das Tray-Objekt selbst ##############
 			//a) Fuer Aenderungen an den Main-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.			
@@ -262,7 +262,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
 					ez.printStackTrace();
 					String stemp = ez.getDetailAllLast();
-					this.getKernelObject().getLogObject().WriteLineDate(stemp);
+					this.getKernelObject().getLogObject().writeLineDate(stemp);
 					System.out.println(ez.getDetailAllLast());
 					this.switchStatus(ServerTrayStatusMappedValueOVPN.ServerTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {
@@ -701,7 +701,7 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 //				//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zur�ckgesetzt werden kann.				
 //				ez.printStackTrace();
 //				String stemp = ez.getDetailAllLast();
-//				this.getKernelObject().getLogObject().WriteLineDate(stemp);
+//				this.getKernelObject().getLogObject().writeLineDate(stemp);
 //				System.out.println(stemp);
 //				this.switchStatus(ServerTrayStatusMappedValueZZZ.ServerTrayStatusTypeZZZ.ERROR);
 //			} catch (ExceptionZZZ ez2) {					

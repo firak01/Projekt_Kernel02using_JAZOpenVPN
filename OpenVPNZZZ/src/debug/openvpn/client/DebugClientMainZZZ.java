@@ -19,7 +19,7 @@ public class DebugClientMainZZZ {
 			KernelZZZ objKernel = null;		
 			try {
 				objKernel = new KernelZZZ("OVPN", "01", "",  "ZKernelConfig_OVPNClient.ini", (String)null);
-				//objKernel.getLogObject().WriteLineDate("TEST");
+				//objKernel.getLogObject().writeLineDate("TEST");
 				
 				ClientMainOVPN objConfig = new ClientMainOVPN(objKernel, null);
 				objConfig.startAsThread();
@@ -30,7 +30,7 @@ public class DebugClientMainZZZ {
 					LogZZZ objLog = objKernel.getLogObject();
 					if(objLog!=null){								
 						try {
-							objLog.WriteLineDate(ez.getDetailAllLast());
+							objLog.writeLineDate(ez.getDetailAllLast());
 						} catch (ExceptionZZZ e) {					
 							e.printStackTrace();
 							System.out.println(ez.getDetailAllLast());

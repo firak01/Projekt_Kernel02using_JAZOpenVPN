@@ -65,7 +65,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			String sCommandConcrete=null;
 			try {
 				sLog = "Trying to find OVPNExecutable.";
-				this.getLogObject().WriteLineDate(sLog);
+				this.getLogObject().writeLineDate(sLog);
 				File objFileExe = ConfigFileTemplateOvpnOVPN.findFileExe();
 				if(objFileExe==null){
 					ExceptionZZZ ez = new ExceptionZZZ( "Executabel associated with .ovpn can not be found.", iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getMethodCurrentName());
@@ -78,20 +78,20 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					throw ez;
 				}
 				sLog = "OVPNExecutable found";
-				this.getLogObject().WriteLineDate(sLog);
+				this.getLogObject().writeLineDate(sLog);
 				
 				//Vor dem Start - egal ob by_batch oder GUI - muss sichergestellt sein, dass das Log-Verzeichnis existiert.				
 				//String sDirectoryPath="c:\\fglkernel\\kernellog\\ovpnServer";
 				String sDirectoryPath=this.getServerObject().getApplicationObject().getDirectoryOvpnLog();
 				sLog = ReflectCodeZZZ.getPositionCurrent() + " Using as LogDirectory: '" + sDirectoryPath + "'";//bybatch als Suchtag
 				System.out.println(sLog);
-				this.getLogObject().WriteLineDate(sLog);
+				this.getLogObject().writeLineDate(sLog);
 				
 				boolean bCreated = FileEasyZZZ.createDirectory(sDirectoryPath);
 				if(bCreated) {
 					sLog = ReflectCodeZZZ.getPositionCurrent() + " Directory created: '" + sDirectoryPath + "'";//bybatch als Suchtag
 					System.out.println(sLog);
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 				}
 				
 				
@@ -134,7 +134,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				if (bByBatch){															
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Executing by batch.";//bybatch als Suchtag
 					System.out.println(sLog);
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 															
 					
 										
@@ -145,12 +145,12 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					//0. Bestehende Batch Datei suchen und löschen
 					boolean  bBatchExists = FileEasyZZZ.exists(sBatch);
 					if(bBatchExists) {
-						this.getLogObject().WriteLineDate("Deleting existing batch file: '"+sBatch +"'.");
+						this.getLogObject().writeLineDate("Deleting existing batch file: '"+sBatch +"'.");
 						boolean bSuccess = FileEasyZZZ.removeFile(sBatch);
 						if(bSuccess) {
-							this.getLogObject().WriteLineDate("Existing batch file successful deleted.");
+							this.getLogObject().writeLineDate("Existing batch file successful deleted.");
 						}else {
-							this.getLogObject().WriteLineDate("Unable to delete existing batch.");
+							this.getLogObject().writeLineDate("Unable to delete existing batch.");
 						}
 					}
 					
@@ -159,7 +159,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					//1. Batch File neu erstellen (wg. ggfs. anderen/neuen Code)
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating new batch file.";
 					System.out.println(sLog);
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 					
 					FileTextWriterZZZ objBatch = new FileTextWriterZZZ(sBatch);	 	//2020020208: es gibt jetzt den FileTextWriterZZZ im Kernel Projekt.				
 					ArrayList<String> listaLine = this.computeBatchLines(this.getFileTemplateBatch(), fileConfigOvpn);
@@ -173,7 +173,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					//2. Batch File starten					
 					ConfigChooserOVPN objPathConfig = new ConfigChooserOVPN(this.getKernelObject(), this.getOvpnContextUsed(), this.getServerObject().getApplicationObject());				
 					String sCommandBatch = sBatch; //objPathConfig.getDirectoryConfig()+ File.separator+"starter_"+ this.getFileConfig().getName() + ".bat";
-					this.getLogObject().WriteLineDate("Executing by Batch '"+ sCommandBatch +"'");				
+					this.getLogObject().writeLineDate("Executing by Batch '"+ sCommandBatch +"'");				
 					
 					
 					/*Verwendeter Code VOR Java 7 */
@@ -185,7 +185,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				}else if(bByOvpnGui){
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Excecuting by ovpngui.";
 					System.out.println(sLog);
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 					
 					 /*Verwendeter Code ab Java 7*/
 					
@@ -197,13 +197,13 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ": creating procesbuilder arguments.";
 					System.out.println(sLog);
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 					
 					HashMap<String,String> hmArgument = this.computeProcessArgumentHashMap();
 					if(hmArgument.isEmpty()) {
 						sLog = ReflectCodeZZZ.getPositionCurrent() + ": Keine notwendigen HashMap Eintraege vorhanden. Breche ab.";
 						System.out.println(sLog);
-						this.getLogObject().WriteLineDate(sLog);						
+						this.getLogObject().writeLineDate(sLog);						
 					}
 					
 					ArrayList<String>listaArgument = new ArrayList<String>();
@@ -230,7 +230,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 						 
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ": starting process.";
 					System.out.println(sLog);
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 					//Das gibt ueberhaupt keine Zeile mehr aus... 
 					//objReturn = pb.inheritIO().start();
 					objReturn = pb.start();
@@ -264,7 +264,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 				}else {
 					sLog = ReflectCodeZZZ.getPositionCurrent() + ": Executing direct - " + sCommandConcrete;
 					System.out.println(sLog);
-					this.getLogObject().WriteLineDate(sLog);
+					this.getLogObject().writeLineDate(sLog);
 					
 					//direkter Start der Befehlszeile
 					/*Verwendeter Code VOR Java 7 */
@@ -276,7 +276,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 			} catch (IOException e) {
 				String sError = ReflectCodeZZZ.getPositionCurrent() + ": IOException ('"+e.getMessage()+"') executing the commandline: '"+ sCommandConcrete +"'";
 				System.out.println(sError);
-				this.getLogObject().WriteLineDate(sError);
+				this.getLogObject().writeLineDate(sError);
 				ExceptionZZZ ez = new ExceptionZZZ(sError, iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			} 

@@ -127,7 +127,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 			worker.start();  
 			
 		/*} catch (ExceptionZZZ ez) {				
-			this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+			this.getLogObject().writeLineDate(ez.getDetailAllLast());
 			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 		}	*/
 			

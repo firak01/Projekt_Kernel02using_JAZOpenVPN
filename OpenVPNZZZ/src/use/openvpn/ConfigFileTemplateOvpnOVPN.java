@@ -84,7 +84,7 @@ public class ConfigFileTemplateOvpnOVPN extends AbstractKernelUseObjectZZZ{
 				ExceptionZZZ ez = new ExceptionZZZ(sERROR_PARAMETER_VALUE + "No filetype assoziated with: .ovpn", iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getMethodCurrentName(), "");
 				throw ez;
 			}else{
-				//objKernel.getLogObject().WriteLineDate("Filetype .ovpn found. It seems that Open VPN is installed.");				
+				//objKernel.getLogObject().writeLineDate("Filetype .ovpn found. It seems that Open VPN is installed.");				
 			}
 			
 			/*Nur zum Test: Ausgeben aller zur Verfuegung stehenden Actions

@@ -68,7 +68,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 		//Er wird auch am Backend-Objekt registriert, um dortige Aenderungen mitzubekommen.
 		String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ServerMonitorRunnerOVPN-Object";
 		System.out.println(sLog);
-		this.getLogObject().WriteLineDate(sLog);
+		this.getLogObject().writeLineDate(sLog);
 		
 		//Idee: Den Monitor nach der erfolgreichen Verbindung einfach beenden.
 		//String[] saFlagMonitorProcess = {IClientThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
@@ -354,7 +354,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 				e1.printStackTrace();
 			}
 			try {
-				this.getKernelObject().getLogObject().WriteLineDate(ez.getDetailAllLast());
+				this.getKernelObject().getLogObject().writeLineDate(ez.getDetailAllLast());
 			} catch (ExceptionZZZ e1) {
 				System.out.println(e1.getDetailAllLast());
 				e1.printStackTrace();
@@ -377,7 +377,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 			
 			IKernelZZZ objKernel = this.getKernelObject();
 			if(objKernel!= null){
-				objKernel.getLogObject().WriteLineDate(sMessage);
+				objKernel.getLogObject().writeLineDate(sMessage);
 			}
 		}
 	}

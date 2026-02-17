@@ -539,7 +539,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 			worker.start();  
 			
 		/*} catch (ExceptionZZZ ez) {				
-			this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+			this.getLogObject().writeLineDate(ez.getDetailAllLast());
 			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 		}	*/
 			
@@ -655,7 +655,7 @@ class ActionIpRouter2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ /
 		worker.start();  
 		
 	/*} catch (ExceptionZZZ ez) {				
-		this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+		this.getLogObject().writeLineDate(ez.getDetailAllLast());
 		ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 	}	*/
 		
@@ -750,7 +750,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 		worker.start();  
 		
 	/*} catch (ExceptionZZZ ez) {				
-		this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+		this.getLogObject().writeLineDate(ez.getDetailAllLast());
 		ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 	}	*/
 		
@@ -845,7 +845,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 				
 
 			/*} catch (ExceptionZZZ ez) {				
-				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+				this.getLogObject().writeLineDate(ez.getDetailAllLast());
 				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 			}	*/
 				
@@ -935,7 +935,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 					
 
 				/*} catch (ExceptionZZZ ez) {				
-					this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+					this.getLogObject().writeLineDate(ez.getDetailAllLast());
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 				}	*/
 					
@@ -1024,7 +1024,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 				
 
 			/*} catch (ExceptionZZZ ez) {				
-				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+				this.getLogObject().writeLineDate(ez.getDetailAllLast());
 				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 			}	*/
 				
@@ -1119,7 +1119,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 				
 
 			/*} catch (ExceptionZZZ ez) {				
-				this.getLogObject().WriteLineDate(ez.getDetailAllLast());
+				this.getLogObject().writeLineDate(ez.getDetailAllLast());
 				ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
 			}	*/
 				

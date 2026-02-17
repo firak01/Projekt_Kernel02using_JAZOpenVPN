@@ -128,7 +128,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 			//Er wird auch am Backend-Objekt registriert, um dortige Aenderungen mitzubekommen.
 			String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientThreadProcessWatchMonitorOVPN-Object";
 			System.out.println(sLog);
-			this.getLogObject().WriteLineDate(sLog);
+			this.getLogObject().writeLineDate(sLog);
 						
 			//### Registriere das Tray-Objekt selbst ##############
 			//a) Fuer Aenderungen an den Main-Objekt-Flags. Das garantiert, das der Tray auch auf Änderungen der Flags reagiert, wenn ServerMain in einem anderen Thread ausgeführt wird.
@@ -285,7 +285,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
 					ez.printStackTrace();
 					String stemp = ez.getDetailAllLast();
-					this.getKernelObject().getLogObject().WriteLineDate(stemp);
+					this.getKernelObject().getLogObject().writeLineDate(stemp);
 					System.out.println(ez.getDetailAllLast());
 					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {
@@ -573,7 +573,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 					//Merke: diese Exception hier abhandeln. Damit das ImageIcon wieder zurueckgesetzt werden kann.
 					ez.printStackTrace();
 					String stemp = ez.getDetailAllLast();
-					this.getKernelObject().getLogObject().WriteLineDate(stemp);
+					this.getKernelObject().getLogObject().writeLineDate(stemp);
 					System.out.println(ez.getDetailAllLast());
 					this.switchStatus(ClientTrayStatusTypeZZZ.ERROR);
 				} catch (ExceptionZZZ ez2) {

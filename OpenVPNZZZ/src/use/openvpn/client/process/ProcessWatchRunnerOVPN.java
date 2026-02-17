@@ -135,7 +135,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 					if(bStopRequested) break;					
 			}while(true);
 			this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.ISSTOPPED,true);
-			this.getClientBackendObject().getKernelObject().getLogObject().WriteLineDate("ProcessWatchRunner #"+ this.getNumberOfProcess() + " ended.");
+			this.getClientBackendObject().getKernelObject().getLogObject().writeLineDate("ProcessWatchRunner #"+ this.getNumberOfProcess() + " ended.");
 		
 			} catch (InterruptedException e) {
 				ExceptionZZZ ez = new ExceptionZZZ("An InterruptedException happened: '" + e.getMessage() + "''", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());

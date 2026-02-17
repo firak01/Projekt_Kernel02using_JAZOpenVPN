@@ -89,7 +89,7 @@ public class ServerMainUIZZZ implements IConstantZZZ{
 							LogZZZ objLog = objKernel.getLogObject();
 							if(objLog!=null){
 								try {
-									objLog.WriteLineDate(ez1.getDetailAllLast());
+									objLog.writeLineDate(ez1.getDetailAllLast());
 								} catch (ExceptionZZZ ez2) {
 									ez2.printStackTrace();
 									System.out.println(ez1.getDetailAllLast());

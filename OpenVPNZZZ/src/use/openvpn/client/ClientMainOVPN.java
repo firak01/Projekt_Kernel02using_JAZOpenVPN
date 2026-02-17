@@ -93,7 +93,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		//String sLog = ReflectCodeZZZ.getPositionCurrent() + ": Creating ClientThreadProcessWatchMonitorOVPN-Object";
 		//System.out.println(sLog);
 		String sLog = "Creating ClientThreadProcessWatchMonitorOVPN-Object";
-		this.getLogObject().WriteLineDate(sLog);
+		this.getLogObject().writeLineDate(sLog);
 		
 		//Idee: Den Monitor nach der erfolgreichen Verbindung einfach beenden.
 		//String[] saFlagMonitorProcess = {IClientThreadProcessWatchMonitorOVPN.FLAGZ.END_ON_CONNECTION.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUE.name(), IObjectWithStatusZZZ.FLAGZ.STATUSLOCAL_PROOF_VALUECHANGED.name()};
@@ -114,7 +114,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 		//Er wird auch am Backend-Objekt registriert, um dortige Aenderungen mitzubekommen.
 		sLog = ReflectCodeZZZ.getPositionCurrent() + "zzzzTest Creating ClientThreadConnectionVpnIpMonitorOVPN-Object";
 		System.out.println(sLog);
-		this.getLogObject().WriteLineDate(sLog);			
+		this.getLogObject().writeLineDate(sLog);			
 		this.getLogObject().logProtocol(sLog);
 		
 		String[] saFlagVpnIpPinger = null;
@@ -391,7 +391,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 			if(iHighTemp>= iHigh){
 				iHighTemp = iHigh;
 			}
-			this.getKernelObject().getLogObject().WriteLineDate("Scanning Ports on Host: " + sIP + " from :" + iLowTemp + " to: " + iHighTemp);				
+			this.getKernelObject().getLogObject().writeLineDate("Scanning Ports on Host: " + sIP + " from :" + iLowTemp + " to: " + iHighTemp);				
 			boolean btemp = objPortScan.scan(iLowTemp,iHighTemp); 
 			if(btemp==true){
 				ArrayList listaPortConnected = objPortScan.getPortConnected();
@@ -412,7 +412,7 @@ public class ClientMainOVPN extends AbstractMainOVPN implements IClientMainOVPN,
 						//System.out.println(intPort.toString());
 						sPortScanTemp = sPortScanTemp + "; " + intPort.toString() ;
 					}
-					this.getKernelObject().getLogObject().WriteLineDate("Open ports found on Host: " + sIP + " : " + sPortScanTemp);
+					this.getKernelObject().getLogObject().writeLineDate("Open ports found on Host: " + sIP + " : " + sPortScanTemp);
 					this.writePortStatusByAlias(sAlias, iPortScanCount + " Ports found open (" + sPortScanTemp + " ....");								
 				}
 			}else{

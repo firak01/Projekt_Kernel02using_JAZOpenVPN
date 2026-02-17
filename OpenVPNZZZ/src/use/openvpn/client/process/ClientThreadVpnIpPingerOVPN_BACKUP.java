@@ -311,7 +311,7 @@ public class ClientThreadVpnIpPingerOVPN_BACKUP extends AbstractKernelUseObjectW
 	 								//+++ Vorab: Checken, ob die Remote-Verbindungen erreichbar sind !!!
 	 								//       Die Konfigurationen, die nicht erreichbar sind, hier schon entfernen !!!
 	 								sStatus = "Checking if the remote connection connection is available.";
-	 								objKernel.getLogObject().WriteLineDate(sStatus);				
+	 								objKernel.getLogObject().writeLineDate(sStatus);				
 	 								this.addStatusString(sStatus);
 	 								
 	 								ArrayList listaPos = new ArrayList(); //Hier werden die zu entfernenden ArrayList-Konfigurations-Positionen eingetragen
@@ -323,12 +323,12 @@ public class ClientThreadVpnIpPingerOVPN_BACKUP extends AbstractKernelUseObjectW
 	 									boolean bReachable = objStarter.isRemoteReachable();
 	 									if(bReachable==true){
 	 										sStatus = "Remote connection availabe. '"+ objStarter.getRemoteIp() + ":" + objStarter.getRemotePort() + "'";
-	 										objKernel.getLogObject().WriteLineDate(sStatus);				
+	 										objKernel.getLogObject().writeLineDate(sStatus);				
 	 										this.addStatusString(sStatus);
 	 										//Keine weitere Konsequenz
 	 									}else{
 	 										sStatus = "Remote connection NOT availabe. Not starting this configuration. '"+ objStarter.getRemoteIp() + ":" + objStarter.getRemotePort() + "'";
-	 										objKernel.getLogObject().WriteLineDate(sStatus);				
+	 										objKernel.getLogObject().writeLineDate(sStatus);				
 	 										this.addStatusString(sStatus);
 	 										
 	 										//DIESE KONFIGURATION DEMN CHST ENTFERNEN
@@ -474,7 +474,7 @@ public class ClientThreadVpnIpPingerOVPN_BACKUP extends AbstractKernelUseObjectW
 		if(bReturn) {
 			String sLog = ReflectCodeZZZ.getPositionCurrent()+ ": Status changed to '"+sStatusString+"'";
 			System.out.println(sLog);
-		    this.getLogObject().WriteLineDate(sLog);			
+		    this.getLogObject().writeLineDate(sLog);			
 		}
 		return bReturn;
 	}

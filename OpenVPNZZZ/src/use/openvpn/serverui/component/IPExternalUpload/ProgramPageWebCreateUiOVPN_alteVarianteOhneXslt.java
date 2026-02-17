@@ -98,10 +98,10 @@ public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKe
 		String sLog=null;
 		
 		sLog="ReflectCodeZZZ.getPositionCurrent() + :";
-		objLog.WriteLineDate(sLog);
+		objLog.writeLineDate(sLog);
 		
 		sLog = "KernelIniFile= '" + objKernel.getFileConfigKernel().getAbsolutePath() + "'";
-		objLog.WriteLineDate(sLog);		
+		objLog.writeLineDate(sLog);		
 				
 //		
 //		//4. Konfiguration auslesen
@@ -110,14 +110,14 @@ public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKe
 		FileIniZZZ objFileIniIPConfig = objKernel.getFileConfigModuleIni(sModule);
 		sLog = "objFileIniIPConfig absoluter Pfad='"+objFileIniIPConfig.getFileObject().getAbsolutePath()+"'";
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-		objLog.WriteLineDate(sLog);
+		objLog.writeLineDate(sLog);
 		
 		
 //		//Programname nicht aus dem Panel, sondern das Program selbst
 		String sProgram = this.getProgramName();
 		sLog = "Program='"+sProgram+"'";
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-		objLog.WriteLineDate(sLog);
+		objLog.writeLineDate(sLog);
 		
 		//20210216: Hier wird normalerweise ein ggfs. gecachter Wert geholt. 
 		//          Dadurch wird sich nie eine Änderung ergeben, die ja durch ein anderes Program erzeugt wurde.
@@ -126,17 +126,17 @@ public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKe
 		
 		sLog = "entryServer.getSection()='"+entryServer.getSection()+"'";
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-		objLog.WriteLineDate(sLog);
+		objLog.writeLineDate(sLog);
 		
 		sLog = "entryServer.getSystemNumber()='"+entryServer.getSystemNumber()+"'";
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-		objLog.WriteLineDate(sLog);
+		objLog.writeLineDate(sLog);
 
 		
 		String sIP = entryServer.getValue();	
 		sLog = "sIP='"+sIP+"'";
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);
-		objLog.WriteLineDate(sLog);
+		objLog.writeLineDate(sLog);
 		
 		IKernelConfigSectionEntryZZZ entryDate = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPDate");
 		String sIPDate = entryDate.getValue();
@@ -145,7 +145,7 @@ public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKe
 		String sIPTime = entryTime.getValue();
 		sLog = "Page Generator - IP Detail read from file: "+sIP + " ("+sIPDate+" - "+sIPTime+")";
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": "+sLog);
-		objLog.WriteLineDate(sLog);
+		objLog.writeLineDate(sLog);
 		
 		//Den alten IP Wert aus der Ini-Datei holen
 		//IKernelConfigSectionEntryZZZ entryServerPrevious = objKernel.getParameterByProgramAlias(objFileIniIPConfig, sProgram,"IPExternalPrevious", false);
@@ -156,7 +156,7 @@ public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKe
 			//System.out.println("PageGenerator - geaenderter Wert fuer die IP-Adresse. Erstelle neue HTML-Datei.");
 		sLog = "PageGenerator - Unabhängig von bisheriger IP-Adresse. Erstelle neue HTML-Datei.";				
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": "+sLog);
-		objLog.WriteLineDate(sLog);	
+		objLog.writeLineDate(sLog);	
 		
 			//Nur eine neue Datei erzeugen, wenn es auch eine neue IPNr gibt
 			//Create a Content Store object, here: pass the IP Details as Variable 
@@ -164,7 +164,7 @@ public class ProgramPageWebCreateUiOVPN_alteVarianteOhneXslt  extends AbstractKe
 		   
 			sLog="PageGenerator - Unabhängig von bisheriger IP-Adresse. Erstelle neue HTML-Datei.";
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": "+sLog);
-			objLog.WriteLineDate(sLog);	
+			objLog.writeLineDate(sLog);	
 			
 			//Diese Variablen werden nun in das Storage-Objekt �bertragen	
 		   objPageStorage.setVar("IPNr",sIP);

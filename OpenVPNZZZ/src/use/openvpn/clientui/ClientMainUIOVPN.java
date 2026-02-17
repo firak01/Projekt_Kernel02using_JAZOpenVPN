@@ -79,7 +79,7 @@ public class ClientMainUIOVPN implements IConstantZZZ {
 					LogZZZ objLog = objKernel.getLogObject();
 					if(objLog!=null){
 						try {
-							objLog.WriteLineDate(ez.getDetailAllLast());
+							objLog.writeLineDate(ez.getDetailAllLast());
 						} catch (ExceptionZZZ ez2) {
 							ez2.printStackTrace();
 							System.out.println(ez2.getDetailAllLast());
