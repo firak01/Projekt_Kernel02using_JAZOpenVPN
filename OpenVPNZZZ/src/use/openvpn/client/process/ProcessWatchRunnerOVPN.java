@@ -759,7 +759,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 					BufferedReader in = new BufferedReader( new InputStreamReader(objProcess.getInputStream()) );
 					for ( String sLine; (sLine = in.readLine()) != null; ){
 					    //System.out.println( s );
-						this.getClientBackendObject().getLogObject().WriteLine(this.getNumberOfProcess() +"#"+ sLine);
+						this.getClientBackendObject().getLogObject().writeLine(this.getNumberOfProcess() +"#"+ sLine);
 						this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASOUTPUT, true);
 						
 						boolean bAny = this.analyseInputLineCustom(sLine, sLineFilter);
