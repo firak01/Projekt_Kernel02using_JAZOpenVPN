@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="src" path="/JAZKernel"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZKernelEngine"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZLanguageMarkup"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZWebFTP"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZWin32"/>
