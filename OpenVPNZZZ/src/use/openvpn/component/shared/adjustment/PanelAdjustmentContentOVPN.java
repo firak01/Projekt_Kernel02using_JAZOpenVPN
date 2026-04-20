@@ -24,7 +24,7 @@ import basic.zKernel.AbstractKernelLogZZZ;
 import basic.zKernel.component.IKernelModuleUserZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.component.IKernelProgramZZZ;
-import basic.zKernel.flag.IFlagZLocalEnabledZZZ;
+import basic.zKernel.flag.IFlagZCustomEnabledZZZ;
 import basic.zKernel.flag.IFlagZEnabledZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.IProgramUIZZZ;

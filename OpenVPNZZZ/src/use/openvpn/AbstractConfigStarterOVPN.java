@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import basic.zKernel.KernelZZZ;
-import basic.zKernel.flag.IFlagZLocalEnabledZZZ;
+import basic.zKernel.flag.IFlagZCustomEnabledZZZ;
 import basic.zKernel.flag.IFlagZEnabledZZZ;
 import basic.zKernel.flag.event.EventObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
