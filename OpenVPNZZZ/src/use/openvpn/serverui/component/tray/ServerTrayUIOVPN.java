@@ -29,6 +29,7 @@ import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
 import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.IStatusBooleanZZZ;
+import basic.zKernelUI.component.IDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.tray.AbstractKernelTrayUIZZZ;
 import basic.zKernelUI.component.tray.IActionTrayZZZ;
@@ -564,17 +565,17 @@ public class ServerTrayUIOVPN extends AbstractKernelTrayUIZZZ implements ITrayOV
 			hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
 			
 			HashMap<String,Boolean>hmFlagLocal=new HashMap<String,Boolean>();
-			hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CANCEL.name(), false);
-			hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CLOSE.name(), true);
-			hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_OK.name(), false);
+			hmFlagLocal.put(IDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CANCEL.name(), false);
+			hmFlagLocal.put(IDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CLOSE.name(), true);
+			hmFlagLocal.put(IDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_OK.name(), false);
 			DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlagLocal, hmFlag);
 			dlgFTPCredentials.setText4ButtonOk("USE VALUES");	
 			this.dlgFTPCredentials = dlgFTPCredentials;
 		}
 		return this.dlgFTPCredentials;
 	}
-	public void setDialogFtpCredentials(KernelJDialogExtendedZZZ dlgFtpCredentials) {
-		this.dlgFTPCredentials = dlgFtpCredentials;
+	public void setDialogFtpCredentials(IDialogExtendedZZZ dlgFtpCredentials) {
+		this.dlgFTPCredentials = (KernelJDialogExtendedZZZ) dlgFtpCredentials;
 	}
 	
 	

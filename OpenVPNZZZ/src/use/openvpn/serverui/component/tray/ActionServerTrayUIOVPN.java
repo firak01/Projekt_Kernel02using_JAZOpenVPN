@@ -17,6 +17,7 @@ import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.component.IKernelModuleZZZ;
 import basic.zKernelUI.component.AbstractKernelActionListenerCascadedZZZ;
+import basic.zKernelUI.component.IDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.tray.AbstractKernelActionTrayZZZ;
 import basic.zKernelUI.util.JTextFieldHelperZZZ;
@@ -441,9 +442,9 @@ public class ActionServerTrayUIOVPN extends AbstractKernelActionTrayZZZ{
 					hmFlag.put(IKernelModuleZZZ.FLAGZ.ISKERNELMODULE.name(), true);
 					
 					HashMap<String,Boolean>hmFlagLocal=new HashMap<String,Boolean>();
-					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CANCEL.name(), false);
-					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CLOSE.name(), true);
-					hmFlagLocal.put(KernelJDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_OK.name(), false);
+					hmFlagLocal.put(IDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CANCEL.name(), false);
+					hmFlagLocal.put(IDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_CLOSE.name(), true);
+					hmFlagLocal.put(IDialogExtendedZZZ.FLAGZLOCAL.HIDE_ON_OK.name(), false);
 					DlgFTPCredentialsOVPN dlgFTPCredentials = new DlgFTPCredentialsOVPN(this.getKernelObject(), null, hmFlagLocal, hmFlag);
 					dlgFTPCredentials.setText4ButtonOk("USE VALUES");	
 					objTray.setDialogFtpCredentials(dlgFTPCredentials);
