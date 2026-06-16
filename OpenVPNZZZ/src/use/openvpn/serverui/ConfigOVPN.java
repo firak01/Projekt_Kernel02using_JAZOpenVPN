@@ -4,9 +4,18 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.AbstractKernelConfigZZZ;
 import basic.zKernel.net.client.ConfigHtmlTableHandlerZZZ;
 
-public class ConfigOVPN  extends AbstractKernelConfigZZZ{
-	private static String sPROJECT_NAME = "OpenVPNZZZ";
-	private static String sPROJECT_PATH = "Project_Kernel02using_JAZOpenVPN";
+public class ConfigOVPN  extends AbstractKernelConfigZZZ{	
+	//#################################################
+	//Merke: Die Konstanten sind meist nicht final, damit sie von der konkreten Konfiguration
+	//       ueberschrieben werden koennen.
+	//       Final sind die fuer den Kernel selbst wichtige Konstanten
+	
+	
+	//#####################################################################
+	//####### Reflektion zum Gesamtprojekt
+	static String sPROJECT_DIRECTORY = "Project_Kernel02using_JAZOpenVPN";
+	static String sPROJECT_NAME = "OpenVPNZZZ";
+	
 	public ConfigOVPN() throws ExceptionZZZ{
 		super();
 	}
@@ -42,7 +51,7 @@ public class ConfigOVPN  extends AbstractKernelConfigZZZ{
 	}
 	@Override
 	public String getProjectDirectory() {
-		return ConfigOVPN.sPROJECT_PATH;
+		return ConfigOVPN.sPROJECT_DIRECTORY;
 	}
 
 }
