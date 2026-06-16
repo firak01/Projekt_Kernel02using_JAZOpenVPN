@@ -1,39 +1,10 @@
 package use.openvpn.serverui.component.IPExternalUpload;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
-import custom.zKernel.ILogZZZ;
-import custom.zKernel.LogZZZ;
-import custom.zKernel.file.ini.FileIniZZZ;
-import custom.zKernel.html.writer.WriterHtmlZZZ;
-import custom.zKernel.markup.content.ContentPageIPZZZ;
-import custom.zKernel.net.ftp.FTPSZZZ;
-import custom.zKernel.net.ftp.SFTPZZZ;
-import use.openvpn.IApplicationOVPN;
-import use.openvpn.IApplicationUserOVPN;
-import basic.zKernel.IKernelConfigSectionEntryZZZ;
+import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.IKernelConfigZZZ;
 import basic.zKernel.IKernelZZZ;
-import basic.zKernel.KernelSingletonZZZ;
-import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.util.datatype.character.CharZZZ;
-import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.file.FileEasyZZZ;
-import basic.zBasic.util.log.ReportLogZZZ;
-import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
-import basic.zKernel.component.AbstractKernelProgramZZZ;
 import basic.zKernel.file.ini.IKernelCallIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelEncryptionIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelExpressionIniSolverZZZ;
@@ -42,24 +13,17 @@ import basic.zKernel.file.ini.IKernelJsonArrayIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonMapIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelZFormulaIniZZZ;
-import basic.zKernel.html.ConfigHtmlTableHandlerByJobZZZ;
-import basic.zKernel.html.TagInputZZZ;
-import basic.zKernel.html.TagTypeInputZZZ;
-import basic.zKernel.html.reader.KernelReaderHtmlZZZ;
 import basic.zKernel.job.IJobZZZ;
 import basic.zKernel.job.JobHtmlProviderZZZ;
 import basic.zKernel.net.client.ConfigHtmlTableHandlerZZZ;
 import basic.zKernel.net.client.HtmlTableHandlerApplicationZZZ;
 import basic.zKernel.net.client.IApplicationZZZ;
 import basic.zKernel.net.client.IMainZZZ;
-import basic.zKernel.net.client.KernelPingHostZZZ;
-import basic.zKernel.net.client.KernelReaderPageZZZ;
-import basic.zKernel.net.client.KernelReaderURLZZZ;
-import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.AbstractKernelProgramUIZZZ;
-import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
-import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import custom.zKernel.LogZZZ;
+import use.openvpn.IApplicationOVPN;
+import use.openvpn.IApplicationUserOVPN;
 
 /**Vereinfacht den Zugriff auf die HTML-Seite, in der die externe IPAdresse des Servers bekannt gemacht wird. 
  * Wird im Button "IPExternal"-Refresh der Dialogbox Connect/IPExternall verwentet.
@@ -121,7 +85,7 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 				//Parameter aus args auslesen
 				String[]saFlag = {IKernelExpressionIniSolverZZZ.FLAGZ.USEEXPRESSION_SOLVER.name(),IKernelZFormulaIniZZZ.FLAGZ.USEFORMULA.name(), IKernelZFormulaIniZZZ.FLAGZ.USEFORMULA_MATH.name(),IKernelJsonIniSolverZZZ.FLAGZ.USEJSON.name(),IKernelJsonArrayIniSolverZZZ.FLAGZ.USEJSON_ARRAY.name(),IKernelJsonMapIniSolverZZZ.FLAGZ.USEJSON_MAP.name(), IKernelEncryptionIniSolverZZZ.FLAGZ.USEENCRYPTION.name(),IKernelCallIniSolverZZZ.FLAGZ.USECALL.name(), IKernelJavaCallIniSolverZZZ.FLAGZ.USECALL_JAVA.name()};
 				//IKernelConfigZZZ objConfig = new ConfigHtmlTableHandlerByJobZZZ(saArg, saFlag);
-				IKernelConfigZZZ objConfig = new ConfigHtmlTableHandlerByJobZZZ();
+				IKernelConfigZZZ objConfig = new ConfigHtmlTableHandlerZZZ();
 				IKernelZZZ objKernel = new KernelZZZ(objConfig, (String) null); //Damit kann man über die Startparameter ein anders konfiguriertes Kernel-Objekt erhalten.
 				this.setKernelObject(objKernel);
 								
