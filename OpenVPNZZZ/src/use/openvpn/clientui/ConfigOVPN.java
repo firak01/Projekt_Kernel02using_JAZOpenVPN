@@ -47,11 +47,11 @@ public class ConfigOVPN<T>  extends AbstractKernelConfigZZZ<T>{
 	}
 	
 	@Override
-	public String getProjectName() {
+	public String getProjectNameDefault() throws ExceptionZZZ {
 		return ConfigOVPN.sPROJECT_NAME;
 	}
 	@Override
-	public String getProjectDirectory() {
+	public String getProjectDirectoryDefault() throws ExceptionZZZ {
 		return ConfigOVPN.sPROJECT_DIRECTORY;
 	}
 }
