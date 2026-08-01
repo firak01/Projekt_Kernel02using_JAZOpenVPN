@@ -5,11 +5,11 @@ import java.io.FilenameFilter;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.file.AbstractFileFilterZZZ;
-import basic.zBasic.util.file.FilenamePartFilterEndingZZZ;
-import basic.zBasic.util.file.FilenamePartFilterMiddleZZZ;
-import basic.zBasic.util.file.FilenamePartFilterPrefixZZZ;
-import basic.zBasic.util.file.FilenamePartFilterSuffixZZZ;
+import basic.zBasic.util.file.filter.AbstractFileFilterZZZ;
+import basic.zBasic.util.file.filter.FilenamePartFilterEndingZZZ;
+import basic.zBasic.util.file.filter.FilenamePartFilterMiddleZZZ;
+import basic.zBasic.util.file.filter.FilenamePartFilterPrefixZZZ;
+import basic.zBasic.util.file.filter.FilenamePartFilterSuffixZZZ;
 import use.openvpn.ConfigFileTemplateOvpnOVPN;
 
 public class FileFilterConfigBatchTemplateOVPN extends AbstractFileFilterZZZ{

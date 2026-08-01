@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractList.HashMapIterableKeyZZZ;
-import basic.zBasic.util.file.AbstractFileCreatorZZZ;
+import basic.zBasic.util.file.txt.stream.AbstractFileCreatorZZZ;
 import basic.zKernel.IKernelZZZ;
 import use.openvpn.IConfigMapper4ReadmeOVPN;
 import use.openvpn.IConfigMapper4ReadmeUserOVPN;

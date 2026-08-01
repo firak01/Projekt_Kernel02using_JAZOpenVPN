@@ -19,7 +19,7 @@ import basic.zBasic.util.abstractList.HashtableIndexedZZZ;
 import basic.zBasic.util.abstractList.HashtableSortedZZZ;
 import basic.zBasic.util.abstractList.HashtableZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.file.txt.TxtReaderZZZ;
+import basic.zBasic.util.file.txt.bytes.TxtReaderZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.AbstractKernelUseObjectZZZ;
 import basic.zKernel.net.client.KernelPingHostZZZ;
