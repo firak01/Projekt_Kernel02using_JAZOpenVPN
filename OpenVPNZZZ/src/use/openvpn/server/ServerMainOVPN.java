@@ -23,7 +23,7 @@ import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
 import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
-import basic.zUtil.io.KernelFileExpansionZZZ;
+import basic.zUtil.io.FileExpansionZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 import use.openvpn.AbstractMainOVPN;
 import use.openvpn.ConfigChooserOVPN;
@@ -261,7 +261,7 @@ public class ServerMainOVPN extends AbstractMainOVPN implements IServerMainOVPN,
 						String stemp = objToken.nextToken();
 						for(int icount=0; icount <= objaFileConfigUsed.length-1; icount++){
 							File objFileTemp = objaFileConfigUsed[icount];						
-							boolean bIsExpandedOrSameFilename = KernelFileExpansionZZZ.isExpansionOrSameFilename(objFileTemp, stemp, 3);
+							boolean bIsExpandedOrSameFilename = FileExpansionZZZ.isExpansionOrSameFilename(objFileTemp, stemp, 3);
 							if(bIsExpandedOrSameFilename) {
 								listaFileConfigUsed.add(objFileTemp);
 							}

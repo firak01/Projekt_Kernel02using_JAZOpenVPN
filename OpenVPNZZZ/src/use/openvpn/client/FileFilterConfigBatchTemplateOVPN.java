@@ -58,4 +58,5 @@ public class FileFilterConfigBatchTemplateOVPN extends AbstractFileFilterZZZ{
 				super.setEnding(sEnding);
 			}
 		}
+		
 }//END class
