@@ -166,6 +166,7 @@ public class ServerConfigStarterOVPN extends AbstractConfigStarterOVPN{
 					for(String sLine : listaLine){
 						objBatch.writeLine(sLine);
 					}
+					objBatch.close();
 					
 					
 					
