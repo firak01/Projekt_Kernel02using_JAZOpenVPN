@@ -678,7 +678,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 		}
 
 		@Override
-		public void registerForStatusLocalEvent(IListenerObjectStatusLocalZZZ objEventListener) throws ExceptionZZZ {
+		public void registerForStatusLocalEvent(IListenerObjectStatusBasicZZZ objEventListener) throws ExceptionZZZ {
 			((ISenderObjectStatusLocalOVPN) this.getSenderStatusLocalUsed()).addListenerObjectStatusLocal((IListenerObjectStatusLocalOVPN) objEventListener);
 		}
 		

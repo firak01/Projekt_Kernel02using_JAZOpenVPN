@@ -1566,40 +1566,6 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	}
 
 	@Override
-	public boolean getFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean setFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag, boolean bFlagValue)
-			throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean[] setFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ[] objaEnumFlag,
-			boolean bFlagValue) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean proofFlagExists(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag)
-			throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean proofFlagSetBefore(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag)
-			throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public IKernelZZZ getKernelObject() throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return null;
@@ -1752,5 +1718,44 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	public HashMap createHashMapStatusLocal4ReactionCustom_String() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	//##############################################################
+	//### FLAG HANDLING                                        #####
+	//##############################################################
+	
+	//### aus IListenerObjectFlagZsetZZZ
+	@Override
+	public boolean getFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag, boolean bFlagValue)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean[] setFlag(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ[] objaEnumFlag,
+			boolean bFlagValue) throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean proofFlagExists(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean proofFlagSetBefore(basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ.FLAGZ objEnumFlag)
+			throws ExceptionZZZ {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }//END Class
