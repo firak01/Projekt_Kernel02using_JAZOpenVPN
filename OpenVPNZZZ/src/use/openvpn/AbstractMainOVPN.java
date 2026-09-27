@@ -438,8 +438,12 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 //		}
 	
 	
+	//######################################################
+	//### FLAG HANDLING                                 ####
+	//######################################################
+	
 	//##########################################
-	//### FLAG HANDLING aus IProgramRunnable
+	//### aus IProgramRunnable
 	@Override
 	public boolean getFlag(IProgramRunnableZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.getFlag(objEnumFlag.name());
@@ -476,7 +480,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		return this.proofFlagSetBefore(objEnumFlag.name());
 	}	
 	
-	//### FLAG HANDLING AUS IProgramZZZ
+	//### aus IProgramZZZ
 	@Override
 	public boolean getFlag(IProgramZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
 		return this.getFlag(objEnumFlag.name());
@@ -549,40 +553,8 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 		return this.proofFlagExists(objEnumFlag.name());
 	}
 	
-	//### aus IListenerObjectStatusBasicZZZ
-	@Override
-	public boolean getFlag(basic.zKernel.status.IListenerObjectStatusBasicZZZ.FLAGZ objEnumFlag) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean setFlag(basic.zKernel.status.IListenerObjectStatusBasicZZZ.FLAGZ objEnumFlag, boolean bFlagValue)
-			throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean[] setFlag(basic.zKernel.status.IListenerObjectStatusBasicZZZ.FLAGZ[] objaEnumFlag,
-			boolean bFlagValue) throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean proofFlagExists(basic.zKernel.status.IListenerObjectStatusBasicZZZ.FLAGZ objEnumFlag)
-			throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean proofFlagSetBefore(basic.zKernel.status.IListenerObjectStatusBasicZZZ.FLAGZ objEnumFlag)
-			throws ExceptionZZZ {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	//### aus IListenerObjectStatusBasicEnabledZZZ
+	//... hier noch nix
 	
 	//##########################			
 }

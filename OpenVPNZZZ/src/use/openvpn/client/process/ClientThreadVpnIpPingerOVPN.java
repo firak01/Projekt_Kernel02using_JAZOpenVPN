@@ -1239,39 +1239,11 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 			return false;
 		}
 
-		@Override
-		public boolean getFlag(basic.zKernel.status.IListenerObjectStatusLocalZZZ.FLAGZ objEnumFlag) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean setFlag(basic.zKernel.status.IListenerObjectStatusLocalZZZ.FLAGZ objEnumFlag, boolean bFlagValue)
-				throws ExceptionZZZ {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean[] setFlag(basic.zKernel.status.IListenerObjectStatusLocalZZZ.FLAGZ[] objaEnumFlag,
-				boolean bFlagValue) throws ExceptionZZZ {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean proofFlagExists(basic.zKernel.status.IListenerObjectStatusLocalZZZ.FLAGZ objEnumFlag)
-				throws ExceptionZZZ {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean proofFlagSetBefore(basic.zKernel.status.IListenerObjectStatusLocalZZZ.FLAGZ objEnumFlag)
-				throws ExceptionZZZ {
-			// TODO Auto-generated method stub
-			return false;
-		}
-	
-	
+		//###########################################################
+		//### FLAG HANDLING
+		//###########################################################
+		
+		//### aus IListenerObjectStatusLocalZZZ
+		//... hier noch nix
+			
 }//END class
