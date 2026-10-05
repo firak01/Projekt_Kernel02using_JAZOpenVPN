@@ -22,7 +22,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ.ActionListenerButtonOkDefaultZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 import use.openvpn.serverui.component.IPExternalUpload.PanelDlgIPExternalContentOVPN.ActionIpWeb2iniOVPN.SwingWorker4ProgramIpWeb2iniOVPN;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;

@@ -40,7 +40,7 @@ import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.tray.AbstractKernelTrayUIZZZ;
 import basic.zKernelUI.component.tray.IActionTrayZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 import use.openvpn.IMainOVPN;
 import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientApplicationOVPN;
@@ -1578,13 +1578,13 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 	}
 
 	@Override
-	public LogZZZ getLogObject() throws ExceptionZZZ {
+	public KernelLogZZZ getLogObject() throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setLogObject(LogZZZ objLog) throws ExceptionZZZ {
+	public void setLogObject(KernelLogZZZ objLog) throws ExceptionZZZ {
 		// TODO Auto-generated method stub
 		
 	}

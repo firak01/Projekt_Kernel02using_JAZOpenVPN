@@ -14,7 +14,7 @@ import basic.zKernel.file.ini.IKernelJsonArrayIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelJsonMapIniSolverZZZ;
 import basic.zKernel.file.ini.IKernelZFormulaIniZZZ;
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
 
@@ -76,7 +76,7 @@ public class ClientMainUIOVPN implements IConstantZZZ {
 				}				
 			} catch (ExceptionZZZ ez) {
 				if(objKernel!=null){
-					LogZZZ objLog = objKernel.getLogObject();
+					KernelLogZZZ objLog = objKernel.getLogObject();
 					if(objLog!=null){
 						try {
 							objLog.writeLineDate(ez.getDetailAllLast());

@@ -3,7 +3,7 @@ package debug.openvpn.client;
 import use.openvpn.client.ClientMainOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelZZZ;
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 
 public class DebugClientMainZZZ {
 
@@ -27,7 +27,7 @@ public class DebugClientMainZZZ {
 
 			} catch (ExceptionZZZ ez) {
 				if(objKernel!=null){
-					LogZZZ objLog = objKernel.getLogObject();
+					KernelLogZZZ objLog = objKernel.getLogObject();
 					if(objLog!=null){								
 						try {
 							objLog.writeLineDate(ez.getDetailAllLast());

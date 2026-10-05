@@ -46,7 +46,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Sizes;
 
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 
 //Das hat hier eigentlich nichts zu suchen. TODOGOON: Auch wenn das klappt, eine andere Projektstruktur anbieten.
 //wg Fehler: import com.jcraft.jsch.JSchException;

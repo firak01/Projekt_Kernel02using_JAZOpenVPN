@@ -22,7 +22,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ.ActionListenerButtonOkDefaultZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 import use.openvpn.clientui.component.IPExternalRead.ProgramIpWeb2iniOVPN;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -209,7 +209,7 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 			//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
 			@Override
 			public void logLineDate(String sLog) throws ExceptionZZZ {
-				LogZZZ objLog = this.getLogObject();
+				KernelLogZZZ objLog = this.getLogObject();
 				if(objLog==null) {
 					String sTemp = AbstractKernelLogZZZ.computeLineDate(sLog);
 					System.out.println(sTemp);

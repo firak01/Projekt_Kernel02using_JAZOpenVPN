@@ -7,7 +7,7 @@ import use.openvpn.server.ServerMainOVPN;
 import use.openvpn.serverui.component.tray.ServerTrayUIOVPN;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelZZZ;
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 
 public class DebugServerTrayUIZZZ {
 
@@ -48,7 +48,7 @@ public class DebugServerTrayUIZZZ {
 					ez.printStackTrace();
 					System.out.println(ez.getDetailAllLast());
 				}else {
-					LogZZZ objLog = objKernel.getLogObject();
+					KernelLogZZZ objLog = objKernel.getLogObject();
 					if(objLog==null){
 						ez.printStackTrace();
 						System.out.println(ez.getDetailAllLast());

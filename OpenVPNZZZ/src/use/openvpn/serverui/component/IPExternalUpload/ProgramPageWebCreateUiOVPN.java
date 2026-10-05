@@ -21,7 +21,7 @@ import basic.zKernel.net.client.IApplicationZZZ;
 import basic.zKernel.net.client.IMainZZZ;
 import basic.zKernelUI.component.AbstractKernelProgramUIZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.IApplicationUserOVPN;
 
@@ -121,7 +121,7 @@ public class ProgramPageWebCreateUiOVPN  extends AbstractKernelProgramUIZZZ impl
 				}
 			} catch (ExceptionZZZ ez) {
 				if(objKernel!=null){
-					LogZZZ objLog = objKernel.getLogObject();
+					KernelLogZZZ objLog = objKernel.getLogObject();
 					if(objLog!=null){
 						objLog.writeLineDate(ez.getDetailAllLast());
 					}else{

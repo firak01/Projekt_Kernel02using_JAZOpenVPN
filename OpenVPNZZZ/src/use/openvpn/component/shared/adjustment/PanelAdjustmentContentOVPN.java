@@ -38,7 +38,7 @@ import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 
 /**Das Panel, was im "BorderLayout.CENTER" des entprechenden Dialogs angezeigt werden soll.
  * Merke: Die Buttons OK / Cancel werden durch die DialogBox-Extended-Klasse in den BorderLayout.SOUTH der Dialogbox gesetzt.

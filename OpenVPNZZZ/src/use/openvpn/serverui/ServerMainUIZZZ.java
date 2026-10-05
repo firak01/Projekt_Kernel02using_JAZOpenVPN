@@ -25,7 +25,7 @@ import basic.zKernel.file.ini.IKernelZFormulaIniZZZ;
 import basic.zKernel.flag.event.IEventObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.IListenerObjectFlagZsetZZZ;
 import basic.zKernel.flag.event.ISenderObjectFlagZsetZZZ;
-import custom.zKernel.LogZZZ;
+import custom.zKernel.KernelLogZZZ;
 
 public class ServerMainUIZZZ implements IConstantZZZ{
 			private IKernelZZZ objKernel=null;
@@ -86,7 +86,7 @@ public class ServerMainUIZZZ implements IConstantZZZ{
 						
 					} catch (ExceptionZZZ ez1) {
 						if(objKernel!=null){
-							LogZZZ objLog = objKernel.getLogObject();
+							KernelLogZZZ objLog = objKernel.getLogObject();
 							if(objLog!=null){
 								try {
 									objLog.writeLineDate(ez1.getDetailAllLast());
