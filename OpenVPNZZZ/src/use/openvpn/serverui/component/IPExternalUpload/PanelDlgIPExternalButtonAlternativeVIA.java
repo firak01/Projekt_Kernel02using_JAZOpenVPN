@@ -149,7 +149,7 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					objProg.reset();
 					String sIp = objProg.getIpFromUi();
-					logLineDate("Ip from UI for Web2ini '" + sIp + "'");
+					printlnDate("Ip from UI for Web2ini '" + sIp + "'");
 					
 					
 					//2. Schreiben des Werts in die Ini Datei
@@ -184,7 +184,7 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 					public void run(){
 						try {
 							//In das Textfeld eintragen, das etwas passiert.
-							logLineDate("TextField updated with '" + stext + "'");												
+							printlnDate("TextField updated with '" + stext + "'");												
 							objProg.updateLabel(stext);
 						} catch (ExceptionZZZ e) {
 							e.printStackTrace();

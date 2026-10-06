@@ -116,7 +116,7 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 					ProgramFTPCredentials2iniOVPN objProg = new ProgramFTPCredentials2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					//objProg.reset();//Das setzt die Felder leer
 					String sUsername = objProg.getUsernameFromUi();
-					logLineDate("Username from Local2ini'" + sUsername + "'");
+					printlnDate("Username from Local2ini'" + sUsername + "'");
 					
 					String sPasswordDecrypted = objProg.getPasswordFromUi();
 					//Unverschluesseltes Kennwort nicht loggen!!! logLineDate("Password from Local2ini'" + sPassword + "'");

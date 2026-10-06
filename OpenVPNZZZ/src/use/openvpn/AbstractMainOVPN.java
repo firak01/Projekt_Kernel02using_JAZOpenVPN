@@ -43,7 +43,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 	 * @throws ExceptionZZZ 
 	 */	
 	@Override
-	public void logProtocol(String sProtocol) throws ExceptionZZZ{
+	public void protocol(String sProtocol) throws ExceptionZZZ{
 		if(sProtocol!=null){
 			this.addProtocolString(sProtocol);
 			
@@ -94,7 +94,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			this.startAsThread();
 		} catch (ExceptionZZZ ez) {
 			try {
-				this.logLineDate(ez.getDetailAllLast());
+				this.printlnDate(ez.getDetailAllLast());
 			} catch (ExceptionZZZ e1) {
 				System.out.println(e1.getDetailAllLast());
 				e1.printStackTrace();
@@ -102,7 +102,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			
 			try {
 				String sLog = ez.getDetailAllLast();
-				this.logLineDate("An error happend: '" + sLog + "'");
+				this.printlnDate("An error happend: '" + sLog + "'");
 				this.setStatusLocal(ClientMainOVPN.STATUSLOCAL.HASERROR, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
 				
 			} catch (ExceptionZZZ e1) {				

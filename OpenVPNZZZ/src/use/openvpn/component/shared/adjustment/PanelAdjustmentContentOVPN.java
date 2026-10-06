@@ -213,7 +213,7 @@ public class PanelAdjustmentContentOVPN  extends KernelJPanelCascadedZZZ impleme
 						
 						//2. IP Auslesen von der Webseite										
 						String sIp = objProg.getIpExternal();
-						logLineDate("Ip from External Content: " + sIp);
+						printlnDate("Ip from External Content: " + sIp);
 												
 						//3. Diesen Wert wieder ins Label schreiben.
 						updateValue(objProg,sIp);

@@ -364,7 +364,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 						ProgramAdjustementModuleChangeOVPN objProg = new ProgramAdjustementModuleChangeOVPN(objKernel, this.panel, this.saFlag4Program);
 						
 						//1. Ins Label schreiben, dass dies hier ausgewählt worden ist
-						logLineDate("Clicked ..... TODOGOON");
+						printlnDate("Clicked ..... TODOGOON");
 						
 						updateLabel(objProg,"*");
 						
@@ -394,7 +394,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
 							try {
-								logLineDate("label updatede ..... TODOGOON '" + stext + "'");
+								printlnDate("label updatede ..... TODOGOON '" + stext + "'");
 							} catch (ExceptionZZZ ez) {
 								ez.printStackTrace();
 							}

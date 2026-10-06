@@ -88,7 +88,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 			try {
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner started for Process #"+ this.getNumberOfProcess();
 				System.out.println(sLog);
-				this.logLineDate(sLog);
+				this.printlnDate(sLog);
 				
 				//Solange laufen, bis ein Fehler auftritt oder eine Verbindung erkannt wird.
 				do{
@@ -98,7 +98,7 @@ public class ProcessWatchRunnerOVPN extends AbstractProcessWatchRunnerZZZ implem
 					boolean bHasConnection = this.getStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION);
 					if(bHasConnection) {
 						sLog = "Connection wurde erstellt. Beende ProcessWatchRunner #"+this.getNumberOfProcess();
-						this.logLineDate(sLog);						
+						this.printlnDate(sLog);						
 						
 						//Falls irgendwann ein Objekt sich fuer die Eventbenachrichtigung registriert hat, gibt es den EventBroker.
 						//Dann erzeuge den Event und feuer ihn ab.
@@ -322,7 +322,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 			int iProcess = this.getNumberOfProcess();
 			String sLog = ReflectCodeZZZ.getPositionCurrent() +  " Process#" + iProcess + ": sLine=" + sLine;		
 			System.out.println(sLog);
-			this.logLineDate(sLog);
+			this.printlnDate(sLog);
 			if(StringZZZ.contains(sLine,"TCP connection established")) {
 				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTIONLOST, false);
 				this.setStatusLocal(IProcessWatchRunnerOVPN.STATUSLOCAL.HASCONNECTION, true);
@@ -591,14 +591,14 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				bFunction = this.proofStatusLocalExists(sStatusName);															
 				if(!bFunction){
 					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status is not available: '" + sStatusName + "'";					
-					this.logProtocol(sLog);			
+					this.protocol(sLog);			
 					break main;				
 				}
 					
 				bFunction = this.proofStatusLocalValue(sStatusName, bStatusValue);
 				if(!bFunction) {
 					String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner would like to fire event, but this status has not changed: '" + sStatusName + "'";					
-					this.logProtocol(sLog);
+					this.protocol(sLog);
 					break main;
 				}
 				
@@ -623,13 +623,13 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 					sStatusMessageToSet = sStatusMessage;
 				}	
 				String sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner verarbeite sStatusMessageToSet='" + sStatusMessageToSet + "'";
-				this.logProtocol(sLog);
+				this.protocol(sLog);
 
 				//Falls eine Message extra uebergeben worden ist, ueberschreibe...
 				if(sStatusMessage!=null) {
 					sStatusMessageToSet = sStatusMessage;
 					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner uebersteuere sStatusMessageToSet='" + sStatusMessage + "'";					
-					this.logProtocol(sLog);				
+					this.protocol(sLog);				
 				}
 				//Merke: Dabei wird die uebergebene Message in den speziellen "Ringspeicher" geschrieben, auch NULL Werte...
 				this.offerStatusLocalEnum(enumStatus, bStatusValue, sStatusMessageToSet);
@@ -638,13 +638,13 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				//Dann erzeuge den Event und feuer ihn ab.			
 				if(this.getSenderStatusLocalUsed()==null) {
 					sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process would like to fire event '" + enumStatus.getAbbreviation() + "', but no objEventStatusLocalBroker available, any registered?";
-					this.logProtocol(sLog);		
+					this.protocol(sLog);		
 					break main;
 				}
 				
 				//Erzeuge fuer das Enum einen eigenen Event. Die daran registrierten Klassen koennen in einer HashMap definieren, ob der Event fuer sie interessant ist.		
 				sLog = ReflectCodeZZZ.getPositionCurrent() + ": Erzeuge Event fuer '" + sStatusName + "', bValue='"+ bStatusValue + "', sMessage='"+sStatusMessage+"'";				
-				this.logProtocol(sLog);
+				this.protocol(sLog);
 				IEventObject4ProcessWatchRunnerStatusLocalOVPN event = new EventObject4ProcessWatchRunnerStatusLocalOVPN(this,1,enumStatus, bStatusValue);			
 				event.setApplicationObjectUsed(this.getClientBackendObject().getApplicationObject());
 				
@@ -652,7 +652,7 @@ TCP connection established with [AF_INET]192.168.3.116:4999
 				event.setClientConfigStarterObjectUsed(this.getClientConfigStarterObject());
 				
 				sLog = ReflectCodeZZZ.getPositionCurrent() + " ProcessWatchRunner for Process #"+ this.getNumberOfProcess() + " fires event '" + enumStatus.getAbbreviation() + "'";
-				this.logProtocol(sLog);
+				this.protocol(sLog);
 				this.getSenderStatusLocalUsed().fireEvent(event);
 						
 				bFunction = true;								

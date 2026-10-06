@@ -158,7 +158,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					objProg.reset();
 					String sIp = objProg.getIpFromUi();
-					logLineDate("Ip from UI: " + sIp);
+					printlnDate("Ip from UI: " + sIp);
 					
 					updateTextField(objProg, "writing...");					
 					boolean bErg = objProg.writeIpToIni(sIp);

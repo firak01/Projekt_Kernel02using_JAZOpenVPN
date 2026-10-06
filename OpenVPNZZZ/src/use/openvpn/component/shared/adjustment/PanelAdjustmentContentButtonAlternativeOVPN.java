@@ -207,16 +207,16 @@ public class PanelAdjustmentContentButtonAlternativeOVPN  extends KernelJPanelDi
 			}
 			
 			//aus IKernelLogObjectUserZZZ, analog zu KernelKernelZZZ
-			@Override
-			public void logLineDate(String sLog) throws ExceptionZZZ {
-				KernelLogZZZ objLog = this.getLogObject();
-				if(objLog==null) {
-					String sTemp = AbstractKernelLogZZZ.computeLineDate(sLog);
-					System.out.println(sTemp);
-				}else {
-					objLog.writeLineDate(sLog);
-				}		
-			}	
+//			@Override
+//			public void printlnDate(String sLog) throws ExceptionZZZ {
+//				KernelLogZZZ objLog = this.getLogObject();
+//				if(objLog==null) {
+//					String sTemp = AbstractKernelLogZZZ.computeLineDate(sLog);
+//					System.out.println(sTemp);
+//				}else {
+//					objLog.writeLineDate(sLog);
+//				}		
+//			}	
 			
 			
 			/**Overwritten and using an object of jakarta.commons.lang
