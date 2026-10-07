@@ -26,6 +26,7 @@ import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
@@ -182,7 +183,7 @@ private void MonitorNew_(IClientMainOVPN objMain, String[] saFlagControl) throws
 			this.startAsThread();
 		} catch (ExceptionZZZ ez) {
 			try {
-				this.printlnDate(ez.getDetailAllLast());
+				Log.printlnDate(this, ez.getDetailAllLast());
 			} catch (ExceptionZZZ e1) {
 				System.out.println(e1.getDetailAllLast());
 				e1.printStackTrace();
@@ -190,7 +191,7 @@ private void MonitorNew_(IClientMainOVPN objMain, String[] saFlagControl) throws
 			
 			try {
 				String sLog = ez.getDetailAllLast();
-				this.printlnDate("An error happend: '" + sLog + "'");
+				Log.printlnDate(this, "An error happend: '" + sLog + "'");
 			} catch (ExceptionZZZ e1) {				
 				System.out.println(ez.getDetailAllLast());
 				e1.printStackTrace();

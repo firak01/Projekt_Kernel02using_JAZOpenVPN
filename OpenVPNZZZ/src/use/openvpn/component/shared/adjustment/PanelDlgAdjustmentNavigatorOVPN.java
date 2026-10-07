@@ -48,6 +48,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Sizes;
 
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 
 /**Das Panel, was im "BorderLayout.CENTER" des entprechenden Dialogs angezeigt werden soll.
  * Merke: Die Buttons OK / Cancel werden durch die DialogBox-Extended-Klasse in den BorderLayout.SOUTH der Dialogbox gesetzt.
@@ -364,7 +365,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 						ProgramAdjustementModuleChangeOVPN objProg = new ProgramAdjustementModuleChangeOVPN(objKernel, this.panel, this.saFlag4Program);
 						
 						//1. Ins Label schreiben, dass dies hier ausgewählt worden ist
-						printlnDate("Clicked ..... TODOGOON");
+						Log.printlnDate(this, "Clicked ..... TODOGOON");
 						
 						updateLabel(objProg,"*");
 						
@@ -394,7 +395,7 @@ public class PanelDlgAdjustmentNavigatorOVPN  extends KernelJPanelFormLayoutedZZ
 						public void run(){
 //							In das Textfeld eintragen, das etwas passiert.	
 							try {
-								printlnDate("label updatede ..... TODOGOON '" + stext + "'");
+								Log.printlnDate(this, "label updatede ..... TODOGOON '" + stext + "'");
 							} catch (ExceptionZZZ ez) {
 								ez.printStackTrace();
 							}

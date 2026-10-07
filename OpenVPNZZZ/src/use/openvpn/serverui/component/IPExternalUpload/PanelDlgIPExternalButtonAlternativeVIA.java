@@ -23,6 +23,7 @@ import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ.ActionListenerButtonOkDefaultZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 import use.openvpn.serverui.component.IPExternalUpload.PanelDlgIPExternalContentOVPN.ActionIpWeb2iniOVPN.SwingWorker4ProgramIpWeb2iniOVPN;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -149,7 +150,7 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					objProg.reset();
 					String sIp = objProg.getIpFromUi();
-					printlnDate("Ip from UI for Web2ini '" + sIp + "'");
+					Log.printlnDate(this, "Ip from UI for Web2ini '" + sIp + "'");
 					
 					
 					//2. Schreiben des Werts in die Ini Datei
@@ -184,7 +185,7 @@ public class PanelDlgIPExternalButtonAlternativeVIA  extends KernelJPanelDialogB
 					public void run(){
 						try {
 							//In das Textfeld eintragen, das etwas passiert.
-							printlnDate("TextField updated with '" + stext + "'");												
+							Log.printlnDate(this, "TextField updated with '" + stext + "'");												
 							objProg.updateLabel(stext);
 						} catch (ExceptionZZZ e) {
 							e.printStackTrace();

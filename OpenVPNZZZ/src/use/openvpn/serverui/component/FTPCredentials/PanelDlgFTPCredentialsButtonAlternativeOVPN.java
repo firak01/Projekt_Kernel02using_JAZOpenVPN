@@ -27,6 +27,7 @@ import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
 import basic.zKernelUI.thread.KernelSwingWorker4UIZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 import use.openvpn.clientui.component.IPExternalRead.ProgramIpWeb2iniOVPN;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -116,7 +117,7 @@ public class PanelDlgFTPCredentialsButtonAlternativeOVPN  extends KernelJPanelDi
 					ProgramFTPCredentials2iniOVPN objProg = new ProgramFTPCredentials2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					//objProg.reset();//Das setzt die Felder leer
 					String sUsername = objProg.getUsernameFromUi();
-					printlnDate("Username from Local2ini'" + sUsername + "'");
+					Log.printlnDate(this, "Username from Local2ini'" + sUsername + "'");
 					
 					String sPasswordDecrypted = objProg.getPasswordFromUi();
 					//Unverschluesseltes Kennwort nicht loggen!!! logLineDate("Password from Local2ini'" + sPassword + "'");

@@ -41,6 +41,7 @@ import basic.zKernelUI.component.tray.AbstractKernelTrayUIZZZ;
 import basic.zKernelUI.component.tray.IActionTrayZZZ;
 import basic.zWin32.com.wmi.KernelWMIZZZ;
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 import use.openvpn.IMainOVPN;
 import use.openvpn.ITrayOVPN;
 import use.openvpn.client.ClientApplicationOVPN;
@@ -1073,22 +1074,22 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				int iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent);
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdCurrent +" ist="+iIndexLower;
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);
+				Log.printlnDate(this, sLog);
 				
 				int iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdCurrent, true);
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexLowerInterrupted;
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);
+				Log.printlnDate(this, sLog);
 				
 				int iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent);
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdCurrent +" ist="+iIndexUpper;
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);	
+				Log.printlnDate(this, sLog);	
 
 				int iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdCurrent, true);
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdCurrent +" ist="+iIndexUpperInterrupted;
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);
+				Log.printlnDate(this, sLog);
 				
 				
 
@@ -1096,7 +1097,7 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				int iGroupIdPreviousDifferentFromCurrent = this.getMainObject().searchStatusLocalGroupIdPreviousDifferentFromCurrent();
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige, andere GroupId ist = " + iGroupIdPreviousDifferentFromCurrent +".";
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);	
+				Log.printlnDate(this, sLog);	
 				//+++ TESTENDE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				
 				
@@ -1104,22 +1105,22 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				iIndexLower = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent);
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLower;
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);
+				Log.printlnDate(this, sLog);
 				
 				iIndexLowerInterrupted = this.getMainObject().searchStatusLocalGroupIndexLowerInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der lower Index (interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexLowerInterrupted;
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);
+				Log.printlnDate(this, sLog);
 				
 				iIndexUpper = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent);
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpper;
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);	
+				Log.printlnDate(this, sLog);	
 
 				iIndexUpperInterrupted = this.getMainObject().searchStatusLocalGroupIndexUpperInBuffer(iGroupIdPreviousDifferentFromCurrent, true);
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der upper Index(interrupted) der GroupId " + iGroupIdPreviousDifferentFromCurrent +" ist="+iIndexUpperInterrupted;
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);	
+				Log.printlnDate(this, sLog);	
 				
 				
 				
@@ -1170,12 +1171,12 @@ public class ClientTrayUIOVPN extends AbstractKernelTrayUIZZZ implements  ITrayO
 				IEnumSetMappedStatusLocalZZZ objStatusLocalCurrent = this.getMainObject().getStatusLocalEnumCurrent();
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Der aktuelle Status im Main ist '" + objStatusLocalCurrent.getAbbreviation()+"'.";
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);
+				Log.printlnDate(this, sLog);
 			
 				int iGroupIdPrevious = this.getMainObject().getStatusLocalGroupIdFromPrevious();
 				sLog = ReflectCodeZZZ.getPositionCurrent()+": Die vorherige GroupId ist= " + iGroupIdPrevious +".";
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sLog);					
-				this.printlnDate(sLog);
+				Log.printlnDate(this, sLog);
 					
 			}//if(objEnum == ClientTrayStatusTypeZZZ.PREVIOUSEVENTRTYPE) {					
 			this.switchStatus(objEnumForTray); //Merke: Der Wert true wird angenommen.

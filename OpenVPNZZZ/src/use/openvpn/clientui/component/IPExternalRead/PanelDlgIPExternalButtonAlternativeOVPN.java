@@ -26,6 +26,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
 import basic.zKernelUI.thread.KernelSwingWorkerZZZ;
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 import use.openvpn.clientui.component.IPExternalRead.ProgramIpWeb2iniOVPN;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -158,7 +159,7 @@ public class PanelDlgIPExternalButtonAlternativeOVPN  extends KernelJPanelDialog
 					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					objProg.reset();
 					String sIp = objProg.getIpFromUi();
-					printlnDate("Ip from UI: " + sIp);
+					Log.printlnDate(this, "Ip from UI: " + sIp);
 					
 					updateTextField(objProg, "writing...");					
 					boolean bErg = objProg.writeIpToIni(sIp);

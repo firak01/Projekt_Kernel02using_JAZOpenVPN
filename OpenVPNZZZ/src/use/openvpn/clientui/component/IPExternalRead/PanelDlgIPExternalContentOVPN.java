@@ -46,6 +46,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Sizes;
 
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 
 /**Das Panel, was im "BorderLayout.CENTER" des entprechenden Dialogs angezeigt werden soll.
  * Merke: Die Buttons OK / Cancel werden durch die DialogBox-Extended-Klasse in den BorderLayout.SOUTH der Dialogbox gesetzt.
@@ -329,7 +330,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 						
 						//2. IP Auslesen von der Webseite										
 						String sIp = objProg.getIpExternal();
-						printlnDate("Ip from External: " + sIp);
+						Log.printlnDate(this, "Ip from External: " + sIp);
 												
 						//3. Diesen Wert wieder ins Label schreiben.
 						updateValue(objProg,sIp);

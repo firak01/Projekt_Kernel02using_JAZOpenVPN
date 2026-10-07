@@ -16,6 +16,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.AbstractKernelUseObjectWithStatusLocalOnStatusLocalListeningZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.status.StatusLocalAvailableHelperZZZ;
+import custom.zKernel.Log;
 import use.openvpn.client.ClientMainOVPN;
 import use.openvpn.client.IClientMainOVPN.STATUSLOCAL;
 
@@ -94,7 +95,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			this.startAsThread();
 		} catch (ExceptionZZZ ez) {
 			try {
-				this.printlnDate(ez.getDetailAllLast());
+				Log.printlnDate(this, ez.getDetailAllLast());
 			} catch (ExceptionZZZ e1) {
 				System.out.println(e1.getDetailAllLast());
 				e1.printStackTrace();
@@ -102,7 +103,7 @@ public abstract class AbstractMainOVPN extends AbstractKernelUseObjectWithStatus
 			
 			try {
 				String sLog = ez.getDetailAllLast();
-				this.printlnDate("An error happend: '" + sLog + "'");
+				Log.printlnDate(this, "An error happend: '" + sLog + "'");
 				this.setStatusLocal(ClientMainOVPN.STATUSLOCAL.HASERROR, true);//Es wird ein Event gefeuert, an dem das ServerTrayUI-Objekt registriert wird und dann sich passend einstellen kann.
 				
 			} catch (ExceptionZZZ e1) {				

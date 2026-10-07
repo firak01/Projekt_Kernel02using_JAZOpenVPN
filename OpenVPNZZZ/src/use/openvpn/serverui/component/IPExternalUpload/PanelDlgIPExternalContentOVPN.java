@@ -47,6 +47,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Sizes;
 
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 
 //Das hat hier eigentlich nichts zu suchen. TODOGOON: Auch wenn das klappt, eine andere Projektstruktur anbieten.
 //wg Fehler: import com.jcraft.jsch.JSchException;
@@ -572,7 +573,7 @@ public class PanelDlgIPExternalContentOVPN  extends KernelJPanelFormLayoutedZZZ 
 					ProgramIpWeb2iniOVPN objProg = new ProgramIpWeb2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					objProg.reset();
 					String sIp = objProg.getIpFromUi();
-					printlnDate("Ip from Program Web2ini'" + sIp + "'");
+					Log.printlnDate(this, "Ip from Program Web2ini'" + sIp + "'");
 										
 					updateMessage(objProg, "writing...");
 					boolean bErg = objProg.writeIpToIni(sIp);
@@ -690,7 +691,7 @@ class ActionIpRouter2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ /
 				ProgramIpRouter2iniOVPN objProg = new ProgramIpRouter2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 				objProg.reset();
 				String sIp = objProg.getIpFromUi();
-				printlnDate("Ip from Program Router2ini'" + sIp + "'");
+				Log.printlnDate(this, "Ip from Program Router2ini'" + sIp + "'");
 								
 				updateMessage(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
 				
@@ -783,7 +784,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 				ProgramIpLocal2iniOVPN objProg = new ProgramIpLocal2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 				objProg.reset();
 				String sIp = objProg.getIpFromUi();
-				printlnDate("Ip from Local2ini'" + sIp + "'");
+				Log.printlnDate(this, "Ip from Local2ini'" + sIp + "'");
 				
 				updateMessage(objProg, "writing..."); //Schreibe einen anderen Text in das Feld...
 				
@@ -880,7 +881,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 						
 						//2. IP Auslesen von der Webseite										
 						String sIp = objProg.getIpExternal();
-						printlnDate("Ip from Program ContentWeb '" + sIp + "'");						
+						Log.printlnDate(this, "Ip from Program ContentWeb '" + sIp + "'");						
 												
 						//3. Diesen Wert wieder ins Label schreiben.
 						updateValue(objProg, sIp);
@@ -968,7 +969,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 							
 							//2. IP Auslesen von der Webseite										
 							String sIp = objProg.getIpExternal();
-							printlnDate("Ip from Program IPContentLocal '" + sIp + "'");
+							Log.printlnDate(this, "Ip from Program IPContentLocal '" + sIp + "'");
 																			
 							//3. Diesen Wert wieder ins Textfield schreiben.
 							updateValue(objProg, sIp);
@@ -1059,7 +1060,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 						updateMessage(objProgWebPageCreate, "Creating ...");
 						
 						//2. Hochladen der Webseite									
-						printlnDate("Creating PageWeb.");						
+						Log.printlnDate(this, "Creating PageWeb.");						
 						boolean bSuccessWebCreated = objProgWebPageCreate.createPageWeb();
 						
 						//3. Diesen Wert wieder ins Label schreiben.
@@ -1154,7 +1155,7 @@ class ActionIpLocal2iniOVPN extends  AbstractKernelActionListenerCascadedZZZ{ //
 						updateMessage(objProgWebPageUpload, "Uploading ...");
 						
 						//2. Hochladen der Webseite						
-						printlnDate("Uploading WebPage.");						
+						Log.printlnDate(this, "Uploading WebPage.");						
 						boolean bSuccessWebUpload = objProgWebPageUpload.uploadPageWeb();
 						
 						

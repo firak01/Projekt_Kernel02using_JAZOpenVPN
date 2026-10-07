@@ -25,6 +25,7 @@ import basic.zKernel.status.IEventObjectStatusLocalZZZ;
 import basic.zKernel.status.ISenderObjectStatusBasicZZZ;
 import basic.zKernel.status.ISenderObjectStatusLocalZZZ;
 import basic.zKernel.status.SenderObjectStatusLocalZZZ;
+import custom.zKernel.Log;
 import use.openvpn.IApplicationOVPN;
 import use.openvpn.client.ClientConfigStarterOVPN;
 import use.openvpn.client.ClientMainOVPN;
@@ -133,7 +134,7 @@ public class ClientThreadVpnIpPingerOVPN extends AbstractKernelUseObjectWithStat
 				this.startAsThread();
 			} catch (ExceptionZZZ ez) {
 				try {
-					this.printlnDate(ez.getDetailAllLast());
+					Log.printlnDate(this, ez.getDetailAllLast());
 				} catch (ExceptionZZZ e1) {
 					System.out.println(e1.getDetailAllLast());
 					e1.printStackTrace();

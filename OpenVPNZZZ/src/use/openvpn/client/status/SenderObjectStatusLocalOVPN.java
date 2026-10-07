@@ -10,6 +10,7 @@ import basic.zKernel.status.IEventObjectStatusBasicZZZ;
 import basic.zKernel.status.IListenerObjectStatusBasicZZZ;
 import basic.zKernel.status.IListenerObjectStatusLocalZZZ;
 import basic.zKernel.status.SenderObjectStatusLocalZZZ;
+import custom.zKernel.Log;
 
 /** Diese Klasse implementiert alles, was benoetigt wird, damit die eigenen Events "Flag hat sich geaendert" abgefeuert werden kann
  *  und auch von den Objekten, die hier registriert sind empfangen wird. Damit fungieren Objekte dieser Klasse als "EventBroker".
@@ -31,7 +32,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public void fireEvent(IEventObjectStatusLocalOVPN event) {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.protocolWithPosition(sLog);
+			Log.protocolWithPosition(this, sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}
@@ -41,7 +42,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public IEventObjectStatusLocalOVPN getEventPrevious() {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.protocolWithPosition(sLog);
+			Log.protocolWithPosition(this, sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}
@@ -52,7 +53,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public void setEventPrevious(IEventObjectStatusLocalOVPN event) {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.protocolWithPosition(sLog);
+			Log.protocolWithPosition(this, sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}
@@ -62,7 +63,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public void removeListenerObjectStatusLocal(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.protocolWithPosition(sLog);
+			Log.protocolWithPosition(this, sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}
@@ -72,7 +73,7 @@ public class SenderObjectStatusLocalOVPN extends SenderObjectStatusLocalZZZ impl
 	public void addListenerObjectStatusLocal(IListenerObjectStatusLocalOVPN objEventListener) throws ExceptionZZZ {
 		String sLog = "TODOGOON20251111 - Hier ggfs. den Code aus der passenden Methode vor der Umstellung auf Kernel-Klassen einfuegen";
 		try {
-			this.protocolWithPosition(sLog);
+			Log.protocolWithPosition(this, sLog);
 		} catch (ExceptionZZZ e) {		
 			e.printStackTrace();
 		}

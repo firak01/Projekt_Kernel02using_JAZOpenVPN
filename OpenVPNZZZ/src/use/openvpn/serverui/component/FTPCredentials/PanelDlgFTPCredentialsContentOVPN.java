@@ -50,6 +50,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Sizes;
 
 import custom.zKernel.KernelLogZZZ;
+import custom.zKernel.Log;
 
 //Das hat hier eigentlich nichts zu suchen. TODOGOON: Auch wenn das klappt, eine andere Projektstruktur anbieten.
 //wg Fehler: import com.jcraft.jsch.JSchException;
@@ -621,7 +622,7 @@ public class PanelDlgFTPCredentialsContentOVPN  extends KernelJPanelFormLayouted
 					ProgramFTPCredentials2iniOVPN objProg = new ProgramFTPCredentials2iniOVPN(objKernel, this.panel, this.saFlag4Program);
 					objProg.reset();
 					String sUsername = objProg.getUsernameFromUi();
-					printlnDate("Username from Local2ini'" + sUsername + "'");
+					Log.printlnDate(this, "Username from Local2ini'" + sUsername + "'");
 					
 					String sPasswordDecrypted = objProg.getPasswordFromUi();
 					//Unverschluesseltes Kennwort nicht loggen!!! logLineDate("Password from Local2ini'" + sPassword + "'");
